@@ -1,0 +1,31 @@
+.fc .fc-toolbar-title,
+.fc .fc-daygrid-day-top {
+    text-transform: capitalize; 
+}
+.fc .fc-col-header-cell {
+    text-transform: capitalize; 
+}
+.fc .fc-daygrid-day-number {
+    font-weight: medium;
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+}
+.fc-daygrid-day {
+    width: 100px;
+    height: 100px;
+    max-width: 100px;
+    max-height: 100px;
+    overflow: hidden;
+    position: relative; 
+}
+.fc-day-today {
+    background-color: transparent !important; 
+}
+.fc-day-today .fc-daygrid-day-number {
+    background-color: #00438a; 
+    color: white;
+    border-radius: 50%; 
+    padding: 2px 10px; 
+    box-sizing: border-box; 
+}
