@@ -20,15 +20,15 @@ export function Sidebar({ onNavClick }: SidebarProps) {
   const navItems = [
     {
       title: "Documentos",
-      href: "/documentos",
+      href: "/documents",
       icon: FileText,
-      isActive: pathname === "/documentos",
+      isActive: pathname === "/documents",
     },
     {
       title: "Planificación",
-      href: "/planificación",
+      href: "/planification",
       icon: SquareChartGantt,
-      isActive: pathname === "/planificación",
+      isActive: pathname === "/planification",
     },
     {
       title: "Reportabilidad",
