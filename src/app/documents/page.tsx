@@ -2,7 +2,7 @@
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
 import { ArrowUpFromLine } from 'lucide-react';
-import {documents} from '../../../mocks/documents'
+import {documents} from '../../../mocks/documentsMock'
 
 export default function Documents() {
     return (
