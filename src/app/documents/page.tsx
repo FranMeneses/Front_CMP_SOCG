@@ -26,7 +26,7 @@ export default function Documents() {
     }
     
     return (
-        <div>
+        <div className="overflow-x-hidden">
         <Header />
         <div className="grid flex-1 md:grid-cols-[220px_1fr] text-black bg-white">
             <aside className="hidden border-r md:block h-full">
@@ -36,8 +36,8 @@ export default function Documents() {
                 <div className="flex flex-col gap-4">
                     <h1 className="text-2xl font-bold">Centro Documental</h1>
                     <div className="flex flex-row ">
-                        <div className="w-3/4 ml-4">
-                            <button className="flex flex-row items-center p-4 rounded-lg mb-4 w-2/10 cursor-pointer" onClick={() => {}}>
+                        <div className="w-full ml-4">
+                            <button className="flex flex-row items-center p-4 rounded-lg mb-4 cursor-pointer" onClick={() => {}}>
                                 <ArrowUpFromLine className="text-black" size={24} />
                                 <span className="ml-2">Subir archivo</span>
                             </button>

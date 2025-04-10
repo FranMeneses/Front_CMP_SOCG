@@ -31,7 +31,7 @@ export default function Reportability() {
   }
 
     return (
-      <div>
+      <div className="overflow-x-hidden">
         <Header />
         <div className="grid flex-1 md:grid-cols-[220px_1fr] text-black bg-white">
           <aside className="hidden border-r md:block h-full">
@@ -62,19 +62,19 @@ export default function Reportability() {
                   </h3>
                   <div className="flex flex-col gap-8 mt-10 justify-center place">
                     <div className="flex flex-row font-light">
-                      <circle className="bg-[#54B87E] w-6 h-6 rounded-full mr-2"></circle>
+                      <div className="bg-[#54B87E] w-6 h-6 rounded-full mr-2"></div>
                       <h3 className="text-[#7D7D7D] text-sm font-medium">
                         Valle del Huasco
                       </h3>
                     </div>
                     <div className="flex flex-row font-light">
-                      <circle className="bg-[#B0A3CC] w-6 h-6 rounded-full mr-2"></circle>
+                      <div className="bg-[#B0A3CC] w-6 h-6 rounded-full mr-2"></div>
                       <h3 className="text-[#7D7D7D] text-sm font-medium">
                         Valle de Copiapó
                      </h3>
                       </div>
                     <div className="flex flex-row font-light">
-                      <circle className="bg-[#EFA585] w-6 h-6 rounded-full mr-2"></circle>
+                      <div className="bg-[#EFA585] w-6 h-6 rounded-full mr-2"></div>
                       <h3 className="text-[#7D7D7D] text-sm font-medium">
                         Valle del Elqui
                       </h3>
