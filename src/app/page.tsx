@@ -6,6 +6,8 @@ import { tasksMock } from "../../mocks/tasksMock";
 import PieChart from "@/components/PieChart";
 import BarChart from "@/components/BarChart";
 import { barChartDataSummaryMock, chartDataSummaryMock, pieChartDataSummaryMock } from "../../mocks/chartDataSummaryMock";
+import { useEffect, useState } from "react";
+import LoadingSpinner from "@/components/LoadinSpinner";
 
 const getColor = (percentage: number) => {
   if (percentage === 100) return 'bg-green-500'; 
@@ -15,8 +17,26 @@ const getColor = (percentage: number) => {
 
 
 export default function Home() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false); 
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoadingSpinner/>
+      </div>
+    );
+  }
+  
   return (
-    <div>
+    <>
       <Header/>
       <div className= "grid flex-1 md:grid-cols-[220px_1fr] text-black bg-white">
         <aside className="hidden border-r md:block h-full">
@@ -78,6 +98,6 @@ export default function Home() {
           </div>
         </main>
       </div>
-    </div>
+    </>
   );
 }

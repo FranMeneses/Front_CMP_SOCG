@@ -8,8 +8,28 @@ import listPlugin from "@fullcalendar/list";
 import esLocale from "@fullcalendar/core/locales/es";
 import '../styles/reportability.css'
 import DropdownMenu from "@/components/dropdown";
+import LoadingSpinner from "@/components/LoadinSpinner";
+import { useState, useEffect } from "react";
 
 export default function Reportability() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false); 
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <LoadingSpinner/>
+      </div>
+    );
+  }
+
     return (
       <div>
         <Header />
