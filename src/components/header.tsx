@@ -5,7 +5,7 @@ export function Header() {
     return (
         <header className="flex flex-1 justify-between w-screen p-4 bg-[#2771CC]">
             <Image
-                src="/LogoCMP.png"
+                src="/CmpLogo.png"
                 alt="Logo"
                 width={100}
                 height={50}

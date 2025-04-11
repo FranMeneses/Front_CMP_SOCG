@@ -44,15 +44,15 @@ export function Sidebar({ onNavClick }: SidebarProps) {
     },
     {
       title: "Resumen",
-      href: "/",
+      href: "/resume",
       icon: ChartPie,
-      isActive: pathname === "/",
+      isActive: pathname === "/resume",
     },
   ];
 
   return (
     <div className="flex flex-col gap-2 p-4 h-full min-h-screen">
-      <div className="flex flex-1 flex-col items gap-5">
+      <div className="flex flex-1 flex-col items gap-5 relative">
         {navItems.map((item) => (
           <Button
             key={item.title}

@@ -1,37 +1,55 @@
-'use client'
+'use client';
 import { Bar } from 'react-chartjs-2';
+import { useRef, useEffect } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartOptions } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface BarChartData {
-    labels: string[]; 
+    labels: string[];
     datasets: Array<{
-        label: string; 
-        data: number[]; 
-        backgroundColor: string[]; 
-        hoverBackgroundColor: string[]; 
+        label: string;
+        data: number[];
+        backgroundColor: string[];
+        hoverBackgroundColor: string[];
     }>;
 }
 
-const BarChart = ({ data }: {data:BarChartData}) => {
+const BarChart = ({ data }: { data: BarChartData }) => {
+    const chartRef = useRef<ChartJS | null>(null); 
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (chartRef.current) {
+                chartRef.current.resize(); 
+            }
+        };
+
+        window.addEventListener('resize', handleResize); 
+        return () => window.removeEventListener('resize', handleResize); 
+    }, []);
+
     const options: ChartOptions<'bar'> = {
         responsive: true,
+        maintainAspectRatio: true,
         scales: {
-            x:{
-                grid:{
+            x: {
+                grid: {
                     display: false,
-                }
+                },
             },
             y: {
                 grid: {
-                    display: false,
+                    display: true,
                 },
             },
         },
         plugins: {
             tooltip: {
                 enabled: true,
+            },
+            legend: {
+                display: false,
             },
             title: {
                 display: true,
@@ -53,9 +71,17 @@ const BarChart = ({ data }: {data:BarChartData}) => {
     };
 
     return (
-        <div className='flex-1 border border-gray-300 p-4 bg-white'>
-            <Bar data={data} options={options} />
+        <div className="w-full h-full border border-gray-300 p-4 bg-white">
+            <Bar
+            ref={(instance) => {
+                if (instance) {
+                    chartRef.current = instance; 
+                }
+            }} 
+            data={data} 
+            options={options} />
         </div>
     );
-}
+};
+
 export default BarChart;

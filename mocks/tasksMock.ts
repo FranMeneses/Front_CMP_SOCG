@@ -1,7 +1,7 @@
 export const tasksMock = [
     {
         id: "1",
-        code: "002-REVE-2025",
+        code: "001-REVE-2025",
         remainingDays: 5,
         endDate: "2025-10-15",
         progressPercentage: 50,
@@ -15,7 +15,7 @@ export const tasksMock = [
     },
     {
         id: "3",
-        code: "001-REVC-2025",
+        code: "003-REVC-2025",
         remainingDays: 2,
         endDate: "2025-10-12",
         progressPercentage: 80,
@@ -37,6 +37,48 @@ export const tasksMock = [
     {
         id: "6",
         code: "006-REVE-2025",
+        remainingDays: 2,
+        endDate: "2025-10-15",
+        progressPercentage: 70,
+    },
+    {
+        id: "7",
+        code: "007-REVE-2025",
+        remainingDays: 5,
+        endDate: "2025-10-15",
+        progressPercentage: 50,
+    },
+    {
+        id: "8",
+        code: "008-REVH-2025",
+        remainingDays: 10,
+        endDate: "2025-10-20",
+        progressPercentage: 30,
+    },
+    {
+        id: "9",
+        code: "009-REVC-2025",
+        remainingDays: 2,
+        endDate: "2025-10-12",
+        progressPercentage: 80,
+    },
+    {
+        id: "10",
+        code: "010-REVH-2025",
+        remainingDays: 2,
+        endDate: "2025-10-18",
+        progressPercentage: 60,
+    },
+    {
+        id: "11",
+        code: "011-REVC-2025",
+        remainingDays: 0,
+        endDate: "2025-10-29",
+        progressPercentage: 100,
+    },
+    {
+        id: "12",
+        code: "012-REVE-2025",
         remainingDays: 2,
         endDate: "2025-10-15",
         progressPercentage: 70,

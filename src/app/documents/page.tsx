@@ -51,7 +51,7 @@ export default function Documents() {
                                             <th className="py-3 px-6 text-center border-b border-gray-300">Iniciativa</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="cursor-pointer text-sm text-gray-700">
                                         {documents.map((doc: { name: string; date: string; type: string; initiative: string }, index) => (
                                             <tr key={index} className="hover:bg-gray-50">
                                                 <td className="px-4 py-2 flex items-center border-b border-gray-300">
