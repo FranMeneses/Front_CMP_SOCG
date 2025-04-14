@@ -1,27 +1,50 @@
 'use client'
 import { useState } from "react";
+import { ChevronDown } from 'lucide-react';
 
-export default function DropdownMenu() {
+interface DropdownMenuProps {
+  buttonText: string; 
+  items: string[]; 
+  onSelect: (item: string) => void; 
+}
+
+export default function DropdownMenu({ buttonText, items, onSelect }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null); 
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleSelect = (item: string) => {
+    setSelectedItem(item); 
+    onSelect(item); 
+    setIsOpen(false); 
   };
 
   return (
     <div className="relative">
       <button
         onClick={toggleDropdown}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+        className="bg-white border text-black px-2 py-2 rounded w-full flex flex-row"
       >
-        Todos los departamentos
+        {selectedItem || buttonText} 
+        <span className="ml-auto">
+          <ChevronDown size={25} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        </span>
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+        <div className="absolute bg-white border rounded shadow-lg w-full">
           <ul>
-            <li className="p-2 hover:bg-gray-100 cursor-pointer">Valle del Huasco</li>
-            <li className="p-2 hover:bg-gray-100 cursor-pointer">Valle de Copiapó</li>
-            <li className="p-2 hover:bg-gray-100 cursor-pointer">Valle del Elqui</li>
+            {items.map((item, index) => (
+              <li
+                key={index}
+                onClick={() => handleSelect(item)}
+                className="p-2 hover:bg-gray-100 cursor-pointer"
+              >
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
       )}

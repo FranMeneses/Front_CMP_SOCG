@@ -48,3 +48,52 @@ export const barChartDataSummaryMock = {
         },
     ],
 };
+
+const getColor = (percentage: number) => {
+    if (percentage === 1) return 'rgba(84, 184, 126, 0.5)';
+    if (percentage > 0.3 && percentage < 1) return 'rgba(230, 183, 55, 0.5)'; 
+    return 'rgba(230, 76, 55, 0.5)'; 
+};
+
+const getHover = (percentage: number) => {
+    if (percentage === 1) return 'rgba(84, 184, 126, 1)'; 
+    if (percentage > 0.3 && percentage < 1) return 'rgba(230, 183, 55, 1)'; 
+    return 'rgba(230, 76, 55, 1)'; 
+};
+
+
+export const ganttChartDataMock = {
+    datasets: [
+        {
+            data: [
+                { x: [Date.parse('03-24-2025'), Date.parse('04-16-2025')] as [number, number], y: 'Tarea 1', assigned: 'Juan Pérez', progress: 1 },
+                { x: [Date.parse('04-03-2025'), Date.parse('04-17-2025')] as [number, number], y: 'Tarea 2', assigned: 'Joe Doe', progress: 0.8 },
+                { x: [Date.parse('04-07-2025'), Date.parse('04-27-2025')] as [number, number], y: 'Tarea 3', assigned: 'Ana María', progress: 0.7 },
+                { x: [Date.parse('04-24-2025'), Date.parse('04-30-2025')] as [number, number], y: 'Tarea 4', assigned: 'Pedro Pérez', progress: 0 },
+                { x: [Date.parse('05-01-2025'), Date.parse('05-07-2025')] as [number, number], y: 'Tarea 5', assigned: 'Charly García', progress: 0 },
+                { x: [Date.parse('05-08-2025'), Date.parse('05-15-2025')] as [number, number], y: 'Tarea 6', assigned: 'Luis Fernández', progress: 0 },
+            ],
+            backgroundColor: [
+                getColor(1), 
+                getColor(0.8), 
+                getColor(0.7),  
+                getColor(0.2),  
+                getColor(0),  
+                getColor(0),  
+            ],
+            hoverBackgroundColor: [
+                getHover(1), 
+                getHover(0.8), 
+                getHover(0.7), 
+                getHover(0), 
+                getHover(0), 
+                getHover(0), 
+                ], 
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+            borderRadius: 4,
+            borderSkipped: false,
+            barPercentage: 0.5,
+            categoryPercentage: 0.8,
+        },
+    ],
+};

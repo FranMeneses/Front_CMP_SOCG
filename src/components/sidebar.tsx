@@ -38,9 +38,9 @@ export function Sidebar({ onNavClick }: SidebarProps) {
     },
     {
       title: "Programación",
-      href: "/gantt",
+      href: "/schedule",
       icon: CalendarRange,
-      isActive: pathname === "/gantt",
+      isActive: pathname === "/schedule",
     },
     {
       title: "Resumen",
