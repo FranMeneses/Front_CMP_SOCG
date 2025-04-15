@@ -1,11 +1,24 @@
 'use client'
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
-import { ArrowUpFromLine } from 'lucide-react';
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
+import { Modal } from "@/components/TaskModal";
 
 export default function Planification() {
+
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+    const handleAddTask = () => {
+        setIsPopupOpen(true);
+    };
+
+    const handleSaveTask = (task: { title: string; description: string }) => {
+        console.log('Nueva tarea:', task);
+        setIsPopupOpen(false); 
+    };
+
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -23,34 +36,29 @@ export default function Planification() {
         </div>
       );
     }
-    
-    const handleAddTask = () => {
-        console.log("Añadir tarea");
-    }  
 
     return (
-        <div className="h-screen w-screen overflow-hidden">
+        <div className="h-screen w-screen overflow-x-hidden">
             <Header />
-            <div className="grid grid-cols-[220px_1fr] h-full text-black bg-white">
+            <div className={`grid grid-cols-[220px_1fr] h-full text-black bg-white ${isPopupOpen ? 'blur-sm' : ''}`}>
                 <aside className="hidden md:block border-r h-full">
                     <Sidebar />
                 </aside>
-                <main className="p-4 h-full overflow-auto">
+                <main className="p-4 h-full">
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl font-bold">Planificación</h1>
-                        <div className="flex flex-row">
+                        <div className="">
                             <div className="ml-4 flex-1">
-                                <button
-                                    className="flex flex-row justify-end items-center p-4 rounded-lg mb-4 cursor-pointer"
-                                    onClick={() => {handleAddTask}}
-                                >
-                                    <ArrowUpFromLine className="text-black" size={24} />
-                                    <span className="ml-2">Añadir tarea</span>
-                                </button>
-                                <div className="overflow-auto w-full border border-gray-300 max-h-3/4">
-                                    <table className="table-auto w-full text-sm text-left text-gray-500">
+                            <button
+                                onClick={handleAddTask}
+                                className="px-4 py-2 bg-[#2771CC] text-white rounded mb-4 cursor-pointer hover:bg-[#08203d] ease-in-out duration-400"
+                            >
+                                Añadir Tarea
+                            </button>
+                                <div className="overflow-auto w-1/2 border border-gray-300 max-h-3/4">
+                                    <table className="table-auto text-sm text-gray-500">
                                         <thead>
-                                            <tr className="text-black uppercase text-sm leading-normal">
+                                            <tr className="text-black uppercase leading-normal">
                                                 <th className="py-3 px-6 text-center border-b border-gray-300">Código</th>
                                                 <th className="py-3 px-6 text-center border-b border-gray-300">Tarea</th>
                                                 <th className="py-3 px-6 text-center border-b border-gray-300">Origen Iniciativa</th>
@@ -106,6 +114,11 @@ export default function Planification() {
                     </div>
                 </main>
             </div>
+            <Modal
+                isOpen={isPopupOpen}
+                onClose={() => setIsPopupOpen(false)}
+                onSave={handleSaveTask}
+            />
         </div>
     );
 }
