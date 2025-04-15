@@ -10,9 +10,16 @@ import '../styles/reportability.css'
 import DropdownMenu from "@/components/dropdown";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
+import { ValleysMock } from "@/constants/valleys";
+import { ArrowLeft } from 'lucide-react';
+import { ArrowRight } from "lucide-react";
+
 
 export default function Reportability() {
+
   const [loading, setLoading] = useState(true);
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -40,8 +47,13 @@ export default function Reportability() {
           <main className="flex-1 p-4">
             <div className="flex flex-col gap-4">
               <h1 className="text-2xl font-bold">Reportabilidad</h1>
+              <DropdownMenu 
+                buttonText="Todos los departamentos"
+                items={ValleysMock}
+                onSelect={(item) => setSelectedItem(item)}
+              />
               <div className="flex flex-row ">
-              <div className="w-3/4 ml-4">
+                <div className="w-3/4 ml-4">
                 <FullCalendar
                   plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
                   initialView="dayGridMonth"
@@ -50,12 +62,17 @@ export default function Reportability() {
                   fixedWeekCount={false}
                   showNonCurrentDates={false}
                   headerToolbar={{
-                    start: "prev,next",
+                    start: "prev",
                     center: "title",
-                    end: "customDropdown",
+                    end: "next",
                   }}
+                  buttonIcons={{
+                    prev: "chevron-left",
+                    next: "chevron-right",
+                  }}
+                  height="auto"
                 />
-              </div>
+                </div>
                 <div className="ml-12 mt-16 p-4 rounded-lg border w-1/6 h-70 text-2xl font-medium">
                   <h3 className="text-center font-bold">
                     Leyenda

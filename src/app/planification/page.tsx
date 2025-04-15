@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/TaskModal";
+import { Plus } from 'lucide-react';
 
 export default function Planification() {
 
@@ -51,11 +52,12 @@ export default function Planification() {
                             <div className="ml-4 flex-1">
                             <button
                                 onClick={handleAddTask}
-                                className="px-4 py-2 bg-[#2771CC] text-white rounded mb-4 cursor-pointer hover:bg-[#08203d] ease-in-out duration-400"
+                                className="px-4 py-2 bg-[#2771CC] text-white rounded mb-4 cursor-pointer hover:bg-[#08203d] ease-in-out duration-400 flex flex-row"
                             >
-                                Añadir Tarea
+                                <Plus size={25} color="white" />
+                                <span className="ml-2">Añadir Tarea</span>
                             </button>
-                                <div className="overflow-auto w-1/2 border border-gray-300 max-h-3/4">
+                                <div className="overflow-auto w-1/2 border border-gray-300 max-h-2/3">
                                     <table className="table-auto text-sm text-gray-500">
                                         <thead>
                                             <tr className="text-black uppercase leading-normal">
