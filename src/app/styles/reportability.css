@@ -38,3 +38,15 @@
     padding: 1px 4px; 
     box-sizing: border-box; 
 }
+.fc-daygrid-day-top {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin-bottom: 25px !important;
+}
+
+.fc-daygrid-day-events {
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+    font-weight: normal !important;
+}

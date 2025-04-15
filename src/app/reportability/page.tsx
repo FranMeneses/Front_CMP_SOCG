@@ -11,14 +11,21 @@ import DropdownMenu from "@/components/dropdown";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
 import { ValleysMock } from "@/constants/valleys";
-import { ArrowLeft } from 'lucide-react';
-import { ArrowRight } from "lucide-react";
+import { tasksMock } from "../../../mocks/tasksMock";
 
 
 export default function Reportability() {
 
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+  const calendarEvents = tasksMock.map((task) => ({
+    title: task.code,
+    start: task.endDate,
+    end: task.endDate,
+    color: task.code.includes("REVE") ? "#54B87E" : task.code.includes("REVH") ? "#B0A3CC" : "#EFA585",
+    allDay: true
+  }));
   
 
   useEffect(() => {
@@ -71,6 +78,7 @@ export default function Reportability() {
                     next: "chevron-right",
                   }}
                   height="auto"
+                  events={calendarEvents}
                 />
                 </div>
                 <div className="ml-12 mt-16 p-4 rounded-lg border w-1/6 h-70 text-2xl font-medium">
