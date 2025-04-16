@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid"; 
 import listPlugin from "@fullcalendar/list"; 
 import esLocale from "@fullcalendar/core/locales/es";
-import '../styles/reportability.css'
+import './styles/index.css';
 import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
