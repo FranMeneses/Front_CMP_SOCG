@@ -4,10 +4,24 @@ import { Header } from "@/components/Header";
 import { ArrowUpFromLine } from 'lucide-react';
 import {documents} from '../../../mocks/documentsMock'
 import LoadingSpinner from "@/components/LoadinSpinner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Documents() {
     const [loading, setLoading] = useState(true);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    const handleUpload = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click(); 
+        }
+    }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            console.log(file);
+        }
+    }
 
     useEffect(() => {
       const timer = setTimeout(() => {
@@ -37,10 +51,17 @@ export default function Documents() {
                     <h1 className="text-2xl font-bold">Centro Documental</h1>
                     <div className="flex flex-row ">
                         <div className="w-full ml-4">
-                            <button className="flex flex-row items-center p-4 rounded-lg mb-4 cursor-pointer" onClick={() => {}}>
+                            <button className="flex flex-row items-center p-4 rounded-lg mb-4 cursor-pointer" onClick={() => {handleUpload()}}>
                                 <ArrowUpFromLine className="text-black" size={24} />
                                 <span className="ml-2">Subir archivo</span>
                             </button>
+                            <input 
+                                type="file"
+                                accept=".pdf"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
                             <div className="overflow-x-auto rounded-lg">
                                 <table className="min-w-full">
                                     <thead>
