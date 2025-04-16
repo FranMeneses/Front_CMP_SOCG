@@ -20,3 +20,22 @@ export interface BarChartData {
         hoverBackgroundColor: string[];
     }>;
 }
+
+export interface PieChartProps {
+  labels: string[];
+  datasets: Array<{
+    data: number[];
+    backgroundColor: string[];
+    hoverBackgroundColor: string[];
+  }>;
+}
+
+export interface LineChartData {
+    labels: string[];
+    datasets: Array<{
+        label: string;
+        data: number[];
+        borderColor: string;
+        backgroundColor: string;
+    }>;
+}

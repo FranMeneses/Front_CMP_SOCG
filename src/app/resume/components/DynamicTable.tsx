@@ -1,0 +1,127 @@
+import React from "react";
+
+interface Subtask {
+  id: string;
+  code: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  progress: number;
+}
+
+interface Task {
+  id: string;
+  code: string;
+  name: string;
+  remainingDays: number;
+  endDate: string;
+  progressPercentage: number;
+  subtasks: Subtask[];
+}
+
+interface DynamicTableProps {
+  tasks: Task[];
+  selectedTaskId: string | null;
+  onTaskClick: (taskId: string) => void;
+}
+
+const getColor = (percentage: number) => {
+  if (percentage === 100) return "bg-green-500";
+  if (percentage > 30 && percentage < 100) return "bg-yellow-500";
+  return "bg-red-500";
+};
+
+const DynamicTable: React.FC<DynamicTableProps> = ({
+  tasks,
+  selectedTaskId,
+  onTaskClick,
+}) => {
+  return (
+    <div className="overflow-y-scroll max-h-64">
+      <table className="table-auto w-full">
+        <thead className="bg-white">
+          <tr className="text-sm">
+            <th className="px-4 py-2 text-start font-bold text-[#7D7D7D]">
+              Código
+            </th>
+            <th className="px-4 py-2 text-center font-bold text-[#7D7D7D]">
+              Días restantes
+            </th>
+            <th className="px-4 py-2 text-center font-bold text-[#7D7D7D]">
+              Fecha término
+            </th>
+            <th className="px-4 py-2 text-center font-bold text-[#7D7D7D]">
+              Porcentaje de avance
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task) => (
+            <React.Fragment key={task.id}>
+              <tr
+                className="hover:bg-gray-50 text-sm cursor-pointer"
+                onClick={() => onTaskClick(task.id)}
+              >
+                <td className="px-4 py-2 border-b border-gray-300">
+                  {`"`+ task.name +`"`}
+                </td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  {task.remainingDays}
+                </td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  {task.endDate}
+                </td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  <div className="flex items-center text-end relative">
+                    <div
+                      className={`h-4 ${getColor(
+                        task.progressPercentage
+                      )} rounded`}
+                      style={{ width: `${task.progressPercentage}%` }}
+                    ></div>
+                    <h3 className="absolute text-sm font-medium text-white ml-2">
+                      {task.progressPercentage}%
+                    </h3>
+                  </div>
+                </td>
+              </tr>
+
+              {selectedTaskId === task.id &&
+                task.subtasks.map((subtask) => (
+                  <tr
+                    key={subtask.id}
+                    className="bg-gray-100 text-sm text-gray-700"
+                  >
+                    <td className="px-4 py-2 border-b border-gray-300 pl-8">
+                      {subtask.name}
+                    </td>
+                    <td className="px-4 py-2 border-b border-gray-300 pl-8"/>
+                    <td
+                      className="px-4 py-2 text-center border-b border-gray-300"
+                    >
+                      {subtask.endDate}
+                    </td>
+                    <td className="px-4 py-2 border-b border-gray-300 pl-8">
+                      <div className="flex items-center text-end relative">
+                        <div
+                          className={`h-4 ${getColor(
+                            subtask.progress
+                          )} rounded`}
+                          style={{ width: `${subtask.progress}%` }}
+                        ></div>
+                        <h3 className="absolute text-sm font-medium text-white ml-2">
+                          {subtask.progress}%
+                        </h3>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default DynamicTable;

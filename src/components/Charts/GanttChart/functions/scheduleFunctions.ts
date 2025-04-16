@@ -1,4 +1,4 @@
-import { GanttChartData } from "../CustomGantt";
+import { GanttChartData } from "../../interfaces/ChartInterfaces";
    
 export const getMaxDate = ({data}: {data: GanttChartData}) => {
     const allDates = data.datasets.flatMap(dataset => 

@@ -1,17 +1,19 @@
 import { ChartOptions } from 'chart.js';
 import { getDynamicTitle, getMinDate, getMaxDate } from '@/components/Charts/GanttChart/functions/scheduleFunctions';
-import { GanttChartData } from '../interfaces/ChartInterfaces';
+import { GanttChartData, LineChartData} from '../interfaces/ChartInterfaces';
 
 export const BarChartOptions: ChartOptions<'bar'> = {
     responsive: true,
     maintainAspectRatio: true,
     scales: {
         x: {
+            stacked: true,
             grid: {
                 display: false,
             },
         },
         y: {
+            stacked: true,
             grid: {
                 display: true,
             },
@@ -19,6 +21,8 @@ export const BarChartOptions: ChartOptions<'bar'> = {
     },
     plugins: {
         tooltip: {
+            mode: 'index',
+            intersect: false,
             enabled: true,
         },
         legend: {
@@ -135,70 +139,83 @@ export const GanttChartOptions = ({data}: {data: GanttChartData}): ChartOptions<
     },
 });
 
-export const LineChartOptions: ChartOptions<'line'> = {
-    responsive: true,
-    maintainAspectRatio: true,
-    scales: {
+export const LineChartOptions = ({
+    currency,
+  }: {
+    currency: 'USD' | 'UF' | 'CLP';
+  }): ChartOptions<'line'> => {
+    const stepSize = currency === 'USD' ? 1000 : currency === 'UF' ? 100 : 1000000;
+  
+    return {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
         y: {
-            position: 'right',
-            min: 0,
-            max: 100000,
-            ticks: {
-                stepSize: 10000,
-                precision: 0,
-            },
-            grid: {
-                display: false,
-            },
+          position: 'right',
+          min: 0,
+          ticks: {
+            stepSize: stepSize, 
+            precision: 0,
+          },
+          grid: {
+            display: false,
+          },
         },
         x: {
-            ticks: {
-                minRotation: 90,
-                align: 'center',
-                padding: 10,
-                color: '#000',
-                font: {
-                    size: 12,
-                    weight: 'bold',
-                    family: 'Roboto, sans-serif',
-                    style: 'italic',
-                },
-            },
-            grid: {
-                display: false,
-            },
-        },
-    },
-    plugins: {
-        tooltip: {
-            enabled: true,
-        },
-        legend: {
-            display: true,
-            position: 'left',
-            labels: {
-                boxWidth: 12,
-                usePointStyle: true,
-                color: '#000',
-            },
-        },
-        title: {
-            display: true,
-            text: `Presupuesto ${new Date().getFullYear()}`,
+          ticks: {
+            minRotation: 90,
+            align: 'center',
+            padding: 10,
             color: '#000',
             font: {
-                size: 24,
-                weight: 'bold',
+              size: 12,
+              weight: 'bold',
+              family: 'Roboto, sans-serif',
+              style: 'italic',
             },
-            padding: {
-                top: 10,
-                bottom: 20,
-            },
-            align: 'start',
+          },
+          grid: {
+            display: false,
+          },
         },
-    },
+      },
+      plugins: {
+        tooltip: {
+          enabled: true,
+        },
+        legend: {
+          display: true,
+          position: 'left',
+          labels: {
+            boxWidth: 12,
+            usePointStyle: true,
+            color: '#000',
+          },
+          onHover: (_event) => {
+            const target = _event.native?.target as HTMLElement;
+            if (target) {
+              target.style.cursor = 'pointer';
+            }
+          },
+        },
+        title: {
+          display: true,
+          text: `Presupuesto ${new Date().getFullYear()}`,
+          color: '#000',
+          font: {
+            size: 24,
+            weight: 'bold',
+          },
+          padding: {
+            top: 10,
+            bottom: 20,
+          },
+          align: 'start',
+        },
+      },
+    };
 };
-
+  
 export const PieChartOptions: ChartOptions<'doughnut'> = {
     responsive: true,
     maintainAspectRatio: false,
@@ -214,8 +231,8 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
             style: 'italic',
           },
         },
-        onHover: (event) => {
-          const target = event.native?.target as HTMLElement;
+        onHover: (_event) => {
+          const target = _event.native?.target as HTMLElement;
           if (target) {
               target.style.cursor = 'pointer';
           }
@@ -241,4 +258,4 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
         },
       },
     },
-  };
+};

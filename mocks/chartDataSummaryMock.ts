@@ -1,3 +1,5 @@
+import { h } from "@fullcalendar/core/preact.js";
+
 export const pieChartDataSummaryMock = {
     labels: ['Valle del Huasco', 'Valle de Copiapó', 'Valle del Elqui'],
     datasets: [
@@ -38,10 +40,23 @@ export const chartDataSummaryMock = {
 };
 
 export const barChartDataSummaryMock = {
-    labels: ['Calidad de vida','Desarrollo Productivo', 'Infrastructura Comunitaria', 'Fomración y educación', 'Identidad y Cultura'],
+    labels: ['Calidad de vida','Desarrollo Productivo', 'Infrastructura Comunitaria', 'Formación y educación', 'Identidad y Cultura'],
     datasets: [
         {
-            label: 'Inversión',
+            label:'Valle de Copiapó',
+            data: [10, 20, 5, 17, 4],
+            backgroundColor: ['#E9D160'],
+            hoverBackgroundColor: ['#BB9B09'],
+
+        },
+        {
+            label:'Valle del Elqui',
+            data: [5, 15, 5, 15, 5],
+            backgroundColor: ['#E9D160'],
+            hoverBackgroundColor: ['#BB9B09'],
+        },
+        {
+            label:'Valle del Huasco',
             data: [20, 40, 15, 32, 12],
             backgroundColor: ['#E9D160'],
             hoverBackgroundColor: ['#BB9B09'],
