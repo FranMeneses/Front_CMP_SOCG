@@ -1,6 +1,6 @@
 'use client'
-import { Sidebar } from "@/components/sidebar";
-import { Header } from "@/components/header";
+import { Sidebar } from "@/components/Sidebar";
+import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/TaskModal";

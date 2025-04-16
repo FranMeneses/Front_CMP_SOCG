@@ -1,13 +1,13 @@
 'use client'
-import { Sidebar } from "@/components/sidebar";
-import { Header } from "@/components/header";
+import { Sidebar } from "@/components/Sidebar";
+import { Header } from "@/components/Header";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; 
 import timeGridPlugin from "@fullcalendar/timegrid"; 
 import listPlugin from "@fullcalendar/list"; 
 import esLocale from "@fullcalendar/core/locales/es";
 import '../styles/reportability.css'
-import DropdownMenu from "@/components/dropdown";
+import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
 import { ValleysMock } from "@/constants/valleys";

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DropdownMenu from "./dropdown";
+import DropdownMenu from "./Dropdown";
 
 interface TaskModalProps {
     isOpen: boolean;

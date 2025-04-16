@@ -1,11 +1,9 @@
 'use client'
 
-import GanttChart from "@/components/GanttChart"
-import { Header } from "@/components/header"
-import { Sidebar } from "@/components/sidebar"
+import GanttChart from "@/components/Charts/GanttChart/GanttChart"
+import { Header } from "@/components/Header"
+import { Sidebar } from "@/components/Sidebar"
 import { ganttChartDataMock } from "../../../mocks/chartDataSummaryMock"
-import { useState } from "react"
-import { Modal } from "@/components/TaskModal"
 
 export default function Schedule() {
 

@@ -1,10 +1,10 @@
 'use client';
-import { Sidebar } from "@/components/sidebar";
-import { Header } from "@/components/header";
-import LineChart from "@/components/LineChart";
+import { Sidebar } from "@/components/Sidebar";
+import { Header } from "@/components/Header";
+import LineChart from "@/components/Charts/LineChart";
 import { tasksMock } from "../../../mocks/tasksMock";
-import PieChart from "@/components/PieChart";
-import BarChart from "@/components/BarChart";
+import PieChart from "@/components/Charts/PieChart";
+import BarChart from "@/components/Charts/BarChart";
 import { barChartDataSummaryMock, chartDataSummaryMock, pieChartDataSummaryMock } from "../../../mocks/chartDataSummaryMock";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/LoadinSpinner";
