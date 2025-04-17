@@ -30,7 +30,7 @@ export default function Resume() {
 
     return () => clearTimeout(timer);
   }, []);
-
+  
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -72,6 +72,7 @@ export default function Resume() {
                   tasks={tasksMock} 
                   selectedTaskId={selectedTaskId} 
                   onTaskClick={handleTaskClick}
+                  userRole="manager" 
                 />
               </div>
 

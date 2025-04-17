@@ -1,9 +1,10 @@
 'use client';
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { PieChartOptions } from "./config/ChartConfig";
 import { PieChartProps } from "./interfaces/ChartInterfaces";
+import { useResizeCharts } from "./hooks/useResizeCharts";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
@@ -18,16 +19,7 @@ const PieChart = ({
 }) => {
   const chartRef = useRef<ChartJS | null>(null);
 
-  useEffect(() => {
-    const handleResize = () => {
-        if (chartRef.current) {
-            chartRef.current.resize(); 
-        }
-    };
-
-    window.addEventListener('resize', handleResize); 
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  useResizeCharts(chartRef);
 
   const filteredData = {
     ...data,

@@ -1,4 +1,5 @@
 import React from "react";
+import { ManagementTableColumns,especialistTableColums } from "@/constants/tableConstants";
 
 interface Subtask {
   id: string;
@@ -23,6 +24,7 @@ interface DynamicTableProps {
   tasks: Task[];
   selectedTaskId: string | null;
   onTaskClick: (taskId: string) => void;
+  userRole: "manager" | "especialist";
 }
 
 const getColor = (percentage: number) => {
@@ -35,24 +37,32 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   tasks,
   selectedTaskId,
   onTaskClick,
+  userRole,
 }) => {
   return (
     <div className="overflow-y-scroll max-h-64">
       <table className="table-auto w-full">
         <thead className="bg-white">
           <tr className="text-sm">
-            <th className="px-4 py-2 text-start font-bold text-[#7D7D7D]">
-              Código
-            </th>
-            <th className="px-4 py-2 text-center font-bold text-[#7D7D7D]">
-              Días restantes
-            </th>
-            <th className="px-4 py-2 text-center font-bold text-[#7D7D7D]">
-              Fecha término
-            </th>
-            <th className="px-4 py-2 text-center font-bold text-[#7D7D7D]">
-              Porcentaje de avance
-            </th>
+            {userRole === "manager" ? (
+              ManagementTableColumns.map((column,index) => (
+                <th
+                  key={index}
+                  className={`px-4 py-2 text-start font-bold text-[#7D7D7D]`}
+                >
+                  {column}
+                </th>
+              ))
+            ) : (
+              especialistTableColums.map((column, index) => (
+                <th
+                  key={index}
+                  className={`px-4 py-2 text-start font-bold text-[#7D7D7D]`}
+                >
+                  {column}
+                </th>
+              ))
+            )}
           </tr>
         </thead>
         <tbody>

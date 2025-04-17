@@ -1,9 +1,10 @@
 'use client';
 import { Bar } from 'react-chartjs-2';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartOptions } from 'chart.js';
 import { BarChartData } from './interfaces/ChartInterfaces';
 import { BarChartOptions } from './config/ChartConfig';
+import { useResizeCharts } from './hooks/useResizeCharts';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -18,16 +19,7 @@ const BarChart = ({
   }) => {
     const chartRef = useRef<ChartJS | null>(null);
   
-  useEffect(() => {
-    const handleResize = () => {
-        if (chartRef.current) {
-            chartRef.current.resize(); 
-        }
-    };
-
-    window.addEventListener('resize', handleResize); 
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    useResizeCharts(chartRef);
 
     const filteredData = {
       ...data,

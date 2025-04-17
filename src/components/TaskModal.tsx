@@ -30,7 +30,7 @@ export function Modal({ isOpen, onClose, onSave }: TaskModalProps) {
                     <label className="text-sm font-medium mb-1">Tipo</label>
                     <DropdownMenu
                         buttonText="Seleccionar tipo"
-                        items={["Iniciativa", "Tarea"]}
+                        items={["Tarea", "Subtarea"]}
                         onSelect={(item) => setType(item)} 
                     />
                     <label className="block text-sm font-medium mb-1">Título</label>
