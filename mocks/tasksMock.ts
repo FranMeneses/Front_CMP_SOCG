@@ -7,9 +7,9 @@ export const tasksMock = [
         endDate: "2025-04-20",
         progressPercentage: 50,
         subtasks: [
-            { id: "1-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 70 },
-            { id: "1-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 30 },
-            { id: "1-3", code: "ST003", name: "Subtarea 3", startDate: "2025-02-20", endDate:"2025-04-20", progress: 30 },
+            { id: "1-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 70, complianceStatus: 'Finalizado' },
+            { id: "1-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 30, complianceStatus: 'En progreso' },
+            { id: "1-3", code: "ST003", name: "Subtarea 3", startDate: "2025-02-20", endDate:"2025-04-20", progress: 30, complianceStatus: 'No iniciado' },
         ],
     },
     {
@@ -20,8 +20,8 @@ export const tasksMock = [
         endDate: "2025-04-25",
         progressPercentage: 30,
         subtasks: [
-            { id: "2-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "2-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "2-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "2-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -32,8 +32,8 @@ export const tasksMock = [
         endDate: "2025-04-17",
         progressPercentage: 80,
         subtasks: [
-            { id: "3-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "3-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "3-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "3-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -44,8 +44,8 @@ export const tasksMock = [
         endDate: "2025-10-18",
         progressPercentage: 60,
         subtasks: [
-            { id: "4-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "4-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "4-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "4-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -56,8 +56,8 @@ export const tasksMock = [
         endDate: "2025-10-29",
         progressPercentage: 100,
         subtasks: [
-            { id: "5-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "5-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "5-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "5-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -68,8 +68,8 @@ export const tasksMock = [
         endDate: "2025-10-15",
         progressPercentage: 70,
         subtasks: [
-            { id: "6-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "6-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "6-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "6-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -80,8 +80,8 @@ export const tasksMock = [
         endDate: "2025-10-15",
         progressPercentage: 50,
         subtasks: [
-            { id: "7-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "7-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "7-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "7-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -92,8 +92,8 @@ export const tasksMock = [
         endDate: "2025-10-20",
         progressPercentage: 30,
         subtasks: [
-            { id: "8-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "8-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "8-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "8-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -104,8 +104,8 @@ export const tasksMock = [
         endDate: "2025-10-12",
         progressPercentage: 80,
         subtasks: [
-            { id: "9-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "9-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "9-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "9-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -116,8 +116,8 @@ export const tasksMock = [
         endDate: "2025-10-18",
         progressPercentage: 60,
         subtasks: [
-            { id: "10-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "10-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "10-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "10-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -128,8 +128,8 @@ export const tasksMock = [
         endDate: "2025-10-29",
         progressPercentage: 100,
         subtasks: [
-            { id: "11-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "11-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "11-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "11-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
     {
@@ -140,8 +140,8 @@ export const tasksMock = [
         endDate: "2025-10-15",
         progressPercentage: 70,
         subtasks: [
-            { id: "12-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50 },
-            { id: "12-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50 },
+            { id: "12-1", code: "ST001", name: "Subtarea 1", startDate: "2025-01-20", endDate:"2025-04-05", progress: 50, complianceStatus: 'Finalizado' },
+            { id: "12-2", code: "ST002", name: "Subtarea 2", startDate: "2025-02-20", endDate:"2025-04-20", progress: 50, complianceStatus: 'En progreso' },
         ],
     },
 ];

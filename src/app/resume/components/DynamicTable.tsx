@@ -8,6 +8,7 @@ interface Subtask {
   startDate: string;
   endDate: string;
   progress: number;
+  complianceStatus: string;
 }
 
 interface Task {
@@ -65,7 +66,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             )}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="font-medium">
           {tasks.map((task) => (
             <React.Fragment key={task.id}>
               <tr
@@ -82,17 +83,17 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {task.endDate}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  <div className="flex items-center text-end relative">
+                  {userRole === "manager" ? (
+                    <div className="flex items-center text-end relative">
                     <div
-                      className={`h-4 ${getColor(
-                        task.progressPercentage
-                      )} rounded`}
-                      style={{ width: `${task.progressPercentage}%` }}
-                    ></div>
+                      className={`h-4 ${getColor(task.progressPercentage)} rounded`}
+                      style={{ width: `${task.progressPercentage}%` }}>
+                    </div>
                     <h3 className="absolute text-sm font-medium text-white ml-2">
                       {task.progressPercentage}%
                     </h3>
-                  </div>
+                  </div> ): ('')
+                  }
                 </td>
               </tr>
 
@@ -100,7 +101,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 task.subtasks.map((subtask) => (
                   <tr
                     key={subtask.id}
-                    className="bg-gray-100 text-sm text-gray-700"
+                    className="bg-gray-100 text-sm text-gray-700 font-medium"
                   >
                     <td className="px-4 py-2 border-b border-gray-300 pl-8">
                       {subtask.name}
@@ -112,17 +113,20 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       {subtask.endDate}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300 pl-8">
-                      <div className="flex items-center text-end relative">
-                        <div
-                          className={`h-4 ${getColor(
-                            subtask.progress
-                          )} rounded`}
-                          style={{ width: `${subtask.progress}%` }}
-                        ></div>
-                        <h3 className="absolute text-sm font-medium text-white ml-2">
-                          {subtask.progress}%
-                        </h3>
-                      </div>
+                      {userRole === "manager" ? (
+                        <div className="flex items-center text-end relative">
+                          <div 
+                            className={`h-4 ${getColor(subtask.progress)} rounded`}
+                            style={{ width: `${subtask.progress}%` }}>
+                          </div>
+                          <h3 className="absolute text-sm font-medium text-white ml-2">
+                            {subtask.progress}%
+                          </h3>
+                        </div>): 
+                        (<h3 className="text-sm font-medium text-gray-700 text-center">
+                          {subtask.complianceStatus}
+                        </h3>)
+                      }
                     </td>
                   </tr>
                 ))}
