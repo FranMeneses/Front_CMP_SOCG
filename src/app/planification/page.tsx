@@ -5,10 +5,13 @@ import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
 import { Modal } from "@/components/TaskModal";
 import { Plus } from 'lucide-react';
+import TasksTable from "./components/TasksTable";
+import { tasksMock } from "../../../mocks/tasksMock";
 
 export default function Planification() {
 
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
     const handleAddTask = () => {
         setIsPopupOpen(true);
@@ -19,6 +22,9 @@ export default function Planification() {
         setIsPopupOpen(false); 
     };
 
+    const handleonTaskClick = (taskId: string) => {
+        setSelectedTaskId((prev) => (prev === taskId ? null : taskId)); 
+    }
 
     const [loading, setLoading] = useState(true);
 
@@ -45,7 +51,7 @@ export default function Planification() {
                 <aside className="hidden md:block border-r h-full">
                     <Sidebar />
                 </aside>
-                <main className="p-4 h-full">
+                <main className="p-4 w-[80%] h-full">
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl font-bold">Planificación</h1>
                         <div className="">
@@ -57,59 +63,12 @@ export default function Planification() {
                                 <Plus size={25} color="white" />
                                 <span className="ml-2">Añadir Tarea</span>
                             </button>
-                                <div className="overflow-auto w-1/2 border border-gray-300 max-h-2/3">
-                                    <table className="table-auto text-sm text-gray-500">
-                                        <thead>
-                                            <tr className="text-black uppercase leading-normal">
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Código</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Tarea</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Origen Iniciativa</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Tipo Iniciativa</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Alcance Iniciativa</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Tipo Interacción Operacional</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Tipo Riesgo Operacional</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Compliance</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Prioridad</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Estado</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Asignado</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Presupuesto</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Gasto Real</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">GC Presupuesto</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Diferencia</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Mes de Imputación</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Fecha Inicio</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Fecha Finalización</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Dias restantes</th>
-                                                <th className="py-3 px-6 text-center border-b border-gray-300">Fecha Termino</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {Array.from({ length: 20 }).map((_, index) => (
-                                                <tr key={index} className="text-center border-b border-gray-300">
-                                                    <td className="py-3 px-6">Código {index + 1}</td>
-                                                    <td className="py-3 px-6">Tarea {index + 1}</td>
-                                                    <td className="py-3 px-6">Origen {index + 1}</td>
-                                                    <td className="py-3 px-6">Tipo {index + 1}</td>
-                                                    <td className="py-3 px-6">Alcance {index + 1}</td>
-                                                    <td className="py-3 px-6">Interacción {index + 1}</td>
-                                                    <td className="py-3 px-6">Riesgo {index + 1}</td>
-                                                    <td className="py-3 px-6">Compliance {index + 1}</td>
-                                                    <td className="py-3 px-6">Prioridad {index + 1}</td>
-                                                    <td className="py-3 px-6">Estado {index + 1}</td>
-                                                    <td className="py-3 px-6">Asignado {index + 1}</td>
-                                                    <td className="py-3 px-6">Presupuesto {index + 1}</td>
-                                                    <td className="py-3 px-6">Gasto Real {index + 1}</td>
-                                                    <td className="py-3 px-6">GC Presupuesto {index + 1}</td>
-                                                    <td className="py-3 px-6">Diferencia {index + 1}</td>
-                                                    <td className="py-3 px-6">Mes {index + 1}</td>
-                                                    <td className="py-3 px-6">Inicio {index + 1}</td>
-                                                    <td className="py-3 px-6">Finalización {index + 1}</td>
-                                                    <td className="py-3 px-6">Restantes {index + 1}</td>
-                                                    <td className="py-3 px-6">Término {index + 1}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                <div className="w-[80%]">
+                                    <TasksTable
+                                        tasks={tasksMock}
+                                        selectedTaskId={selectedTaskId}
+                                        onTaskClick={() => {handleonTaskClick}}
+                                    />
                                 </div>
                             </div>
                         </div>

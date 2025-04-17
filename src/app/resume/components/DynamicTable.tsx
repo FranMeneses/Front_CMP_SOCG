@@ -1,7 +1,8 @@
+'use client'
 import React from "react";
-import { ManagementTableColumns,especialistTableColums } from "@/constants/tableConstants";
+import { ManagementTableColumns,specialistTableColums } from "@/constants/tableConstants";
 
-interface Subtask {
+export interface Subtask {
   id: string;
   code: string;
   name: string;
@@ -11,13 +12,29 @@ interface Subtask {
   complianceStatus: string;
 }
 
-interface Task {
+export interface Task {
   id: string;
   code: string;
   name: string;
-  remainingDays: number;
+  origin: string;
+  type: string;
+  scope: string;
+  operationalInteraction: string;
+  operationalRisk: string;
+  compliance: string;
+  priority: string;
+  status: string;
+  assigned: string;
+  budget: number;
+  actualExpense: number;
+  gcBudget: number;
+  difference: number;
+  accountingMonth: string;
+  startDate: string;
   endDate: string;
-  progressPercentage: number;
+  remainingDays: number;
+  finishDate: string;
+  progress: number;
   subtasks: Subtask[];
 }
 
@@ -25,7 +42,7 @@ interface DynamicTableProps {
   tasks: Task[];
   selectedTaskId: string | null;
   onTaskClick: (taskId: string) => void;
-  userRole: "manager" | "especialist";
+  userRole: "manager" | "specialist";
 }
 
 const getColor = (percentage: number) => {
@@ -55,7 +72,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 </th>
               ))
             ) : (
-              especialistTableColums.map((column, index) => (
+              specialistTableColums.map((column, index) => (
                 <th
                   key={index}
                   className={`px-4 py-2 text-start font-bold text-[#7D7D7D]`}
@@ -86,11 +103,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {userRole === "manager" ? (
                     <div className="flex items-center text-end relative">
                     <div
-                      className={`h-4 ${getColor(task.progressPercentage)} rounded`}
-                      style={{ width: `${task.progressPercentage}%` }}>
+                      className={`h-4 ${getColor(task.progress)} rounded`}
+                      style={{ width: `${task.progress}%` }}>
                     </div>
                     <h3 className="absolute text-sm font-medium text-white ml-2">
-                      {task.progressPercentage}%
+                      {task.progress}%
                     </h3>
                   </div> ): ('')
                   }

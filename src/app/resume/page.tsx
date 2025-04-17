@@ -72,7 +72,7 @@ export default function Resume() {
                   tasks={tasksMock} 
                   selectedTaskId={selectedTaskId} 
                   onTaskClick={handleTaskClick}
-                  userRole="manager" 
+                  userRole="specialist" 
                 />
               </div>
 
