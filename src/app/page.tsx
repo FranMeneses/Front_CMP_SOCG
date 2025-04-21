@@ -8,7 +8,7 @@ export default function Home() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/resume");
+    router.push("features/resume");
   };
 
 

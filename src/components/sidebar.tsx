@@ -1,52 +1,54 @@
-'use client'
-import { CalendarRange , CalendarFold, FileText , SquareChartGantt , ChartPie } from 'lucide-react' 
-import Link from 'next/link'
-
-import { Button } from "@/components/ui/button"
-
-import { cn } from "@/lib/utils"
-
-
+'use client';
+import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 
 interface SidebarProps {
-    onNavClick?: () => void
+  onNavClick?: () => void;
 }
 
-
 export function Sidebar({ onNavClick }: SidebarProps) {
-  const pathname = usePathname(); 
+  const pathname = usePathname();
+  const router = useRouter(); 
 
   const navItems = [
     {
       title: "Documentos",
-      href: "/documents",
+      href: "/features/documents",
+      displayHref: "/documents",
       icon: FileText,
-      isActive: pathname === "/documents",
+      isActive: pathname === "/features/documents",
     },
     {
       title: "Planificación",
-      href: "/planification",
+      href: "/features/planification",
+      displayHref: "/planification",
       icon: SquareChartGantt,
-      isActive: pathname === "/planification",
+      isActive: pathname === "/features/planification",
     },
     {
       title: "Reportabilidad",
-      href: "/reportability",
+      href: "/features/reportability",
+      displayHref: "/reportability",
       icon: CalendarFold,
-      isActive: pathname === "/reportability",
+      isActive: pathname === "/features/reportability",
     },
     {
       title: "Programación",
-      href: "/schedule",
+      href: "/features/schedule",
+      displayHref: "/schedule",
       icon: CalendarRange,
-      isActive: pathname === "/schedule",
+      isActive: pathname === "/features/schedule",
     },
     {
       title: "Resumen",
-      href: "/resume",
+      href: "/features/resume",
+      displayHref: "/resume",
       icon: ChartPie,
-      isActive: pathname === "/resume",
+      isActive: pathname === "/features/resume",
     },
   ];
 
@@ -68,6 +70,16 @@ export function Sidebar({ onNavClick }: SidebarProps) {
             </Link>
           </Button>
         ))}
+
+        <Button
+          variant="ghost"
+          size="sm"
+          className="justify-start cursor-pointer"
+          onClick={() => router.push('/')} 
+        >
+          <LogOut className="mr-2 h-6 w-6" />
+          Cerrar Sesión
+        </Button>
       </div>
     </div>
   );

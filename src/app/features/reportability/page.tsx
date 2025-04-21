@@ -11,12 +11,13 @@ import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
 import { ValleysMock } from "@/constants/valleys";
-import { tasksMock } from "../../../mocks/tasksMock";
+import { tasksMock } from "../../../../mocks/tasksMock";
 
 
 export default function Reportability() {
 
   const [loading, setLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const calendarEvents = tasksMock.map((task) => ({
@@ -26,6 +27,10 @@ export default function Reportability() {
     color: task.code.includes("REVE") ? "#54B87E" : task.code.includes("REVH") ? "#B0A3CC" : "#EFA585",
     allDay: true
   }));
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev); 
+  };
   
 
   useEffect(() => {
@@ -35,22 +40,22 @@ export default function Reportability() {
 
     return () => clearTimeout(timer);
   }, []);
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <LoadingSpinner/>
-      </div>
-    );
-  }
-
+  
     return (
       <div className="overflow-x-hidden">
-        <Header />
-        <div className="grid flex-1 md:grid-cols-[220px_1fr] text-black bg-white">
-          <aside className="hidden border-r md:block h-full">
-            <Sidebar />
-          </aside>
+        <Header toggleSidebar={toggleSidebar} />
+        {loading ? (
+          <div className="flex items-center justify-center h-screen">
+            <LoadingSpinner/>
+          </div>
+        )
+        :(
+          <div className={`grid h-full text-black bg-white ${isSidebarOpen ? 'md:grid-cols-[220px_1fr]' : 'grid-cols-1'}`}>
+          {isSidebarOpen && ( 
+            <aside className="border-r md:block h-full">
+              <Sidebar />
+            </aside>
+          )}
           <main className="flex-1 p-4">
             <div className="flex flex-col gap-4">
               <h1 className="text-2xl font-bold">Reportabilidad</h1>
@@ -110,6 +115,7 @@ export default function Reportability() {
             </div>
           </main>
         </div>
+        )}
       </div>
     );
   }
