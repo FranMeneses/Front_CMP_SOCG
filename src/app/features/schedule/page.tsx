@@ -1,20 +1,18 @@
 'use client'
 
-import GanttChart from "@/components/Charts/GanttChart/GanttChart"
+import GanttChart from "@/components/Charts/Gantt/GanttChart"
 import { Header } from "@/components/Header"
 import { Sidebar } from "@/components/Sidebar"
-import { ganttChartDataMock } from "../../../../mocks/chartDataSummaryMock"
 import { useEffect, useState } from "react"
 import LoadingSpinner from "@/components/LoadinSpinner"
 
 export default function Schedule() {
-
     const [loading, setLoading] = useState(true);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
 
     const toggleSidebar = () => {
         setIsSidebarOpen((prev) => !prev); 
-      };
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -25,7 +23,7 @@ export default function Schedule() {
     }, []);
 
     return (
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-hidden max-h-screen w-full">
             <Header toggleSidebar={toggleSidebar}/>
             {loading ? 
             (
@@ -41,12 +39,12 @@ export default function Schedule() {
                     <Sidebar />
                   </aside>
                 )}
-                <main className="flex-1 p-4">
-                    <div>
-                        <div className="flex flex-row justify-between">
-                            <h1 className="text-2xl font-bold mb-4">Programación de iniciativas</h1>
-                        </div>
-                        <GanttChart data={ganttChartDataMock} />
+                <main className="flex flex-col overflow-hidden">
+                    <div className="p-4 pb-2">
+                        <h1 className="text-2xl font-bold">Programación de iniciativas</h1>
+                    </div>
+                    <div className="flex-1 px-4 pb-4">
+                        <GanttChart/>
                     </div>
                 </main>
             </div>

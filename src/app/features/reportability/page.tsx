@@ -17,7 +17,7 @@ import { tasksMock } from "../../../../mocks/tasksMock";
 export default function Reportability() {
 
   const [loading, setLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const calendarEvents = tasksMock.map((task) => ({

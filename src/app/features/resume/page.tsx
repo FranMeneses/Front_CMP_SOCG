@@ -12,7 +12,7 @@ import DynamicTable from "@/app/features/resume/components/DynamicTable";
 
 export default function Resume() {
   const [loading, setLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
   const [tasks, setTasks] = useState([]); 
   const [subtasks, setSubtasks] = useState([]);
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null);

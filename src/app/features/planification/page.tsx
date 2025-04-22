@@ -11,7 +11,7 @@ import { tasksMock } from "../../../../mocks/tasksMock";
 export default function Planification() {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
     const [loading, setLoading] = useState(true);
 
     const handleAddTask = () => {

@@ -23,14 +23,14 @@ export default function DropdownMenu({ buttonText, items, onSelect }: DropdownMe
   };
 
   return (
-    <div className="relative w-full md:w-1/4 z-50">
+    <div className="relative w-full md:w-1/4 z-1001">
       <button
         onClick={toggleDropdown}
-        className="bg-white border text-black px-2 py-2 rounded flex flex-row "
+        className="bg-white border text-black px-2 py-2 rounded flex flex-row font-normal items-center text-x"
       >
         {selectedItem || buttonText} 
-        <span className="ml-auto">
-          <ChevronDown size={25} className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="ml-auto cursor-pointer mt-1">
+          <ChevronDown size={20} className={`transition-transform duration-200  ${isOpen ? 'rotate-180' : ''}`} />
         </span>
       </button>
       {isOpen && (

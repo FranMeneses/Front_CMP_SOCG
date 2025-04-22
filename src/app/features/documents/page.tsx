@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from "react";
 
 export default function Documents() {
     const [loading, setLoading] = useState(true);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleUpload = () => {
