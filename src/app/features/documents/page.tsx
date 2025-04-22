@@ -7,8 +7,8 @@ import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect, useRef } from "react";
 
 export default function Documents() {
-    const [loading, setLoading] = useState(true);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+    const [loading, setLoading] = useState<boolean>(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleUpload = () => {
@@ -41,19 +41,24 @@ export default function Documents() {
             <Header toggleSidebar={toggleSidebar} /> 
             {loading ? 
             (
-                <div className="flex items-center justify-center h-screen">
+                <div className="flex items-center justify-center">
                     <LoadingSpinner />
                 </div>
             ) 
             : 
             (
-            <div className={`grid flex-1 ${isSidebarOpen ? 'md:grid-cols-[220px_1fr]' : 'grid-cols-1'} text-black bg-white`}>
-                {isSidebarOpen && ( 
-                    <aside className="border-r md:block h-full">
+            <div className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} style={{height: "calc(100vh - 5rem)"}} >
+                {isSidebarOpen && (
+                    <aside className={`border-r h-full ${
+                        isSidebarOpen
+                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
+                        : ""
+                    }`}
+                    >
                         <Sidebar />
                     </aside>
                 )}
-                <main className="flex-1 p-4">
+                <main className="flex-1 p-4 overflow-y-auto">
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl font-bold">Centro Documental</h1>
                         <div className="flex flex-row">

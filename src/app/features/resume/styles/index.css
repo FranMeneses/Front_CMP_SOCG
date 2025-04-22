@@ -1,0 +1,5 @@
+@media (max-width: 768px) {
+    .chart-container {
+      height: 300px; /* Ajusta la altura para móviles */
+    }
+  }

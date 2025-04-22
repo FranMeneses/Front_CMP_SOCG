@@ -50,3 +50,38 @@
     margin-right: 2px !important;
     font-weight: normal !important;
 }
+
+.fc-event {
+    cursor: pointer; 
+  }
+
+@media (max-width: 768px) {
+    .fc-daygrid-day {
+        width: auto; 
+        height: auto; 
+        max-width: none; 
+        max-height: none; 
+    }
+
+    .fc-daygrid-day-number {
+        font-size: 0.8rem; 
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1rem;
+    }
+
+    .fc-prev-button, .fc-next-button {
+        font-size: 1rem; 
+    }
+
+    .fc-daygrid-day-top {
+        margin-bottom: 15px !important; 
+    }
+
+    .fc-daygrid-day-events {
+        margin-left: 1px !important;
+        margin-right: 1px !important;
+        font-size: 0.9rem !important; 
+    }
+}

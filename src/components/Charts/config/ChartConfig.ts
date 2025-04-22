@@ -1,6 +1,6 @@
 import { ChartOptions } from 'chart.js';
-import { getDynamicTitle, getMinDate, getMaxDate } from '@/components/Charts/GanttChart/functions/scheduleFunctions';
-import { GanttChartData, LineChartData} from '../interfaces/ChartInterfaces';
+
+const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
 
 export const BarChartOptions: ChartOptions<'bar'> = {
   responsive: true,
@@ -72,6 +72,9 @@ export const LineChartOptions = ({
           ticks: {
             stepSize: stepSize, 
             precision: 0,
+            font: {
+              size: isMobile ? 10 : 12,
+            },
           },
           grid: {
             display: false,
@@ -84,7 +87,7 @@ export const LineChartOptions = ({
             padding: 10,
             color: '#000',
             font: {
-              size: 12,
+              size: isMobile? 8 : 12,
               weight: 'bold',
               family: 'Roboto, sans-serif',
               style: 'italic',
@@ -103,6 +106,9 @@ export const LineChartOptions = ({
           display: true,
           position: 'left',
           labels: {
+            font: {
+              size: isMobile ? 7 : 12,
+            },
             boxWidth: 12,
             usePointStyle: true,
             color: '#000',
@@ -119,7 +125,7 @@ export const LineChartOptions = ({
           text: `Presupuesto ${new Date().getFullYear()}`,
           color: '#000',
           font: {
-            size: 24,
+            size: isMobile? 12 : 24,
             weight: 'bold',
           },
           padding: {
@@ -159,7 +165,6 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
       },
       title: {
         display: true,
-        text: 'Iniciativas por valle',
         color: '#000',
         position: 'top',
         align: 'start',
