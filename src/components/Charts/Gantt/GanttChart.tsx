@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import Gantt from "frappe-gantt";
 import DropdownMenu from "@/components/Dropdown";
 import "./styles/frappe-gantt.css";
-import { Button } from "@/components/ui/button";
 
 export default function GanttChart() {
   const ganttRef = useRef<HTMLDivElement | null>(null);
@@ -72,7 +71,7 @@ export default function GanttChart() {
 
 
   return (
-    <div className="h-full w-full">
+    <div className="h-fit w-full">
       <div className="mb-4 flex justify-between">
         <DropdownMenu
           buttonText="Día"
@@ -89,7 +88,6 @@ export default function GanttChart() {
         style={{
           width: "100%",
           height: "100%",
-          overflow: "hidden",
         }}
       />
     </div>

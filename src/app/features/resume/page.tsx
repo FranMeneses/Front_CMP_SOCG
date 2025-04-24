@@ -2,21 +2,26 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LineChart from "@/components/Charts/LineChart";
-import { tasksMock } from "../../../../mocks/tasksMock";
 import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
-import { barChartDataSummaryMock, chartDataSummaryMock, pieChartDataSummaryMock } from "../../../../mocks/chartDataSummaryMock";
-import { useEffect, useState } from "react";
-import LoadingSpinner from "@/components/LoadinSpinner";
 import DynamicTable from "@/app/features/resume/components/DynamicTable";
+import LoadingSpinner from "@/components/LoadinSpinner";
+
+import { useEffect, useState } from "react";
+import { useQuery } from "@apollo/client";
+import { GET_TASKS } from "@/app/api/resume";
+import client from "@/lib/apolloClient";
+
+import { tasksMock } from "../../../../mocks/tasksMock";
+import { barChartDataSummaryMock, chartDataSummaryMock, pieChartDataSummaryMock, pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
 
 export default function Resume() {
-  const [loading, setLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-  const [tasks, setTasks] = useState([]); 
-  const [subtasks, setSubtasks] = useState([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userRole, setUserRole] = useState<string>("specialist"); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const {data, loading: queryLoading, error} = useQuery(GET_TASKS, {client})
 
   const handleLegendClick = (legend: string) => {
     setSelectedLegend((prev) => (prev === legend ? null : legend)); 
@@ -42,62 +47,80 @@ export default function Resume() {
     <div className="overflow-x-hidden">
       <Header toggleSidebar={toggleSidebar} />
       <>
-      {loading ? 
-      (
-        <div className="flex items-center justify-center h-screen">
-          <LoadingSpinner/>
-        </div>
-      )
-      : 
-      ( 
-        <div className={`grid ${isSidebarOpen ? 'md:grid-cols-[220px_1fr]' : 'grid-cols-1'} text-black bg-white`}>
-          {isSidebarOpen && ( 
-            <aside className="border-r md:block h-full">
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <div
+            className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} style={{height: "calc(100vh - 5rem)"}} 
+          >
+          {isSidebarOpen && (
+            <aside
+              className={`border-r h-full ${
+                isSidebarOpen
+                  ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
+                  : ""
+              }`}
+            >
               <Sidebar />
             </aside>
           )}
-          <main className="flex-1 p-4">
-          <h1 className="text-2xl font-bold mb-4">Resumen</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="flex flex-col gap-4.5">
-                <div className="w-full aspect-w-16 aspect-h-9 mx-auto">
-                  <LineChart 
-                    data={chartDataSummaryMock} 
-                    selectedLegend={selectedLegend} 
-                    onLegendClick={handleLegendClick} 
-                    />
-                </div>
-                <div className="w-full h-[50%] mx-auto">
-                  <PieChart data={pieChartDataSummaryMock} 
-                    selectedLegend={selectedLegend} 
-                    onLegendClick={handleLegendClick} 
-                  />
-                </div>
-              </div>
-              
-              <div className="flex flex-col gap-5">
-              <div className="flex flex-col gap-4 w-full border border-gray-300">
-                  <h1 className="text-2xl font-bold mt-4 ml-3">Tareas</h1>
-                  <DynamicTable
-                    tasks={tasksMock} 
-                    selectedTaskId={selectedTaskId} 
-                    onTaskClick={handleTaskClick}
-                    userRole="manager" 
-                  />
+            <main className="flex-1 p-4 overflow-y-auto">
+              <h1 className="text-2xl font-bold mb-4">Resumen</h1>
+              <div className="flex flex-col gap-8">
+                <div className="flex flex-col md:flex-row gap-8 items-stretch">
+                  <div className="w-full md:w-1/2 flex flex-col">
+                    <div className="w-full aspect-w-16 aspect-h-9 mx-auto h-full">
+                      <LineChart
+                        data={chartDataSummaryMock}
+                        selectedLegend={selectedLegend}
+                        onLegendClick={handleLegendClick}
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full md:w-1/2 flex flex-col">
+                    <div className="flex flex-col gap-4 w-full border border-gray-300 h-full">
+                      <h1 className="text-2xl font-bold mt-4 ml-3">Tareas</h1>
+                      <DynamicTable
+                        tasks={tasksMock}
+                        selectedTaskId={selectedTaskId}
+                        onTaskClick={handleTaskClick}
+                        userRole="specialist"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="w-full h-full mx-auto">
-                  <BarChart 
-                    data={barChartDataSummaryMock} 
-                    selectedLegend={selectedLegend}
-                    onLegendClick={handleLegendClick}
-                  />
+                <div className="flex flex-col md:flex-row gap-8 items-stretch">
+                  <div className="w-full md:w-1/2 flex flex-col">
+                    <div className="w-full h-[300px] mx-auto">
+                      <PieChart
+                        userRole={userRole}
+                        data={
+                          userRole === "specialist"
+                            ? pieChartDataSummarySpecialistMock
+                            : pieChartDataSummaryMock
+                        }
+                        selectedLegend={selectedLegend}
+                        onLegendClick={handleLegendClick}
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full md:w-1/2 flex flex-col">
+                    <div className="w-full h-[300px] mx-auto">
+                      <BarChart
+                        data={barChartDataSummaryMock}
+                        selectedLegend={selectedLegend}
+                        onLegendClick={handleLegendClick}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </main>
-        </div>
-      )}
+            </main>
+          </div>
+        )}
       </>
     </div>
   );

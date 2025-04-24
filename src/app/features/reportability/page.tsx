@@ -1,29 +1,46 @@
 'use client'
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"; 
-import timeGridPlugin from "@fullcalendar/timegrid"; 
-import listPlugin from "@fullcalendar/list"; 
-import esLocale from "@fullcalendar/core/locales/es";
 import './styles/index.css';
 import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect } from "react";
-import { ValleysMock } from "@/constants/valleys";
+import { Valleys, ValleyColors } from "@/constants/valleys";
 import { tasksMock } from "../../../../mocks/tasksMock";
+import Calendar from "@/components/Calendar/Calendar";
+import { Legend } from "./components/Legend";
 
 
 export default function Reportability() {
 
-  const [loading, setLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
+  const [calendarView, setCalendarView] = useState<string>("dayGridMonth");
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setCalendarView("listWeek"); 
+      } else {
+        setCalendarView("dayGridMonth"); 
+      }
+    };
+
+    handleResize(); 
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const calendarEvents = tasksMock.map((task) => ({
-    title: task.code,
+    id: task.code,
+    title: task.name,
     start: task.endDate,
     end: task.endDate,
+    progress: task.progress,
+    valley: task.valley,
     color: task.code.includes("REVE") ? "#54B87E" : task.code.includes("REVH") ? "#B0A3CC" : "#EFA585",
     allDay: true
   }));
@@ -40,76 +57,43 @@ export default function Reportability() {
 
     return () => clearTimeout(timer);
   }, []);
-  
+
     return (
       <div className="overflow-x-hidden">
         <Header toggleSidebar={toggleSidebar} />
         {loading ? (
-          <div className="flex items-center justify-center h-screen">
+          <div className="flex items-center justify-center">
             <LoadingSpinner/>
           </div>
         )
-        :(
-          <div className={`grid h-full text-black bg-white ${isSidebarOpen ? 'md:grid-cols-[220px_1fr]' : 'grid-cols-1'}`}>
-          {isSidebarOpen && ( 
-            <aside className="border-r md:block h-full">
+        :
+        (
+          <div className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} style={{height: "calc(100vh - 5rem)"}} >
+          {isSidebarOpen && (
+            <aside
+              className={`border-r h-full ${
+                isSidebarOpen
+                  ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
+                  : ""
+              }`}
+            >
               <Sidebar />
             </aside>
           )}
-          <main className="flex-1 p-4">
+          <main className="flex-1 p-4 overflow-y-auto">
             <div className="flex flex-col gap-4">
               <h1 className="text-2xl font-bold">Reportabilidad</h1>
               <DropdownMenu 
                 buttonText="Todos los departamentos"
-                items={ValleysMock}
+                items={Valleys}
                 onSelect={(item) => setSelectedItem(item)}
               />
-              <div className="flex flex-row ">
-                <div className="w-3/4 ml-4">
-                <FullCalendar
-                  plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
-                  initialView="dayGridMonth"
-                  locale={esLocale}
-                  titleFormat={{ month: "short", year: "numeric" }}
-                  fixedWeekCount={false}
-                  showNonCurrentDates={false}
-                  headerToolbar={{
-                    start: "prev",
-                    center: "title",
-                    end: "next",
-                  }}
-                  buttonIcons={{
-                    prev: "chevron-left",
-                    next: "chevron-right",
-                  }}
-                  height="auto"
-                  events={calendarEvents}
-                />
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="w-full md:w-3/4 md:ml-4">
+                  <Calendar calendarView={calendarView} events={calendarEvents} />
                 </div>
-                <div className="ml-12 mt-16 p-4 rounded-lg border w-1/6 h-70 text-2xl font-medium">
-                  <h3 className="text-center font-bold">
-                    Leyenda
-                  </h3>
-                  <div className="flex flex-col gap-8 mt-10 justify-center place">
-                    <div className="flex flex-row font-light">
-                      <div className="bg-[#54B87E] w-6 h-6 rounded-full mr-2"></div>
-                      <h3 className="text-[#7D7D7D] text-sm font-medium">
-                        Valle del Huasco
-                      </h3>
-                    </div>
-                    <div className="flex flex-row font-light">
-                      <div className="bg-[#B0A3CC] w-6 h-6 rounded-full mr-2"></div>
-                      <h3 className="text-[#7D7D7D] text-sm font-medium">
-                        Valle de Copiapó
-                     </h3>
-                      </div>
-                    <div className="flex flex-row font-light">
-                      <div className="bg-[#EFA585] w-6 h-6 rounded-full mr-2"></div>
-                      <h3 className="text-[#7D7D7D] text-sm font-medium">
-                        Valle del Elqui
-                      </h3>
-                    </div>
-                  </div>
+                <div className="w-full md:w-1/6 md:ml-12 mt-4 md:mt-16 p-4 rounded-lg border text-2xl font-medium">
+                  <Legend valley={Valleys} valleyColors={ValleyColors}/>
                 </div>
               </div>
             </div>

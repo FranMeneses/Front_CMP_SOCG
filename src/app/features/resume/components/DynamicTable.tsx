@@ -58,7 +58,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   userRole,
 }) => {
   return (
-    <div className="overflow-y-scroll max-h-64">
+    <div className="overflow-y-scroll md:h-82 2xl:h-170">
       <table className="table-auto w-full">
         <thead className="bg-white">
           <tr className="text-sm">
@@ -75,7 +75,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               specialistTableColums.map((column, index) => (
                 <th
                   key={index}
-                  className={`px-4 py-2 text-start font-bold text-[#7D7D7D]`}
+                  className={`px-4 py-2 text-center font-bold text-[#7D7D7D]`}
                 >
                   {column}
                 </th>
@@ -90,7 +90,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 className="hover:bg-gray-50 text-sm cursor-pointer"
                 onClick={() => onTaskClick(task.id)}
               >
-                <td className="px-4 py-2 border-b border-gray-300">
+                <td className="text-center px-4 py-2 border-b border-gray-300">
                   {`"`+ task.name +`"`}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
@@ -120,7 +120,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     key={subtask.id}
                     className="bg-gray-100 text-sm text-gray-700 font-medium"
                   >
-                    <td className="px-4 py-2 border-b border-gray-300 pl-8">
+                    <td className="text-center px-4 py-2 border-b border-gray-300 pl-8">
                       {subtask.name}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300 pl-8"/>

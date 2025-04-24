@@ -11,11 +11,13 @@ ChartJS.register(ArcElement, Tooltip, Legend, Title);
 const PieChart = ({
   data,
   selectedLegend,
-  onLegendClick,
+  onLegendClick = () => {}, 
+  userRole,
 }: {
   data: PieChartProps;
   selectedLegend: string | null;
-  onLegendClick: (legend: string) => void;
+  onLegendClick?: (legend: string) => void;
+  userRole: string;
 }) => {
   const chartRef = useRef<ChartJS | null>(null);
 
@@ -26,9 +28,38 @@ const PieChart = ({
     datasets: data.datasets.map((dataset) => ({
       ...dataset,
       backgroundColor: dataset.backgroundColor.map((color, index) =>
-        selectedLegend === data.labels[index] ? color : `${color}80` 
+        selectedLegend === data.labels[index] ? color : `${color}80`
       ),
     })),
+  };
+
+  const handleLegendClick = (legend: string) => {
+    if (chartRef.current) {
+      const chart = chartRef.current;
+
+      const labelIndex = data.labels.indexOf(legend);
+
+      if (labelIndex !== -1) {
+        const value = data.datasets[0].data[labelIndex];
+
+        chart.setActiveElements([
+          {
+            datasetIndex: 0,
+            index: labelIndex,
+          },
+        ]);
+        chart.tooltip?.setActiveElements(
+          [
+            {
+              datasetIndex: 0,
+              index: labelIndex,
+            },
+          ],
+          { x: 0, y: 0 } 
+        );
+        chart.update();
+      }
+    }
   };
 
   return (
@@ -48,8 +79,18 @@ const PieChart = ({
               ...PieChartOptions.plugins?.legend,
               onClick: (_event, legendItem) => {
                 const legend = legendItem.text;
-                onLegendClick(legend);
+
+                if (userRole === "manager") {
+                  onLegendClick(legend); 
+                } else {
+                  console.log('Legend clicked:', legend);
+                }
               },
+            },
+            title: {
+              ...PieChartOptions.plugins?.title,
+              display: true,
+              text: userRole === "specialist" ? "Compliance" : "Iniciativas por valle",
             },
           },
         }}

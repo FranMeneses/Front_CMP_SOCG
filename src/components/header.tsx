@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export function Header({ toggleSidebar }: HeaderProps) {
   return (
-    <header className="flex flex-1 justify-between w-screen p-4 bg-[#2771CC]">
+    <header className="flex flex-1 justify-between h-20 w-screen p-4 bg-[#2771CC]">
       <Image
         src="/CmpLogo.png"
         alt="Logo"

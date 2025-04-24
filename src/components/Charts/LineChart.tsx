@@ -30,7 +30,7 @@ const LineChart = ({
   onLegendClick: (legend: string) => void;
 }) => {
   const chartRef = useRef<ChartJS | null>(null);
-  const [chartKey, setChartKey] = useState(0);
+  const [chartKey, setChartKey] = useState<number>(0);
   const exchangeRates = useExchangeRates(); 
   const [currency, setCurrency] = useState<keyof typeof exchangeRates>('USD');
 
