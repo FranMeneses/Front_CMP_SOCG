@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export function Header({ toggleSidebar, isOpen }: HeaderProps) {
   return (
-    <header className="flex flex-1 justify-between h-20 w-screen p-4 bg-[#2771CC]">
+    <header className="flex flex-1 justify-between h-20 w-screen p-4 bg-gradient-to-r from-[#2771CC] to-[#041e3e] animate-darken">
       <div className="flex items-center gap-4">
         <Menu
           className={`text-white cursor-pointer transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
