@@ -60,7 +60,7 @@ export default function Reportability() {
 
     return (
       <div className="overflow-x-hidden">
-        <Header toggleSidebar={toggleSidebar} />
+        <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen}/>
         {loading ? (
           <div className="flex items-center justify-center">
             <LoadingSpinner/>
