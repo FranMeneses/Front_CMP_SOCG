@@ -42,7 +42,7 @@ interface DynamicTableProps {
   tasks: Task[];
   selectedTaskId: string | null;
   onTaskClick: (taskId: string) => void;
-  userRole: "manager" | "specialist";
+  userRole: string;
 }
 
 const getColor = (percentage: number) => {

@@ -21,8 +21,8 @@ export default function Resume() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  const {data, loading: queryLoading, error} = useQuery(GET_TASKS, {client})
-
+  // const {data, loading: queryLoading, error} = useQuery(GET_TASKS, {client})
+  
   const handleLegendClick = (legend: string) => {
     setSelectedLegend((prev) => (prev === legend ? null : legend)); 
   };
@@ -86,7 +86,7 @@ export default function Resume() {
                         tasks={tasksMock}
                         selectedTaskId={selectedTaskId}
                         onTaskClick={handleTaskClick}
-                        userRole="specialist"
+                        userRole={userRole}
                       />
                     </div>
                   </div>
