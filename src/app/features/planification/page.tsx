@@ -8,19 +8,48 @@ import TasksTable from "./components/TasksTable";
 import { tasksMock } from "../../../../mocks/tasksMock";
 import Modal from "@/components/Modal";
 import TaskForm from "./components/TaskForm";
+import DropdownMenu from "@/components/Dropdown";
+import { Valleys } from "@/constants/valleys";
+import { Faenas } from "@/constants/faenas";
+import { useMutation } from "@apollo/client";
+import { CREATE_TASK } from "@/app/api/planification";
 
 export default function Planification() {
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loadingTasks, setLoadingTasks] = useState<boolean>(true);
+    const [tableOption, setTableOption] = useState<string>("Tareas");
+    const [createTask, { data, loading, error }] = useMutation(CREATE_TASK);
 
     const handleAddTask = () => {
         setIsPopupOpen(true);
     };
 
-    const handleSaveTask = (task: { title: string; description: string }) => {
-        console.log('Nueva tarea:', task);
+    const handleSave = async (task: { title: string; description: string, type: string, valley: string, faena:string }) => {
+        if (task.type === "Tarea") {
+            try {
+                const { data } = await createTask({
+                    variables: {
+                        input: {
+                            name: task.title,
+                            description: task.description,
+                            valleyId: Valleys.indexOf(task.valley) + 1,
+                            faenaId: Faenas.indexOf(task.faena) + 1,
+                            statusId: 1, 
+                        },
+                    },
+                });
+                console.log("Task created successfully:", data.createTask);
+                // setTasks((prevTasks) => [...prevTasks, data.createTask]);
+            }
+            catch (err) {
+                console.error("Error creating task:", err);
+            }
+        }
+        else{
+            // Handle subtarea creation logic here
+        }
         setIsPopupOpen(false); 
     };
 
@@ -34,7 +63,7 @@ export default function Planification() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setLoading(false); 
+            setLoadingTasks(false); 
         }, 2000);
 
         return () => clearTimeout(timer);
@@ -43,7 +72,7 @@ export default function Planification() {
     return (
         <div className="overflow-x-hidden">
             <Header toggleSidebar={toggleSidebar} />
-            {loading ? (
+            {loadingTasks ? (
             <div className="flex items-center justify-center">
                 <LoadingSpinner/>
             </div>
@@ -68,18 +97,28 @@ export default function Planification() {
                         <h1 className="text-2xl font-bold">Planificación</h1>
                         <div className="">
                             <div className="ml-4 flex-1">
-                                <button
-                                    onClick={handleAddTask}
-                                    className="px-4 py-2 bg-[#2771CC] text-white rounded mb-4 cursor-pointer hover:bg-[#08203d] ease-in-out duration-400 flex flex-row"
-                                >
-                                    <Plus size={25} color="white" />
-                                     <span className="ml-2">Añadir Tarea</span>
-                                </button>
-                                <div className={`${isSidebarOpen ? 'w-[60%]' : 'w-full'}`}>
+                                <div className="flex flex-row justify-between items-center mb-4">
+                                    <button
+                                        onClick={handleAddTask}
+                                        className="px-4 py-2 bg-[#2771CC] text-white rounded cursor-pointer hover:bg-[#08203d] ease-in-out duration-400 flex flex-row"
+                                    >
+                                        <Plus size={25} color="white" />
+                                        <span className="ml-2">Añadir</span>
+                                    </button>
+                                </div>
+                                <div className="mb-4 w-full">
+                                    <DropdownMenu
+                                        items={["Tareas","Subtareas"]}
+                                        onSelect={(item) => setTableOption(item)}
+                                        buttonText="Tareas"
+                                    />
+                                </div>
+                                <div>
                                     <TasksTable
                                         tasks={tasksMock}
                                         selectedTaskId={selectedTaskId}
                                         onTaskClick={handleonTaskClick}
+                                        tableOption={tableOption}
                                     />
                                 </div>
                             </div>
@@ -89,7 +128,7 @@ export default function Planification() {
             </div>
             <Modal
                 isOpen={isPopupOpen}
-                children={<TaskForm onSave={handleSaveTask}/>}
+                children={<TaskForm onSave={handleSave} onCancel={() =>setIsPopupOpen(false)}/>}
                 onClose={() => setIsPopupOpen(false)} 
             />
             </>

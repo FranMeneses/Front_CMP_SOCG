@@ -1,6 +1,6 @@
 'use client';
 import React from "react";
-import { TaskTableColumns } from "@/constants/tableConstants";
+import { TaskTableColumns, SubtaskTableColumns } from "@/constants/tableConstants";
 
 export interface Subtask {
     id: string;
@@ -42,57 +42,75 @@ interface TasksTableProps {
     tasks: Task[];
     selectedTaskId: string | null;
     onTaskClick: (taskId: string) => void;
+    tableOption: string;
 }
 
 const TasksTable: React.FC<TasksTableProps> = ({
     tasks,
     selectedTaskId,
     onTaskClick,
+    tableOption,
 }) => {
     return (
-        <div className="overflow-y-scroll">
-            <table className="table-auto w-[80%]">
-                <thead className="bg-white">
-                    <tr className="text-sm text-gray-700 border-b border-gray-200">
-                        {TaskTableColumns.map((column, index) => (
+        <div className="overflow-x-auto">
+            <table className="table-auto w-full border-collapse border border-[#08203d]">
+                <thead className="bg-[#0e70e884]">
+                    <tr className="text-sm text-gray-700">
+                        {(tableOption === "Tareas" ? TaskTableColumns : SubtaskTableColumns).map((column, index) => (
                             <th
                                 key={index}
-                                className={`px-4 py-2 text-start font-bold text-black`}
+                                className="px-4 py-2 text-center font-bold border border-[#08203d]"
                             >
                                 {column}
                             </th>
                         ))}
                     </tr>
                 </thead>
-                <tbody className="bg-white">
-                    {tasks.map((task) => (
-                        <tr
-                            key={task.id}
-                            onClick={() => onTaskClick(task.id)}
-                            className={`${selectedTaskId === task.id ? "bg-[#E6F0FF]" : ""} cursor-pointer hover:bg-[#cbcbcb] border-b border-gray-200`}
-                        >
-                            <td className="px-4 py-2">{task.code}</td>
-                            <td className="px-4 py-2">{task.name}</td>
-                            <td className="px-4 py-2">{task.origin}</td>
-                            <td className="px-4 py-2">{task.type}</td>
-                            <td className="px-4 py-2">{task.scope}</td>
-                            <td className="px-4 py-2">{task.operationalInteraction}</td>
-                            <td className="px-4 py-2">{task.operationalRisk}</td>
-                            <td className="px-4 py-2">{task.compliance}</td>
-                            <td className="px-4 py-2">{task.priority}</td>
-                            <td className="px-4 py-2">{task.status}</td>
-                            <td className="px-4 py-2">{task.assigned}</td>
-                            <td className="px-4 py-2">{task.budget}</td>
-                            <td className="px-4 py-2">{task.actualExpense}</td>
-                            <td className="px-4 py-2">{task.gcBudget}</td>
-                            <td className="px-4 py-2">{task.difference}</td>
-                            <td className="px-4 py-2">{task.accountingMonth}</td>
-                            <td className="px-4 py-2">{task.startDate}</td>
-                            <td className="px-4 py-2">{task.endDate}</td>
-                            <td className="px-4 py-2">{task.remainingDays}</td>
-                            <td className="px-4 py-2">{task.finishDate}</td>
-                        </tr>
-                    ))}
+                <tbody className="bg-white text-xs truncate">
+                    {tableOption === "Tareas"
+                        ? tasks.map((task) => (
+                            <tr
+                                key={task.id}
+                                onClick={() => onTaskClick(task.id)}
+                                className={`${selectedTaskId === task.id ? "bg-blue-100" : ""} cursor-pointer hover:odd:bg-[#6993c595] hover:even:bg-[#f8e1b0] border border-[#08203d] odd:bg-[#e0eeff] even:bg-[#fff2d5]`}
+                            >
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.code}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.name}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.origin}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.type}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.scope}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.operationalInteraction}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.operationalRisk}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.compliance}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.priority}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.status}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.assigned}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.budget}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.actualExpense}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.gcBudget}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.difference}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.accountingMonth}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.startDate}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.endDate}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.remainingDays}</td>
+                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.finishDate}</td>
+                            </tr>
+                        ))
+                        : tasks.flatMap((task) =>
+                            task.subtasks.map((subtask) => (
+                                <tr
+                                    key={subtask.id}
+                                    className="cursor-pointer hover:odd:bg-[#6993c595] hover:even:bg-[#f8e1b0] border border-[#08203d] odd:bg-[#e0eeff] even:bg-[#fff2d5]"
+                                >
+                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.code}</td>
+                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.name}</td>
+                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.startDate}</td>
+                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.endDate}</td>
+                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.progress}</td>
+                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.complianceStatus}</td>
+                                </tr>
+                            ))
+                        )}
                 </tbody>
             </table>
         </div>

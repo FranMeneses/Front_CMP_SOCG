@@ -34,3 +34,12 @@ export const TaskTableColumns = [
     "Dias restantes",
     "Fecha Termino"
 ]
+
+export const SubtaskTableColumns = [
+    "Código",
+    "Tarea",
+    "Fecha Inicio",
+    "Fecha Finalización",
+    "Porcentaje de avance",
+    "Estado Compliance"
+]
