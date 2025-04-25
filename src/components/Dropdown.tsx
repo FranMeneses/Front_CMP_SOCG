@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from "react";
 import { ChevronDown } from 'lucide-react';
+import { Button } from "./ui/button";
 
 interface DropdownMenuProps {
   buttonText: string; 
@@ -43,12 +44,13 @@ export default function DropdownMenu({ buttonText, items, onSelect, isInModal = 
       className={`relative w-full ${isInModal ? '' : 'md:w-1/4'}`} 
     >
       <div className="z-1001">
-        <button
+        <Button
+          variant="outline"
           onClick={toggleDropdown}
-          className="bg-white border text-black px-2 py-2 rounded w-full flex flex-row font-normal items-center text-sm md:text-base"
+          className="cursor-pointer"
         >
           {selectedItem || buttonText}
-          <span className="ml-auto cursor-pointer mt-1">
+          <span className="ml-auto mt-1">
             <ChevronDown
               size={16}
               className={`transition-transform duration-200 ${
@@ -56,7 +58,7 @@ export default function DropdownMenu({ buttonText, items, onSelect, isInModal = 
               }`}
             />
           </span>
-        </button>
+        </Button>
       </div>
       {isOpen && (
         <div className="absolute bg-white border rounded shadow-lg w-full text-sm md:text-base z-2000">

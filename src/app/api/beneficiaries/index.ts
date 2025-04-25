@@ -63,7 +63,7 @@ export const GET_CONTACTS = gql`
 // MUTATIONS
 
 export const CREATE_BENEFICIARY = gql`
-  mutation CreateBeneficiary($input: CreateBeneficiaryInput!) {
+  mutation CreateBeneficiary($input: CreateBeneficiaryDto!) {
     createBeneficiary(input: $input) {
       id
       legalName
@@ -77,7 +77,7 @@ export const CREATE_BENEFICIARY = gql`
 `;
 
 export const CREATE_CONTACT = gql`
-  mutation CreateContact($input: CreateContactInput!) {
+  mutation CreateContact($input: CreateContactDto!) {
     createContact(input: $input) {
       id
       name
@@ -93,7 +93,7 @@ export const CREATE_CONTACT = gql`
 `;
 
 export const UPDATE_BENEFICIARY = gql`
-  mutation UpdateBeneficiary($id: ID!, $input: UpdateBeneficiaryInput!) {
+  mutation UpdateBeneficiary($id: ID!, $input: UpdateBeneficiaryDto!) {
     updateBeneficiary(id: $id, input: $input) {
       id
       legalName
@@ -107,7 +107,7 @@ export const UPDATE_BENEFICIARY = gql`
 `;
 
 export const UPDATE_CONTACT = gql`
-  mutation UpdateContact($id: ID!, $input: UpdateContactInput!) {
+  mutation UpdateContact($id: ID!, $input: UpdateContactDto!) {
     updateContact(id: $id, input: $input) {
       id
       name

@@ -15,7 +15,7 @@ export default function Reportability() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string>("Transversal");
 
   const [calendarView, setCalendarView] = useState<string>("dayGridMonth");
 
@@ -84,7 +84,7 @@ export default function Reportability() {
             <div className="flex flex-col gap-4">
               <h1 className="text-2xl font-bold">Reportabilidad</h1>
               <DropdownMenu 
-                buttonText="Todos los departamentos"
+                buttonText="Transversal"
                 items={Valleys}
                 onSelect={(item) => setSelectedItem(item)}
               />

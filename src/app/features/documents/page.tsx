@@ -5,6 +5,7 @@ import { ArrowUpFromLine } from 'lucide-react';
 import { documents } from "../../../../mocks/documentsMock";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Documents() {
     const [loading, setLoading] = useState<boolean>(true);
@@ -63,13 +64,14 @@ export default function Documents() {
                         <h1 className="text-2xl font-bold">Centro Documental</h1>
                         <div className="flex flex-row">
                             <div className="w-full ml-4">
-                                <button
-                                    className="flex flex-row items-center p-4 rounded-lg mb-4 cursor-pointer"
+                                <Button
+                                    variant="ghost"
+                                    className="cursor-pointer"
                                     onClick={handleUpload}
                                 >
                                     <ArrowUpFromLine className="text-black" size={24} />
                                     <span className="ml-2">Subir archivo</span>
-                                </button>
+                                </Button>
                                 <input
                                     type="file"
                                     accept=".pdf"

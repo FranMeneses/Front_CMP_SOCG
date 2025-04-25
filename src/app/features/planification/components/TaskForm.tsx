@@ -3,6 +3,7 @@ import { useState } from "react";
 import DropdownMenu from "@/components/Dropdown";
 import { Valleys } from "@/constants/valleys";
 import { HuascoValley, CopiapoValley, ElquiValley } from "@/constants/faenas";
+import { Button } from "@/components/ui/button";
 
 interface TaskFormProps {
   onSave: (task: { title: string; description: string; type: string, faena: string, valley: string }) => void;
@@ -108,20 +109,14 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
           />
         </div>
       )}
-      <div className="flex flex-row justify-between space-x-2">
-        <button
-          onClick={handleSave}
-          className="disabled:bg-[#97b8e0c6] px-4 py-2 bg-[#2771CC] text-white rounded hover:bg-[#08203d] ease-in-out duration-400 cursor-pointer"
-          disabled={(!title || !description || !type || !faena || !valley)}
-        >
-          Guardar
-        </button>
-        <button
-          onClick={onCancel}
-          className="px-4 py-2 bg-[#be0101] text-white rounded hover:bg-[#660000] ease-in-out duration-400 cursor-pointer"
-        >
+      <div className="flex justify-end space-x-2">
+        <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer">
           Cancelar
-        </button>
+        </Button>
+        <Button variant="default" onClick={handleSave} className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
+          disabled={!title || !description || !type || (type === "Tarea" && (!faena || !valley))}>
+          Guardar
+        </Button>
       </div>
     </div>
   );
