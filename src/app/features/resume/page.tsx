@@ -10,7 +10,6 @@ import LoadingSpinner from "@/components/LoadinSpinner";
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_TASKS } from "@/app/api/resume";
-import client from "@/lib/apolloClient";
 
 import { tasksMock } from "../../../../mocks/tasksMock";
 import { barChartDataSummaryMock, chartDataSummaryMock, pieChartDataSummaryMock, pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
@@ -21,7 +20,7 @@ export default function Resume() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  // const {data, loading: queryLoading, error} = useQuery(GET_TASKS, {client})
+  // const {data, loading: queryLoading, error} = useQuery(GET_TASKS)
   
   const handleLegendClick = (legend: string) => {
     setSelectedLegend((prev) => (prev === legend ? null : legend)); 

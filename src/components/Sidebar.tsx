@@ -1,5 +1,5 @@
 'use client';
-import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut } from 'lucide-react';
+import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound  } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,13 @@ export function Sidebar({ onNavClick }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
+    },
+    {
+      title: "Beneficiarios",
+      href: "/features/beneficiaries",
+      displayHref: "/beneficiaries",
+      icon: UsersRound ,
+      isActive: pathname === "/features/beneficiaries",
     },
     {
       title: "Reportabilidad",
