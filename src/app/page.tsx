@@ -1,4 +1,5 @@
 'use client';
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -37,8 +38,8 @@ export default function Home() {
           <h1 className="text-3xl font-bold mb-4 text-zinc-900 text-center">
             Bienvenido al sistema Planificados
           </h1>
-          <h2 className="text-xl mb-4 text-zinc-600 font-medium">Ingrese sus datos</h2>
-          <form className="flex flex-col w-full h-3/4 gap-4 font-sans justify-start"
+          <h2 className="text-xl text-zinc-600 font-medium">Ingrese sus datos</h2>
+          <form className="flex flex-col w-full h-3/4 gap-4 font-sans justify-center"
             onSubmit={handleLogin}
           >
             <input
@@ -55,19 +56,21 @@ export default function Home() {
               value={password || ""}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button
+            <Button
               className={`py-2 rounded-lg transition duration-200 ${isButtonDisabled ? "bg-[#08203d] text-white cursor-not-allowed" : "bg-[#367acd] text-white hover:bg-[#08203d] cursor-pointer"}`}
               type="submit"
               disabled={isButtonDisabled}
             >
               Iniciar sesión
-            </button>
+            </Button>
           </form>
-          <button className={`text-[#0e70e8] text-center hover:text-[#08203d] transition duration-200 hover:underline ${isButtonDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
+            <Button
+              variant={"link"}
+              className={`text-[#0e70e8] text-center hover:text-[#08203d] transition duration-200 hover:underline ${isButtonDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
               disabled={isButtonDisabled}
             >
               ¿Olvidaste tu contraseña?
-          </button>
+          </Button>
         </div>
       </div>
     </div>
