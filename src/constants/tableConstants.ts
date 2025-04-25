@@ -43,3 +43,12 @@ export const SubtaskTableColumns = [
     "Porcentaje de avance",
     "Estado Compliance"
 ]
+
+export const BeneficiariesTableColumns = [
+    "Nombre Legal",
+    "Rut",
+    "Dirección",
+    "Tipo de Entidad",
+    "Representante Legal",
+    "Personalidad Jurídica",
+]
