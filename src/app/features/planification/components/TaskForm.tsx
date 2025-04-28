@@ -51,7 +51,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
   };
 
   return (
-    <div>
+    <div data-test-id="task-form">
       <div className="mb-4 truncate">
         <label className="text-sm font-medium mb-1">Tipo</label>
         <div className="mb-4">
@@ -60,6 +60,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
             items={["Tarea", "Subtarea"]}
             onSelect={(item) => setType(item)}
             isInModal={true}
+            data-test-id="task-type-dropdown"
           />
         </div>
         <label className="block text-sm font-medium mb-1">Título</label>
@@ -68,6 +69,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full border rounded px-3 py-2"
+          data-test-id="task-title-input"
         />
       </div>
       {type === "Tarea" ? (
@@ -78,6 +80,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full border rounded px-3 py-2"
+              data-test-id="task-description-input"
             />
           </div>
           <div className="mb-4 w-full">
@@ -87,6 +90,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
               items={Valleys}
               onSelect={handleValleySelect} 
               isInModal={true}
+              data-test-id="task-valley-dropdown"
             />
           </div>
           <div className="mb-4">
@@ -96,6 +100,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
               items={faenas} 
               onSelect={(item) => setFaena(item)}
               isInModal={true}
+              data-test-id="task-faena-dropdown"
             />
           </div>
         </>
@@ -106,15 +111,18 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className="w-full border rounded px-3 py-2"
+            data-test-id="subtask-description-input"
           />
         </div>
       )}
       <div className="flex justify-end space-x-2">
-        <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer">
+        <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer" data-test-id="cancel-button">
           Cancelar
         </Button>
         <Button variant="default" onClick={handleSave} className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
-          disabled={!title || !description || !type || (type === "Tarea" && (!faena || !valley))}>
+          disabled={!title || !description || !type || (type === "Tarea" && (!faena || !valley))}
+          data-test-id="save-button"
+        >
           Guardar
         </Button>
       </div>

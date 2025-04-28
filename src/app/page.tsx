@@ -41,6 +41,7 @@ export default function Home() {
           <h2 className="text-xl text-zinc-600 font-medium">Ingrese sus datos</h2>
           <form className="flex flex-col w-full h-3/4 gap-4 font-sans justify-center"
             onSubmit={handleLogin}
+            data-test-id="login-form"
           >
             <input
               type="text"
@@ -48,6 +49,7 @@ export default function Home() {
               className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-[#153C6C]"
               value={user || ""}
               onChange={(e) => setUser(e.target.value)}
+              data-test-id="login-email"
             />
             <input
               type="password"
@@ -55,11 +57,13 @@ export default function Home() {
               className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-[#153C6C]"
               value={password || ""}
               onChange={(e) => setPassword(e.target.value)}
+              data-test-id="login-password"
             />
             <Button
               className={`py-2 rounded-lg transition duration-200 ${isButtonDisabled ? "bg-[#08203d] text-white cursor-not-allowed" : "bg-[#367acd] text-white hover:bg-[#08203d] cursor-pointer"}`}
               type="submit"
               disabled={isButtonDisabled}
+              data-test-id="login-button"
             >
               Iniciar sesión
             </Button>
@@ -68,6 +72,7 @@ export default function Home() {
               variant={"link"}
               className={`text-[#0e70e8] text-center hover:text-[#08203d] transition duration-200 hover:underline ${isButtonDisabled ? "cursor-not-allowed" : "cursor-pointer"}`}
               disabled={isButtonDisabled}
+              data-test-id="login-forgot-password"
             >
               ¿Olvidaste tu contraseña?
           </Button>

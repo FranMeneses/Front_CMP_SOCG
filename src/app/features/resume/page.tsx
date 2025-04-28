@@ -44,23 +44,24 @@ export default function Resume() {
 
   return (
     <div className="overflow-x-hidden">
-      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen}/>
+      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
       <>
         {loading ? (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center" data-test-id="loading-spinner">
             <LoadingSpinner />
           </div>
         ) : (
           <div
             className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} style={{height: "calc(100vh - 5rem)"}} 
-          >
-          {isSidebarOpen && (
+            >
+            {isSidebarOpen && (
             <aside
               className={`border-r h-full ${
                 isSidebarOpen
                   ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
                   : ""
               }`}
+              data-test-id="sidebar"
             >
               <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
@@ -75,6 +76,7 @@ export default function Resume() {
                         data={chartDataSummaryMock}
                         selectedLegend={selectedLegend}
                         onLegendClick={handleLegendClick}
+                        data-test-id="line-chart"
                       />
                     </div>
                   </div>
@@ -86,6 +88,7 @@ export default function Resume() {
                         selectedTaskId={selectedTaskId}
                         onTaskClick={handleTaskClick}
                         userRole={userRole}
+                        data-test-id="dynamic-table"
                       />
                     </div>
                   </div>
@@ -103,6 +106,7 @@ export default function Resume() {
                         }
                         selectedLegend={selectedLegend}
                         onLegendClick={handleLegendClick}
+                        data-test-id="pie-chart"
                       />
                     </div>
                   </div>
@@ -112,6 +116,7 @@ export default function Resume() {
                         data={barChartDataSummaryMock}
                         selectedLegend={selectedLegend}
                         onLegendClick={handleLegendClick}
+                        data-test-id="bar-chart"
                       />
                     </div>
                   </div>

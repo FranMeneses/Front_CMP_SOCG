@@ -23,9 +23,9 @@ export default function Beneficiaries() {
 
     return (
         <div className="overflow-x-hidden">
-            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
+            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
             {queryLoading ? (
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center" data-test-id="loading-spinner">
                     <LoadingSpinner />
                 </div>
             ) : (
@@ -42,6 +42,7 @@ export default function Beneficiaries() {
                         ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
                         : ""
                     }`}
+                    data-test-id="sidebar"
                     >
                     <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                     </aside>
@@ -54,11 +55,12 @@ export default function Beneficiaries() {
                             variant="ghost"
                             className="mt-4 cursor-pointer"
                             onClick={() => setIsPopupOpen(true)}
+                            data-test-id="add-beneficiary-button"
                         >
                             <Plus className="mr-2" /> Agregar Beneficiario
                         </Button>
                         <div className="flex flex-col gap-4 mt-4">
-                            <BeneficiariesTable />
+                            <BeneficiariesTable data-test-id="beneficiary-table"/>
                         </div>
                     </main>
                 <Modal
@@ -70,6 +72,7 @@ export default function Beneficiaries() {
                             onCancel={() => setIsPopupOpen(false)}
                         />
                     }
+                    data-test-id="add-beneficiary-modal"
                     >
                 </Modal>
                 </div>
