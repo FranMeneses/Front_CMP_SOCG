@@ -8,11 +8,12 @@ import { usePathname } from "next/navigation";
 
 interface SidebarProps {
   onNavClick?: () => void;
+  userRole: string;
 }
 
-export function Sidebar({ onNavClick }: SidebarProps) {
+export function Sidebar({ onNavClick, userRole }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter(); 
+  const router = useRouter();
 
   const navItems = [
     {
@@ -21,6 +22,7 @@ export function Sidebar({ onNavClick }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
+      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
     },
     {
       title: "Planificación",
@@ -28,13 +30,15 @@ export function Sidebar({ onNavClick }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
     },
     {
       title: "Beneficiarios",
       href: "/features/beneficiaries",
       displayHref: "/beneficiaries",
-      icon: UsersRound ,
+      icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
     },
     {
       title: "Reportabilidad",
@@ -42,6 +46,7 @@ export function Sidebar({ onNavClick }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
+      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
     },
     {
       title: "Programación",
@@ -49,6 +54,7 @@ export function Sidebar({ onNavClick }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
+      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
     },
     {
       title: "Resumen",
@@ -56,13 +62,16 @@ export function Sidebar({ onNavClick }: SidebarProps) {
       displayHref: "/resume",
       icon: ChartPie,
       isActive: pathname === "/features/resume",
+      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento"]
     },
   ];
+
+  const filteredNavItems = navItems.filter(item => item.admitedRoles.includes(userRole));
 
   return (
     <div className="flex flex-col gap-2 p-4 h-full min-h-screen">
       <div className="flex flex-1 flex-col items gap-5 relative">
-        {navItems.map((item) => (
+        {filteredNavItems.map((item) => (
           <Button
             key={item.title}
             asChild

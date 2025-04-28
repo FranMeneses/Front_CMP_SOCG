@@ -16,7 +16,7 @@ import { barChartDataSummaryMock, chartDataSummaryMock, pieChartDataSummaryMock,
 
 export default function Resume() {
   const [loading, setLoading] = useState<boolean>(true);
-  const [userRole, setUserRole] = useState<string>("specialist"); 
+  const [userRole, setUserRole] = useState<string>("encargado cumplimiento"); 
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false); 
   const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -62,7 +62,7 @@ export default function Resume() {
                   : ""
               }`}
             >
-              <Sidebar />
+              <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
           )}
             <main className="flex-1 p-4 overflow-y-auto">
@@ -97,7 +97,7 @@ export default function Resume() {
                       <PieChart
                         userRole={userRole}
                         data={
-                          userRole === "specialist"
+                          userRole === "encargado cumplimiento"
                             ? pieChartDataSummarySpecialistMock
                             : pieChartDataSummaryMock
                         }

@@ -62,7 +62,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       <table className="table-auto w-full">
         <thead className="bg-white">
           <tr className="text-sm">
-            {userRole === "manager" ? (
+            {userRole === "gerente" || "superintendente" ? (
               ManagementTableColumns.map((column,index) => (
                 <th
                   key={index}
@@ -100,7 +100,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {task.endDate}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {userRole === "manager" ? (
+                  {userRole === "gerente" || "superintendente" ? (
                     <div className="flex items-center text-end relative">
                     <div
                       className={`h-4 ${getColor(task.progress)} rounded`}
@@ -130,7 +130,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       {subtask.endDate}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300 pl-8">
-                      {userRole === "manager" ? (
+                      {userRole === "gerente" || "superintendente" ? (
                         <div className="flex items-center text-end relative">
                           <div 
                             className={`h-4 ${getColor(subtask.progress)} rounded`}
