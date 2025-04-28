@@ -1,21 +1,32 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { IContact } from "@/app/models/IBeneficiary";
 
 interface ContactFormProps {
-    onSave: (contact: { selectedBeneficiaryId:string; name: string; position: string; email: string; phone: string }) => void;
+    onSave: (contact: { id?:string, selectedBeneficiaryId: string; name: string; position: string; email: string; phone: string }) => void;
     onCancel: () => void;
     selectedBeneficiaryId: string | null;
+    initialValues?: IContact;
 }
 
-export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId }: ContactFormProps) {
-    const [name, setName] = useState<string>("");
-    const [position, setPosition] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [phone, setPhone] = useState<string>("");
+export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, initialValues }: ContactFormProps) {
+    const [name, setName] = useState<string>(initialValues?.name || "");
+    const [position, setPosition] = useState<string>(initialValues?.position || "");
+    const [email, setEmail] = useState<string>(initialValues?.email || "");
+    const [phone, setPhone] = useState<string>(initialValues?.phone || "");
+
+    useEffect(() => {
+        if (initialValues) {
+            setName(initialValues.name);
+            setPosition(initialValues.position);
+            setEmail(initialValues.email);
+            setPhone(initialValues.phone);
+        }
+    }, [initialValues]);
 
     const handleSave = () => {
-        onSave({ selectedBeneficiaryId: selectedBeneficiaryId ?? "", name, position, email, phone });
+        onSave({ id :initialValues?.id ,selectedBeneficiaryId: selectedBeneficiaryId ?? "", name, position, email, phone });
         setName("");
         setPosition("");
         setEmail("");
@@ -47,7 +58,13 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId }:
                 <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+                        if (emailRegex.test(value) || value === "") {
+                            setEmail(value);
+                        }
+                    }}
                     className="border border-gray-300 rounded-md p-2 w-full"
                 />
             </div>
@@ -56,7 +73,13 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId }:
                 <input
                     type="tel"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        const phoneRegex = /^[0-9\s\+]*$/;
+                        if (phoneRegex.test(value)) {
+                            setPhone(value);
+                        }
+                    }}
                     className="border border-gray-300 rounded-md p-2 w-full"
                 />
             </div>
@@ -64,7 +87,10 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId }:
                 <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer">
                     Cancelar
                 </Button>
-                <Button variant="default" onClick={handleSave} className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-gray-600 cursor-pointer"
+                <Button
+                    variant="default"
+                    onClick={handleSave}
+                    className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-gray-600 cursor-pointer"
                     disabled={!name || !position || !email || !phone}
                 >
                     Guardar

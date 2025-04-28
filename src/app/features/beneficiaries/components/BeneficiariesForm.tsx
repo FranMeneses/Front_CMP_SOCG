@@ -2,19 +2,21 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import DropdownMenu from "@/components/Dropdown";
+import { IBeneficiary } from "@/app/models/IBeneficiary";
 
 interface BeneficiariesFormProps {
+    initialValues?: IBeneficiary;
     onSave: (beneficiary: { legalName: string; rut: string; address: string; entityType: string, representative: string, hasLegalPersonality:boolean }) => void;
     onCancel: () => void;
 }
 
-export default function BeneficiariesForm({ onSave, onCancel }: BeneficiariesFormProps) {
-    const [legalName, setLegalName] = useState<string>("");
-    const [rut, setRut] = useState<string>("");
-    const [address, setAddress] = useState<string>("");
-    const [entityType, setEntityType] = useState<string>("");
-    const [representative, setRepresentative] = useState<string>("");
-    const [hasLegalPersonality, setHasLegalPersonality] = useState<boolean>(false);
+export default function BeneficiariesForm({ onSave, onCancel, initialValues }: BeneficiariesFormProps) {
+    const [legalName, setLegalName] = useState<string>(initialValues?.legalName || "");
+    const [rut, setRut] = useState<string>(initialValues?.rut || "");
+    const [address, setAddress] = useState<string>(initialValues?.address || "");
+    const [entityType, setEntityType] = useState<string>(initialValues?.entityType || "");
+    const [representative, setRepresentative] = useState<string>(initialValues?.representative || "");
+    const [hasLegalPersonality, setHasLegalPersonality] = useState<boolean>(initialValues?.hasLegalPersonality || false);
 
     const handleSave = () => {
         onSave({ legalName, rut, address, entityType, representative, hasLegalPersonality});
