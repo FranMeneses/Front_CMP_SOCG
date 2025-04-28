@@ -33,9 +33,9 @@ export default function Planification() {
 
     return (
         <div className="overflow-x-hidden">
-            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
+            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
             {loadingTasks ? (
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center" data-test-id="loading-spinner">
                     <LoadingSpinner />
                 </div>
             ) : (
@@ -53,6 +53,7 @@ export default function Planification() {
                             ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
                             : ""
                         }`}
+                        data-test-id="sidebar"
                         >
                         <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                         </aside>
@@ -68,6 +69,7 @@ export default function Planification() {
                                                     items={["Tareas", "Subtareas"]}
                                                     onSelect={(item) => setTableOption(item)}
                                                     buttonText="Tareas"
+                                                    data-test-id="dropdown-menu"
                                                 />
                                             </div>
                                             <Button
@@ -75,6 +77,7 @@ export default function Planification() {
                                                 variant="default"
                                                 size="default"
                                                 className="flex flex-row cursor-pointer bg-[#4B8DF8] hover:bg-[#08203d]/90 text-white"
+                                                data-test-id="add-task-button"
                                             >
                                                 <Plus size={25} color="white" />
                                                 <span className="ml-2">Añadir</span>
@@ -86,6 +89,7 @@ export default function Planification() {
                                                 selectedTaskId={selectedTaskId}
                                                 onTaskClick={handleonTaskClick}
                                                 tableOption={tableOption}
+                                                data-test-id="tasks-table"
                                             />
                                         </div>
                                     </div>
@@ -95,8 +99,9 @@ export default function Planification() {
                     </div>
                     <Modal
                         isOpen={isPopupOpen}
-                        children={<TaskForm onSave={handleSave} onCancel={() => setIsPopupOpen(false)} />}
+                        children={<TaskForm onSave={handleSave} onCancel={() => setIsPopupOpen(false)} data-test-id="create-task-form"/>}
                         onClose={() => setIsPopupOpen(false)}
+                        data-test-id="task-form-modal"
                     />
                 </>
             )}

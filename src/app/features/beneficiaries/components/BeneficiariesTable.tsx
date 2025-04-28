@@ -67,6 +67,7 @@ const BeneficiariesTable: React.FC = () => {
                                     <Pencil
                                         className="ml-2 cursor-pointer"
                                         onClick={() => handleEditBeneficiary(beneficiary.id)}
+                                        data-test-id="edit-beneficiary-button"
                                     />
                                 </td>
                             </tr>
@@ -79,7 +80,7 @@ const BeneficiariesTable: React.FC = () => {
                                                 {beneficiary.contacts.map((contact) => (
                                                     <li key={contact.id} className="text-gray-600 flex flex-row mb-2">
                                                         <strong>{contact.name}</strong> - {contact.position} - {contact.email} - {contact.phone}
-                                                        <Pencil className="ml-2 cursor-pointer" onClick={() => handleEditContact(contact)}/>
+                                                        <Pencil className="ml-2 cursor-pointer" onClick={() => handleEditContact(contact)} data-test-id="edit-contact-button"/>
                                                     </li>
                                                 ))}
                                             </ul>
@@ -90,6 +91,7 @@ const BeneficiariesTable: React.FC = () => {
                                                 variant="ghost"
                                                 size="default"
                                                 className="flex flex-row cursor-pointer bg-gray-100"
+                                                data-test-id="add-contact-button"
                                             >
                                                 <Plus color="black" />
                                             </Button>
@@ -105,11 +107,13 @@ const BeneficiariesTable: React.FC = () => {
             <Modal
                 isOpen={isPopupOpen} 
                 onClose={() => setIsPopupOpen(false)}
+                data-test-id="add-contact-modal"
             >
                 <ContactForm
                     onSave={handleAddContact} 
                     selectedBeneficiaryId={selectedBeneficiaryId}
                     onCancel={() => setIsPopupOpen(false)}
+                    data-test-id="contact-form"
                 />
             </Modal>
 
@@ -119,6 +123,7 @@ const BeneficiariesTable: React.FC = () => {
                     setIsEditContactModalOpen(false);
                     setSelectedContact(null);
                 }}
+                data-test-id="edit-contact-modal"
             >
                 {selectedContact && (
                     <ContactForm
@@ -129,6 +134,7 @@ const BeneficiariesTable: React.FC = () => {
                             setIsEditContactModalOpen(false);
                             setSelectedContact(null);
                         }}
+                        data-test-id="edit-contact-form"
                     />
                 )}
             </Modal>
@@ -139,6 +145,7 @@ const BeneficiariesTable: React.FC = () => {
                     setIsEditModalOpen(false);
                     setSelectedBeneficiary(null);
                 }}
+                data-test-id="edit-beneficiary-modal"
             >
                 {selectedBeneficiary && (
                     <div className="p-4">
@@ -159,6 +166,7 @@ const BeneficiariesTable: React.FC = () => {
                                 setIsEditModalOpen(false);
                                 setSelectedBeneficiary(null);
                             }}
+                            data-test-id="edit-beneficiary-form"
                         />
                     </div>
                 )}

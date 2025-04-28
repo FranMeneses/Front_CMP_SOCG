@@ -34,7 +34,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
     };
 
     return (
-        <div className="p-4">
+        <div className="p-4" data-test-id="contact-form">
             <div className="mb-4">
                 <label className="text-sm font-medium mb-1">Nombre</label>
                 <input
@@ -42,6 +42,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="border border-gray-300 rounded-md p-2 w-full"
+                    data-test-id="contact-name"
                 />
             </div>
             <div className="mb-4">
@@ -51,6 +52,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                     value={position}
                     onChange={(e) => setPosition(e.target.value)}
                     className="border border-gray-300 rounded-md p-2 w-full"
+                    data-test-id="contact-position"
                 />
             </div>
             <div className="mb-4">
@@ -66,6 +68,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                         }
                     }}
                     className="border border-gray-300 rounded-md p-2 w-full"
+                    data-test-id="contact-email"
                 />
             </div>
             <div className="mb-4">
@@ -81,10 +84,11 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                         }
                     }}
                     className="border border-gray-300 rounded-md p-2 w-full"
+                    data-test-id="contact-phone"
                 />
             </div>
             <div className="flex justify-end space-x-2">
-                <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer">
+                <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer" data-test-id="contact-cancel">
                     Cancelar
                 </Button>
                 <Button
@@ -92,6 +96,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                     onClick={handleSave}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-gray-600 cursor-pointer"
                     disabled={!name || !position || !email || !phone}
+                    data-test-id="contact-save"
                 >
                     Guardar
                 </Button>
