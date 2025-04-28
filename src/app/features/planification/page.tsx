@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { usePlanification } from "./hooks/usePlanification";
 
 import { tasksMock } from "../../../../mocks/tasksMock";
+import { useHooks } from "../hooks/useHooks";
 
 
 export default function Planification() {
@@ -28,6 +29,8 @@ export default function Planification() {
         toggleSidebar,
     } = usePlanification();
 
+    const {userRole} = useHooks();
+
     return (
         <div className="overflow-x-hidden">
             <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
@@ -43,17 +46,17 @@ export default function Planification() {
                         }`}
                         style={{ height: "calc(100vh - 5rem)" }}
                     >
-                        {isSidebarOpen && (
-                            <aside
-                                className={`border-r h-full ${
-                                    isSidebarOpen
-                                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
-                                        : ""
-                                }`}
-                            >
-                                <Sidebar />
-                            </aside>
-                        )}
+                    {isSidebarOpen && (
+                        <aside
+                        className={`border-r h-full ${
+                            isSidebarOpen
+                            ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
+                            : ""
+                        }`}
+                        >
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                        </aside>
+                    )}
                         <main className="p-4 h-full overflow-y-auto">
                             <div className="flex flex-col gap-4">
                                 <h1 className="text-2xl font-bold">Planificación</h1>

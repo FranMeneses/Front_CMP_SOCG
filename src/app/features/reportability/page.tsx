@@ -8,6 +8,7 @@ import { Valleys, ValleyColors } from "@/constants/valleys";
 import Calendar from "@/components/Calendar/Calendar";
 import { Legend } from "./components/Legend";
 import { useReportability } from "./hooks/useReportability";
+import { useHooks } from "../hooks/useHooks";
 
 export default function Reportability() {
   const {
@@ -18,6 +19,8 @@ export default function Reportability() {
     calendarView,
     calendarEvents,
   } = useReportability();
+
+  const {userRole} = useHooks(); 
 
   return (
     <div className="overflow-x-hidden">
@@ -41,7 +44,7 @@ export default function Reportability() {
                   : ""
               }`}
             >
-              <Sidebar />
+              <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
           )}
           <main className="flex-1 p-4 overflow-y-auto">

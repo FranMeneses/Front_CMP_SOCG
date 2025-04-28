@@ -5,9 +5,12 @@ import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useSchedule } from "./hooks/useSchedule";
+import { useHooks } from "../hooks/useHooks";
 
 export default function Schedule() {
   const { loading, isSidebarOpen, toggleSidebar, tasks, getColor } = useSchedule();
+
+  const { userRole } = useHooks();
 
   return (
     <div className="overflow-x-hidden max-h-screen w-full">
@@ -31,7 +34,7 @@ export default function Schedule() {
                   : ""
               }`}
             >
-              <Sidebar />
+              <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
           )}
           <main className="flex-1 p-4 overflow-y-auto">

@@ -80,7 +80,7 @@ const PieChart = ({
               onClick: (_event, legendItem) => {
                 const legend = legendItem.text;
 
-                if (userRole === "manager") {
+                if (userRole === "gerente") {
                   onLegendClick(legend); 
                 } else {
                   console.log('Legend clicked:', legend);
@@ -90,7 +90,7 @@ const PieChart = ({
             title: {
               ...PieChartOptions.plugins?.title,
               display: true,
-              text: userRole === "specialist" ? "Compliance" : "Iniciativas por valle",
+              text: userRole === "encargado cumplimiento" ? "Compliance" : "Iniciativas por valle",
             },
           },
         }}
