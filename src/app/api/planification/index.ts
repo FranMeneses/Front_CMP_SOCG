@@ -45,8 +45,27 @@ export const CREATE_SUBTASK = gql`
   mutation CreateSubtask($input: CreateSubtaskInput!) {
     createSubtask(input: $input) {
       id
+      taskId
+      number
       name
       description
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      beneficiaryId
+      statusId
+      priorityId
+      status {
+        id
+        name
+        percentage
+      }
+      priority {
+        id
+        name
+      }
     }
   }
 `;

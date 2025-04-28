@@ -9,7 +9,7 @@ import Modal from "../Modal";
 
 interface CalendarComponentProps {
   calendarView: string;
-  events: Array<{ id:string, title: string; start: string; end: string; color: string; allDay: boolean }>;
+  events: Array<{ title: string; start: string; end: string; color: string; allDay: boolean }>;
 }
 
 const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) => {
@@ -20,10 +20,10 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) =>
 
     setSelectedEvent({
       title: info.event.title,
-      code: info.event.id,
       valley: info.event.extendedProps.valley,
       start: info.event.startStr,
       progress: info.event.extendedProps.progress,
+      faena: info.event.extendedProps.faena,
     });
     setIsModalOpen(true); 
   };
@@ -65,9 +65,9 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) =>
             <div className="items-center justify-center p-4">
                 <h2 className="text-xl font-bold">{selectedEvent.title}</h2>
                 <p><strong>Valle:</strong> {selectedEvent.valley}</p>
-                <p><strong>Identificador:</strong> {selectedEvent.code}</p>
                 <p><strong>Inicio:</strong> {selectedEvent.start}</p>
                 <p><strong>Progreso:</strong> {selectedEvent.progress}%</p>
+                <p><strong>Faena:</strong> {selectedEvent.faena}</p>
             </div>
         </Modal>
       )}

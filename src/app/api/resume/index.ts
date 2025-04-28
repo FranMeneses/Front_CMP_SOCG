@@ -29,6 +29,17 @@ export const GET_TASK = gql`
       id
       name
       description
+      valleyId
+      faenaId
+      statusId
+      valley {
+        id
+        name
+      }
+      faena {
+        id
+        name
+      }
     }
   }
 `;
@@ -62,11 +73,30 @@ export const GET_TASK_TOTAL_EXPENSE = gql`
 `;
 
 export const GET_SUBTASKS = gql`
-  query GetSubtasks($query: String) {
-    subtasks(query: $query) {
+  query GetAllSubtasks {
+    subtasks {
       id
+      taskId
+      number
       name
       description
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      beneficiaryId
+      statusId
+      priorityId
+      status {
+        id
+        name
+        percentage
+      }
+      priority {
+        id
+        name
+      }
     }
   }
 `;
