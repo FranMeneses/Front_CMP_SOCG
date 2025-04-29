@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { GET_SUBTASKS, GET_TASK } from "@/app/api/resume";
-import { ISubtask, ITask } from "@/app/models/ITasks";
+import { GET_TASK } from "@/app/api/tasks";
+import { GET_SUBTASKS } from "@/app/api/subtasks";
+import { ISubtask } from "@/app/models/ITasks";
 import { ValleyColors, Valleys } from "@/constants/valleys";
 import { Faenas } from "@/constants/faenas";
 
@@ -110,14 +111,18 @@ export function useReportability() {
               variables: { id: subtask.taskId },
             });
             const task = data?.task;
+  
+            const endDate = new Date(subtask.endDate);
+            endDate.setDate(endDate.getDate() + 1);
+  
             return {
               title: subtask.name,
-              start: subtask.endDate,
-              end: subtask.endDate,
+              start: endDate.toISOString(),
+              end: endDate.toISOString(),
               progress: subtask.status.percentage,
               valley: handleGetValley(task?.valleyId ?? 5),
-              faena: handleGetFaena(task?.faenaId?? 11),
-              color: handleGetColor(task?.valleyId?? 5),
+              faena: handleGetFaena(task?.faenaId ?? 11),
+              color: handleGetColor(task?.valleyId ?? 5),
               allDay: true,
             };
           } catch (err) {
@@ -128,7 +133,7 @@ export function useReportability() {
       );
       setCalendarEvents(events.filter((event) => event !== null));
     };
-
+  
     if (Subtasks.length > 0) {
       fetchCalendarEvents();
     }

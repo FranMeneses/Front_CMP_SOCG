@@ -18,10 +18,17 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) =>
 
   const handleEventClick = (info: any) => {
 
+    const formattedStartDate = new Date(info.event.startStr).toLocaleDateString("es-CL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  
+
     setSelectedEvent({
       title: info.event.title,
       valley: info.event.extendedProps.valley,
-      start: info.event.startStr,
+      start: formattedStartDate,
       progress: info.event.extendedProps.progress,
       faena: info.event.extendedProps.faena,
     });

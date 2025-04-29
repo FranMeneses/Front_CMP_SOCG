@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { CREATE_TASK } from "@/app/api/planification";
+import { CREATE_TASK } from "@/app/api/tasks";
 import { Valleys } from "@/constants/valleys";
 import { Faenas } from "@/constants/faenas";
 

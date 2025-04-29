@@ -1,72 +1,38 @@
-'use client'
+'use client';
 import React from "react";
-import { ManagementTableColumns,specialistTableColums } from "@/constants/tableConstants";
-
-export interface Subtask {
-  id: string;
-  code: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  progress: number;
-  complianceStatus: string;
-}
-
-export interface Task {
-  id: string;
-  code: string;
-  name: string;
-  origin: string;
-  type: string;
-  scope: string;
-  operationalInteraction: string;
-  operationalRisk: string;
-  compliance: string;
-  priority: string;
-  status: string;
-  assigned: string;
-  budget: number;
-  actualExpense: number;
-  gcBudget: number;
-  difference: number;
-  accountingMonth: string;
-  startDate: string;
-  endDate: string;
-  remainingDays: number;
-  finishDate: string;
-  progress: number;
-  subtasks: Subtask[];
-}
+import { ManagementTableColumns, specialistTableColums } from "@/constants/tableConstants";
+import { ITask, ISubtask } from "@/app/models/ITasks";
+import { taskProgress } from "@/constants/taskProgress";
+import { useResume } from "../hooks/useResume";
 
 interface DynamicTableProps {
-  tasks: Task[];
+  tasks: ITask[];
   selectedTaskId: string | null;
+  subtasks: ISubtask[]; 
   onTaskClick: (taskId: string) => void;
   userRole: string;
 }
 
-const getColor = (percentage: number) => {
-  if (percentage === 100) return "bg-green-500";
-  if (percentage > 30 && percentage < 100) return "bg-yellow-500";
-  return "bg-red-500";
-};
-
 const DynamicTable: React.FC<DynamicTableProps> = ({
   tasks,
   selectedTaskId,
+  subtasks, 
   onTaskClick,
   userRole,
 }) => {
+  
+  const {getColor, formatDate, calculateRemainingDays} = useResume();
+
   return (
     <div className="overflow-y-scroll md:h-82 2xl:h-170">
       <table className="table-auto w-full">
         <thead className="bg-white">
           <tr className="text-sm">
-            {userRole === "gerente" || "superintendente" ? (
-              ManagementTableColumns.map((column,index) => (
+            {userRole === "gerente" || userRole === "superintendente" ? (
+              ManagementTableColumns.map((column, index) => (
                 <th
                   key={index}
-                  className={`px-4 py-2 text-start font-bold text-[#7D7D7D]`}
+                  className={`px-4 py-2 text-center font-bold text-[#7D7D7D]`}
                 >
                   {column}
                 </th>
@@ -91,31 +57,33 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 onClick={() => onTaskClick(task.id)}
               >
                 <td className="text-center px-4 py-2 border-b border-gray-300">
-                  {`"`+ task.name +`"`}
+                  {`"` + task.name + `"`}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {task.remainingDays}
+                  {" "}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {task.endDate}
+                  {" "}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {userRole === "gerente" || "superintendente" ? (
+                  {userRole === "gerente" || userRole === "superintendente" ? (
                     <div className="flex items-center text-end relative">
-                    <div
-                      className={`h-4 ${getColor(task.progress)} rounded`}
-                      style={{ width: `${task.progress}%` }}>
+                      <div
+                        className={`h-4 ${getColor(taskProgress[task.statusId - 1])} rounded`} //CAMBIAR POR  getTaskProgress
+                        style={{ width: `${taskProgress[task.statusId - 1]}%` }}
+                      ></div>
+                      <h3 className={`absolute text-sm font-medium ml-2 ${task.statusId === 1 ? "text-color" : "text-white"}`}>
+                        {taskProgress[task.statusId - 1]}%
+                      </h3>
                     </div>
-                    <h3 className="absolute text-sm font-medium text-white ml-2">
-                      {task.progress}%
-                    </h3>
-                  </div> ): ('')
-                  }
+                  ) : (
+                    ""
+                  )}
                 </td>
               </tr>
 
               {selectedTaskId === task.id &&
-                task.subtasks.map((subtask) => (
+                subtasks.map((subtask) => (
                   <tr
                     key={subtask.id}
                     className="bg-gray-100 text-sm text-gray-700 font-medium"
@@ -123,27 +91,28 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     <td className="text-center px-4 py-2 border-b border-gray-300 pl-8">
                       {subtask.name}
                     </td>
-                    <td className="px-4 py-2 border-b border-gray-300 pl-8"/>
-                    <td
-                      className="px-4 py-2 text-center border-b border-gray-300"
-                    >
-                      {subtask.endDate}
+                    <td className="px-4 py-2 text-center border-b border-gray-300 pl-8">
+                      {calculateRemainingDays(subtask.startDate, subtask.endDate)} 
+                    </td> 
+                    <td className="px-4 py-2 text-center border-b border-gray-300">
+                      {formatDate(subtask.endDate)}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300 pl-8">
-                      {userRole === "gerente" || "superintendente" ? (
+                      {userRole === "gerente" || userRole === "superintendente" ? (
                         <div className="flex items-center text-end relative">
-                          <div 
-                            className={`h-4 ${getColor(subtask.progress)} rounded`}
-                            style={{ width: `${subtask.progress}%` }}>
-                          </div>
-                          <h3 className="absolute text-sm font-medium text-white ml-2">
-                            {subtask.progress}%
+                          <div
+                            className={`h-4 ${getColor(subtask.status.percentage)} rounded`}
+                            style={{ width: `${subtask.status.percentage}%` }}
+                          ></div>
+                          <h3 className={`absolute text-sm font-medium ${subtask.status.percentage === 0 ? "text-black" : "text-white"} ml-2`}>
+                            {subtask.status.percentage}%
                           </h3>
-                        </div>): 
-                        (<h3 className="text-sm font-medium text-gray-700 text-center">
-                          {subtask.complianceStatus}
-                        </h3>)
-                      }
+                        </div>
+                      ) : (
+                        <h3 className="text-sm font-medium text-gray-700 text-center">
+                          {subtask.statusId}
+                        </h3>
+                      )}
                     </td>
                   </tr>
                 ))}
