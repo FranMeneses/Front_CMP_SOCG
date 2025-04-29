@@ -4,9 +4,10 @@ export interface ITask {
     description: string;
     valleyId: number;
     faenaId: number;
-    status: number;
+    statusId: number;
     valley: IValley;
     faena: IFaena;
+    status: IStatus;
 }
 
 export interface IValley {

@@ -1,30 +1,39 @@
 import { gql } from "@apollo/client";
 
-export const CREATE_TASK = gql`
-mutation CreateTask($input: CreateTaskDto!) {
-  createTask(input: $input) {
-    id
-    name
-    description
-    faena {
+// QUERIES
+
+export const GET_SUBTASKS = gql`
+  query GetAllSubtasks {
+    subtasks {
       id
+      taskId
+      number
       name
-    }
-    valley {
-      id
-      name
-    }
-    status {
-      id
-      name
+      description
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      beneficiaryId
+      statusId
+      priorityId
+      status {
+        id
+        name
+        percentage
+      }
+      priority {
+        id
+        name
+      }
     }
   }
-}
 `;
 
-export const UPDATE_TASK = gql`
-  mutation UpdateTask($id: ID!, $input: UpdateTaskInput!) {
-    updateTask(id: $id, input: $input) {
+export const GET_SUBTASK = gql`
+  query GetSubtask($id: ID!) {
+    subtask(id: $id) {
       id
       name
       description
@@ -32,14 +41,7 @@ export const UPDATE_TASK = gql`
   }
 `;
 
-export const DELETE_TASK = gql`
-  mutation DeleteTask($id: ID!) {
-    deleteTask(id: $id) {
-      id
-      name
-    }
-  }
-`;
+// MUTATIONS
 
 export const CREATE_SUBTASK = gql`
   mutation CreateSubtask($input: CreateSubtaskInput!) {

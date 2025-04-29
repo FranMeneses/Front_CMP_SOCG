@@ -46,7 +46,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
-      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento"]
     },
     {
       title: "Programación",
@@ -54,7 +54,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
-      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco"]
     },
     {
       title: "Resumen",
