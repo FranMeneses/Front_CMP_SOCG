@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { GET_TASKS } from "@/app/api/tasks";
+import { GET_TASK_PROGRESS, GET_TASKS } from "@/app/api/tasks";
 import { GET_TASK_SUBTASKS } from "@/app/api/tasks";
 import { ISubtask } from "@/app/models/ITasks";
 
@@ -11,6 +11,7 @@ export function useResume() {
     const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
     const { data, loading, error } = useQuery(GET_TASKS);
     const [getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
+    const [getTaskProgress] = useLazyQuery(GET_TASK_PROGRESS);
 
     const handleLegendClick = (legend: string) => {
         setSelectedLegend((prev) => (prev === legend ? null : legend));
@@ -73,6 +74,21 @@ export function useResume() {
         return "bg-red-500";
     };
 
+    const handleGetTaskProgress = useCallback(async (taskId: string): Promise<number | null> => {
+        try {
+            const { data } = await getTaskProgress({ variables: { id: taskId } });
+            if (data && data.taskProgress !== undefined) {
+                return data.taskProgress;
+            }
+            console.log(data);
+            console.warn(`No progress found for task ID: ${taskId}`);
+            return null;
+        } catch (error) {
+            console.error(`Error fetching progress for task ID: ${taskId}`, error);
+            return null;
+        }
+    }, [getTaskProgress]);
+
     return {
         loading,
         data,
@@ -83,6 +99,7 @@ export function useResume() {
         subtasks,
         subtasksLoading,
         handleLegendClick,
+        handleGetTaskProgress,
         handleTaskClick,
         toggleSidebar,
         calculateRemainingDays,
