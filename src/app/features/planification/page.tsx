@@ -9,8 +9,6 @@ import TaskForm from "./components/TaskForm";
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { usePlanification } from "./hooks/usePlanification";
-
-import { tasksMock } from "../../../../mocks/tasksMock";
 import { useHooks } from "../hooks/useHooks";
 
 
@@ -20,13 +18,15 @@ export default function Planification() {
         setIsPopupOpen,
         selectedTaskId,
         isSidebarOpen,
-        loadingTasks,
         tableOption,
         setTableOption,
         handleAddTask,
         handleSave,
-        handleonTaskClick,
+        handleOnTaskClick,
         toggleSidebar,
+        data,
+        loading,
+        subTasks,
     } = usePlanification();
 
     const {userRole} = useHooks();
@@ -34,7 +34,7 @@ export default function Planification() {
     return (
         <div className="overflow-x-hidden">
             <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
-            {loadingTasks ? (
+            {loading ? (
                 <div className="flex items-center justify-center" data-test-id="loading-spinner">
                     <LoadingSpinner />
                 </div>
@@ -64,14 +64,6 @@ export default function Planification() {
                                 <div className="">
                                     <div className="ml-4 flex-1">
                                         <div className="flex flex-row justify-between items-center mb-4">
-                                            <div className="w-full">
-                                                <DropdownMenu
-                                                    items={["Tareas", "Subtareas"]}
-                                                    onSelect={(item) => setTableOption(item)}
-                                                    buttonText="Tareas"
-                                                    data-test-id="dropdown-menu"
-                                                />
-                                            </div>
                                             <Button
                                                 onClick={handleAddTask}
                                                 variant="default"
@@ -85,9 +77,10 @@ export default function Planification() {
                                         </div>
                                         <div>
                                             <TasksTable
-                                                tasks={tasksMock} // Replace with actual tasks
+                                                tasks={data.infoTasks}
+                                                subtasks={subTasks} 
                                                 selectedTaskId={selectedTaskId}
-                                                onTaskClick={handleonTaskClick}
+                                                onTaskClick={handleOnTaskClick}
                                                 tableOption={tableOption}
                                                 data-test-id="tasks-table"
                                             />

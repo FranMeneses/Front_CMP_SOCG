@@ -12,27 +12,25 @@ export const ManagementTableColumns = [
     "Porcentaje de avance",
 ]
 
-export const TaskTableColumns = [
-    "Código",
-    "Tarea",
+export const ValleysTasksTableColumns = [
+    "Nombre",
     "Origen Iniciativa",
     "Tipo Iniciativa",
     "Alcance Iniciativa",
     "Tipo Interacción Operacional",
     "Tipo Riesgo Operacional",
-    "Compliance",
-    "Prioridad",
-    "Estado",
-    "Asignado",
     "Presupuesto",
-    "Gasto Real",
-    "GC Presupuesto",
-    "Diferencia",
-    "Mes de Imputación",
     "Fecha Inicio",
     "Fecha Finalización",
     "Dias restantes",
     "Fecha Termino"
+]
+
+export const ComplianceTableColumns = [
+    "Nombre",
+    "Cumplimiento",
+    "Gasto Real",
+    "Presupuesto",
 ]
 
 export const SubtaskTableColumns = [

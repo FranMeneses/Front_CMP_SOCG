@@ -56,3 +56,15 @@ export interface IStatus {
     name: string;
     percentage: number;
 }
+
+export interface IInfoTask {
+    id: string;
+    taskId: string;
+    originId:number;
+    invesmentId:number;
+    typeId:number;
+    scopeId:number;
+    interactionId:number;
+    riskId:number;
+    task:ITask;
+}
