@@ -7,7 +7,14 @@ export const Valleys = [
 
 export const ValleyColors = [
     "#B0A3CC",
-    "#EFA585",
     "#54B87E",
+    "#EFA585",
     "#F2C94C",
+]
+
+export const ValleyColorsHover = [
+    "#573B92",
+    "#E66C37",
+    "#2D7A4D",
+    "#EFD689",
 ]

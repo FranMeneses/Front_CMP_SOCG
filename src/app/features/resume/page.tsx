@@ -8,14 +8,14 @@ import DynamicTable from "@/app/features/resume/components/DynamicTable";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useResume } from "./hooks/useResume";
 import { useHooks } from "../hooks/useHooks";
+import { usePieChart } from "./hooks/usePieChart";
 
-import { chartDataSummaryMock,barChartDataSummaryMock,pieChartDataSummaryMock,pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
+import { chartDataSummaryMock,barChartDataSummaryMock,pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
 
 export default function Resume() {
   const {
     loading,
     data,
-    error,
     isSidebarOpen,
     selectedLegend,
     selectedTaskId,
@@ -24,6 +24,8 @@ export default function Resume() {
     toggleSidebar,
     subtasks
   } = useResume();
+
+  const {pieChartData} = usePieChart();
 
   const {userRole} = useHooks()
 
@@ -91,7 +93,7 @@ export default function Resume() {
                         data={
                           userRole === "encargado cumplimiento"
                             ? pieChartDataSummarySpecialistMock
-                            : pieChartDataSummaryMock
+                            : pieChartData
                         }
                         selectedLegend={selectedLegend}
                         onLegendClick={handleLegendClick}
