@@ -32,30 +32,30 @@ const BeneficiariesTable: React.FC = () => {
     } = useBeneficiaries();
 
     return (
-        <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+        <div className="overflow-x-auto border border-[#041e3e] rounded-md">
+            <table className="min-w-full overflow-hidden">
+                <thead className="bg-[#2771CC] text-white">
                     <tr>
                         {BeneficiariesTableColumns.map((column, index) => (
                             <th
                                 key={index}
-                                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider"
                             >
                                 {column}
                             </th>
                         ))}
                     </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white divide-y divide-[#041e3e]">
                     {beneficiaries.map((beneficiary) => (
                         <React.Fragment key={beneficiary.id}>
-                            <tr>
+                            <tr className="text-center">
                                 <td className="px-6 py-4 whitespace-nowrap">{beneficiary.legalName}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{beneficiary.rut}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{beneficiary.address}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{beneficiary.entityType}</td>
                                 <td
-                                    className="px-6 py-4 whitespace-nowrap text-blue-500 cursor-pointer"
+                                    className="px-6 py-4 whitespace-nowrap text-[#003474] cursor-pointer"
                                     onClick={() => toggleRow(beneficiary.id)}
                                 >
                                     {beneficiary.representative}
@@ -68,29 +68,33 @@ const BeneficiariesTable: React.FC = () => {
                                         className="ml-2 cursor-pointer"
                                         onClick={() => handleEditBeneficiary(beneficiary.id)}
                                         data-test-id="edit-beneficiary-button"
+                                        color="gray"
                                     />
                                 </td>
                             </tr>
                             {expandedRow === beneficiary.id && (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-4 bg-gray-100 relative">
+                                    <td colSpan={7} className="px-6 py-4 bg-gray-200 relative">
                                         <div>
                                             <h4 className="font-medium text-gray-700">Contactos:</h4>
                                             <ul className="list-disc pl-5">
                                                 {beneficiary.contacts.map((contact) => (
                                                     <li key={contact.id} className="text-gray-600 flex flex-row mb-2">
                                                         <strong>{contact.name}</strong> - {contact.position} - {contact.email} - {contact.phone}
-                                                        <Pencil className="ml-2 cursor-pointer" onClick={() => handleEditContact(contact)} data-test-id="edit-contact-button"/>
+                                                        <Pencil 
+                                                            className="ml-4 cursor-pointer" 
+                                                            onClick={() => handleEditContact(contact)} data-test-id="edit-contact-button"
+                                                        />
                                                     </li>
                                                 ))}
                                             </ul>
                                         </div>
-                                        <div className="absolute top-0 right-0 h-full flex justify-center items-center">
+                                        <div className="absolute top-0 right-5 h-full flex justify-center items-center">
                                             <Button
                                                 onClick={() => setIsPopupOpen(true)}
                                                 variant="ghost"
                                                 size="default"
-                                                className="flex flex-row cursor-pointer bg-gray-100"
+                                                className="flex flex-row cursor-pointer bg-gray-200 hover:bg-gray-300"
                                                 data-test-id="add-contact-button"
                                             >
                                                 <Plus color="black" />

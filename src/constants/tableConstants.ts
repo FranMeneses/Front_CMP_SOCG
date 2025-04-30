@@ -51,4 +51,5 @@ export const BeneficiariesTableColumns = [
     "Tipo de Entidad",
     "Representante Legal",
     "Personalidad Jurídica",
+    "",
 ]
