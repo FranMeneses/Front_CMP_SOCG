@@ -91,6 +91,12 @@ export const GET_TASK_TOTAL_EXPENSE = gql`
   }
 `;
 
+export const GET_VALLEY_TASKS_COUNT = gql`
+  query GetValleyTasksCount($valleyId: Int!) {
+    valleyTasksCount(valleyId: $valleyId)
+  }
+`;
+
 // MUTATIONS
 export const CREATE_TASK = gql`
 mutation CreateTask($input: CreateTaskDto!) {

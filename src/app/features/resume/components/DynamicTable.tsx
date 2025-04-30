@@ -20,9 +20,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   onTaskClick,
   userRole,
 }) => {
-  const { getColor, formatDate, calculateRemainingDays, handleGetTaskProgress } = useResume();
-  const { taskProgressMap } = useDynamicTable(tasks);
 
+  const { getColor, formatDate, calculateRemainingDays, taskProgressMap } = useDynamicTable(tasks);
 
   return (
     <div className="overflow-y-scroll md:h-82 2xl:h-170">

@@ -28,7 +28,34 @@ export function useDynamicTable(tasks: ITask[]) {
         }
     }, [tasks, fetchTaskProgress]);
 
+    const calculateRemainingDays = (startDate: string, endDate: string) => {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = Math.abs(end.getTime() - start.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    };
+
+    const formatDate = (isoDate: string): string => {
+        const date = new Date(isoDate);
+    
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); 
+        const day = String(date.getDate() +1 ).padStart(2, "0");
+    
+        return `${day}-${month}-${year}`; 
+    };
+
+    const getColor = (percentage: number) => {
+        if (percentage === 100) return "bg-green-500";
+        if (percentage > 30 && percentage < 100) return "bg-yellow-500";
+        return "bg-red-500";
+    };
+    
     return {
         taskProgressMap,
+        calculateRemainingDays,
+        formatDate,
+        getColor,
     };
 }
