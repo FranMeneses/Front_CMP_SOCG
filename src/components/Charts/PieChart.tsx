@@ -1,7 +1,7 @@
 'use client';
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { PieChartOptions } from "./config/ChartConfig";
 import { PieChartProps } from "./interfaces/ChartInterfaces";
 import { useResizeCharts } from "./hooks/useResizeCharts";
@@ -19,7 +19,9 @@ const PieChart = ({
   onLegendClick?: (legend: string) => void;
   userRole: string;
 }) => {
+  
   const chartRef = useRef<ChartJS | null>(null);
+  const [visibleLegend, setVisibleLegend] = useState<string | null>(null);
 
   useResizeCharts(chartRef);
 
@@ -27,12 +29,35 @@ const PieChart = ({
     ...data,
     datasets: data.datasets.map((dataset) => ({
       ...dataset,
-      backgroundColor: dataset.backgroundColor.map((color, index) =>
-        selectedLegend === data.labels[index] ? color : `${color}80`
-      ),
+      data:
+        (userRole === "gerente" || userRole === "superintendente")
+          ? (selectedLegend || visibleLegend)
+            ? dataset.data.map((value, index) =>
+                data.labels[index] === (selectedLegend || visibleLegend) ? value : 0
+              )
+            : dataset.data
+          : visibleLegend
+          ? dataset.data.map((value, index) =>
+              data.labels[index] === visibleLegend ? value : 0
+            )
+          : dataset.data, 
+      backgroundColor:
+        (userRole === "gerente" || userRole === "superintendente")
+          ? (selectedLegend || visibleLegend)
+            ? dataset.backgroundColor.map((color, index) =>
+                data.labels[index] === (selectedLegend || visibleLegend)
+                  ? color
+                  : `${color}80`
+              )
+            : dataset.backgroundColor
+          : dataset.backgroundColor.map((color, index) =>
+              visibleLegend === null || data.labels[index] === visibleLegend
+                ? color
+                : `${color}80`
+            ), 
     })),
   };
-
+  
   const handleLegendClick = (legend: string) => {
     if (chartRef.current) {
       const chart = chartRef.current;
@@ -40,7 +65,7 @@ const PieChart = ({
       const labelIndex = data.labels.indexOf(legend);
 
       if (labelIndex !== -1) {
-        const value = data.datasets[0].data[labelIndex];
+        setVisibleLegend((prev) => (prev === legend ? null : legend));
 
         chart.setActiveElements([
           {
@@ -55,7 +80,7 @@ const PieChart = ({
               index: labelIndex,
             },
           ],
-          { x: 0, y: 0 } 
+          { x: 0, y: 0 }
         );
         chart.update();
       }
@@ -79,12 +104,8 @@ const PieChart = ({
               ...PieChartOptions.plugins?.legend,
               onClick: (_event, legendItem) => {
                 const legend = legendItem.text;
-
-                if (userRole === "gerente") {
-                  onLegendClick(legend); 
-                } else {
-                  console.log('Legend clicked:', legend);
-                }
+                handleLegendClick(legend);
+                onLegendClick(legend);
               },
             },
             title: {

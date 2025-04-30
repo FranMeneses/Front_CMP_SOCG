@@ -14,7 +14,7 @@ export const ValleyColors = [
 
 export const ValleyColorsHover = [
     "#573B92",
-    "#E66C37",
     "#2D7A4D",
+    "#E66C37",
     "#EFD689",
 ]

@@ -139,6 +139,9 @@ export const LineChartOptions = ({
 };
   
 export const PieChartOptions: ChartOptions<'doughnut'> = {
+    animation: {
+      animateRotate: true,
+    },
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -162,6 +165,7 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
       },
       tooltip: {
         enabled: true,
+        position: 'nearest',
       },
       title: {
         display: true,

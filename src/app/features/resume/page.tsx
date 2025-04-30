@@ -95,8 +95,8 @@ export default function Resume() {
                             ? pieChartDataSummarySpecialistMock
                             : pieChartData
                         }
-                        selectedLegend={selectedLegend}
-                        onLegendClick={handleLegendClick}
+                        selectedLegend={userRole === "gerente" || userRole === "superintendente" ? selectedLegend : null}
+                        onLegendClick={userRole === "gerente" || userRole === "superintendente" ? handleLegendClick : undefined}
                         data-test-id="pie-chart"
                       />
                     </div>
