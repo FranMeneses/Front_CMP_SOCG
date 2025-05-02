@@ -1,5 +1,5 @@
 import { GET_SUBTASKS } from "@/app/api/subtasks";
-import { ISubtask } from "@/app/models/ITasks";
+import { ISubtask } from "@/app/models/ISubtasks";
 import { useQuery } from "@apollo/client";
 import { useState, useEffect } from "react";
 

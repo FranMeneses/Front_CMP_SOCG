@@ -10,6 +10,7 @@ export const usePlanification = () => {
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [tableOption, setTableOption] = useState<string>("Tareas");
+    const [selectedForm, setSelectedForm] = useState<string | null>(null);
     const [subTasks, setSubtasks] = useState<any[]>([]);
     const [createTask] = useMutation(CREATE_TASK);
     const {data,loading,error} = useQuery(GET_INFO_TASKS);
@@ -20,6 +21,11 @@ export const usePlanification = () => {
     const handleAddTask = () => {
         setIsPopupOpen(true);
     };
+
+    const handleCancel = () => {
+        setIsPopupOpen(false);
+        setSelectedForm(null);
+    }
 
     const handleSave = async (task: { title: string; description: string; type: string; valley: string; faena: string }) => {
         if (task.type === "Tarea") {
@@ -42,6 +48,7 @@ export const usePlanification = () => {
         } else {
             // Handle subtarea creation logic here
         }
+        setSelectedForm(null);
         setIsPopupOpen(false);
     };
 
@@ -82,24 +89,46 @@ export const usePlanification = () => {
         }
     }, [data, loading, getSubtasks]);
 
+    const getRemainingDays = (startDate: string, endDate: string) => {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = Math.abs(end.getTime() - start.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+    }
+
+    const formatDate = (isoDate: string): string => {
+        const date = new Date(isoDate);
+    
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); 
+        const day = String(date.getDate() +1 ).padStart(2, "0");
+    
+        return `${day}-${month}-${year}`; 
+    };
 
     return {
-        isPopupOpen,
-        setIsPopupOpen,
-        selectedTaskId,
-        setSelectedTaskId,
-        isSidebarOpen,
-        setIsSidebarOpen,
-        tableOption,
         setTableOption,
         handleAddTask,
         handleSave,
         handleOnTaskClick,
         toggleSidebar,
         createTask,
+        getRemainingDays,
+        setIsPopupOpen,
+        setSelectedTaskId,
+        setIsSidebarOpen,
+        setSelectedForm,
+        handleCancel,
+        formatDate,
+        isPopupOpen,
+        selectedTaskId,
+        isSidebarOpen,
+        tableOption,
         data,
         loading,
         error,
-        subTasks
+        subTasks,
+        selectedForm,
     };
 };

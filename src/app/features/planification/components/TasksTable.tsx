@@ -1,7 +1,9 @@
 'use client';
 import React from "react";
 import { ValleysTasksTableColumns, SubtaskTableColumns } from "@/constants/tableConstants";
-import { IInfoTask, ISubtask } from "@/app/models/ITasks";
+import { IInfoTask } from "@/app/models/ITasks";
+import { ISubtask } from "@/app/models/ISubtasks";
+import { usePlanification } from "../hooks/usePlanification";
 
 interface TasksTableProps {
     tasks: IInfoTask[];
@@ -19,6 +21,10 @@ const TasksTable: React.FC<TasksTableProps> = ({
     onTaskClick,
     tableOption,
 }) => {
+
+
+    const {getRemainingDays,formatDate} = usePlanification();
+
     return (
         <div className="overflow-x-auto border border-[#041e3e] rounded-md">
             <table className="table-auto w-full ">
@@ -67,10 +73,10 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                             <td className="px-4 py-2 text-center">{"-"}</td>
                                             <td className="px-4 py-2 text-center">{"-"}</td>
                                             <td className="px-4 py-2 text-center">{subtask.budget}</td>
-                                            <td className="px-4 py-2 text-center">{subtask.startDate}</td>
-                                            <td className="px-4 py-2 text-center">{subtask.endDate}</td>
-                                            <td className="px-4 py-2 text-center">{"dias restantes"}</td>
-                                            <td className="px-4 py-2 text-center">{subtask.finalDate}</td>
+                                            <td className="px-4 py-2 text-center">{formatDate(subtask.startDate)}</td>
+                                            <td className="px-4 py-2 text-center">{formatDate(subtask.endDate)}</td>
+                                            <td className="px-4 py-2 text-center">{getRemainingDays(subtask.startDate,subtask.endDate)}</td>
+                                            <td className="px-4 py-2 text-center">{formatDate(subtask.finalDate)}</td>
                                         </tr>
                                     ))}
                         </React.Fragment>
