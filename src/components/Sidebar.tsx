@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { useState } from 'react';
 
 interface SidebarProps {
   onNavClick?: () => void;
@@ -14,6 +15,9 @@ interface SidebarProps {
 export function Sidebar({ onNavClick, userRole }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+
+  const [isDisabled, setIsDisabled] = useState(false); 
+
 
   const navItems = [
     {
@@ -78,8 +82,12 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
             variant={item.isActive ? "secondary" : "ghost"}
             size="sm"
             className="justify-start"
-            onClick={onNavClick}
-            data-test-id={`sidebar-${item.title.toLowerCase}`}
+            onClick={() => {
+              setIsDisabled(true); 
+              if (onNavClick) onNavClick();
+            }}
+            disabled={isDisabled} 
+            data-test-id={`sidebar-${item.title.toLowerCase()}`}
           >
             <Link href={item.href}>
               <item.icon className={cn("mr-2 h-6 w-6", item.isActive && "text-primary")} />
@@ -92,7 +100,11 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
           variant="ghost"
           size="sm"
           className="justify-start cursor-pointer"
-          onClick={() => router.push('/')} 
+          onClick={() => {
+            setIsDisabled(true); 
+            router.push('/');
+          }}
+          disabled={isDisabled} 
           data-test-id="sidebar-logout"
         >
           <LogOut className="mr-2 h-6 w-6" />
