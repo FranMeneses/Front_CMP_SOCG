@@ -1,8 +1,8 @@
 'use client';
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ManagementTableColumns, specialistTableColums } from "@/constants/tableConstants";
-import { ITask, ISubtask } from "@/app/models/ITasks";
-import { useResume } from "../hooks/useResume";
+import { ITask } from "@/app/models/ITasks";
+import { ISubtask } from "@/app/models/ISubtasks";
 import { useDynamicTable } from "../hooks/useDynamicTable";
 
 interface DynamicTableProps {

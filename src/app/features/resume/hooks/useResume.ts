@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_TASKS } from "@/app/api/tasks";
 import { GET_TASK_SUBTASKS } from "@/app/api/tasks";
-import { ISubtask } from "@/app/models/ITasks";
+import { ISubtask } from "@/app/models/ISubtasks";
 
 export function useResume() {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);

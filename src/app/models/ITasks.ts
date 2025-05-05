@@ -7,7 +7,7 @@ export interface ITask {
     statusId: number;
     valley: IValley;
     faena: IFaena;
-    status: IStatus;
+    status: ITaskStatus;
 }
 
 export interface IValley {
@@ -28,31 +28,19 @@ export interface CreateTaskInput {
     name: string;
 }
 
-export interface ISubtask {
+export interface IInfoTask {
     id: string;
     taskId: string;
-    number: number;
-    name: string;
-    description: string;
-    budget: number;
-    expense: number;
-    startDate: string;
-    endDate: string;
-    finalDate: string;
-    beneficiaryId: string;
-    statusId: number;
-    priorityId: number;
-    status: IStatus;
-    priority: IPriority;
+    originId:number;
+    invesmentId:number;
+    typeId:number;
+    scopeId:number;
+    interactionId:number;
+    riskId:number;
+    task:ITask;
 }
 
-export interface IPriority {
+export interface ITaskStatus {
     id: number;
     name: string;
-}
-
-export interface IStatus {
-    id: number;
-    name: string;
-    percentage: number;
 }

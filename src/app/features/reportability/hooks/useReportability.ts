@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_TASK } from "@/app/api/tasks";
 import { GET_SUBTASKS } from "@/app/api/subtasks";
-import { ISubtask } from "@/app/models/ITasks";
+import { ISubtask } from "@/app/models/ISubtasks";
 import { ValleyColors, Valleys } from "@/constants/valleys";
 import { Faenas } from "@/constants/faenas";
 

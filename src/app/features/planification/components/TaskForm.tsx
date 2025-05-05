@@ -53,16 +53,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
   return (
     <div data-test-id="task-form">
       <div className="mb-4 truncate">
-        <label className="text-sm font-medium mb-1">Tipo</label>
-        <div className="mb-4">
-          <DropdownMenu
-            buttonText="Seleccionar tipo"
-            items={["Tarea", "Subtarea"]}
-            onSelect={(item) => setType(item)}
-            isInModal={true}
-            data-test-id="task-type-dropdown"
-          />
-        </div>
         <label className="block text-sm font-medium mb-1">Título</label>
         <input
           type="text"
@@ -72,7 +62,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
           data-test-id="task-title-input"
         />
       </div>
-      {type === "Tarea" ? (
         <>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Descripción</label>
@@ -104,17 +93,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSave, onCancel }) => {
             />
           </div>
         </>
-      ) : (
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Descripción</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border rounded px-3 py-2"
-            data-test-id="subtask-description-input"
-          />
-        </div>
-      )}
       <div className="flex justify-end space-x-2">
         <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer" data-test-id="cancel-button">
           Cancelar

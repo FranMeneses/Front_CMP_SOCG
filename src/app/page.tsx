@@ -1,14 +1,15 @@
 'use client';
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useHooks } from "./features/hooks/useHooks";
 
 export default function Home() {
 
-  const router = useRouter();
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const [user, setUser] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+
+  const {handleLoginRedirect} = useHooks();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,7 +17,7 @@ export default function Home() {
     setTimeout(e => {
       setIsButtonDisabled(false);
     }, 5000, e);
-    router.push("features/resume");
+    handleLoginRedirect(user);
   };
 
 

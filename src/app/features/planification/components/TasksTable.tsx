@@ -1,45 +1,15 @@
 'use client';
 import React from "react";
-import { TaskTableColumns, SubtaskTableColumns } from "@/constants/tableConstants";
-
-export interface Subtask {
-    id: string;
-    code: string;
-    name: string;
-    startDate: string;
-    endDate: string;
-    progress: number;
-    complianceStatus: string;
-}
-
-export interface Task {
-    id: string;
-    code: string;
-    name: string;
-    origin: string;
-    type: string;
-    scope: string;
-    operationalInteraction: string;
-    operationalRisk: string;
-    compliance: string;
-    priority: string;
-    status: string;
-    assigned: string;
-    budget: number;
-    actualExpense: number;
-    gcBudget: number;
-    difference: number;
-    accountingMonth: string;
-    startDate: string;
-    endDate: string;
-    remainingDays: number;
-    finishDate: string;
-    progress: number;
-    subtasks: Subtask[];
-}
+import { ValleysTasksTableColumns, SubtaskTableColumns } from "@/constants/tableConstants";
+import { ISubtask } from "@/app/models/ISubtasks";
+import { usePlanification } from "../hooks/usePlanification";
+import { taskOrigin, taskType, taskScope, taskInteraction, taskRisk } from "@/constants/infoTasks";
+import { ZoomIn } from "lucide-react";
 
 interface TasksTableProps {
-    tasks: Task[];
+    tasks: any[];
+    subtasks: ISubtask[];
+
     selectedTaskId: string | null;
     onTaskClick: (taskId: string) => void;
     tableOption: string;
@@ -47,70 +17,78 @@ interface TasksTableProps {
 
 const TasksTable: React.FC<TasksTableProps> = ({
     tasks,
+    subtasks,
     selectedTaskId,
     onTaskClick,
     tableOption,
 }) => {
+
+
+    const {getRemainingDays,formatDate} = usePlanification();
+
     return (
-        <div className="overflow-x-auto">
-            <table className="table-auto w-full border-collapse border border-[#08203d]">
-                <thead className="bg-[#0e70e884]">
-                    <tr className="text-sm text-gray-700">
-                        {(tableOption === "Tareas" ? TaskTableColumns : SubtaskTableColumns).map((column, index) => (
+        <div className="overflow-x-auto border border-[#041e3e] rounded-md">
+            <table className="table-auto w-full ">
+                <thead className="bg-[#2771CC]">
+                    <tr className="text-sm text-white">
+                        {(ValleysTasksTableColumns).map((column, index) => (
                             <th
                                 key={index}
-                                className="px-4 py-2 text-center font-bold border border-[#08203d]"
+                                className="px-4 py-2 text-center font-medium truncate"
                             >
                                 {column}
                             </th>
                         ))}
+                        <th colSpan={11}></th>
                     </tr>
                 </thead>
-                <tbody className="bg-white text-xs truncate">
-                    {tableOption === "Tareas"
-                        ? tasks.map((task) => (
+                <tbody className="bg-white text-xs truncate divide-y divide-[#041e3e]">
+                    {tasks.map((task) => (
+                        <React.Fragment key={task.id}>
                             <tr
-                                key={task.id}
-                                onClick={() => onTaskClick(task.id)}
-                                className={`${selectedTaskId === task.id ? "bg-blue-100" : ""} cursor-pointer hover:odd:bg-[#6993c595] hover:even:bg-[#f8e1b0] border border-[#08203d] odd:bg-[#e0eeff] even:bg-[#fff2d5]`}
+                                onClick={() => onTaskClick(task.taskId)}
+                                className={`${selectedTaskId === task.taskId ? "bg-white" : ""} cursor-pointer`}
                             >
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.code}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.name}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.origin}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.type}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.scope}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.operationalInteraction}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.operationalRisk}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.compliance}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.priority}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.status}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.assigned}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.budget}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.actualExpense}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.gcBudget}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.difference}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.accountingMonth}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.startDate}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.endDate}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.remainingDays}</td>
-                                <td className="px-4 py-2 border border-[#08203d] text-center">{task.finishDate}</td>
+                                <td className="px-4 py-2 text-center">{task.task.name}</td>
+                                <td className="px-4 py-2 text-center">{taskOrigin[task.originId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskType[task.typeId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskScope[task.scopeId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskInteraction[task.interactionId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskRisk[task.riskId+1]}</td>
+                                <td className="px-4 py-2 text-center">{task.budget ? task.budget : "-"}</td>
+                                <td className="px-4 py-2 text-center">{task.startDate ? formatDate(task.startDate) : "-"}</td>
+                                <td className="px-4 py-2 text-center">{task.endDate ? formatDate(task.endDate) : "-"}</td>
+                                <td className="px-4 py-2 text-center">{getRemainingDays(task.startDate, task.endDate)}</td>
+                                <td className="px-4 py-2 text-center">{task.finishDate ? formatDate(task.finishDate) : "-"}</td>
+                                <td className="px-4 py-2 text-center">
+                                    <ZoomIn size={20} color="#041e3e" />
+                                </td>
                             </tr>
-                        ))
-                        : tasks.flatMap((task) =>
-                            task.subtasks.map((subtask) => (
-                                <tr
-                                    key={subtask.id}
-                                    className="cursor-pointer hover:odd:bg-[#6993c595] hover:even:bg-[#f8e1b0] border border-[#08203d] odd:bg-[#e0eeff] even:bg-[#fff2d5]"
-                                >
-                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.code}</td>
-                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.name}</td>
-                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.startDate}</td>
-                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.endDate}</td>
-                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.progress}</td>
-                                    <td className="px-4 py-2 border border-[#08203d] text-center">{subtask.complianceStatus}</td>
-                                </tr>
-                            ))
-                        )}
+                            {selectedTaskId === task.taskId &&
+                                subtasks.filter((subtask) => subtask.taskId === task.taskId) 
+                                    .map((subtask) => (
+                                        <tr
+                                            key={subtask.id}
+                                            className="cursor-pointer bg-gray-200"
+                                        >
+                                            <td className="px-4 py-2 text-center">{subtask.name}</td>
+                                            <td className="px-4 py-2 text-center">{"-"}</td>
+                                            <td className="px-4 py-2 text-center">{"-"}</td>
+                                            <td className="px-4 py-2 text-center">{"-"}</td>
+                                            <td className="px-4 py-2 text-center">{"-"}</td>
+                                            <td className="px-4 py-2 text-center">{"-"}</td>
+                                            <td className="px-4 py-2 text-center">{subtask.budget}</td>
+                                            <td className="px-4 py-2 text-center">{formatDate(subtask.startDate)}</td>
+                                            <td className="px-4 py-2 text-center">{formatDate(subtask.endDate)}</td>
+                                            <td className="px-4 py-2 text-center">{getRemainingDays(subtask.startDate,subtask.endDate)}</td>
+                                            <td className="px-4 py-2 text-center">{formatDate(subtask.finalDate)}</td>
+                                            <td className="px-4 py-2 text-center">
+                                                <ZoomIn size={20} color="#041e3e" />
+                                            </td>
+                                        </tr>
+                                    ))}
+                        </React.Fragment>
+                    ))}
                 </tbody>
             </table>
         </div>
