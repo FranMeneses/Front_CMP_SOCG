@@ -1,12 +1,13 @@
 'use client';
 import React from "react";
 import { ValleysTasksTableColumns, SubtaskTableColumns } from "@/constants/tableConstants";
-import { IInfoTask } from "@/app/models/ITasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../hooks/usePlanification";
+import { taskOrigin, taskType, taskScope, taskInteraction, taskRisk } from "@/constants/infoTasks";
+import { ZoomIn } from "lucide-react";
 
 interface TasksTableProps {
-    tasks: IInfoTask[];
+    tasks: any[];
     subtasks: ISubtask[];
 
     selectedTaskId: string | null;
@@ -30,7 +31,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
             <table className="table-auto w-full ">
                 <thead className="bg-[#2771CC]">
                     <tr className="text-sm text-white">
-                        {(tableOption === "Tareas" ? ValleysTasksTableColumns : SubtaskTableColumns).map((column, index) => (
+                        {(ValleysTasksTableColumns).map((column, index) => (
                             <th
                                 key={index}
                                 className="px-4 py-2 text-center font-medium truncate"
@@ -38,6 +39,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                 {column}
                             </th>
                         ))}
+                        <th colSpan={11}></th>
                     </tr>
                 </thead>
                 <tbody className="bg-white text-xs truncate divide-y divide-[#041e3e]">
@@ -48,16 +50,19 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                 className={`${selectedTaskId === task.taskId ? "bg-white" : ""} cursor-pointer`}
                             >
                                 <td className="px-4 py-2 text-center">{task.task.name}</td>
-                                <td className="px-4 py-2 text-center">{task.originId}</td>
-                                <td className="px-4 py-2 text-center">{task.typeId}</td>
-                                <td className="px-4 py-2 text-center">{task.scopeId}</td>
-                                <td className="px-4 py-2 text-center">{task.interactionId}</td>
-                                <td className="px-4 py-2 text-center">{task.riskId}</td>
-                                <td className="px-4 py-2 text-center">{"task.budget"}</td>
-                                <td className="px-4 py-2 text-center">{"task.startDate"}</td>
-                                <td className="px-4 py-2 text-center">{"task.endDate"}</td>
-                                <td className="px-4 py-2 text-center">{"task.remainingDays"}</td>
-                                <td className="px-4 py-2 text-center">{"task.finishDate"}</td>
+                                <td className="px-4 py-2 text-center">{taskOrigin[task.originId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskType[task.typeId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskScope[task.scopeId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskInteraction[task.interactionId + 1]}</td>
+                                <td className="px-4 py-2 text-center">{taskRisk[task.riskId+1]}</td>
+                                <td className="px-4 py-2 text-center">{task.budget ? task.budget : "-"}</td>
+                                <td className="px-4 py-2 text-center">{task.startDate ? formatDate(task.startDate) : "-"}</td>
+                                <td className="px-4 py-2 text-center">{task.endDate ? formatDate(task.endDate) : "-"}</td>
+                                <td className="px-4 py-2 text-center">{getRemainingDays(task.startDate, task.endDate)}</td>
+                                <td className="px-4 py-2 text-center">{task.finishDate ? formatDate(task.finishDate) : "-"}</td>
+                                <td className="px-4 py-2 text-center">
+                                    <ZoomIn size={20} color="#041e3e" />
+                                </td>
                             </tr>
                             {selectedTaskId === task.taskId &&
                                 subtasks.filter((subtask) => subtask.taskId === task.taskId) 
@@ -77,6 +82,9 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                             <td className="px-4 py-2 text-center">{formatDate(subtask.endDate)}</td>
                                             <td className="px-4 py-2 text-center">{getRemainingDays(subtask.startDate,subtask.endDate)}</td>
                                             <td className="px-4 py-2 text-center">{formatDate(subtask.finalDate)}</td>
+                                            <td className="px-4 py-2 text-center">
+                                                <ZoomIn size={20} color="#041e3e" />
+                                            </td>
                                         </tr>
                                     ))}
                         </React.Fragment>

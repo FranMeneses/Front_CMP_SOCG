@@ -107,6 +107,32 @@ export const usePlanification = () => {
         return `${day}-${month}-${year}`; 
     };
 
+    const tasksWithDetails = data?.infoTasks.map((task: any) => {
+        const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.taskId);
+    
+        const totalBudget = associatedSubtasks.reduce((sum, subtask) => sum + (subtask.budget || 0), 0);
+    
+        const startDate = associatedSubtasks.length
+            ? new Date(Math.min(...associatedSubtasks.map((subtask) => new Date(subtask.startDate).getTime())))
+            : null;
+    
+        const endDate = associatedSubtasks.length
+            ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.endDate).getTime())))
+            : null;
+    
+        const finishDate = associatedSubtasks.length
+            ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.finalDate).getTime())))
+            : null;
+    
+        return {
+            ...task,
+            budget: totalBudget,
+            startDate: startDate ? startDate.toISOString() : null,
+            endDate: endDate ? endDate.toISOString() : null,
+            finishDate: finishDate ? finishDate.toISOString() : null,
+        };
+    });
+
     return {
         setTableOption,
         handleAddTask,
@@ -129,6 +155,7 @@ export const usePlanification = () => {
         loading,
         error,
         subTasks,
+        tasksWithDetails,
         selectedForm,
     };
 };

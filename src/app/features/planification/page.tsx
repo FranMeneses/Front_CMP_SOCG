@@ -30,6 +30,7 @@ export default function Planification() {
         selectedTaskId,
         isSidebarOpen,
         tableOption,
+        tasksWithDetails,
     } = usePlanification();
 
     const { userRole } = useHooks();
@@ -69,18 +70,18 @@ export default function Planification() {
                                         <div className="flex flex-row justify-between items-center mb-4">
                                             <Button
                                                 onClick={handleAddTask}
-                                                variant="default"
+                                                variant="ghost"
                                                 size="default"
-                                                className="flex flex-row cursor-pointer bg-[#4B8DF8] hover:bg-[#08203d]/90 text-white"
+                                                className="flex flex-row cursor-pointer "
                                                 data-test-id="add-task-button"
                                             >
-                                                <Plus size={25} color="white" />
+                                                <Plus size={25} color="black" />
                                                 <span className="ml-2">Añadir</span>
                                             </Button>
                                         </div>
                                         <div>
                                             <TasksTable
-                                                tasks={data.infoTasks}
+                                                tasks={tasksWithDetails}
                                                 subtasks={subTasks}
                                                 selectedTaskId={selectedTaskId}
                                                 onTaskClick={handleOnTaskClick}
