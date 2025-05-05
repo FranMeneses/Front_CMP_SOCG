@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_TASK } from "@/app/api/tasks";
-import { GET_SUBTASKS } from "@/app/api/subtasks";
+import { GET_SUBTASKS, GET_VALLEY_SUBTASKS } from "@/app/api/subtasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { ValleyColors, Valleys } from "@/constants/valleys";
 import { Faenas } from "@/constants/faenas";
@@ -14,9 +14,7 @@ export function useReportability() {
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
   const { data, loading, error } = useQuery(GET_SUBTASKS);
   const [getTask] = useLazyQuery(GET_TASK);
-
-  // PEDIR AL FRANCISCO QUE AGREGUE VALLE A LA SUBTAREA
-
+  const [GetValleySubtasks] = useLazyQuery(GET_VALLEY_SUBTASKS);
 
   useEffect(() => {
     if (data?.subtasks) {
@@ -102,50 +100,70 @@ export function useReportability() {
     }
   };
 
+  const fetchCalendarEvents = async (subtasks: ISubtask[]) => {
+    const events = await Promise.all(
+      subtasks.map(async (subtask) => {
+        try {
+          const { data } = await getTask({
+            variables: { id: subtask.taskId },
+          });
+          const task = data?.task;
+  
+          const endDate = new Date(subtask.endDate);
+          endDate.setDate(endDate.getDate() + 1);
+  
+          return {
+            title: subtask.name,
+            start: endDate.toISOString(),
+            end: endDate.toISOString(),
+            progress: subtask.status.percentage,
+            valley: handleGetValley(task?.valleyId ?? 5),
+            faena: handleGetFaena(task?.faenaId ?? 11),
+            color: handleGetColor(task?.valleyId ?? 5),
+            allDay: true,
+          };
+        } catch (err) {
+          console.error("Error fetching task:", err);
+          return null;
+        }
+      })
+    );
+    setCalendarEvents(events.filter((event) => event !== null));
+  };
+  
   useEffect(() => {
-    const fetchCalendarEvents = async () => {
-      const events = await Promise.all(
-        Subtasks.map(async (subtask) => {
-          try {
-            const { data } = await getTask({
-              variables: { id: subtask.taskId },
-            });
-            const task = data?.task;
-  
-            const endDate = new Date(subtask.endDate);
-            endDate.setDate(endDate.getDate() + 1);
-  
-            return {
-              title: subtask.name,
-              start: endDate.toISOString(),
-              end: endDate.toISOString(),
-              progress: subtask.status.percentage,
-              valley: handleGetValley(task?.valleyId ?? 5),
-              faena: handleGetFaena(task?.faenaId ?? 11),
-              color: handleGetColor(task?.valleyId ?? 5),
-              allDay: true,
-            };
-          } catch (err) {
-            console.error("Error fetching task:", err);
-            return null;
-          }
-        })
-      );
-      setCalendarEvents(events.filter((event) => event !== null));
-    };
-  
     if (Subtasks.length > 0) {
-      fetchCalendarEvents();
+      fetchCalendarEvents(Subtasks);
     }
   }, [Subtasks, getTask]);
+  
+  const handleDropdownSelect = async (item: string) => {
+    setSelectedItem(item);
+  
+    if (item === "Transversal") {
+      setSubtasks(data?.subtasks || []);
+      await fetchCalendarEvents(data?.subtasks || []); 
+    } else {
+      const valleyId = Valleys.indexOf(item) + 1;
+      try {
+        const { data: valleyData } = await GetValleySubtasks({ variables: { valleyId } });
+        const valleySubtasks = valleyData?.valleySubtasks || [];
+        setSubtasks(valleySubtasks);
+        await fetchCalendarEvents(valleySubtasks); 
+      } 
+      catch (error) {
+        console.error("Error fetching valley subtasks:", error);
+      }
+    }
+  };
 
   return {
+    toggleSidebar,
+    handleDropdownSelect,
     data,
     loading,
     isSidebarOpen,
-    toggleSidebar,
     selectedItem,
-    setSelectedItem,
     calendarView,
     calendarEvents,
   };

@@ -41,6 +41,35 @@ export const GET_SUBTASK = gql`
   }
 `;
 
+export const GET_VALLEY_SUBTASKS = gql`
+  query GetValleySubtasks($valleyId: Int!) {
+    valleySubtasks (valleyId: $valleyId ) {
+      id
+      name
+      taskId
+      description
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      priority {
+        id
+        name
+      }
+      status {
+        id
+        name
+        percentage
+      }
+      beneficiary {
+        id
+        legalName
+      }
+    }
+  }
+`;
+
 // MUTATIONS
 
 export const CREATE_SUBTASK = gql`

@@ -12,10 +12,10 @@ import { useHooks } from "../hooks/useHooks";
 
 export default function Reportability() {
   const {
+    toggleSidebar,
+    handleDropdownSelect,
     loading,
     isSidebarOpen,
-    toggleSidebar,
-    setSelectedItem,
     calendarView,
     calendarEvents,
   } = useReportability();
@@ -54,7 +54,7 @@ export default function Reportability() {
               <DropdownMenu
                 buttonText="Transversal"
                 items={Valleys}
-                onSelect={(item) => setSelectedItem(item)}
+                onSelect={(item) => handleDropdownSelect(item)}
                 data-test-id="dropdown-menu"
               />
               <div className="flex flex-col md:flex-row gap-4">
