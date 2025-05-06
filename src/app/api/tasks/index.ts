@@ -121,11 +121,24 @@ mutation CreateTask($input: CreateTaskDto!) {
 `;
 
 export const UPDATE_TASK = gql`
-  mutation UpdateTask($id: ID!, $input: UpdateTaskInput!) {
+  mutation UpdateTask($id: ID!, $input: UpdateTaskDto!) {
     updateTask(id: $id, input: $input) {
       id
       name
       description
+      faenaId
+      status {
+        id
+        name
+      }
+      faena {
+        id
+        name
+      }
+      valley {
+        id
+        name
+      }
     }
   }
 `;

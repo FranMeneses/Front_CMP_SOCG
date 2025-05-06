@@ -1,5 +1,5 @@
 export interface ITask {
-    id: string;
+    id?: string;
     name: string;
     description: string;
     valleyId: number;
