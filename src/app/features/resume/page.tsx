@@ -11,6 +11,7 @@ import { useHooks } from "../hooks/useHooks";
 import { usePieChart } from "./hooks/usePieChart";
 
 import { chartDataSummaryMock,barChartDataSummaryMock,pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
+import { useBarChart } from "./hooks/useBarChart";
 
 export default function Resume() {
   const {
@@ -26,6 +27,7 @@ export default function Resume() {
   } = useResume();
 
   const {pieChartData} = usePieChart();
+  const {barChartData} = useBarChart();
 
   const {userRole} = useHooks()
 
@@ -104,7 +106,7 @@ export default function Resume() {
                   <div className="w-full md:w-1/2 flex flex-col">
                     <div className="w-full md:h-[300px] lg:h-[500px] mx-auto">
                       <BarChart
-                        data={barChartDataSummaryMock}
+                        data={barChartData}
                         selectedLegend={selectedLegend}
                         onLegendClick={handleLegendClick}
                         data-test-id="bar-chart"

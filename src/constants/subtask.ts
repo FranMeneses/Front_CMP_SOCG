@@ -15,14 +15,3 @@ export const subtaskPriority = [
     'Baja',
     'Urgente',
 ]
-
-export const subtaskInteraction = [
-    'Mina',
-    'Planta',
-    'Puerto',
-    'Línea Férrea',
-    'Tránsito de Camiones',
-    'Relaves y/o Concentraducto/Acueducto',
-    'Proyectos de continuidad operacional y desarrollo',
-    'Transversal',
-]

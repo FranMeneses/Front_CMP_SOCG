@@ -153,3 +153,9 @@ export const GET_TASK_INFO = gql`
     }
   }
 `;
+
+export const GET_VALLEY_INVESTMENT_TASKS_COUNT = gql`
+  query ValleyInvestmentTasksCount($investmentId: Int!, $valleyId: Int!) {
+    valleyInvestmentTasksCount(investmentId: $investmentId, valleyId: $valleyId)
+  }
+`;

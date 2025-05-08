@@ -97,6 +97,18 @@ export const GET_VALLEY_TASKS_COUNT = gql`
   }
 `;
 
+export const GET_BUDGET_BY_MONTH_AND_VALLEY = gql`
+  query TotalBudgetByMonthAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
+    totalBudgetByMonthAndValley(monthName: $monthName, year: $year, valleyId: $valleyId)
+  }
+`;
+
+export const GET_EXPENSE_BY_MONTH_AND_VALLEY = gql`
+  query TotalExpenseByMonthAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
+    totalExpenseByMonthAndValley(monthName: $monthName, year: $year, valleyId: $valleyId)
+  }
+`;
+
 // MUTATIONS
 export const CREATE_TASK = gql`
 mutation CreateTask($input: CreateTaskDto!) {
