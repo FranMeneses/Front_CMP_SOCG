@@ -87,6 +87,7 @@ export default function BeneficiariesForm({ onSave, onCancel, initialValues }: B
                     onSelect={(item) => setHasLegalPersonality(item === "Si")}
                     buttonText="No"
                     data-test-id="has-legal-personality"
+                    selectedValue={hasLegalPersonality ? "Si" : "No"}
                 />
             </div>
             <div className="flex justify-end gap-2 mt-4">

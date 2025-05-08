@@ -14,11 +14,8 @@ export const ManagementTableColumns = [
 
 export const ValleysTasksTableColumns = [
     "Nombre",
-    "Origen Iniciativa",
-    "Tipo Iniciativa",
-    "Alcance Iniciativa",
-    "Tipo Interacción Operacional",
-    "Tipo Riesgo Operacional",
+    "Descripción",
+    "Faena",
     "Presupuesto",
     "Fecha Inicio",
     "Fecha Finalización",

@@ -1,9 +1,11 @@
 export const taskOrigin = [
-    'Desarrollo productivo',
-    'Identidad y cultura',
-    'Formación y Educación',
-    'Habitabilidad e infraestructura comunitaria',
-    'Calidad de Vida'
+    'Resolución Calificación Ambiental (RCA)',
+    'Compromiso Ambiental Voluntario (CAV)',
+    'Compromiso Histórico y/o por Controversia Operacional',
+    'Instancia Formal de Relacionamiento',
+    'Habilitación de continuidad operacional, permisos y proyectos',
+    'Arrastre de compromisos sin cumplimiento',
+    'Mesa de Trabajo'
 ]
 
 export const taskType = [
@@ -37,4 +39,20 @@ export const taskScope = [
     'Provincial',
     'Comunal',
     'Local/Comunitario (especificar territorio)'
+]
+
+export const taskState = [
+    'NO iniciada',
+    'En Espera',
+    'En Proceso',
+    'Completada',
+    'Cancelada'
+]
+
+export const taskInvestment = [
+    'Desarrollo productivo',
+    'Identidad y cultura',
+    'Formación y Educación',
+    'Habitabilidad e infraestructura comunitaria',
+    'Calidad de Vida'
 ]

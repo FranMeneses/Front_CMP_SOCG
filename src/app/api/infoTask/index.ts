@@ -101,28 +101,16 @@ export const UPDATE_INFO_TASK = gql`
   mutation UpdateInfoTask($id: ID!, $input: UpdateInfoTaskInput!) {
     updateInfoTask(id: $id, updateInfoTaskInput: $input) {
       id
-      taskId
-      originId
-      investmentId
-      typeId
-      scopeId
       interactionId
+      investmentId
+      originId
       riskId
+      scopeId
+      taskId
+      typeId
       task {
         id
         name
-        description
-        valleyId
-        faenaId
-        statusId
-        valley {
-            id
-            name
-        }
-        faena {
-            id
-            name
-        }
       }
     }
   }
@@ -140,6 +128,28 @@ export const REMOVE_INFO_TASK = gql`
       scopeId
       interactionId
       riskId
+    }
+  }
+`;
+
+// Query para obtener la infoTask por su taskId
+export const GET_TASK_INFO = gql`
+  query taskInfo($id: ID!) {
+    taskInfo(id: $id) {
+      id
+      interactionId
+      investmentId
+      originId
+      riskId
+      scopeId
+      taskId
+      typeId
+      task {
+        id
+        name
+        description
+        statusId
+      }
     }
   }
 `;
