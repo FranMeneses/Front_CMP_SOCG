@@ -11,7 +11,7 @@ export function useReportability() {
   const [selectedItem, setSelectedItem] = useState<string>("Transversal");
   const [calendarView, setCalendarView] = useState<string>("dayGridMonth");
   const [Subtasks, setSubtasks] = useState<ISubtask[]>([]);
-  const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
+  const [calendarEvents, setCalendarEvents] = useState<any[]>([]); //TODO: Define the type for calendarEvents
   const { data, loading, error } = useQuery(GET_SUBTASKS);
   const [getTask] = useLazyQuery(GET_TASK);
   const [GetValleySubtasks] = useLazyQuery(GET_VALLEY_SUBTASKS);

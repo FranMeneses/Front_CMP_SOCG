@@ -5,6 +5,8 @@ import { CREATE_INFO_TASK, GET_TASK_INFO, UPDATE_INFO_TASK } from "@/app/api/inf
 import { ISubtask } from "@/app/models/ISubtasks";
 import { CREATE_SUBTASK, GET_SUBTASK, UPDATE_SUBTASK } from "@/app/api/subtasks";
 
+//TODO: Define the type for all any variables used in this file
+
 export const usePlanification = () => {
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);

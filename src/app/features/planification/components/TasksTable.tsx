@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import ValleySubtaskForm from "./ValleySubtaskForm";
 
 interface TasksTableProps {
-    tasks: any[];
+    tasks: any[]; // TODO: Define a proper type for tasks
     subtasks: ISubtask[];
 }
 

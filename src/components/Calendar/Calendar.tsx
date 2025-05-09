@@ -14,7 +14,7 @@ interface CalendarComponentProps {
 
 const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [selectedEvent, setSelectedEvent] = useState<any>(null); //TODO: Define the type for selectedEvent
 
   const handleEventClick = (info: any) => {
 

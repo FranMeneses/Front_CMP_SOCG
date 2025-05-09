@@ -9,7 +9,7 @@ interface ValleyTaskFormProps {
   details?: boolean;
   isEditing?: boolean;
   valley: string;
-  infoTask?: any;
+  infoTask?: any; //TODO: Define the type for the task object
 }
 
 export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, details, infoTask }: ValleyTaskFormProps) {

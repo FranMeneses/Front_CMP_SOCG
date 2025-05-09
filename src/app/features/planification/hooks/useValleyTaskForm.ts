@@ -23,6 +23,8 @@ export interface InitialValues {
     faena?: number;
 }
 
+// TODO: Define the type for the task, infoTask, and subtask objects
+
 export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  isEditing?:boolean, infoTask?:any, subtask?: any) => {
     
     const { handleGetTaskBudget, handleGetTaskExpenses, handleGetTaskFaena } = usePlanification();

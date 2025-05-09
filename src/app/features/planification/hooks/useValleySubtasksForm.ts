@@ -22,6 +22,8 @@ interface SubtasksInitialValues {
     priority?: string;
 }
 
+// TODO: Define the type for the subtask object
+
 export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: any) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
     const {data: beneficiariesData, loading: beneficiariesLoading, error:beneficiariesError} = useQuery(GET_BENEFICIARIES);
