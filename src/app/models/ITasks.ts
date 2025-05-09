@@ -37,3 +37,13 @@ export interface ITaskStatus {
     id: number;
     name: string;
 }
+
+export interface ITaskBudget {
+    month: string;
+    budget: number;
+}
+
+export interface ITaskExpense {
+    month: string;
+    expense: number;
+}

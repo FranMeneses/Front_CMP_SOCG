@@ -12,6 +12,7 @@ import { usePieChart } from "./hooks/usePieChart";
 
 import { chartDataSummaryMock,barChartDataSummaryMock,pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
 import { useBarChart } from "./hooks/useBarChart";
+import { useLineChart } from "./hooks/useLineChart";
 
 export default function Resume() {
   const {
@@ -28,6 +29,7 @@ export default function Resume() {
 
   const {pieChartData} = usePieChart();
   const {barChartData} = useBarChart();
+  const {lineChartData} = useLineChart();
 
   const {userRole} = useHooks()
 
@@ -65,7 +67,7 @@ export default function Resume() {
                   <div className="w-full md:w-1/2 flex flex-col">
                     <div className="w-full aspect-w-16 aspect-h-9 mx-auto h-full">
                       <LineChart
-                        data={chartDataSummaryMock}
+                        data={lineChartData}
                         selectedLegend={selectedLegend}
                         onLegendClick={handleLegendClick}
                         data-test-id="line-chart"

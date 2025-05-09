@@ -1,11 +1,12 @@
-import { GET_VALLEY_INVESTMENT_TASKS_COUNT } from "@/app/api/infoTask";
-import { taskInvestment } from "@/constants/infoTasks";
+import { GET_ALL_INVESTMENTS, GET_VALLEY_INVESTMENT_TASKS_COUNT } from "@/app/api/infoTask";
 import { useData } from "@/context/DataContext";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
+import { IInvestment } from "@/app/models/IInfoTask";
 
 export function useBarChart() {
     const [getValleyInvesment] = useLazyQuery(GET_VALLEY_INVESTMENT_TASKS_COUNT);
+    const {data: investmentData} = useQuery(GET_ALL_INVESTMENTS);
     const [copiapoData, setCopiapoData] = useState<number[]>([]);
     const [huascoData, setHuascoData] = useState<number[]>([]);
     const [elquiData, setElquiData] = useState<number[]>([]);
@@ -13,6 +14,7 @@ export function useBarChart() {
     
       const { valleys } = useData();
       const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
+      const investmentNames = investmentData?.investments.map((investment: IInvestment )=> investment.line) || [];
 
     const handleGetCopiapoInvesment = async () => {
         try {
@@ -101,7 +103,7 @@ export function useBarChart() {
     }, []); 
 
     const barChartData = {
-        labels: taskInvestment,
+        labels: investmentNames,
         datasets: [
             {
                 label: valleyNames[0],

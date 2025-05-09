@@ -142,6 +142,26 @@ export const GET_EXPENSE_BY_MONTH_AND_VALLEY = gql`
   }
 `;
 
+// Query para obtener el gasto mensual de un valle
+export const GET_VALLEY_MONTHLY_EXPENSES = gql`
+  query GetValleyMonthlyExpenses($valleyId: Int!, $year: Int!) {
+    valleyMonthlyExpenses(valleyId: $valleyId, year: $year) {
+      month
+      expense
+    }
+  }
+`;
+
+// Query para obtener el presupuesto de un valle
+export const GET_VALLEY_MONTHLY_BUDGETS = gql`
+  query GetValleyMonthlyBudgets($valleyId: Int!, $year: Int!) {
+    valleyMonthlyBudgets(valleyId: $valleyId, year: $year) {
+      month
+      budget
+    }
+  }
+`;
+
 // Query para obtener todos los valles
 export const GET_ALL_VALLEYS = gql`
   query GetAllValleys {
