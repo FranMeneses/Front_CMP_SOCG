@@ -154,8 +154,69 @@ export const GET_TASK_INFO = gql`
   }
 `;
 
+// Query para obtener la cantidad de tareas de inversión en un valle específico
 export const GET_VALLEY_INVESTMENT_TASKS_COUNT = gql`
   query ValleyInvestmentTasksCount($investmentId: Int!, $valleyId: Int!) {
     valleyInvestmentTasksCount(investmentId: $investmentId, valleyId: $valleyId)
+  }
+`;
+
+// Query para obtener los tipos de riesgo
+export const GET_ALL_RISKS = gql`
+  query GetAllRisks {
+    risks {
+      id
+      type
+    }
+  }
+`;
+
+// Query para obtener los tipos de origen
+export const GET_ALL_ORIGINS = gql`
+  query GetAllOrigins {
+    origins {
+      id
+      name
+    }
+  }
+`;
+
+// Query para obtener los tipos de inversión
+export const GET_ALL_INVESTMENTS = gql`
+  query GetAllInvestments {
+    investments {
+      id
+      line
+    }
+  }
+`;
+
+// Query para obtener los tipos de interacción
+export const GET_ALL_INTERACTIONS = gql`
+  query GetAllInteractions {
+    interactions {
+      id
+      operation
+    }
+  }
+`;
+
+// Query para obtener los tipos de alcance
+export const GET_ALL_SCOPES = gql`
+  query GetAllScopes {
+    scopes {
+      id
+      name
+    }
+  }
+`;
+
+// Query para obtener los tipos de tarea
+export const GET_ALL_TYPES = gql`
+  query GetAllTypes {
+    types {
+      id
+      name
+    }
   }
 `;

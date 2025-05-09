@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, GET_TASK, GET_TASK_SUBTASKS, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASKS, UPDATE_TASK } from "@/app/api/tasks";
+import { CREATE_TASK, GET_TASK, GET_TASK_SUBTASKS, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASKS_BY_VALLEY, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK, GET_TASK_INFO, UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { CREATE_SUBTASK, GET_SUBTASK, UPDATE_SUBTASK } from "@/app/api/subtasks";
+import { useHooks } from "../../hooks/useHooks";
 
 //TODO: Define the type for all any variables used in this file
 
 export const usePlanification = () => {
+
+    const { currentValleyId } = useHooks();
+
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -26,7 +30,12 @@ export const usePlanification = () => {
     const [updateSubtask] = useMutation(UPDATE_SUBTASK); 
     const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
 
-    const { data, loading, error, refetch } = useQuery(GET_TASKS); 
+    const { data, loading, error, refetch } = useQuery(GET_TASKS_BY_VALLEY, {
+        variables: { valleyId: currentValleyId },
+        skip: !currentValleyId,
+    });
+
+
     const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
@@ -66,8 +75,6 @@ export const usePlanification = () => {
                 throw new Error("Task creation failed: ID is undefined.");
             }
 
-            console.log("Task created successfully:", data.createTask.id);
-
             const { data: infoData } = await createInfoTask({
                 variables: {
                     input: {
@@ -81,9 +88,6 @@ export const usePlanification = () => {
                     },
                 },
             });
-
-            console.log("Info task created successfully:", infoData.createInfoTask);
-
             await refetch();
         } catch (error) {
             console.error("Error saving task:", error);
@@ -103,10 +107,10 @@ export const usePlanification = () => {
 
     useEffect(() => {
         const fetchSubtasks = async () => {
-            if (data?.tasks) {
+            if (data?.tasksByValley) {
                 try {
                     const allSubtasks = await Promise.all(
-                        data.tasks.map(async (task: any) => {
+                        data.tasksByValley.map(async (task: any) => {
                             const { data: subtaskData } = await getSubtasks({
                                 variables: { id: task.id },
                             });
@@ -123,7 +127,7 @@ export const usePlanification = () => {
             }
         };
 
-        if (!loading && data?.tasks) {
+        if (!loading && data?.tasksByValley) {
             fetchSubtasks();
         }
     }, [data, loading, getSubtasks]);
@@ -157,9 +161,9 @@ export const usePlanification = () => {
     };
 
     const loadTasksWithDetails = async () => {
-        if (!data?.tasks) return [];
+        if (!data?.tasksByValley) return [];
         
-        const detailedTasks = await Promise.all(data.tasks.map(async (task: any) => {
+        const detailedTasks = await Promise.all(data.tasksByValley.map(async (task: any) => {
             const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.id);
             
             const budget = await handleGetTaskBudget(task.id);
@@ -194,7 +198,7 @@ export const usePlanification = () => {
 
     useEffect(() => {
         const fetchTaskDetails = async () => {
-            if (!loading && data?.tasks && subTasks.length > 0) {
+            if (!loading && data?.tasksByValley) {
                 const tasks = await loadTasksWithDetails();
                 setDetailedTasks(tasks);
             }
@@ -255,7 +259,6 @@ export const usePlanification = () => {
     };
 
     const handleGetSubtask = async (subtaskId: string) => {
-        console.log("Fetching subtask with ID:", subtaskId);
         try {
             const { data: subtaskData } = await getSubtask({
                 variables: { id: subtaskId },
@@ -272,7 +275,6 @@ export const usePlanification = () => {
                     endDate: subtaskData.subtask.endDate || new Date().toISOString(),
                 };
                 setSelectedSubtask(subtaskWithDefaults);
-                console.log("Subtask data with defaults:", subtaskWithDefaults);
                 setIsPopupSubtaskOpen(true);
                 return subtaskWithDefaults;
             } else {
@@ -318,7 +320,6 @@ export const usePlanification = () => {
     }
 
     const handleCreateSubtask = async (subtask: any) => {
-        console.log("Creating subtask with data:", subtask);
         try {
             const { data } = await createSubtask({
                 variables: {
@@ -339,7 +340,6 @@ export const usePlanification = () => {
             if (!data?.createSubtask?.id) {
                 throw new Error("Subtask creation failed: ID is undefined.");
             }
-            console.log("Subtask created successfully:", data.createSubtask.id);
             setIsPopupSubtaskOpen(false);
             refetch(); 
             window.location.reload();
@@ -350,7 +350,6 @@ export const usePlanification = () => {
     }
 
     const handleUpdateSubtask = async (subtask: any) => {
-        console.log(selectedTaskId);
         try {
             const { data } = await updateSubtask({
                 variables: {
@@ -373,7 +372,6 @@ export const usePlanification = () => {
             if (!data?.updateSubtask?.id) {
                 throw new Error("Subtask update failed: ID is undefined.");
             }
-            console.log("Subtask updated successfully:", data.updateSubtask);
             setIsPopupSubtaskOpen(false);
             window.location.reload();
         }
@@ -383,8 +381,6 @@ export const usePlanification = () => {
     };
 
     const handleUpdateTask = async (task: any) => {
-        console.log(task);
-        console.log(selectedTaskId);
         try {
             const { data } = await updateTask({
                 variables: {
@@ -415,8 +411,6 @@ export const usePlanification = () => {
                 },
             });
 
-            console.log("Info task updated successfully:", infoData.updateInfoTask.id);
-            console.log("Task updated successfully:", data.updateTask.id); 
             setIsPopupOpen(false);
             setSelectedTaskId(data.updateTask.id);
             window.location.reload();

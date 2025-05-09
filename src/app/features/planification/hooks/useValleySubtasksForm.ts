@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { subtaskPriority, subtaskState } from "@/constants/subtask";
+import { subtaskPriority, subtaskState } from "@/constants/subtask";  //TODO: CAMBIAR POR QUERY
 import { useQuery } from "@apollo/client";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
 
@@ -26,7 +26,7 @@ interface SubtasksInitialValues {
 
 export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: any) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
-    const {data: beneficiariesData, loading: beneficiariesLoading, error:beneficiariesError} = useQuery(GET_BENEFICIARIES);
+    const {data: beneficiariesData} = useQuery(GET_BENEFICIARIES);
 
     const [beneficiariesMap, setBeneficiariesMap] = useState<Record<string, string>>({});
     

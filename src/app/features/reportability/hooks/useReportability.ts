@@ -3,8 +3,8 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_TASK } from "@/app/api/tasks";
 import { GET_SUBTASKS, GET_VALLEY_SUBTASKS } from "@/app/api/subtasks";
 import { ISubtask } from "@/app/models/ISubtasks";
-import { ValleyColors, Valleys } from "@/constants/valleys";
-import { Faenas } from "@/constants/faenas";
+import { ValleyColors } from "@/constants/valleys";
+import { useData } from "@/context/DataContext";
 
 export function useReportability() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -15,6 +15,11 @@ export function useReportability() {
   const { data, loading, error } = useQuery(GET_SUBTASKS);
   const [getTask] = useLazyQuery(GET_TASK);
   const [GetValleySubtasks] = useLazyQuery(GET_VALLEY_SUBTASKS);
+
+  const { valleys, faenas } = useData();
+
+  const valleyNames = valleys ? valleys.map((valley: any) => valley.name) : [];
+
 
   useEffect(() => {
     if (data?.subtasks) {
@@ -59,45 +64,14 @@ export function useReportability() {
   };
 
   const handleGetValley = (valleyId: number) => {
-    switch (valleyId) {
-      case 1:
-        return Valleys[0];
-      case 2:
-        return Valleys[1];
-      case 3:
-        return Valleys[2];
-      case 4:
-        return Valleys[3];
-      default:
-        return "Valle desconocido";
-    }
+    const valley = valleys.find((v: any) => v.id === valleyId);
+    return valley ? valley.name : "Valle desconocido";
   };
 
+
   const handleGetFaena = (faenaId: number) => {
-    switch (faenaId) {
-      case 1:
-        return Faenas[0];
-      case 2:
-        return Faenas[1];
-      case 3:
-        return Faenas[2];
-      case 4:
-        return Faenas[3];
-      case 5:
-        return Faenas[4];
-      case 6:
-        return Faenas[5];
-      case 7:
-        return Faenas[6];
-      case 8:
-        return Faenas[7];
-      case 9:
-        return Faenas[8];
-      case 10:
-        return Faenas[9];
-      default:
-        return "Faena desconocida";
-    }
+    const faena = faenas.find((f: any) => f.id === faenaId);
+    return faena ? faena.name : "Faena desconocida";
   };
 
   const fetchCalendarEvents = async (subtasks: ISubtask[]) => {
@@ -144,7 +118,9 @@ export function useReportability() {
       setSubtasks(data?.subtasks || []);
       await fetchCalendarEvents(data?.subtasks || []); 
     } else {
-      const valleyId = Valleys.indexOf(item) + 1;
+      const valley = valleys.find((v: any) => v.name === item);
+      const valleyId = valley ? valley.id : 0;
+      
       try {
         const { data: valleyData } = await GetValleySubtasks({ variables: { valleyId } });
         const valleySubtasks = valleyData?.valleySubtasks || [];

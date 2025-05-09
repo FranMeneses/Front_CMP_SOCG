@@ -1,11 +1,16 @@
+'use client'
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { GET_VALLEY_TASKS_COUNT } from "@/app/api/tasks";
-import { ValleyColors, ValleyColorsHover, Valleys } from "@/constants/valleys";
+import { ValleyColors, ValleyColorsHover } from "@/constants/valleys";
+import { useData } from "@/context/DataContext";
 
 export function usePieChart() {
     const [valleysTasks, setValleysTasks] = useState<number[]>([0, 0, 0, 0]);
     const [valleyTasks] = useLazyQuery(GET_VALLEY_TASKS_COUNT);
+
+    const {valleys} = useData();
+    const Valleys = valleys ? valleys.map(valley => valley.name) : [];
 
     const handleCopiapoValleyTasks = async () => {
         try {

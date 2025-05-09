@@ -1,10 +1,13 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { HuascoValley, CopiapoValley, ElquiValley } from "@/constants/faenas";
-import { taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk, taskInvestment } from "@/constants/infoTasks";
-import { Valleys } from "@/constants/valleys";
+import { taskState } from "@/constants/infoTasks";
 import { usePlanification } from "./usePlanification";
+import { useData } from "@/context/DataContext";
+import { IValley } from "@/app/models/IValleys";
+import { GET_ALL_RISKS, GET_ALL_ORIGINS, GET_ALL_INVESTMENTS, GET_ALL_INTERACTIONS, GET_ALL_SCOPES, GET_ALL_TYPES } from "@/app/api/infoTask";
+import { useQuery } from "@apollo/client";
+import { IInteraction, IInvestment, IOrigin, IRisk, IScope, IType } from "@/app/models/IInfoTask";
 
-export interface InitialValues {
+interface InitialValues {
     name?: string;
     description?: string;
     origin?: number;
@@ -29,7 +32,32 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
     
     const { handleGetTaskBudget, handleGetTaskExpenses, handleGetTaskFaena } = usePlanification();
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
-   
+
+    const {valleys, faenas: Faenas} = useData();
+    const valleyNames = valleys ? valleys.map((valley: IValley) => valley.name) : [];
+    const faenaNames = Faenas ? Faenas.map((faena: IValley) => faena.name) : [];
+
+    const {data: riskData} = useQuery(GET_ALL_RISKS);
+    const {data: originData} = useQuery(GET_ALL_ORIGINS);
+    const {data: investmentData} = useQuery(GET_ALL_INVESTMENTS);
+    const {data: interactionData} = useQuery(GET_ALL_INTERACTIONS);
+    const {data: scopeData} = useQuery(GET_ALL_SCOPES);
+    const {data: typeData} = useQuery(GET_ALL_TYPES);
+
+    const risks = riskData?.risks || [];
+    const origins = originData?.origins || [];
+    const investments = investmentData?.investments || [];
+    const interactions = interactionData?.interactions || [];
+    const scopes = scopeData?.scopes || [];
+    const types = typeData?.types || [];
+
+    const taskRisk = risks.map((r: IRisk) => r.type);
+    const taskOrigin = origins.map((o: IOrigin) => o.name);
+    const taskInvestment = investments.map((i: IInvestment) => i.line);
+    const taskInteraction = interactions.map((i: IInteraction) => i.operation);
+    const taskScope = scopes.map((s: IScope) => s.name);
+    const taskType = types.map((t: IType) => t.name);
+
     const [formState, setFormState] = useState({
         name: initialValues?.name || "",
         description: initialValues?.description || "",
@@ -108,26 +136,26 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
         if (!isEditing) {
             taskDetails = {
                 ...formState,
-                valley: Valleys.findIndex((v) => v === valley) + 1,
-                faena: Number(formState.faena) ? Number(formState.faena) : faenas.findIndex((f) => f === formState.faena) + 1,
-                risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r) => r === formState.risk) + 1,
+                valley: valleyNames.findIndex((v) => v === valley) + 1,
+                faena: faenaNames.findIndex((f) => f === formState.faena) + 1,
+                risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
                 state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s) => s === formState.state) + 1,
-                interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i) => i === formState.interaction) + 1,
-                scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s) => s === formState.scope) + 1,
-                type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t) => t === formState.type) + 1,
-                origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o) => o === formState.origin) + 1,
-                investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i) => i === formState.investment) + 1,
+                interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
+                scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s: string | number) => s === formState.scope) + 1,
+                type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
+                origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
+                investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
             };
         } else {
             taskDetails = {
                 ...formState,
-                risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r) => r === formState.risk) + 1,
+                risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
                 state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s) => s === formState.state) + 1,
-                interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i) => i === formState.interaction) + 1,
-                scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s) => s === formState.scope) + 1,
-                type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t) => t === formState.type) + 1,
-                origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o) => o === formState.origin) + 1,
-                investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i) => i === formState.investment) + 1,
+                interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
+                scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s: string | number) => s === formState.scope) + 1,
+                type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
+                origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
+                investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
             };
         }
         onSave(taskDetails);
@@ -148,39 +176,57 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
         setFaenas([]);
     }, [formState, onSave]);
 
-    const handleValleySelect = useCallback((valley: string) => {
-        switch (valley) {
+    const handleValleySelect = useCallback((valleyName: string) => {
+        // Verificar que faenaNames exista y tenga elementos
+        if (!faenaNames || faenaNames.length === 0) {
+            setFaenas([]);
+            return;
+        }
+    
+        switch (valleyName) {
             case "Valle de Copiapó":
-                setFaenas(CopiapoValley);
+                setFaenas(faenaNames.slice(0, Math.min(2, faenaNames.length)));
                 break;
             case "Valle del Huasco":
-                setFaenas(HuascoValley);
+                if (faenaNames.length > 3) {
+                    setFaenas(faenaNames.slice(3, Math.min(5, faenaNames.length)));
+                } else {
+                    setFaenas([]);
+                }
                 break;
             case "Valle del Elqui":
-                setFaenas(ElquiValley);
+                if (faenaNames.length > 6) {
+                    setFaenas(faenaNames.slice(6, Math.min(9, faenaNames.length)));
+                } else {
+                    setFaenas([]);
+                }
                 break;
             case "Transversal":
-                setFaenas(["Transversal"]);
+                if (faenaNames.length > 9) {
+                    setFaenas(faenaNames.slice(9, faenaNames.length));
+                } else {
+                    setFaenas(["Transversal"]);
+                }
                 break;
             default:
                 setFaenas([]);
                 break;
         }
-    }, []);
+    }, [faenaNames]);
 
     useEffect(() => {
         handleValleySelect(valley);
     },[valley]);
 
     const dropdownItems = useMemo(() => ({
-        origin: taskOrigin,
-        type: taskType,
-        scope: taskScope,
-        interaction: taskInteraction,
-        state: taskState,
-        risk : taskRisk,
-        investment: taskInvestment,
-    }), []);
+        origin: taskOrigin || [],
+        type: taskType || [],
+        scope: taskScope || [],
+        interaction: taskInteraction || [],
+        investment: taskInvestment || [],
+        state: taskState || [],
+        risk: taskRisk || []
+    }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk]);
 
     return {
         formState,

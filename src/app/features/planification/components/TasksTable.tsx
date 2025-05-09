@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from "react";
+import React from "react";
 import { ValleysTasksTableColumns } from "@/constants/tableConstants";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../hooks/usePlanification";
@@ -8,6 +8,7 @@ import Modal from "@/components/Modal";
 import ValleyTaskForm from "./ValleyTaskForm";
 import { Button } from "@/components/ui/button";
 import ValleySubtaskForm from "./ValleySubtaskForm";
+import { useHooks } from "../../hooks/useHooks";
 
 interface TasksTableProps {
     tasks: any[]; // TODO: Define a proper type for tasks
@@ -34,6 +35,8 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
         selectedSubtask,
         expandedRow,
      } = usePlanification();
+
+     const { currentValleyName } = useHooks();
 
     return (
         <div className="overflow-x-auto border border-[#041e3e] rounded-md">
@@ -145,7 +148,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
                     <ValleyTaskForm
                         onCancel={handleCancel}
                         onSave={handleUpdateTask}
-                        valley="Valle de Copiapó"
+                        valley={currentValleyName ? currentValleyName : ""}
                         data-test-id="task-form"
                         details={true}
                         isEditing={true}
@@ -160,7 +163,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
         <ValleySubtaskForm
             onCancel={handleCancelSubtask}
             onSave={handleUpdateSubtask}
-            valley="Valle de Copiapó"
+            valley={currentValleyName ? currentValleyName : ""}
             isEditing={true}
             data-test-id="subtask-form"
             subtask={selectedSubtask}
@@ -169,7 +172,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
         <ValleySubtaskForm
             onCancel={handleCancelSubtask}
             onSave={handleCreateSubtask}
-            valley="Valle de Copiapó"
+            valley={currentValleyName ? currentValleyName : ""}
             data-test-id="subtask-form"
             subtask={{
                 name: "",

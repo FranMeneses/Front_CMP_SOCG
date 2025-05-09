@@ -1,6 +1,6 @@
 import { GET_VALLEY_INVESTMENT_TASKS_COUNT } from "@/app/api/infoTask";
 import { taskInvestment } from "@/constants/infoTasks";
-import { ValleyColors, ValleyColorsHover, Valleys } from "@/constants/valleys";
+import { useData } from "@/context/DataContext";
 import { useLazyQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 
@@ -10,6 +10,9 @@ export function useBarChart() {
     const [huascoData, setHuascoData] = useState<number[]>([]);
     const [elquiData, setElquiData] = useState<number[]>([]);
     const [loading, setLoading] = useState(true);
+    
+      const { valleys } = useData();
+      const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
 
     const handleGetCopiapoInvesment = async () => {
         try {
@@ -101,19 +104,19 @@ export function useBarChart() {
         labels: taskInvestment,
         datasets: [
             {
-                label: Valleys[0],
+                label: valleyNames[0],
                 data: copiapoData,
                 backgroundColor: ['#E9D160'],
                 hoverBackgroundColor: ['#BB9B09'],
             },
             {
-                label: Valleys[1],
+                label: valleyNames[1],
                 data: huascoData,
                 backgroundColor: ['#E9D160'],
                 hoverBackgroundColor: ['#BB9B09'],
             },
             {
-                label: Valleys[2],
+                label: valleyNames[2],
                 data: elquiData,
                 backgroundColor: ['#E9D160'],
                 hoverBackgroundColor: ['#BB9B09'],

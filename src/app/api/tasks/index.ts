@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 
-// QUERIES
-
+// Query para obtener todas las tareas
 export const GET_TASKS = gql`
   query {
     tasks {
@@ -23,6 +22,7 @@ export const GET_TASKS = gql`
   }
 `;
 
+// Query para obtener una tarea por su ID
 export const GET_TASK = gql`
   query GetTask($id: ID!) {
     task(id: $id) {
@@ -44,12 +44,40 @@ export const GET_TASK = gql`
   }
 `;
 
+// Query para obtener tareas por valle
+export const GET_TASKS_BY_VALLEY = gql`
+  query GetTasksByValley($valleyId: Int!) {
+    tasksByValley(valleyId: $valleyId) {
+      id
+      name
+      description
+      statusId
+      status {
+        id
+        name
+      }
+      faenaId
+      faena {
+        id
+        name
+      }
+      valleyId
+      valley {
+        id
+        name
+      }
+    }
+  }
+`;
+
+// Query para obtener el progreso de una tarea por su ID
 export const GET_TASK_PROGRESS = gql`
   query GetTaskProgress($id: ID!) {
     taskProgress(id: $id)
   }
 `;
 
+// Query para obtener las subtareas de una tarea por su ID
 export const GET_TASK_SUBTASKS = gql`
   query GetTaskSubtasks($id: ID!) {
     taskSubtasks(id: $id) {
@@ -79,37 +107,62 @@ export const GET_TASK_SUBTASKS = gql`
   }
 `;
 
+// Query para obtener el total del presupuesto de una tarea por su ID
 export const GET_TASK_TOTAL_BUDGET = gql`
   query GetTaskTotalBudget($id: ID!) {
     taskTotalBudget(id: $id)
   }
 `;
 
+// Query para obtener el total de gastos de una tarea por su ID
 export const GET_TASK_TOTAL_EXPENSE = gql`
   query GetTaskTotalExpense($id: ID!) {
     taskTotalExpense(id: $id)
   }
 `;
 
+// Query para obtener el total de tareas por valle
 export const GET_VALLEY_TASKS_COUNT = gql`
   query GetValleyTasksCount($valleyId: Int!) {
     valleyTasksCount(valleyId: $valleyId)
   }
 `;
 
+// Query para obtener el total presupuesto por mes y valle
 export const GET_BUDGET_BY_MONTH_AND_VALLEY = gql`
   query TotalBudgetByMonthAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
     totalBudgetByMonthAndValley(monthName: $monthName, year: $year, valleyId: $valleyId)
   }
 `;
 
+// Query para obtener el total gasto por mes y valle
 export const GET_EXPENSE_BY_MONTH_AND_VALLEY = gql`
   query TotalExpenseByMonthAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
     totalExpenseByMonthAndValley(monthName: $monthName, year: $year, valleyId: $valleyId)
   }
 `;
 
-// MUTATIONS
+// Query para obtener todos los valles
+export const GET_ALL_VALLEYS = gql`
+  query GetAllValleys {
+    valleys {
+      id
+      name
+    }
+  }
+`;
+
+// Query para obtener todas las faenas
+export const GET_ALL_FAENAS = gql`
+  query GetAllFaenas {
+    faenas {
+      id
+      name
+    }
+  }
+`;
+
+// Mutación para crear una tarea
 export const CREATE_TASK = gql`
 mutation CreateTask($input: CreateTaskDto!) {
   createTask(input: $input) {
@@ -132,6 +185,7 @@ mutation CreateTask($input: CreateTaskDto!) {
 }
 `;
 
+// Mutación para actualizar una tarea
 export const UPDATE_TASK = gql`
   mutation UpdateTask($id: ID!, $input: UpdateTaskDto!) {
     updateTask(id: $id, input: $input) {
@@ -155,6 +209,7 @@ export const UPDATE_TASK = gql`
   }
 `;
 
+// Mutación para eliminar una tarea
 export const DELETE_TASK = gql`
   mutation DeleteTask($id: ID!) {
     deleteTask(id: $id) {
