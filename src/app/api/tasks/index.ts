@@ -238,3 +238,13 @@ export const DELETE_TASK = gql`
     }
   }
 `;
+
+// Query para obtener los estados de las tareas
+export const GET_TASK_STATUSES = gql`
+  query GetTaskStatuses {
+    taskStatuses {
+      id
+      name
+    }
+  }
+`;

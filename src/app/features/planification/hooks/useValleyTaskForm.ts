@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { taskState } from "@/constants/infoTasks";
 import { usePlanification } from "./usePlanification";
 import { useData } from "@/context/DataContext";
 import { IValley } from "@/app/models/IValleys";
 import { GET_ALL_RISKS, GET_ALL_ORIGINS, GET_ALL_INVESTMENTS, GET_ALL_INTERACTIONS, GET_ALL_SCOPES, GET_ALL_TYPES } from "@/app/api/infoTask";
 import { useQuery } from "@apollo/client";
 import { IInteraction, IInvestment, IOrigin, IRisk, IScope, IType } from "@/app/models/IInfoTask";
+import { GET_TASK_STATUSES } from "@/app/api/tasks";
+import { ITaskStatus } from "@/app/models/ITasks";
 
 interface InitialValues {
     name?: string;
@@ -43,6 +44,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
     const {data: interactionData} = useQuery(GET_ALL_INTERACTIONS);
     const {data: scopeData} = useQuery(GET_ALL_SCOPES);
     const {data: typeData} = useQuery(GET_ALL_TYPES);
+    const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
 
     const risks = riskData?.risks || [];
     const origins = originData?.origins || [];
@@ -50,6 +52,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
     const interactions = interactionData?.interactions || [];
     const scopes = scopeData?.scopes || [];
     const types = typeData?.types || [];
+    const states = taskStateData?.taskStatuses || [];
 
     const taskRisk = risks.map((r: IRisk) => r.type);
     const taskOrigin = origins.map((o: IOrigin) => o.name);
@@ -57,6 +60,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
     const taskInteraction = interactions.map((i: IInteraction) => i.operation);
     const taskScope = scopes.map((s: IScope) => s.name);
     const taskType = types.map((t: IType) => t.name);
+    const taskState = states.map((s: ITaskStatus) => s.name);
 
     const [formState, setFormState] = useState({
         name: initialValues?.name || "",
@@ -139,7 +143,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
                 valley: valleyNames.findIndex((v) => v === valley) + 1,
                 faena: faenaNames.findIndex((f) => f === formState.faena) + 1,
                 risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
-                state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s) => s === formState.state) + 1,
+                state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s: string | number) => s === formState.state) + 1,
                 interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
                 scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s: string | number) => s === formState.scope) + 1,
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
@@ -150,7 +154,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
             taskDetails = {
                 ...formState,
                 risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
-                state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s) => s === formState.state) + 1,
+                state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s: string | number) => s === formState.state) + 1,
                 interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
                 scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s: string | number) => s === formState.scope) + 1,
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,

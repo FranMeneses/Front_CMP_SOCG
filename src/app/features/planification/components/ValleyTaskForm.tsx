@@ -140,7 +140,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Riesgo</label>
         <DropdownMenu
-          buttonText="Seleccionar prioridad"
+          buttonText="Seleccionar el riesgo"
           items={dropdownItems.risk}
           onSelect={(value) => handleInputChange("risk", value)}
           isInModal={true}

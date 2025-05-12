@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { subtaskPriority, subtaskState } from "@/constants/subtask";  //TODO: CAMBIAR POR QUERY
 import { useQuery } from "@apollo/client";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
+import { GET_PRIORITIES, GET_SUBTASK_STATUSES } from "@/app/api/subtasks";
+import { IPriority, ISubtasksStatus } from "@/app/models/ISubtasks";
 
 interface Beneficiary {
     id: string;
@@ -31,6 +32,15 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
     const [beneficiariesMap, setBeneficiariesMap] = useState<Record<string, string>>({});
     
     const [beneficiariesIdToNameMap, setBeneficiariesIdToNameMap] = useState<Record<string, string>>({});
+
+    const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);
+    const {data: subtaskStateData} = useQuery(GET_SUBTASK_STATUSES);
+
+    const priority = subtaskPriorityData?.priorities || [];
+    const state = subtaskStateData?.subtaskStatuses || [];
+
+    const subtaskPriority = priority.map((p: IPriority) => p.name);
+    const subtaskState = state.map((s: ISubtasksStatus) => s.name);
 
     const [subtaskFormState, setSubtaskFormState] = useState({
         name: subtasksInitialValues?.name || "",
@@ -71,7 +81,6 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
                     return date.toISOString().split('T')[0]; 
                 };
 
-                // Buscar el nombre del beneficiario usando su ID
                 let beneficiaryName = "";
                 if (subtask.beneficiaryId) {
                     beneficiaryName = beneficiariesIdToNameMap[subtask.beneficiaryId] || "";
@@ -133,8 +142,8 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
             number: parseInt(subtaskFormState.number) || 1,
             budget: parseInt(subtaskFormState.budget) || 0,
             expenses: parseInt(subtaskFormState.expenses) || 0,
-            priority: Number(subtaskFormState.priority) ? Number(subtaskFormState.priority) : subtaskPriority.findIndex((p) => p === subtaskFormState.priority) + 1,
-            status: Number(subtaskFormState.state) ? Number(subtaskFormState.state) : subtaskState.findIndex((s) => s === subtaskFormState.state) + 1,
+            priority: Number(subtaskFormState.priority) ? Number(subtaskFormState.priority) : subtaskPriority.findIndex((p: string | number) => p === subtaskFormState.priority) + 1,
+            status: Number(subtaskFormState.state) ? Number(subtaskFormState.state) : subtaskState.findIndex((s: string | number) => s === subtaskFormState.state) + 1,
             beneficiaryId: beneficiaryId,
         };
         
