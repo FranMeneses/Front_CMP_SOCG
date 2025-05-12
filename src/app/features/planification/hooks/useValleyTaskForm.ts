@@ -181,7 +181,6 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
     }, [formState, onSave]);
 
     const handleValleySelect = useCallback((valleyName: string) => {
-        // Verificar que faenaNames exista y tenga elementos
         if (!faenaNames || faenaNames.length === 0) {
             setFaenas([]);
             return;
@@ -189,11 +188,11 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
     
         switch (valleyName) {
             case "Valle de Copiapó":
-                setFaenas(faenaNames.slice(0, Math.min(2, faenaNames.length)));
+                setFaenas(faenaNames.slice(0, Math.min(3, faenaNames.length)));
                 break;
             case "Valle del Huasco":
                 if (faenaNames.length > 3) {
-                    setFaenas(faenaNames.slice(3, Math.min(5, faenaNames.length)));
+                    setFaenas(faenaNames.slice(3, Math.min(6, faenaNames.length)));
                 } else {
                     setFaenas([]);
                 }

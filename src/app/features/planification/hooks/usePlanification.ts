@@ -5,6 +5,7 @@ import { CREATE_INFO_TASK, GET_TASK_INFO, UPDATE_INFO_TASK } from "@/app/api/inf
 import { ISubtask } from "@/app/models/ISubtasks";
 import { CREATE_SUBTASK, GET_SUBTASK, UPDATE_SUBTASK } from "@/app/api/subtasks";
 import { useHooks } from "../../hooks/useHooks";
+import { IInfoTask, ITask } from "@/app/models/ITasks";
 
 //TODO: Define the type for all any variables used in this file
 
@@ -18,8 +19,8 @@ export const usePlanification = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [tableOption, setTableOption] = useState<string>("Tareas");
     const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
-    const [selectedInfoTask, setSelectedInfoTask] = useState<any>(null);
-    const [selectedSubtask, setSelectedSubtask] = useState<any>(null);
+    const [selectedInfoTask, setSelectedInfoTask] = useState<IInfoTask | null>(null);
+    const [selectedSubtask, setSelectedSubtask] = useState<ISubtask | null>(null);
     const [expandedRow, setExpandedRow] = useState<string | null>(null);
     const [detailedTasks, setDetailedTasks] = useState<any[]>([]);
 
@@ -110,10 +111,11 @@ export const usePlanification = () => {
             if (data?.tasksByValley) {
                 try {
                     const allSubtasks = await Promise.all(
-                        data.tasksByValley.map(async (task: any) => {
+                        data.tasksByValley.map(async (task: ITask) => {
                             const { data: subtaskData } = await getSubtasks({
                                 variables: { id: task.id },
                             });
+                            console.log("Subtask data:", subtaskData);
                             return subtaskData?.taskSubtasks || [];
                         })
                     );
@@ -163,10 +165,10 @@ export const usePlanification = () => {
     const loadTasksWithDetails = async () => {
         if (!data?.tasksByValley) return [];
         
-        const detailedTasks = await Promise.all(data.tasksByValley.map(async (task: any) => {
+        const detailedTasks = await Promise.all(data.tasksByValley.map(async (task: ITask) => {
             const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.id);
             
-            const budget = await handleGetTaskBudget(task.id);
+            const budget = task.id ? await handleGetTaskBudget(task.id) : null;
             
             const startDate = associatedSubtasks.length
                 ? new Date(Math.min(...associatedSubtasks.map((subtask) => new Date(subtask.startDate).getTime())))
@@ -319,7 +321,7 @@ export const usePlanification = () => {
         }
     }
 
-    const handleCreateSubtask = async (subtask: any) => {
+    const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
             const { data } = await createSubtask({
                 variables: {
@@ -349,18 +351,18 @@ export const usePlanification = () => {
         }
     }
 
-    const handleUpdateSubtask = async (subtask: any) => {
+    const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
             const { data } = await updateSubtask({
                 variables: {
-                    id: selectedSubtask.id,
+                    id: selectedSubtask?.id,
                     input: {
                         taskId: selectedTaskId,
                         number: subtask.number,
                         name: subtask.name,
                         description: subtask.description,
                         budget: subtask.budget,
-                        expense: subtask.expenses,
+                        expense: subtask.expense,
                         beneficiaryId: subtask.beneficiaryId ? subtask.beneficiaryId : null,
                         startDate: subtask.startDate,
                         endDate: subtask.endDate,
@@ -398,7 +400,7 @@ export const usePlanification = () => {
             }
             const { data: infoData } = await updateInfoTask({
                 variables: {
-                    id: selectedInfoTask.id,
+                    id: selectedInfoTask?.id,
                     input: {
                         taskId: selectedTaskId,
                         originId: task.origin,

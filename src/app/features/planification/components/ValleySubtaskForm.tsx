@@ -107,8 +107,8 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, valley,
                 <label className="block text-sm font-medium mb-1">Gastos</label>
                 <input
                     type="number"
-                    value={subtaskFormState.expenses}
-                    onChange={(e) => handleSubtaskInputChange("expenses", e.target.value)}
+                    value={subtaskFormState.expense}
+                    onChange={(e) => handleSubtaskInputChange("expense", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-expense-input"
                 />

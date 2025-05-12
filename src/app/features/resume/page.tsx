@@ -10,7 +10,7 @@ import { useResume } from "./hooks/useResume";
 import { useHooks } from "../hooks/useHooks";
 import { usePieChart } from "./hooks/usePieChart";
 
-import { chartDataSummaryMock,barChartDataSummaryMock,pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
+import { pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
 import { useBarChart } from "./hooks/useBarChart";
 import { useLineChart } from "./hooks/useLineChart";
 

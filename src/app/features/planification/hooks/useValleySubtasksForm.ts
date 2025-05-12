@@ -14,7 +14,7 @@ interface SubtasksInitialValues {
     number?: string;
     description?: string;
     budget?: string;
-    expenses?: string;
+    expense?: string;
     startDate?: string;
     endDate?: string;
     finishDate?: string;
@@ -47,7 +47,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
         number: subtasksInitialValues?.number || "",
         description: subtasksInitialValues?.description || "",
         budget: subtasksInitialValues?.budget || "",
-        expenses: subtasksInitialValues?.expenses || "",
+        expense: subtasksInitialValues?.expense || "",
         startDate: subtasksInitialValues?.startDate || "",
         endDate: subtasksInitialValues?.endDate || "",
         finishDate: subtasksInitialValues?.finishDate || "",
@@ -91,7 +91,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
                     number: subtask.number || "",
                     description: subtask.description || "",
                     budget: subtask.budget || "",
-                    expenses: subtask.expense || "",
+                    expense: subtask.expense || "",
                     startDate: formatDateForInput(subtask.startDate) || "",
                     endDate: formatDateForInput(subtask.endDate) || "",
                     finishDate: formatDateForInput(subtask.finalDate) || "", 
@@ -119,7 +119,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
                 number: subtasksInitialValues.number || "",
                 description: subtasksInitialValues.description || "",
                 budget: subtasksInitialValues.budget || "",
-                expenses: subtasksInitialValues.expenses || "",
+                expense: subtasksInitialValues.expense || "",
                 startDate: subtasksInitialValues.startDate || "",
                 endDate: subtasksInitialValues.endDate || "",
                 finishDate: subtasksInitialValues.finishDate || "",
@@ -141,7 +141,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
             ...subtaskFormState,
             number: parseInt(subtaskFormState.number) || 1,
             budget: parseInt(subtaskFormState.budget) || 0,
-            expenses: parseInt(subtaskFormState.expenses) || 0,
+            expense: parseInt(subtaskFormState.expense) || 0,
             priority: Number(subtaskFormState.priority) ? Number(subtaskFormState.priority) : subtaskPriority.findIndex((p: string | number) => p === subtaskFormState.priority) + 1,
             status: Number(subtaskFormState.state) ? Number(subtaskFormState.state) : subtaskState.findIndex((s: string | number) => s === subtaskFormState.state) + 1,
             beneficiaryId: beneficiaryId,
@@ -153,7 +153,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
             number: "",
             description: "",
             budget: "",
-            expenses: "",
+            expense: "",
             startDate: "",
             endDate: "",
             finishDate: "",

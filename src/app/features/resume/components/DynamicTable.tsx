@@ -74,10 +74,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       ></div>
                       <h3
                         className={`absolute text-sm font-medium ml-2 ${
-                          taskProgressMap[task.id ?? ''] === 0 ? "text-black" : "text-white"
+                          taskProgressMap[task.id ?? ''] <= 30 ? "text-black" : "text-white"
                         }`}
                       >
-                        {taskProgressMap[task.id ?? ''] || 0}%
+                        {taskProgressMap[task.id ?? '']?.toFixed() || 0}%
                       </h3>
                     </div>
                   ) : (
@@ -110,7 +110,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                           ></div>
                           <h3
                             className={`absolute text-sm font-medium ${
-                              subtask.status.percentage === 0 ? "text-black" : "text-white"
+                              subtask.status.percentage <= 30 ? "text-black" : "text-white"
                             } ml-2`}
                           >
                             {subtask.status.percentage}%
