@@ -13,13 +13,17 @@ export function useLineChart() {
   const [copiapoBudget, setCopiapoBudget] = useState<number[]>([]);
   const [huascoBudget, setHuascoBudget] = useState<number[]>([]);
   const [elquiBudget, setElquiBudget] = useState<number[]>([]);
+
+  const [copiapoExpenses, setCopiapoExpenses] = useState<number[]>([]);
+  const [huascoExpenses, setHuascoExpenses] = useState<number[]>([]);
+  const [elquiExpenses, setElquiExpenses] = useState<number[]>([]);
   
   const [lineChartData, setLineChartData] = useState<{
     labels: string[];
-    datasets: { label: string; data: number[]; borderColor: string; backgroundColor: string }[];
+    datasets: { label: string; data: number[]; borderColor: string; backgroundColor: string; borderDash?:[number,number], hidden?:boolean }[];
   }>({
     labels: Months,
-    datasets: []
+    datasets: [],
   });
 
   const { valleys } = useData();
@@ -57,15 +61,35 @@ export function useLineChart() {
           (budget: ITaskBudget) => budget.budget
         ) || [];
         setElquiBudget(elquiBudgetData);
+        const copiapoExpensesResponse = await getMonthlyExpenses({
+          variables: { valleyId: 1 },
+        });
+        const copiapoExpensesData = copiapoExpensesResponse.data?.valleyMonthlyExpenses?.map(
+          (expense: ITaskExpense) => expense.expense
+        ) || [];
+        setCopiapoExpenses(copiapoExpensesData);
+        const huascoExpensesResponse = await getMonthlyExpenses({
+          variables: { valleyId: 2 },
+        });
+        const huascoExpensesData = huascoExpensesResponse.data?.valleyMonthlyExpenses?.map(
+          (expense: ITaskExpense) => expense.expense
+        ) || [];
+        setHuascoExpenses(huascoExpensesData);
+        const elquiExpensesResponse = await getMonthlyExpenses({
+          variables: { valleyId: 3 },
+        });
+        const elquiExpensesData = elquiExpensesResponse.data?.valleyMonthlyExpenses?.map(
+          (expense: ITaskExpense) => expense.expense
+        ) || [];
+        setElquiExpenses(elquiExpensesData);
       } catch (error) {
         console.error("Error fetching budget data:", error);
       }
     };
 
     fetchData();
-  }, [getMonthlyBudgets]);
+  }, [getMonthlyBudgets, getMonthlyExpenses]);
 
-  {/*TODO: ADD EXPENSES TO CHART*/}
   useEffect(() => {
     setLineChartData({
       labels: Months,
@@ -88,6 +112,27 @@ export function useLineChart() {
           borderColor: ValleyColors[2],
           backgroundColor: ValleyColors[2],
         },
+        {
+          label: valleyNames.current[0] || 'Copiapó',
+          data: copiapoExpenses,
+          borderColor: ValleyColors[0],
+          backgroundColor: ValleyColors[0],
+          borderDash: [5, 5],
+        },
+        {
+          label: valleyNames.current[1] || 'Huasco',
+          data: huascoExpenses,
+          borderColor: ValleyColors[1],
+          backgroundColor: ValleyColors[1],
+          borderDash: [5, 5],
+        },
+        {
+          label: valleyNames.current[2] || 'Elqui',
+          data: elquiExpenses,
+          borderColor: ValleyColors[2],
+          backgroundColor: ValleyColors[2],
+          borderDash: [5, 5],
+        }
       ],
     });
   }, [copiapoBudget, huascoBudget, elquiBudget]); 
