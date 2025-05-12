@@ -128,17 +128,17 @@ export const GET_VALLEY_TASKS_COUNT = gql`
   }
 `;
 
-// Query para obtener el total presupuesto por mes y valle
-export const GET_BUDGET_BY_MONTH_AND_VALLEY = gql`
-  query TotalBudgetByMonthAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
-    totalBudgetByMonthAndValley(monthName: $monthName, year: $year, valleyId: $valleyId)
+// Query para obtener el total presupuesto por mes 
+export const GET_TOTAL_BUDGET_BY_MONTH = gql`
+  query GetTotalBudgetByMonth($monthName: String!, $year: Int!) {
+    totalBudgetByMonth(monthName: $monthName, year: $year)
   }
 `;
 
-// Query para obtener el total gasto por mes y valle
-export const GET_EXPENSE_BY_MONTH_AND_VALLEY = gql`
-  query TotalExpenseByMonthAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
-    totalExpenseByMonthAndValley(monthName: $monthName, year: $year, valleyId: $valleyId)
+// Query para obtener el total gasto por mes
+export const GET_TOTAL_EXPENSE_BY_MONTH = gql`
+  query GetTotalExpenseByMonth($monthName: String!, $year: Int!) {
+    totalExpenseByMonth(monthName: $monthName, year: $year)
   }
 `;
 
@@ -176,6 +176,16 @@ export const GET_ALL_VALLEYS = gql`
 export const GET_ALL_FAENAS = gql`
   query GetAllFaenas {
     faenas {
+      id
+      name
+    }
+  }
+`;
+
+// Query para obtener los estados de las tareas
+export const GET_TASK_STATUSES = gql`
+  query GetTaskStatuses {
+    taskStatuses {
       id
       name
     }
@@ -233,16 +243,6 @@ export const UPDATE_TASK = gql`
 export const DELETE_TASK = gql`
   mutation DeleteTask($id: ID!) {
     deleteTask(id: $id) {
-      id
-      name
-    }
-  }
-`;
-
-// Query para obtener los estados de las tareas
-export const GET_TASK_STATUSES = gql`
-  query GetTaskStatuses {
-    taskStatuses {
       id
       name
     }

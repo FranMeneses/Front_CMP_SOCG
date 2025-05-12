@@ -77,7 +77,7 @@ export const LineChartOptions = ({
             },
           },
           grid: {
-            display: false,
+            display: true,
           },
         },
         x: {
@@ -104,7 +104,7 @@ export const LineChartOptions = ({
         },
         legend: {
           display: true,
-          position: 'left',
+          position: 'top',
           labels: {
             font: {
               size: isMobile ? 7 : 12,
@@ -127,7 +127,7 @@ export const LineChartOptions = ({
         },
         title: {
           display: true,
-          text: `Presupuesto ${new Date().getFullYear()}`,
+          text: `Presupuesto vs Gasto ${new Date().getFullYear()}`,
           color: '#000',
           font: {
             size: isMobile? 12 : 24,
@@ -177,6 +177,7 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
         color: '#000',
         position: 'top',
         align: 'start',
+        fullSize: false,
         font: {
           size: 24,
           weight: 'bold',

@@ -29,7 +29,7 @@ const BarChart = ({
     };
   
     return (
-      <div className="w-full h-full border border-gray-300 p-4 bg-white">
+      <div className="w-full h-full p-4 bg-white">
         <Bar
           ref={(instance) => {
             if (instance) {
