@@ -12,9 +12,9 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-3000 flex items-center justify-center p-4 sm:p-6 md:p-8">
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 md:p-8">
       <div className="absolute inset-0 bg-transparent bg-opacity-50 backdrop-blur-sm"></div>
-      <div className="relative bg-white p-4 sm:p-6 rounded shadow-lg w-full max-w-[90%] sm:max-w-lg md:max-w-2xl lg:max-w-3xl z-10 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-white p-4 sm:p-6 rounded shadow-lg w-full max-w-[90%] sm:max-w-lg md:max-w-2xl lg:max-w-3xl z-[1001] max-h-[90vh] overflow-y-auto overflow-visible">
         <Button
           variant="ghost"
           onClick={onClose}

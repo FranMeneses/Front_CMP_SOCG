@@ -13,7 +13,9 @@ export function useDynamicTable(tasks: ITask[]) {
             try {
                 const { data } = await getTaskProgress({ variables: { id: task.id } });
                 if (data && data.taskProgress !== undefined) {
-                    progressMap[task.id] = data.taskProgress;
+                    if (task.id) {
+                        progressMap[task.id] = data.taskProgress;
+                    }
                 }
             } catch (error) {
                 console.error(`Error fetching progress for task ID: ${task.id}`, error);

@@ -25,7 +25,7 @@ export default function Planification() {
         detailedTasks,
     } = usePlanification();
 
-    const { userRole } = useHooks();
+    const { userRole,currentValleyName } = useHooks();
 
     return (
         <div className="overflow-x-hidden">
@@ -87,7 +87,7 @@ export default function Planification() {
                         <ValleyTaskForm
                             onCancel={handleCancel}
                             onSave={handleSaveTask}
-                            valley="Valle de Copiapó"
+                            valley={currentValleyName ? currentValleyName : ""}
                             data-test-id="task-form"
                         />
                     </Modal>

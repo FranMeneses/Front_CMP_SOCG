@@ -109,6 +109,11 @@ export const LineChartOptions = ({
             font: {
               size: isMobile ? 7 : 12,
             },
+            filter: (legendItem, data) => {
+              const datasetLabels = data.datasets.map((dataset) => dataset.label);
+              const firstIndex = datasetLabels?.indexOf(legendItem.text);
+              return firstIndex === legendItem.datasetIndex;
+            },
             boxWidth: 12,
             usePointStyle: true,
             color: '#000',

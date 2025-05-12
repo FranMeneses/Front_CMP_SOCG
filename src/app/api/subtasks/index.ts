@@ -1,7 +1,6 @@
 import { gql } from "@apollo/client";
 
-// QUERIES
-
+// Query para obtener todas las subtareas
 export const GET_SUBTASKS = gql`
   query GetAllSubtasks {
     subtasks {
@@ -31,6 +30,7 @@ export const GET_SUBTASKS = gql`
   }
 `;
 
+// Query para obtener una subtarea por su ID
 export const GET_SUBTASK = gql`
   query GetSubtask($id: ID!) {
     subtask(id: $id) {
@@ -59,6 +59,7 @@ export const GET_SUBTASK = gql`
   }
 `;
 
+// Query para obtener las subtareas de un valle por su ID
 export const GET_VALLEY_SUBTASKS = gql`
   query GetValleySubtasks($valleyId: Int!) {
     valleySubtasks (valleyId: $valleyId ) {
@@ -88,8 +89,7 @@ export const GET_VALLEY_SUBTASKS = gql`
   }
 `;
 
-// MUTATIONS
-
+// Mutación para crear una nueva subtarea
 export const CREATE_SUBTASK = gql`
   mutation CreateSubtask($input: CreateSubtaskDto!) {
     createSubtask(input: $input) {
@@ -112,6 +112,7 @@ export const CREATE_SUBTASK = gql`
   }
 `;
 
+// Mutación para actualizar una subtarea existente
 export const UPDATE_SUBTASK = gql`
   mutation UpdateSubtask($id: ID!, $input: UpdateSubtaskDto!) {
     updateSubtask(id: $id, input: $input) {
@@ -145,9 +146,31 @@ export const UPDATE_SUBTASK = gql`
   }
 `;
 
+// Mutación para eliminar una subtarea
 export const DELETE_SUBTASK = gql`
   mutation DeleteSubtask($id: ID!) {
     deleteSubtask(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
+// Query para obtener los estados de las subtareas
+export const GET_SUBTASK_STATUSES = gql`
+  query GetSubtaskStatuses {
+    subtaskStatuses {
+      id
+      name
+      percentage
+    }
+  }
+`;
+
+// Query para obtener las prioridades de las subtareas
+export const GET_PRIORITIES = gql`
+  query GetPriorities {
+    priorities {
       id
       name
     }

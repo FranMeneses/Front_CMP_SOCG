@@ -1,9 +1,3 @@
-export const Valleys = [
-    "Valle de Copiapó",
-    "Valle del Huasco",
-    "Valle del Elqui",
-    "Transversal",
-]
 
 export const ValleyColors = [
     "#B0A3CC",

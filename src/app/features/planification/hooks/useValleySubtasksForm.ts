@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { subtaskPriority, subtaskState } from "@/constants/subtask";
 import { useQuery } from "@apollo/client";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
+import { GET_PRIORITIES, GET_SUBTASK_STATUSES } from "@/app/api/subtasks";
+import { IPriority, ISubtasksStatus } from "@/app/models/ISubtasks";
 
 interface Beneficiary {
     id: string;
@@ -13,7 +14,7 @@ interface SubtasksInitialValues {
     number?: string;
     description?: string;
     budget?: string;
-    expenses?: string;
+    expense?: string;
     startDate?: string;
     endDate?: string;
     finishDate?: string;
@@ -22,20 +23,31 @@ interface SubtasksInitialValues {
     priority?: string;
 }
 
+// TODO: Define the type for the subtask object
+
 export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: any) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
-    const {data: beneficiariesData, loading: beneficiariesLoading, error:beneficiariesError} = useQuery(GET_BENEFICIARIES);
+    const {data: beneficiariesData} = useQuery(GET_BENEFICIARIES);
 
     const [beneficiariesMap, setBeneficiariesMap] = useState<Record<string, string>>({});
     
     const [beneficiariesIdToNameMap, setBeneficiariesIdToNameMap] = useState<Record<string, string>>({});
+
+    const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);
+    const {data: subtaskStateData} = useQuery(GET_SUBTASK_STATUSES);
+
+    const priority = subtaskPriorityData?.priorities || [];
+    const state = subtaskStateData?.subtaskStatuses || [];
+
+    const subtaskPriority = priority.map((p: IPriority) => p.name);
+    const subtaskState = state.map((s: ISubtasksStatus) => s.name);
 
     const [subtaskFormState, setSubtaskFormState] = useState({
         name: subtasksInitialValues?.name || "",
         number: subtasksInitialValues?.number || "",
         description: subtasksInitialValues?.description || "",
         budget: subtasksInitialValues?.budget || "",
-        expenses: subtasksInitialValues?.expenses || "",
+        expense: subtasksInitialValues?.expense || "",
         startDate: subtasksInitialValues?.startDate || "",
         endDate: subtasksInitialValues?.endDate || "",
         finishDate: subtasksInitialValues?.finishDate || "",
@@ -69,7 +81,6 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
                     return date.toISOString().split('T')[0]; 
                 };
 
-                // Buscar el nombre del beneficiario usando su ID
                 let beneficiaryName = "";
                 if (subtask.beneficiaryId) {
                     beneficiaryName = beneficiariesIdToNameMap[subtask.beneficiaryId] || "";
@@ -80,7 +91,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
                     number: subtask.number || "",
                     description: subtask.description || "",
                     budget: subtask.budget || "",
-                    expenses: subtask.expense || "",
+                    expense: subtask.expense || "",
                     startDate: formatDateForInput(subtask.startDate) || "",
                     endDate: formatDateForInput(subtask.endDate) || "",
                     finishDate: formatDateForInput(subtask.finalDate) || "", 
@@ -108,7 +119,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
                 number: subtasksInitialValues.number || "",
                 description: subtasksInitialValues.description || "",
                 budget: subtasksInitialValues.budget || "",
-                expenses: subtasksInitialValues.expenses || "",
+                expense: subtasksInitialValues.expense || "",
                 startDate: subtasksInitialValues.startDate || "",
                 endDate: subtasksInitialValues.endDate || "",
                 finishDate: subtasksInitialValues.finishDate || "",
@@ -130,9 +141,9 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
             ...subtaskFormState,
             number: parseInt(subtaskFormState.number) || 1,
             budget: parseInt(subtaskFormState.budget) || 0,
-            expenses: parseInt(subtaskFormState.expenses) || 0,
-            priority: Number(subtaskFormState.priority) ? Number(subtaskFormState.priority) : subtaskPriority.findIndex((p) => p === subtaskFormState.priority) + 1,
-            status: Number(subtaskFormState.state) ? Number(subtaskFormState.state) : subtaskState.findIndex((s) => s === subtaskFormState.state) + 1,
+            expense: parseInt(subtaskFormState.expense) || 0,
+            priority: Number(subtaskFormState.priority) ? Number(subtaskFormState.priority) : subtaskPriority.findIndex((p: string | number) => p === subtaskFormState.priority) + 1,
+            status: Number(subtaskFormState.state) ? Number(subtaskFormState.state) : subtaskState.findIndex((s: string | number) => s === subtaskFormState.state) + 1,
             beneficiaryId: beneficiaryId,
         };
         
@@ -142,7 +153,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
             number: "",
             description: "",
             budget: "",
-            expenses: "",
+            expense: "",
             startDate: "",
             endDate: "",
             finishDate: "",

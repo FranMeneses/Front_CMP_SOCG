@@ -4,11 +4,12 @@ import { Header } from "@/components/Header";
 import './styles/index.css';
 import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadinSpinner";
-import { Valleys, ValleyColors } from "@/constants/valleys";
+import { ValleyColors } from "@/constants/valleys";
 import Calendar from "@/components/Calendar/Calendar";
 import { Legend } from "./components/Legend";
 import { useReportability } from "./hooks/useReportability";
 import { useHooks } from "../hooks/useHooks";
+import { useData } from "@/context/DataContext";
 
 export default function Reportability() {
   const {
@@ -20,12 +21,18 @@ export default function Reportability() {
     calendarEvents,
   } = useReportability();
 
-  const {userRole} = useHooks(); 
+  const { userRole } = useHooks();
+  const { valleys } = useData();
+  
+  const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
+
+  const isContextLoading = useData().loadingValleys;
+  const isLoading = loading || isContextLoading;
 
   return (
     <div className="overflow-x-hidden">
       <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
-      {loading ? (
+      {isLoading ? (
         <div className="flex items-center justify-center" data-test-id="loading-spinner">
           <LoadingSpinner />
         </div>
@@ -53,7 +60,7 @@ export default function Reportability() {
               <h1 className="text-2xl font-bold">Reportabilidad</h1>
               <DropdownMenu
                 buttonText="Transversal"
-                items={Valleys}
+                items={valleyNames} 
                 onSelect={(item) => handleDropdownSelect(item)}
                 data-test-id="dropdown-menu"
               />
@@ -62,7 +69,7 @@ export default function Reportability() {
                   <Calendar calendarView={calendarView} events={calendarEvents} data-test-id="calendar"/>
                 </div>
                 <div className="w-full md:w-1/6 md:ml-12 mt-4 md:mt-16 p-4 rounded-lg border text-2xl font-medium">
-                  <Legend valley={Valleys} valleyColors={ValleyColors} />
+                  <Legend valley={valleyNames} valleyColors={ValleyColors} /> 
                 </div>
               </div>
             </div>

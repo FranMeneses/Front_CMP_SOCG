@@ -4,6 +4,8 @@ import Gantt from "frappe-gantt";
 import DropdownMenu from "@/components/Dropdown";
 import "./styles/frappe-gantt.css";
 
+//TODO: Define the type for tasks
+
 export default function GanttChart({ tasks, getColor }: { tasks: any[]; getColor: (percentage: number) => string }) {
   const ganttRef = useRef<HTMLDivElement | null>(null);
   const [viewMode, setViewMode] = useState<"Day" | "Week" | "Month">("Day");

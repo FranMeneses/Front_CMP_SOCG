@@ -18,7 +18,7 @@ export default function DropdownMenu({
   onSelect, 
   isInModal = false, 
   selectedValue,
-  disabled = false // Asegúrate de que disabled tenga un valor predeterminado
+  disabled = false 
 }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null); 
@@ -31,13 +31,13 @@ export default function DropdownMenu({
   }, [selectedValue]);
 
   const toggleDropdown = () => {
-    if (!disabled) { // Evita abrir el menú si está deshabilitado
+    if (!disabled) { 
       setIsOpen(!isOpen);
     }
   };
 
   const handleSelect = (item: string) => {
-    if (!disabled) { // Evita seleccionar un elemento si está deshabilitado
+    if (!disabled) {
       setSelectedItem(item); 
       onSelect(item); 
       setIsOpen(false); 
@@ -62,12 +62,12 @@ export default function DropdownMenu({
       ref={dropdownRef}
       className={`relative w-full ${isInModal ? '' : 'md:w-1/4'}`} 
     >
-      <div className="z-3001">
+      <div className={`${isInModal ? 'z-[1050]' : 'z-[50]'}`}>
         <Button
           variant="outline"
           onClick={toggleDropdown}
-          className={`cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`} // Estilo visual para deshabilitado
-          disabled={disabled} // Deshabilita el botón
+          className={`cursor-pointer w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+          disabled={disabled}
         >
           {selectedItem || buttonText} 
           <span className="ml-auto mt-1">
@@ -81,13 +81,13 @@ export default function DropdownMenu({
         </Button>
       </div>
       {isOpen && (
-        <div className="absolute bg-white border rounded shadow-lg w-full text-sm md:text-base z-3002">
+        <div className={`absolute bg-white border rounded shadow-lg w-full text-sm md:text-base ${isInModal ? 'z-[1051]' : 'z-[51]'} max-h-60 overflow-y-auto`}>
           <ul>
             {items.map((item, index) => (
               <li
                 key={index}
                 onClick={() => handleSelect(item)}
-                className={`p-2 hover:bg-gray-100 cursor-pointer z-3003 ${
+                className={`p-2 hover:bg-gray-100 cursor-pointer ${
                   disabled ? 'cursor-not-allowed text-gray-400' : ''
                 }`} 
               >

@@ -1,3 +1,6 @@
+import { IFaena } from "./IFaena";
+import { IValley } from "./IValleys";
+
 export interface ITask {
     id?: string;
     name: string;
@@ -8,16 +11,6 @@ export interface ITask {
     valley: IValley;
     faena: IFaena;
     status: ITaskStatus;
-}
-
-export interface IValley {
-    id: number;
-    name: string;
-}
-
-export interface IFaena {
-    id: number;
-    name: string;
 }
 
 export interface CreateTaskInput {
@@ -43,4 +36,14 @@ export interface IInfoTask {
 export interface ITaskStatus {
     id: number;
     name: string;
+}
+
+export interface ITaskBudget {
+    month: string;
+    budget: number;
+}
+
+export interface ITaskExpense {
+    month: string;
+    expense: number;
 }

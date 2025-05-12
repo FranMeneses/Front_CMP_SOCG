@@ -54,7 +54,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
             <React.Fragment key={task.id}>
               <tr
                 className="hover:bg-gray-50 text-sm cursor-pointer"
-                onClick={() => onTaskClick(task.id)}
+                onClick={() => onTaskClick(task.id ?? '')}
               >
                 <td className="text-center px-4 py-2 border-b border-gray-300">
                   {`"` + task.name + `"`}
@@ -69,15 +69,15 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {userRole === "gerente" || userRole === "superintendente" ? (
                     <div className="flex items-center text-end relative">
                       <div
-                        className={`h-4 ${getColor(taskProgressMap[task.id] || 0)} rounded`}
-                        style={{ width: `${taskProgressMap[task.id] || 0}%` }}
+                        className={`h-4 ${getColor(taskProgressMap[task.id ?? ''] || 0)} rounded`}
+                        style={{ width: `${taskProgressMap[task.id ?? ''] || 0}%` }}
                       ></div>
                       <h3
                         className={`absolute text-sm font-medium ml-2 ${
-                          taskProgressMap[task.id] === 0 ? "text-black" : "text-white"
+                          taskProgressMap[task.id ?? ''] <= 30 ? "text-black" : "text-white"
                         }`}
                       >
-                        {taskProgressMap[task.id] || 0}%
+                        {taskProgressMap[task.id ?? '']?.toFixed() || 0}%
                       </h3>
                     </div>
                   ) : (
@@ -110,7 +110,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                           ></div>
                           <h3
                             className={`absolute text-sm font-medium ${
-                              subtask.status.percentage === 0 ? "text-black" : "text-white"
+                              subtask.status.percentage <= 30 ? "text-black" : "text-white"
                             } ml-2`}
                           >
                             {subtask.status.percentage}%
@@ -118,7 +118,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         </div>
                       ) : (
                         <h3 className="text-sm font-medium text-gray-700 text-center">
-                          {subtask.statusId}
+                          {subtask.statusId} {/*TODO: CAMBIAR POR COMPLIANCE STATUS*/}
                         </h3>
                       )}
                     </td>
