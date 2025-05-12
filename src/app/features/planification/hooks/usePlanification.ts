@@ -5,9 +5,7 @@ import { CREATE_INFO_TASK, GET_TASK_INFO, UPDATE_INFO_TASK } from "@/app/api/inf
 import { ISubtask } from "@/app/models/ISubtasks";
 import { CREATE_SUBTASK, GET_SUBTASK, UPDATE_SUBTASK } from "@/app/api/subtasks";
 import { useHooks } from "../../hooks/useHooks";
-import { IInfoTask, ITask } from "@/app/models/ITasks";
-
-//TODO: Define the type for all any variables used in this file
+import { IInfoTask, ITask, ITaskDetails } from "@/app/models/ITasks";
 
 export const usePlanification = () => {
 
@@ -21,8 +19,8 @@ export const usePlanification = () => {
     const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
     const [selectedInfoTask, setSelectedInfoTask] = useState<IInfoTask | null>(null);
     const [selectedSubtask, setSelectedSubtask] = useState<ISubtask | null>(null);
-    const [expandedRow, setExpandedRow] = useState<string | null>(null);
-    const [detailedTasks, setDetailedTasks] = useState<any[]>([]);
+    const [expandedRow, setExpandedRow] = useState<string >('');
+    const [detailedTasks, setDetailedTasks] = useState<ITaskDetails[]>([]);
 
     const [createTask] = useMutation(CREATE_TASK);
     const [createSubtask] = useMutation(CREATE_SUBTASK);
@@ -99,7 +97,7 @@ export const usePlanification = () => {
 
     const handleOnTaskClick = (taskId: string) => {
         setSelectedTaskId((prev) => (prev === taskId ? null : taskId));
-        setExpandedRow((prev) => (prev === taskId ? null : taskId));
+        setExpandedRow((prev) => (prev === taskId ? '' : taskId));
     };
 
     const toggleSidebar = () => {
