@@ -9,9 +9,10 @@ import ValleyTaskForm from "./ValleyTaskForm";
 import { Button } from "@/components/ui/button";
 import ValleySubtaskForm from "./ValleySubtaskForm";
 import { useHooks } from "../../hooks/useHooks";
+import { ITaskDetails } from "@/app/models/ITasks";
 
 interface TasksTableProps {
-    tasks: any[]; // TODO: Define a proper type for tasks
+    tasks: ITaskDetails[];
     subtasks: ISubtask[];
 }
 
@@ -60,7 +61,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
                             <tr className="text-center">
                                 <td
                                     className="px-4 py-2 text-center cursor-pointer text-blue-700 font-semibold"
-                                    onClick={() => handleOnTaskClick(task.id)}
+                                    onClick={() => handleOnTaskClick(task.id ?? '')}
                                 >
                                     {task.name}
                                 </td>
@@ -70,13 +71,13 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
                                 <td className="px-4 py-2 text-center">{task.startDate ? formatDate(task.startDate) : "-"}</td>
                                 <td className="px-4 py-2 text-center">{task.endDate ? formatDate(task.endDate) : "-"}</td>
                                 <td className="px-4 py-2 text-center">{getRemainingDays(task.startDate, task.endDate)}</td>
-                                <td className="px-4 py-2 text-center">{task.finishDate ? formatDate(task.finishDate) : "-"}</td>
+                                <td className="px-4 py-2 text-center">{task.finishedDate ? formatDate(task.finishedDate) : "-"}</td>
                                 <td className="px-4 py-2 text-center">
                                     <ZoomIn
                                         size={20}
                                         color="#041e3e"
                                         className="cursor-pointer"
-                                        onClick={() => handleSeeInformation(task.id)}
+                                        onClick={() => handleSeeInformation(task.id ?? '')}
                                     />
                                 </td>
                             </tr>

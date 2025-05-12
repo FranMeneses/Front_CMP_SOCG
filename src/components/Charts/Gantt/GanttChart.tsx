@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import Gantt from "frappe-gantt";
 import DropdownMenu from "@/components/Dropdown";
 import "./styles/frappe-gantt.css";
+import { ISubtaskScheduler } from "@/app/models/ISubtasks";
 
-//TODO: Define the type for tasks
 
-export default function GanttChart({ tasks, getColor }: { tasks: any[]; getColor: (percentage: number) => string }) {
+export default function GanttChart({ tasks }: { tasks: ISubtaskScheduler[]; }) {
   const ganttRef = useRef<HTMLDivElement | null>(null);
   const [viewMode, setViewMode] = useState<"Day" | "Week" | "Month">("Day");
 
@@ -30,7 +30,7 @@ export default function GanttChart({ tasks, getColor }: { tasks: any[]; getColor
         ganttRef.current.innerHTML = "";
       }
     };
-  }, [viewMode, tasks, getColor]);
+  }, [viewMode, tasks]);
 
   return (
     <div className="h-fit w-full">

@@ -33,6 +33,7 @@ export function useSchedule() {
       end: new Date(task.endDate).toISOString(),
       progress: task.status.percentage,
       color: getColor(task.status.percentage),
+      color_progress: getColor(task.status.percentage),
     }));
 
   return {

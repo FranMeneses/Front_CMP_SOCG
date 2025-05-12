@@ -26,3 +26,12 @@ export interface ISubtasksStatus {
     name: string;
     percentage: number;
 }
+
+export interface ISubtaskScheduler {
+    id: string;
+    name: string;
+    start: string;
+    end: string;
+    progress: number;
+    color: string;
+}

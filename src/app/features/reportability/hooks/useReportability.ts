@@ -18,8 +18,6 @@ export function useReportability() {
 
   const { valleys, faenas } = useData();
 
-  const valleyNames = valleys ? valleys.map((valley: any) => valley.name) : [];
-
 
   useEffect(() => {
     if (data?.subtasks) {
