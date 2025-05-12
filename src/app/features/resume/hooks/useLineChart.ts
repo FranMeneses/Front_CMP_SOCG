@@ -39,7 +39,7 @@ export function useLineChart() {
     const fetchData = async () => {
       try {
         const copiapoBudgetResponse = await getMonthlyBudgets({
-          variables: { valleyId: 1 },
+          variables: { valleyId: 1, year: new Date().getFullYear() },
         });
         const copiapoBudgetData = copiapoBudgetResponse.data?.valleyMonthlyBudgets?.map(
           (budget: ITaskBudget) => budget.budget
@@ -47,7 +47,7 @@ export function useLineChart() {
         setCopiapoBudget(copiapoBudgetData);
         
         const huascoBudgetResponse = await getMonthlyBudgets({
-          variables: { valleyId: 2 },
+          variables: { valleyId: 2, year: new Date().getFullYear() },
         });
         const huascoBudgetData = huascoBudgetResponse.data?.valleyMonthlyBudgets?.map(
           (budget: ITaskBudget) => budget.budget
@@ -55,28 +55,31 @@ export function useLineChart() {
         setHuascoBudget(huascoBudgetData);
         
         const elquiBudgetResponse = await getMonthlyBudgets({
-          variables: { valleyId: 3 },
+          variables: { valleyId: 3, year: new Date().getFullYear() },
         });
         const elquiBudgetData = elquiBudgetResponse.data?.valleyMonthlyBudgets?.map(
           (budget: ITaskBudget) => budget.budget
         ) || [];
         setElquiBudget(elquiBudgetData);
+
         const copiapoExpensesResponse = await getMonthlyExpenses({
-          variables: { valleyId: 1 },
+          variables: { valleyId: 1, year: new Date().getFullYear() },
         });
         const copiapoExpensesData = copiapoExpensesResponse.data?.valleyMonthlyExpenses?.map(
           (expense: ITaskExpense) => expense.expense
         ) || [];
         setCopiapoExpenses(copiapoExpensesData);
+
         const huascoExpensesResponse = await getMonthlyExpenses({
-          variables: { valleyId: 2 },
+          variables: { valleyId: 2, year: new Date().getFullYear() },
         });
         const huascoExpensesData = huascoExpensesResponse.data?.valleyMonthlyExpenses?.map(
           (expense: ITaskExpense) => expense.expense
         ) || [];
         setHuascoExpenses(huascoExpensesData);
+
         const elquiExpensesResponse = await getMonthlyExpenses({
-          variables: { valleyId: 3 },
+          variables: { valleyId: 3, year: new Date().getFullYear() },
         });
         const elquiExpensesData = elquiExpensesResponse.data?.valleyMonthlyExpenses?.map(
           (expense: ITaskExpense) => expense.expense
@@ -134,8 +137,8 @@ export function useLineChart() {
           borderDash: [5, 5],
         }
       ],
-    });
-  }, [copiapoBudget, huascoBudget, elquiBudget]); 
+    })
+  }, [copiapoBudget, huascoBudget, elquiBudget, copiapoExpenses, huascoExpenses, elquiExpenses]); 
 
   return {
     lineChartData

@@ -32,7 +32,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               ManagementTableColumns.map((column, index) => (
                 <th
                   key={index}
-                  className={`px-4 py-2 text-center font-bold text-[#7D7D7D]`}
+                  className={`px-4 py-2 text-center font-bold text-[#7D7D7D] border-b border-gray-300 truncate`}
                 >
                   {column}
                 </th>
@@ -41,7 +41,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               specialistTableColums.map((column, index) => (
                 <th
                   key={index}
-                  className={`px-4 py-2 text-center font-bold text-[#7D7D7D]`}
+                  className={`px-4 py-2 text-center font-bold text-[#7D7D7D] border-b border-gray-300 truncate`}
                 >
                   {column}
                 </th>

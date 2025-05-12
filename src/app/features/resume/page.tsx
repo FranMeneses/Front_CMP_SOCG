@@ -21,10 +21,12 @@ export default function Resume() {
     isSidebarOpen,
     selectedLegend,
     selectedTaskId,
+    subtasks,
+    yearlyBudgetTotal,
+    yearlyExpensesTotal,
     handleLegendClick,
     handleTaskClick,
     toggleSidebar,
-    subtasks
   } = useResume();
 
   const {pieChartData} = usePieChart();
@@ -60,37 +62,36 @@ export default function Resume() {
                 <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
               </aside>
             )}
-            <main className="flex-1 p-4 overflow-y-auto">
-              <h1 className="text-2xl font-bold mb-4">Resumen</h1>
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col md:flex-row gap-8 items-stretch">
-                  <div className="w-full md:w-1/2 flex flex-col">
-                    <div className="w-full aspect-w-16 aspect-h-9 mx-auto h-full">
-                      <LineChart
-                        data={lineChartData}
-                        selectedLegend={selectedLegend}
-                        onLegendClick={handleLegendClick}
-                        data-test-id="line-chart"
-                      />
-                    </div>
+            <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
+              <div className="flex flex-col gap-6 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-[#e3affbe0] p-4 rounded-lg shadow">
+                    <p className="text-4xl font-semibold ">{data?.tasks?.length || 0}</p>
+                    <h3 className="text-[#070707] font-light text-sm mb-1">Iniciativas en desarrollo</h3> 
                   </div>
-                  <div className="w-full md:w-1/2 flex flex-col">
-                    <div className="flex flex-col gap-4 w-full border border-gray-300 h-full">
-                      <h1 className="text-2xl font-bold mt-4 ml-3">Tareas</h1>
-                      <DynamicTable
-                        tasks={data?.tasks || []}
-                        subtasks={subtasks}
-                        selectedTaskId={selectedTaskId}
-                        onTaskClick={handleTaskClick}
-                        userRole={userRole}
-                        data-test-id="dynamic-table"
-                      />
-                    </div>
+                  <div className="bg-[#b5f1a8e0] p-4 rounded-lg shadow">
+                    <p className="text-4xl font-semibold">{yearlyBudgetTotal} USD</p>
+                    <h3 className="text-[#070707] font-light text-sm mb-1">Presupuesto total</h3> 
+                  </div>
+                  <div className="bg-[#f6a5a5e0] p-4 rounded-lg shadow">  
+                    <p className="text-4xl font-semibold">{yearlyExpensesTotal} USD</p>
+                    <h3 className="text-[#070707] font-light text-sm mb-1">Gasto total</h3> 
                   </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-8 items-stretch">
-                  <div className="w-full md:w-1/2 flex flex-col">
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <div className="w-5/6 aspect-w-16 aspect-h-9 mx-auto h-full">
+                    <LineChart
+                      data={lineChartData}
+                      selectedLegend={selectedLegend}
+                      onLegendClick={handleLegendClick}
+                      data-test-id="line-chart"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white p-4 rounded-lg shadow">
                     <div className="w-full md:h-[300px] lg:h-[500px] mx-auto">
                       <PieChart
                         userRole={userRole}
@@ -105,7 +106,7 @@ export default function Resume() {
                       />
                     </div>
                   </div>
-                  <div className="w-full md:w-1/2 flex flex-col">
+                  <div className="bg-white p-4 rounded-lg shadow">
                     <div className="w-full md:h-[300px] lg:h-[500px] mx-auto">
                       <BarChart
                         data={barChartData}
@@ -115,6 +116,18 @@ export default function Resume() {
                       />
                     </div>
                   </div>
+                </div>
+
+                <div className="bg-white p-4 rounded-lg shadow">
+                  <h2 className="text-lg font-semibold mb-4">Detalle de Tareas</h2>
+                  <DynamicTable
+                    tasks={data?.tasks || []}
+                    subtasks={subtasks}
+                    selectedTaskId={selectedTaskId}
+                    onTaskClick={handleTaskClick}
+                    userRole={userRole}
+                    data-test-id="dynamic-table"
+                  />
                 </div>
               </div>
             </main>
