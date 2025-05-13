@@ -12,7 +12,9 @@ export function useResume() {
     const [yearlyBudgetTotal, setYearlyBudgetTotal] = useState(0);
     const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState(0);
     const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
-    const { data, loading, error } = useQuery(GET_TASKS);
+    const [budgetLoading, setBudgetLoading] = useState(true);
+    
+    const { data, loading: tasksLoading, error } = useQuery(GET_TASKS);
     const [getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH)
     const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH)
@@ -54,6 +56,8 @@ export function useResume() {
         }
     };
 
+<<<<<<< Updated upstream
+=======
     const YearlyBudget = async () => {
         let totalBudget = 0;
         
@@ -98,24 +102,32 @@ export function useResume() {
         }
     };
   
-  useEffect(() => {
-    const loadBudgetData = async () => {
-      try {
-        const budgetTotal = await YearlyBudget();
-        setYearlyBudgetTotal(budgetTotal);
+    useEffect(() => {
+        const loadBudgetData = async () => {
+            setBudgetLoading(true);
+            try {
+                const budgetTotal = await YearlyBudget();
+                setYearlyBudgetTotal(budgetTotal);
+                
+                const expensesTotal = await YearlyExpenses();
+                setYearlyExpensesTotal(expensesTotal);
+            } catch (error) {
+                console.error("Error loading budget data:", error);
+            } finally {
+                setBudgetLoading(false);
+            }
+        };
         
-        const expensesTotal = await YearlyExpenses();
-        setYearlyExpensesTotal(expensesTotal);
-      } catch (error) {
-        console.error("Error loading budget data:", error);
-      }
-    };
+        loadBudgetData();
+    }, []); 
     
-    loadBudgetData();
-  }, []); 
+    const loading = tasksLoading || budgetLoading;
 
+>>>>>>> Stashed changes
     return {
         loading,
+        tasksLoading,
+        budgetLoading,
         data,
         isSidebarOpen,
         selectedLegend,

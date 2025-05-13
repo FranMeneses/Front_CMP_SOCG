@@ -58,7 +58,7 @@ export default function Planification() {
                             <div className="flex flex-col gap-4">
                                 <h1 className="text-2xl font-bold">Planificación</h1>
                                 <div className="">
-                                    <div className="ml-4 flex-1">
+                                    <div className="flex-1">
                                         <div className="flex flex-row justify-between items-center mb-4">
                                             <Button
                                                 onClick={handleAddTask}
@@ -68,7 +68,7 @@ export default function Planification() {
                                                 data-test-id="add-task-button"
                                             >
                                                 <Plus size={25} color="black" />
-                                                <span className="ml-2">Añadir</span>
+                                                <span className="mx-2">Añadir</span>
                                             </Button>
                                         </div>
                                         <div>
