@@ -110,6 +110,10 @@ export const LineChartOptions = ({
               size: isMobile ? 7 : 12,
             },
             filter: (legendItem, data) => {
+              if (legendItem.text.startsWith('Gastos')) {
+                return false;
+              }
+              
               const datasetLabels = data.datasets.map((dataset) => dataset.label);
               const firstIndex = datasetLabels?.indexOf(legendItem.text);
               return firstIndex === legendItem.datasetIndex;

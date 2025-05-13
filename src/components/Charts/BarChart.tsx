@@ -21,12 +21,15 @@ const BarChart = ({
   
     useResizeCharts(chartRef);
 
-    const filteredData = {
-      ...data,
-      datasets: selectedLegend
-        ? data.datasets.filter((dataset) => dataset.label === selectedLegend)
-        : data.datasets, 
-    };
+  const filteredData = {
+    ...data,
+    datasets: selectedLegend
+      ? data.datasets.filter((dataset) => {
+          const selectedId = data.datasets.find(ds => ds.label === selectedLegend)?.id;
+          return dataset.id === selectedId;
+        })
+      : data.datasets, 
+  };
   
     return (
       <div className="w-full h-full p-4 bg-white">

@@ -21,7 +21,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   userRole,
 }) => {
 
-  const { getColor, formatDate, calculateRemainingDays, taskProgressMap } = useDynamicTable(tasks);
+  const { getColor, formatDate, calculateRemainingDays, getWidth, taskProgressMap } = useDynamicTable(tasks);
 
   return (
     <div className="overflow-y-scroll md:h-82 2xl:h-170">
@@ -69,12 +69,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {userRole === "gerente" || userRole === "superintendente" ? (
                     <div className="flex items-center text-end relative">
                       <div
-                        className={`h-4 ${getColor(taskProgressMap[task.id ?? ''] || 0)} rounded`}
-                        style={{ width: `${taskProgressMap[task.id ?? ''] || 0}%` }}
+                        className={`h-4 ${getColor(taskProgressMap[task.id ?? ''] || 0)} rounded ${getWidth(taskProgressMap[task.id ?? ''] || 0)}`}
                       ></div>
                       <h3
                         className={`absolute text-sm font-medium ml-2 ${
-                          taskProgressMap[task.id ?? ''] <= 30 ? "text-black" : "text-white"
+                          taskProgressMap[task.id ?? ''] == 0 ? "text-black" : "text-white"
                         }`}
                       >
                         {taskProgressMap[task.id ?? '']?.toFixed() || 0}%
@@ -105,12 +104,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       {userRole === "gerente" || userRole === "superintendente" ? (
                         <div className="flex items-center text-end relative">
                           <div
-                            className={`h-4 ${getColor(subtask.status.percentage)} rounded`}
-                            style={{ width: `${subtask.status.percentage}%` }}
+                            className={`h-4 ${getColor(subtask.status.percentage)} rounded ${getWidth(subtask.status.percentage)}`}
                           ></div>
                           <h3
                             className={`absolute text-sm font-medium ${
-                              subtask.status.percentage <= 30 ? "text-black" : "text-white"
+                              subtask.status.percentage == 0 ? "text-black" : "text-white"
                             } ml-2`}
                           >
                             {subtask.status.percentage}%

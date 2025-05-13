@@ -53,11 +53,19 @@ export function useDynamicTable(tasks: ITask[]) {
         if (percentage > 30 && percentage < 100) return "bg-yellow-500";
         return "bg-red-500";
     };
+
+    const getWidth = (percentage: number) => {
+        if (percentage === 100) return "w-full";
+        if (percentage > 30 && percentage < 100) return "w-3/4";
+        if (percentage === 0 ) return ;
+        return "w-1/4";
+    }
     
     return {
         taskProgressMap,
         calculateRemainingDays,
         formatDate,
         getColor,
+        getWidth,
     };
 }

@@ -20,7 +20,7 @@ export function useLineChart() {
   
   const [lineChartData, setLineChartData] = useState<{
     labels: string[];
-    datasets: { label: string; data: number[]; borderColor: string; backgroundColor: string; borderDash?:[number,number], hidden?:boolean }[];
+    datasets: { label: string; data: number[]; borderColor: string; backgroundColor: string; borderDash?:[number,number], hidden?:boolean , id?:string}[];
   }>({
     labels: Months,
     datasets: [],
@@ -99,38 +99,44 @@ export function useLineChart() {
       datasets: [
         {
           label: valleyNames.current[0] || 'Copiapó',
+          id: 'Valle de Copiapó',
           data: copiapoBudget,
           borderColor: ValleyColors[0],
           backgroundColor: ValleyColors[0],
         },
         {
           label: valleyNames.current[1] || 'Huasco',
+          id: 'Valle del Huasco',
           data: huascoBudget,
           borderColor: ValleyColors[1],
           backgroundColor: ValleyColors[1],
         },
         {
           label: valleyNames.current[2] || 'Elqui',
+          id: 'Valle del Elqui',
           data: elquiBudget,
           borderColor: ValleyColors[2],
           backgroundColor: ValleyColors[2],
         },
         {
-          label: valleyNames.current[0] || 'Copiapó',
+          label: 'Gastos ' + (valleyNames.current[0] || 'Copiapó'),
+          id: 'Valle de Copiapó',
           data: copiapoExpenses,
           borderColor: ValleyColors[0],
           backgroundColor: ValleyColors[0],
           borderDash: [5, 5],
         },
         {
-          label: valleyNames.current[1] || 'Huasco',
+          label: 'Gastos ' + (valleyNames.current[1] || 'Huasco'),
+          id: 'Valle del Huasco',
           data: huascoExpenses,
           borderColor: ValleyColors[1],
           backgroundColor: ValleyColors[1],
           borderDash: [5, 5],
         },
         {
-          label: valleyNames.current[2] || 'Elqui',
+          label: 'Gastos ' + (valleyNames.current[2] || 'Elqui'),
+          id: 'Valle del Elqui',
           data: elquiExpenses,
           borderColor: ValleyColors[2],
           backgroundColor: ValleyColors[2],

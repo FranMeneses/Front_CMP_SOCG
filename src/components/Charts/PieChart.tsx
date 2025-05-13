@@ -61,12 +61,12 @@ const PieChart = ({
   const handleLegendClick = (legend: string) => {
     if (chartRef.current) {
       const chart = chartRef.current;
-
       const labelIndex = data.labels.indexOf(legend);
 
       if (labelIndex !== -1) {
         setVisibleLegend((prev) => (prev === legend ? null : legend));
-
+        
+        // El resto del código permanece igual
         chart.setActiveElements([
           {
             datasetIndex: 0,
@@ -85,6 +85,7 @@ const PieChart = ({
         chart.update();
       }
     }
+      onLegendClick(legend);
   };
 
   return (
