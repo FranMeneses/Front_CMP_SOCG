@@ -9,6 +9,7 @@ import { useState, useEffect, useRef } from "react";
 export function useLineChart() {
   const [getMonthlyBudgets] = useLazyQuery(GET_VALLEY_MONTHLY_BUDGETS);
   const [getMonthlyExpenses] = useLazyQuery(GET_VALLEY_MONTHLY_EXPENSES);
+  const [loading, setLoading] = useState(true);
 
   const [copiapoBudget, setCopiapoBudget] = useState<number[]>([]);
   const [huascoBudget, setHuascoBudget] = useState<number[]>([]);
@@ -37,6 +38,7 @@ export function useLineChart() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const copiapoBudgetResponse = await getMonthlyBudgets({
           variables: { valleyId: 1, year: new Date().getFullYear() },
@@ -87,6 +89,8 @@ export function useLineChart() {
         setElquiExpenses(elquiExpensesData);
       } catch (error) {
         console.error("Error fetching budget data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -147,6 +151,7 @@ export function useLineChart() {
   }, [copiapoBudget, huascoBudget, elquiBudget, copiapoExpenses, huascoExpenses, elquiExpenses]); 
 
   return {
-    lineChartData
+    lineChartData,
+    loading
   };
 }

@@ -13,10 +13,11 @@ import { usePieChart } from "./hooks/usePieChart";
 import { pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
 import { useBarChart } from "./hooks/useBarChart";
 import { useLineChart } from "./hooks/useLineChart";
+import { useEffect, useState } from "react";
 
 export default function Resume() {
   const {
-    loading,
+    loading: resumeLoading,
     data,
     isSidebarOpen,
     selectedLegend,
@@ -30,17 +31,24 @@ export default function Resume() {
   } = useResume();
 
   const {pieChartData} = usePieChart();
-  const {barChartData} = useBarChart();
-  const {lineChartData} = useLineChart();
-
-  const {userRole} = useHooks()
+  const {barChartData, loading: barChartLoading} = useBarChart();
+  const {lineChartData, loading: lineChartLoading} = useLineChart();
+  const {userRole} = useHooks();
+  
+  const [isLoading, setIsLoading] = useState(true);
+  
+  useEffect(() => {
+    if (!resumeLoading && !barChartLoading && !lineChartLoading) {
+      setIsLoading(false);
+    }
+  }, [resumeLoading, barChartLoading, lineChartLoading]);
 
   return (
     <div className="overflow-x-hidden">
       <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
       <>
-        {loading ? (
-          <div className="flex items-center justify-center" data-test-id="loading-spinner">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-[calc(100vh-5rem)]" data-test-id="loading-spinner">
             <LoadingSpinner />
           </div>
         ) : (

@@ -12,12 +12,12 @@ export function useReportability() {
   const [calendarView, setCalendarView] = useState<string>("dayGridMonth");
   const [Subtasks, setSubtasks] = useState<ISubtask[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]); //TODO: Define the type for calendarEvents
-  const { data, loading, error } = useQuery(GET_SUBTASKS);
-  const [getTask] = useLazyQuery(GET_TASK);
-  const [GetValleySubtasks] = useLazyQuery(GET_VALLEY_SUBTASKS);
+  const { data, loading: subtasksLoading, error } = useQuery(GET_SUBTASKS);
+  const [getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK);
+  const [GetValleySubtasks, { loading: valleySubtasksLoading }] = useLazyQuery(GET_VALLEY_SUBTASKS);
+  const [eventsLoading, setEventsLoading] = useState(true);
 
   const { valleys, faenas } = useData();
-
 
   useEffect(() => {
     if (data?.subtasks) {
@@ -66,46 +66,54 @@ export function useReportability() {
     return valley ? valley.name : "Valle desconocido";
   };
 
-
   const handleGetFaena = (faenaId: number) => {
     const faena = faenas.find((f: any) => f.id === faenaId);
     return faena ? faena.name : "Faena desconocida";
   };
 
   const fetchCalendarEvents = async (subtasks: ISubtask[]) => {
-    const events = await Promise.all(
-      subtasks.map(async (subtask) => {
-        try {
-          const { data } = await getTask({
-            variables: { id: subtask.taskId },
-          });
-          const task = data?.task;
-  
-          const endDate = new Date(subtask.endDate);
-          endDate.setDate(endDate.getDate() + 1);
-  
-          return {
-            title: subtask.name,
-            start: endDate.toISOString(),
-            end: endDate.toISOString(),
-            progress: subtask.status.percentage,
-            valley: handleGetValley(task?.valleyId ?? 5),
-            faena: handleGetFaena(task?.faenaId ?? 11),
-            color: handleGetColor(task?.valleyId ?? 5),
-            allDay: true,
-          };
-        } catch (err) {
-          console.error("Error fetching task:", err);
-          return null;
-        }
-      })
-    );
-    setCalendarEvents(events.filter((event) => event !== null));
+    setEventsLoading(true);
+    try {
+      const events = await Promise.all(
+        subtasks.map(async (subtask) => {
+          try {
+            const { data } = await getTask({
+              variables: { id: subtask.taskId },
+            });
+            const task = data?.task;
+    
+            const endDate = new Date(subtask.endDate);
+            endDate.setDate(endDate.getDate() + 1);
+    
+            return {
+              title: subtask.name,
+              start: endDate.toISOString(),
+              end: endDate.toISOString(),
+              progress: subtask.status.percentage,
+              valley: handleGetValley(task?.valleyId ?? 5),
+              faena: handleGetFaena(task?.faenaId ?? 11),
+              color: handleGetColor(task?.valleyId ?? 5),
+              allDay: true,
+            };
+          } catch (err) {
+            console.error("Error fetching task:", err);
+            return null;
+          }
+        })
+      );
+      setCalendarEvents(events.filter((event) => event !== null));
+    } catch (error) {
+      console.error("Error fetching calendar events:", error);
+    } finally {
+      setEventsLoading(false);
+    }
   };
   
   useEffect(() => {
     if (Subtasks.length > 0) {
       fetchCalendarEvents(Subtasks);
+    } else {
+      setEventsLoading(false);
     }
   }, [Subtasks, getTask]);
   
@@ -130,6 +138,8 @@ export function useReportability() {
       }
     }
   };
+
+  const loading = subtasksLoading || taskLoading || valleySubtasksLoading || eventsLoading;
 
   return {
     toggleSidebar,

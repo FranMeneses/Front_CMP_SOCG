@@ -10,30 +10,35 @@ import { Legend } from "./components/Legend";
 import { useReportability } from "./hooks/useReportability";
 import { useHooks } from "../hooks/useHooks";
 import { useData } from "@/context/DataContext";
+import { useEffect, useState } from "react";
 
 export default function Reportability() {
   const {
     toggleSidebar,
     handleDropdownSelect,
-    loading,
+    loading: reportabilityLoading,
     isSidebarOpen,
     calendarView,
     calendarEvents,
   } = useReportability();
 
   const { userRole } = useHooks();
-  const { valleys } = useData();
+  const { valleys, loadingValleys, loadingFaenas } = useData();
   
+  const [isLoading, setIsLoading] = useState(true);
   const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
 
-  const isContextLoading = useData().loadingValleys;
-  const isLoading = loading || isContextLoading;
+  useEffect(() => {
+    if (!reportabilityLoading && !loadingValleys && !loadingFaenas) {
+      setIsLoading(false);
+    }
+  }, [reportabilityLoading, loadingValleys, loadingFaenas]);
 
   return (
     <div className="overflow-x-hidden">
       <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
       {isLoading ? (
-        <div className="flex items-center justify-center" data-test-id="loading-spinner">
+        <div className="flex items-center justify-center h-[calc(100vh-5rem)]" data-test-id="loading-spinner">
           <LoadingSpinner />
         </div>
       ) : (
