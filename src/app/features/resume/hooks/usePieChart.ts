@@ -92,6 +92,7 @@ export function usePieChart() {
         datasets: [
             {
                 data: valleysTasks,
+                id: valleysTasks,
                 backgroundColor: ValleyColors,
                 hoverBackgroundColor: ValleyColorsHover
             },

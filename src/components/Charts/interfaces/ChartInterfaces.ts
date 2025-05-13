@@ -15,6 +15,7 @@ export interface BarChartData {
     labels: string[];
     datasets: Array<{
         label: string;
+        id: string;
         data: number[];
         backgroundColor: string[];
         hoverBackgroundColor: string[];
@@ -37,5 +38,6 @@ export interface LineChartData {
         data: number[];
         borderColor: string;
         backgroundColor: string;
+        id?: string;
     }>;
 }

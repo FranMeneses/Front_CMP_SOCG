@@ -4,7 +4,7 @@ import { useData } from "@/context/DataContext";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado copiapó");
+    const [userRole, setUserRole] = useState<string>("gerente");
     const { valleys } = useData();
 
     const valleyIdByRole = useMemo(() => {

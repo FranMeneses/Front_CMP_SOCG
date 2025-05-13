@@ -41,7 +41,7 @@ const LineChart = ({
     datasets: data.datasets.map((dataset) => ({
       ...dataset,
       data:
-        selectedLegend && dataset.label !== selectedLegend
+        selectedLegend && dataset.id !== data.datasets.find(ds => ds.label === selectedLegend)?.id
           ? []
           : dataset.data.map((value) => {
               if (value === undefined) return null;
@@ -61,8 +61,16 @@ const LineChart = ({
         ...LineChartOptions({ currency }).plugins?.legend,
         onClick: (_event: ChartEvent, legendItem: { text: string }) => {
           const legend = legendItem.text;
-          onLegendClick(legend);
-          setChartKey((prevKey) => prevKey + 1);
+          const clickedId = data.datasets.find(ds => ds.label === legend)?.id;
+          
+          // Si se encontró un ID, seleccionar todos los datasets con ese ID
+          if (clickedId) {
+            onLegendClick(legend);
+            setChartKey((prevKey) => prevKey + 1);
+          } else {
+            onLegendClick(legend);
+            setChartKey((prevKey) => prevKey + 1);
+          }
         },
       },
     },
