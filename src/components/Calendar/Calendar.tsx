@@ -6,6 +6,7 @@ import listPlugin from "@fullcalendar/list";
 import esLocale from "@fullcalendar/core/locales/es";
 import { useState } from "react";
 import Modal from "../Modal";
+import CalendarForm from "@/app/features/reportability/components/CalendarForm";
 
 interface CalendarComponentProps {
   calendarView: string;
@@ -18,9 +19,12 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) =>
 
   const handleEventClick = (info: any) => {
 
-    const formattedStartDate = new Date(info.event.startStr).toLocaleDateString("es-CL", {
+    const startDate = new Date(info.event.startStr);
+    startDate.setDate(startDate.getDate() + 1);
+
+    const formattedStartDate = new Date(startDate).toLocaleDateString("es-CL", {
       year: "numeric",
-      month: "long",
+      month: "numeric",
       day: "numeric",
     });
   
@@ -68,14 +72,8 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) =>
         <Modal 
           onClose={closeModal} 
           isOpen={isModalOpen} 
+          children={<CalendarForm selectedEvent={selectedEvent} />}
         >
-            <div className="items-center justify-center p-4">
-                <h2 className="text-xl font-bold">{selectedEvent.title}</h2>
-                <p><strong>Valle:</strong> {selectedEvent.valley}</p>
-                <p><strong>Inicio:</strong> {selectedEvent.start}</p>
-                <p><strong>Progreso:</strong> {selectedEvent.progress}%</p>
-                <p><strong>Faena:</strong> {selectedEvent.faena}</p>
-            </div>
         </Modal>
       )}
     </>
