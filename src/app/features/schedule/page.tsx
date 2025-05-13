@@ -8,7 +8,7 @@ import { useSchedule } from "./hooks/useSchedule";
 import { useHooks } from "../hooks/useHooks";
 
 export default function Schedule() {
-  const { loading, isSidebarOpen, toggleSidebar, tasks, getColor } = useSchedule();
+  const { loading, isSidebarOpen, toggleSidebar, tasks } = useSchedule();
 
   const { userRole } = useHooks();
 
