@@ -52,16 +52,23 @@ export function useSchedule() {
     return 'rgba(230, 76, 55, 0.5)'; 
   };
 
-  // TODO: CHANGE TO GETUTC
-  const tasks = subTasks.map((task) => ({ 
-    id: task.id,
-    name: task.name,
-    start: new Date(task.startDate).toISOString(),
-    end: new Date(task.endDate).toISOString(),
-    progress: task.status.percentage,
-    color: getColor(task.status.percentage),
-    color_progress: getColor(task.status.percentage),
-  }));
+  const tasks = subTasks.map((task) => {
+    const [startDateStr] = task.startDate.split('T'); 
+    const [endDateStr] = task.endDate.split('T');     
+    
+    const startUTC = `${startDateStr}T12:00:00.000Z`; 
+    const endUTC = `${endDateStr}T12:00:00.000Z`;
+
+    return {
+      id: task.id,
+      name: task.name,
+      start: startUTC,
+      end: endUTC,
+      progress: task.status.percentage,
+      color: getColor(task.status.percentage),
+      color_progress: getColor(task.status.percentage),
+    };
+  });
 
   return {
     loading: isLoading,
