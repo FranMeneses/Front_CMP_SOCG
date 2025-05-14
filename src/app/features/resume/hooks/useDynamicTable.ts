@@ -30,6 +30,8 @@ export function useDynamicTable(tasks: ITask[]) {
         }
     }, [tasks, fetchTaskProgress]);
 
+
+    //TODO: REFACTOR THIS FUNCTION
     const calculateRemainingDays = (startDate: string, endDate: string) => {
         const start = new Date(startDate);
         const end = new Date(endDate);

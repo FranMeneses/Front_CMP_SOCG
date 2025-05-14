@@ -185,32 +185,45 @@ export const usePlanification = () => {
     }, [data, mainQueryLoading, getSubtasks]);
 
 
-    const getRemainingDays = (startDate: string, endDate: string) => {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const diffTime = Math.abs(end.getTime() - start.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (isNaN(diffDays)) {
+    const getRemainingDays = (task: any) => {
+        const end = new Date(task.endDate);
+        if (task.status.name === "NO iniciada") {
             return "-";
         }
-        return diffDays;
+        if (task.status.name === "Completada" || task.status.name === "Completada con Informe Final") {
+            return 0;
+        }
+        if (task.status.name === "Cancelada") {
+            return 0;
+        }
+        else {
+            const today = new Date();
+            const diffTime = Math.abs(end.getTime() - today.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (isNaN(diffDays)) {
+                return "-";
+            }
+            return diffDays;
+        }
     };
 
     const formatDate = (isoDate: string): string => {
-        if (isoDate === null || isoDate === undefined) {
+        if (isoDate === null || isoDate === undefined || isoDate === "-") {
             return "-";
         }
-        const date = new Date(isoDate);
-
-        if (isNaN(date.getTime())) {
+        
+        try {
+            const date = new Date(isoDate);
+            
+            const year = date.getUTCFullYear();
+            const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+            const day = String(date.getUTCDate()).padStart(2, "0");
+            
+            return `${day}-${month}-${year}`;
+        } catch (error) {
+            console.error("Error formatting date:", error);
             return "-";
         }
-
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate() + 1).padStart(2, "0");
-
-        return `${day}-${month}-${year}`;
     };
 
     const processTasksWithDetails = async (tasks: ITask[]) => {
@@ -252,7 +265,7 @@ export const usePlanification = () => {
             console.error("Error processing filtered tasks:", error);
             return [];
         }
-};
+    };
 
     const loadTasksWithDetails = async () => {
         if (!data?.tasksByValley) return [];

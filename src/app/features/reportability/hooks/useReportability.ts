@@ -71,6 +71,7 @@ export function useReportability() {
     return faena ? faena.name : "Faena desconocida";
   };
 
+  // TODO: CHANGE endDate to getUTC
   const fetchCalendarEvents = async (subtasks: ISubtask[]) => {
     setEventsLoading(true);
     try {

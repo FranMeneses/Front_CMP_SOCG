@@ -52,7 +52,8 @@ export function useSchedule() {
     return 'rgba(230, 76, 55, 0.5)'; 
   };
 
-  const tasks = subTasks.map((task) => ({
+  // TODO: CHANGE TO GETUTC
+  const tasks = subTasks.map((task) => ({ 
     id: task.id,
     name: task.name,
     start: new Date(task.startDate).toISOString(),

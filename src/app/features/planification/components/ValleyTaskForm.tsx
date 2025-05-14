@@ -172,7 +172,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         <Button
           variant="default"
           onClick={handleSave}
-          className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
+          className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6] cursor-pointer disabled:cursor-default"
           disabled={!formState.name || !formState.origin || !formState.type || !formState.scope || !formState.interaction || !formState.faena}
           data-test-id="save-button"
         >

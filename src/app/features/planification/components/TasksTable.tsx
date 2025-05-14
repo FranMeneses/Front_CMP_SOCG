@@ -121,7 +121,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                     <td className="py-2 text-center">{task.budget || "-"}</td>
                                     <td className="py-2 text-center">{task.startDate ? formatDate(task.startDate) : "-"}</td>
                                     <td className="py-2 text-center">{task.endDate ? formatDate(task.endDate) : "-"}</td>
-                                    <td className="py-2 text-center">{getRemainingDays(task.startDate, task.endDate)}</td>
+                                    <td className="py-2 text-center">{getRemainingDays(task)}</td>
                                     <td className="py-2 text-center">{task.finishedDate ? formatDate(task.finishedDate) : "-"}</td>
                                     <td className="py-2 text-center">
                                         <span className={`px-2 py-1 rounded-full text-xs ${
@@ -182,7 +182,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                                             <td className="px-4 py-2">{subtask.budget}</td>
                                                             <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
                                                             <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
-                                                            <td className="px-4 py-2">{getRemainingDays(subtask.startDate, subtask.endDate)}</td>
+                                                            <td className="px-4 py-2">{getRemainingDays(subtask)}</td>
                                                             <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
                                                             <td className="px-4 py-2">
                                                                 <Pen
