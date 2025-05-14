@@ -1,6 +1,6 @@
-import { useState, useEffect, act } from "react";
+import { useState, useEffect } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, GET_TASK, GET_TASK_STATUSES, GET_TASK_SUBTASKS, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASKS_BY_VALLEY, UPDATE_TASK } from "@/app/api/tasks";
+import { CREATE_TASK, GET_TASK, GET_TASK_STATUSES, GET_TASK_SUBTASKS, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASKS_BY_VALLEY, GET_TASKS_BY_VALLEY_AND_STATUS, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK, GET_TASK_INFO, UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { CREATE_SUBTASK, GET_SUBTASK, UPDATE_SUBTASK } from "@/app/api/subtasks";
@@ -24,7 +24,6 @@ export const usePlanification = () => {
     const [detailedTasks, setDetailedTasks] = useState<ITaskDetails[]>([]);
     const [activeFilter, setActiveFilter] = React.useState<string | null>(null);
 
-    // Nuevo estado para controlar la carga
     const [isLoadingSubtasks, setIsLoadingSubtasks] = useState<boolean>(false);
     const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
     const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
@@ -43,7 +42,8 @@ export const usePlanification = () => {
 
     const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
 
-    const [getSubtasks, { loading: subtasksQueryLoading }] = useLazyQuery(GET_TASK_SUBTASKS);
+    const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
+    const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS)
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
@@ -68,15 +68,44 @@ export const usePlanification = () => {
         setSelectedSubtask(null);
         setIsPopupSubtaskOpen(false);
     };
+    
+    const handleGetTasksByStatus = async (statusId: number) => {
+        try {
+            setIsLoadingTaskDetails(true);
+            const { data } = await getTasksByStatus({
+                variables: { valleyId: currentValleyId, statusId },
+            });
+            return data?.tasksByValleyAndStatus || [];
+        } catch (error) {
+            console.error("Error fetching tasks by valley:", error);
+            return [];
+        } finally {
+            setIsLoadingTaskDetails(false);
+        }
+    };
 
-     
-     const handleFilterClick = (filter: string) => {
+    const handleFilterClick = async (filter: string) => {
         if (activeFilter === filter) {
             setActiveFilter(null);
+            await refetch();
+            
+            const tasks = await loadTasksWithDetails();
+            setDetailedTasks(tasks);
         } else {
-            setActiveFilter(filter);
-        }
-     };
+            const statusId = states.find((state: ITaskStatus) => state.name === filter)?.id;
+            if (statusId) {
+                try {
+                    setActiveFilter(filter);
+                    const filteredTasks = await handleGetTasksByStatus(statusId);
+                    const detailedFilteredTasks = await processTasksWithDetails(filteredTasks);
+                    setDetailedTasks(detailedFilteredTasks);
+                } catch (error) {
+                    console.error("Error filtering tasks:", error);
+                }
+            }
+        };
+    }
+
 
     const handleSaveTask = async (task: any) => {
         try {
@@ -184,13 +213,11 @@ export const usePlanification = () => {
         return `${day}-${month}-${year}`;
     };
 
-    const loadTasksWithDetails = async () => {
-        if (!data?.tasksByValley) return [];
-        
-        setIsLoadingTaskDetails(true);
+    const processTasksWithDetails = async (tasks: ITask[]) => {
+        if (!tasks || tasks.length === 0) return [];
         
         try {
-            const detailedTasks = await Promise.all(data.tasksByValley.map(async (task: ITask) => {
+            const detailedTasks = await Promise.all(tasks.map(async (task: ITask) => {
                 const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.id);
                 
                 const budget = task.id ? await handleGetTaskBudget(task.id) : null;
@@ -216,10 +243,24 @@ export const usePlanification = () => {
                     budget: budget || 0,  
                     startDate: startDate ? startDate.toISOString() : "-",
                     endDate: endDate ? endDate.toISOString() : "-",
-                    finishDate: finishDate ? finishDate.toISOString() : "-",
+                    finishedDate: finishDate ? finishDate.toISOString() : "-",
                 };
             }));
             
+            return detailedTasks;
+        } catch (error) {
+            console.error("Error processing filtered tasks:", error);
+            return [];
+        }
+};
+
+    const loadTasksWithDetails = async () => {
+        if (!data?.tasksByValley) return [];
+        
+        setIsLoadingTaskDetails(true);
+        
+        try {
+            const detailedTasks = await processTasksWithDetails(data.tasksByValley);
             return detailedTasks;
         } catch (error) {
             console.error("Error loading detailed tasks:", error);
@@ -234,7 +275,7 @@ export const usePlanification = () => {
             if (!mainQueryLoading && !isLoadingSubtasks && data?.tasksByValley && subTasks.length > 0) {
                 const tasks = await loadTasksWithDetails();
                 setDetailedTasks(tasks);
-                setIsInitialLoad(false); // Marcar la carga inicial como completa
+                setIsInitialLoad(false); 
             }
         };
         
@@ -455,7 +496,6 @@ export const usePlanification = () => {
     };
 
     return {
-        // Incluye todas las propiedades existentes
         setTableOption,
         handleAddTask,
         handleSaveTask,
@@ -485,7 +525,7 @@ export const usePlanification = () => {
         isSidebarOpen,
         tableOption,
         data,
-        loading, // Ahora esto refleja todas las operaciones de carga
+        loading, 
         error,
         subTasks,
         detailedTasks,

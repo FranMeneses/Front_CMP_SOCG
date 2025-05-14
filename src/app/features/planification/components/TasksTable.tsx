@@ -13,9 +13,19 @@ import { ITaskDetails } from "@/app/models/ITasks";
 interface TasksTableProps {
     tasks: ITaskDetails[];
     subtasks: ISubtask[];
+    taskStates?: string[];  // Añade esta prop
+    onFilterClick?: (filter: string) => void;  // Añade esta prop
+    activeFilter?: string | null;  // Añade esta prop
 }
 
-const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
+const TasksTable: React.FC<TasksTableProps> = ({ 
+    tasks, 
+    subtasks,
+    taskStates,
+    onFilterClick,
+    activeFilter: propActiveFilter
+}) => {
+    
     const { 
         getRemainingDays, 
         formatDate,
@@ -30,15 +40,19 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
         handleCancel,
         handleCancelSubtask,
         handleSaveTask,
-        handleFilterClick,
+        handleFilterClick: hookHandleFilterClick,
         isPopupOpen, 
-        activeFilter,
+        activeFilter: hookActiveFilter,
         isPopupSubtaskOpen,
         selectedInfoTask,
         selectedSubtask,
         expandedRow,
         taskState,
-     } = usePlanification();
+    } = usePlanification();
+
+    const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
+    const actualHandleFilterClick = onFilterClick || hookHandleFilterClick;
+    const actualTaskState = taskStates || taskState;
 
      const { currentValleyName } = useHooks();
 
@@ -56,12 +70,12 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
             </div>
             
             <div className="flex gap-2 mb-4">
-                {taskState.map((filter:string) => (
+                {actualTaskState.map((filter: string) => (
                     <Button
                         key={filter}
                         variant="outline"
                         className={`px-4 py-2 text-sm rounded-md hover:cursor-pointer ${
-                            activeFilter === filter
+                            actualActiveFilter === filter
                                 ? filter === "Completada" ? "bg-green-100 text-green-800 font-medium" : 
                                 filter === "En Proceso" ? "bg-blue-100 text-blue-800 font-medium" :
                                 filter === "En Espera" ? "bg-yellow-100 text-yellow-800 font-medium" :
@@ -69,7 +83,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
                                 "bg-gray-200 text-gray-800 font-medium"
                                 : "bg-white hover:bg-gray-100"
                         }`}
-                        onClick={() => handleFilterClick(filter)}
+                        onClick={() => actualHandleFilterClick(filter)}
                     >
                         {filter}
                     </Button>
