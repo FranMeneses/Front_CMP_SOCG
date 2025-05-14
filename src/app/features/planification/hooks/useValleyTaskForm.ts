@@ -193,22 +193,16 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
             case "Valle del Huasco":
                 if (faenaNames.length > 3) {
                     setFaenas(faenaNames.slice(3, Math.min(6, faenaNames.length)));
-                } else {
-                    setFaenas([]);
                 }
                 break;
             case "Valle del Elqui":
                 if (faenaNames.length > 6) {
                     setFaenas(faenaNames.slice(6, Math.min(9, faenaNames.length)));
-                } else {
-                    setFaenas([]);
-                }
+                }  
                 break;
             case "Transversal":
                 if (faenaNames.length > 9) {
                     setFaenas(faenaNames.slice(9, faenaNames.length));
-                } else {
-                    setFaenas(["Transversal"]);
                 }
                 break;
             default:

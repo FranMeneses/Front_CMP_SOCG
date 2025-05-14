@@ -20,10 +20,15 @@ export const usePlanification = () => {
     const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
     const [selectedInfoTask, setSelectedInfoTask] = useState<IInfoTask | null>(null);
     const [selectedSubtask, setSelectedSubtask] = useState<ISubtask | null>(null);
-    const [expandedRow, setExpandedRow] = useState<string >('');
+    const [expandedRow, setExpandedRow] = useState<string>('');
     const [detailedTasks, setDetailedTasks] = useState<ITaskDetails[]>([]);
     const [activeFilter, setActiveFilter] = React.useState<string | null>(null);
 
+    // Nuevo estado para controlar la carga
+    const [isLoadingSubtasks, setIsLoadingSubtasks] = useState<boolean>(false);
+    const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
+    const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
+    
     const [createTask] = useMutation(CREATE_TASK);
     const [createSubtask] = useMutation(CREATE_SUBTASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
@@ -31,15 +36,14 @@ export const usePlanification = () => {
     const [updateSubtask] = useMutation(UPDATE_SUBTASK); 
     const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
 
-    const { data, loading, error, refetch } = useQuery(GET_TASKS_BY_VALLEY, {
+    const { data, loading: mainQueryLoading, error, refetch } = useQuery(GET_TASKS_BY_VALLEY, {
         variables: { valleyId: currentValleyId },
         skip: !currentValleyId,
     });
 
-
     const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
 
-    const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
+    const [getSubtasks, { loading: subtasksQueryLoading }] = useLazyQuery(GET_TASK_SUBTASKS);
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
@@ -48,6 +52,8 @@ export const usePlanification = () => {
     
     const states = taskStateData?.taskStatuses || [];
     const taskState = states.map((s: ITaskStatus) => s.name);
+
+    const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || isInitialLoad;
 
     const handleAddTask = () => {
         setIsPopupOpen(true);
@@ -123,30 +129,32 @@ export const usePlanification = () => {
     useEffect(() => {
         const fetchSubtasks = async () => {
             if (data?.tasksByValley) {
+                setIsLoadingSubtasks(true);
                 try {
                     const allSubtasks = await Promise.all(
                         data.tasksByValley.map(async (task: ITask) => {
                             const { data: subtaskData } = await getSubtasks({
                                 variables: { id: task.id },
                             });
-                            console.log("Subtask data:", subtaskData);
                             return subtaskData?.taskSubtasks || [];
                         })
                     );
 
                     const flattenedSubtasks = allSubtasks.flat();
-
                     setSubtasks(flattenedSubtasks);
                 } catch (error) {
                     console.error("Error fetching subtasks:", error);
+                } finally {
+                    setIsLoadingSubtasks(false);
                 }
             }
         };
 
-        if (!loading && data?.tasksByValley) {
+        if (!mainQueryLoading && data?.tasksByValley) {
             fetchSubtasks();
         }
-    }, [data, loading, getSubtasks]);
+    }, [data, mainQueryLoading, getSubtasks]);
+
 
     const getRemainingDays = (startDate: string, endDate: string) => {
         const start = new Date(startDate);
@@ -179,49 +187,59 @@ export const usePlanification = () => {
     const loadTasksWithDetails = async () => {
         if (!data?.tasksByValley) return [];
         
-        const detailedTasks = await Promise.all(data.tasksByValley.map(async (task: ITask) => {
-            const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.id);
+        setIsLoadingTaskDetails(true);
+        
+        try {
+            const detailedTasks = await Promise.all(data.tasksByValley.map(async (task: ITask) => {
+                const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.id);
+                
+                const budget = task.id ? await handleGetTaskBudget(task.id) : null;
+                
+                const startDate = associatedSubtasks.length
+                    ? new Date(Math.min(...associatedSubtasks.map((subtask) => new Date(subtask.startDate).getTime())))
+                    : null;
             
-            const budget = task.id ? await handleGetTaskBudget(task.id) : null;
+                const endDate = associatedSubtasks.length
+                    ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.endDate).getTime())))
+                    : null;
             
-            const startDate = associatedSubtasks.length
-                ? new Date(Math.min(...associatedSubtasks.map((subtask) => new Date(subtask.startDate).getTime())))
-                : null;
-        
-            const endDate = associatedSubtasks.length
-                ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.endDate).getTime())))
-                : null;
-        
-            const validFinalDates = associatedSubtasks
-                .filter(subtask => subtask.finalDate && !isNaN(new Date(subtask.finalDate).getTime()))
-                .map(subtask => new Date(subtask.finalDate).getTime());
+                const validFinalDates = associatedSubtasks
+                    .filter(subtask => subtask.finalDate && !isNaN(new Date(subtask.finalDate).getTime()))
+                    .map(subtask => new Date(subtask.finalDate).getTime());
+                
+                const finishDate = validFinalDates.length > 0
+                    ? new Date(Math.max(...validFinalDates))
+                    : null;
             
-            const finishDate = validFinalDates.length > 0
-                ? new Date(Math.max(...validFinalDates))
-                : null;
-        
-            return {
-                ...task,
-                budget: budget || 0,  
-                startDate: startDate ? startDate.toISOString() : "-",
-                endDate: endDate ? endDate.toISOString() : "-",
-                finishDate: finishDate ? finishDate.toISOString() : "-",
-            };
-        }));
-        
-        return detailedTasks;
+                return {
+                    ...task,
+                    budget: budget || 0,  
+                    startDate: startDate ? startDate.toISOString() : "-",
+                    endDate: endDate ? endDate.toISOString() : "-",
+                    finishDate: finishDate ? finishDate.toISOString() : "-",
+                };
+            }));
+            
+            return detailedTasks;
+        } catch (error) {
+            console.error("Error loading detailed tasks:", error);
+            return [];
+        } finally {
+            setIsLoadingTaskDetails(false);
+        }
     };
 
     useEffect(() => {
         const fetchTaskDetails = async () => {
-            if (!loading && data?.tasksByValley) {
+            if (!mainQueryLoading && !isLoadingSubtasks && data?.tasksByValley && subTasks.length > 0) {
                 const tasks = await loadTasksWithDetails();
                 setDetailedTasks(tasks);
+                setIsInitialLoad(false); // Marcar la carga inicial como completa
             }
         };
         
         fetchTaskDetails();
-    }, [data, loading, subTasks]);
+    }, [data, mainQueryLoading, isLoadingSubtasks, subTasks]);
 
     const handleGetTaskBudget = async (taskId: string) => {
         try {
@@ -437,6 +455,7 @@ export const usePlanification = () => {
     };
 
     return {
+        // Incluye todas las propiedades existentes
         setTableOption,
         handleAddTask,
         handleSaveTask,
@@ -466,7 +485,7 @@ export const usePlanification = () => {
         isSidebarOpen,
         tableOption,
         data,
-        loading,
+        loading, // Ahora esto refleja todas las operaciones de carga
         error,
         subTasks,
         detailedTasks,
