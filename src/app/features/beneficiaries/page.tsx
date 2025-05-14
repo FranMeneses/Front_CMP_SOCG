@@ -52,12 +52,11 @@ export default function Beneficiaries() {
                             <h1 className="text-2xl font-bold">Beneficiarios</h1>
                         </div>
                         <Button
-                            variant="ghost"
-                            className="mt-4 cursor-pointer"
+                            className="mt-4 cursor-pointer bg-[#4f67b8e0] text-white "
                             onClick={() => setIsPopupOpen(true)}
                             data-test-id="add-beneficiary-button"
                         >
-                            <Plus className="mr-2" /> Agregar Beneficiario
+                            <Plus className="mr-2 text-white" /> Agregar Beneficiario
                         </Button>
                         <div className="flex flex-col gap-4 mt-4">
                             <BeneficiariesTable data-test-id="beneficiary-table"/>

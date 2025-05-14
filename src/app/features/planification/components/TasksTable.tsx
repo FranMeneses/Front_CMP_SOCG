@@ -49,7 +49,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
                 </div>
                 <Button 
                     onClick={() => setIsPopupOpen(true)}
-                    className="bg-[#4f67b8e0] text-white flex items-center gap-1"
+                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
                 >
                     <Plus size={16} /> Añadir
                 </Button>

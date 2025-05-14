@@ -32,22 +32,22 @@ const BeneficiariesTable: React.FC = () => {
     } = useBeneficiaries();
 
     return (
-        <div className="overflow-x-auto border border-[#041e3e] rounded-md">
-            <table className="min-w-full overflow-hidden">
-                <thead className="bg-[#2771CC] text-white">
-                    <tr>
-                        {BeneficiariesTableColumns.map((column, index) => (
-                            <th
-                                key={index}
-                                className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider"
-                            >
-                                {column}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-[#041e3e]">
-                    {beneficiaries.map((beneficiary) => (
+    <div className="overflow-x-auto rounded-lg shadow">
+        <table className="w-full">
+            <thead className="bg-gray-100">
+                <tr className="text-sm text-gray-700">
+                    {BeneficiariesTableColumns.map((column, index) => (
+                        <th
+                            key={index}
+                            className="py-2 text-center text-xs font-medium text-gray-500"
+                        >
+                            {column}
+                        </th>
+                    ))}
+                </tr>
+            </thead>
+            <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
+                {beneficiaries.map((beneficiary) => (
                         <React.Fragment key={beneficiary.id}>
                             <tr className="text-center">
                                 <td className="px-6 py-4 whitespace-nowrap">{beneficiary.legalName}</td>
@@ -55,7 +55,7 @@ const BeneficiariesTable: React.FC = () => {
                                 <td className="px-6 py-4 whitespace-nowrap">{beneficiary.address}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">{beneficiary.entityType}</td>
                                 <td
-                                    className="px-6 py-4 whitespace-nowrap text-[#003474] cursor-pointer"
+                                    className="px-6 py-4 whitespace-nowrap cursor-pointer font-medium text-[#003474]"
                                     onClick={() => toggleRow(beneficiary.id)}
                                 >
                                     {beneficiary.representative}
@@ -63,9 +63,10 @@ const BeneficiariesTable: React.FC = () => {
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {beneficiary.hasLegalPersonality ? "Si" : "No"}
                                 </td>
-                                <td>
+                                <td className="px-6 py-4 whitespace-nowrap">
                                     <Pencil
-                                        className="ml-2 cursor-pointer"
+                                        size={20}
+                                        className="cursor-pointer"
                                         onClick={() => handleEditBeneficiary(beneficiary.id)}
                                         data-test-id="edit-beneficiary-button"
                                         color="gray"
