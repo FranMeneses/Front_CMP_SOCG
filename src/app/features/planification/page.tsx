@@ -2,22 +2,14 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadinSpinner";
-import { Plus } from "lucide-react";
 import TasksTable from "./components/TasksTable";
-import Modal from "@/components/Modal";
-import ValleyTaskForm from "./components/ValleyTaskForm";
-import { Button } from "@/components/ui/button";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";
 
 
 export default function Planification() {
     const {
-        handleCancel,
-        setIsPopupOpen,
-        handleSaveTask,
         toggleSidebar,
-        isPopupOpen,
         loading,
         subTasks,
         isSidebarOpen,
@@ -27,7 +19,7 @@ export default function Planification() {
         activeFilter,      
     } = usePlanification();
 
-    const { userRole,currentValleyName } = useHooks();
+    const { userRole } = useHooks();
 
     return (
         <div className="overflow-x-hidden">

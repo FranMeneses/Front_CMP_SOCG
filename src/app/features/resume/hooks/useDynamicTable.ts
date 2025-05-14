@@ -33,7 +33,7 @@ export function useDynamicTable(tasks: ITask[]) {
     const calculateRemainingDays = (endDate: string) => {
         const end = new Date(endDate);
         const today = new Date();
-        const diffTime = Math.abs(end.getTime() - today.getTime());
+        const diffTime = end.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
     };

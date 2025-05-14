@@ -198,7 +198,7 @@ export const usePlanification = () => {
         }
         else {
             const today = new Date();
-            const diffTime = Math.abs(end.getTime() - today.getTime());
+            const diffTime = end.getTime() - today.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
             if (isNaN(diffDays)) {
                 return "-";
@@ -283,17 +283,24 @@ export const usePlanification = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchTaskDetails = async () => {
-            if (!mainQueryLoading && !isLoadingSubtasks && data?.tasksByValley && subTasks.length > 0) {
-                const tasks = await loadTasksWithDetails();
-                setDetailedTasks(tasks);
-                setIsInitialLoad(false); 
+useEffect(() => {
+    const fetchTaskDetails = async () => {
+        if (!mainQueryLoading && !isLoadingSubtasks) {
+            try {
+                if (data?.tasksByValley) {
+                    const tasks = await loadTasksWithDetails();
+                    setDetailedTasks(tasks);
+                }
+            } catch (error) {
+                console.error("Error loading task details:", error);
+            } finally {
+                setIsInitialLoad(false);
             }
-        };
-        
-        fetchTaskDetails();
-    }, [data, mainQueryLoading, isLoadingSubtasks, subTasks]);
+        }
+    };
+    
+    fetchTaskDetails();
+}, [data, mainQueryLoading, isLoadingSubtasks]);
 
     const handleGetTaskBudget = async (taskId: string) => {
         try {
