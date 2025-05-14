@@ -56,8 +56,6 @@ export function useResume() {
         }
     };
 
-<<<<<<< Updated upstream
-=======
     const YearlyBudget = async () => {
         let totalBudget = 0;
         
@@ -123,7 +121,6 @@ export function useResume() {
     
     const loading = tasksLoading || budgetLoading;
 
->>>>>>> Stashed changes
     return {
         loading,
         tasksLoading,

@@ -8,7 +8,6 @@ interface LegendProps {
 export const Legend: React.FC<LegendProps> = ({ valley, valleyColors }) => {
   return (
     <div>
-      <h3 className="text-center font-bold">Leyenda</h3>
       <div className="flex flex-col gap-8 mt-10 justify-center">
         {valley.map((valleyName, index) => (
           <div key={index} className="flex flex-row items-center font-light">

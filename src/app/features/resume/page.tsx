@@ -143,5 +143,5 @@ export default function Resume() {
         )}
       </>
     </div>
-  );
+  ); {/*TODO: AGREGAR VISTA DE ADMINISTRADOR*/}
 }

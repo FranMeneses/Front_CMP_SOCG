@@ -20,7 +20,8 @@ export const ValleysTasksTableColumns = [
     "Fecha Inicio",
     "Fecha Finalización",
     "Dias restantes",
-    "Fecha Termino"
+    "Fecha Termino",
+    "Estado",
 ]
 
 export const ComplianceTableColumns = [

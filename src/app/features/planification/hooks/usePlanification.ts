@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, act } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, GET_TASK, GET_TASK_SUBTASKS, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASKS_BY_VALLEY, UPDATE_TASK } from "@/app/api/tasks";
+import { CREATE_TASK, GET_TASK, GET_TASK_STATUSES, GET_TASK_SUBTASKS, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASKS_BY_VALLEY, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK, GET_TASK_INFO, UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { CREATE_SUBTASK, GET_SUBTASK, UPDATE_SUBTASK } from "@/app/api/subtasks";
 import { useHooks } from "../../hooks/useHooks";
-import { IInfoTask, ITask, ITaskDetails } from "@/app/models/ITasks";
+import { IInfoTask, ITask, ITaskDetails, ITaskStatus } from "@/app/models/ITasks";
+import React from "react";
 
 export const usePlanification = () => {
 
@@ -21,6 +22,7 @@ export const usePlanification = () => {
     const [selectedSubtask, setSelectedSubtask] = useState<ISubtask | null>(null);
     const [expandedRow, setExpandedRow] = useState<string >('');
     const [detailedTasks, setDetailedTasks] = useState<ITaskDetails[]>([]);
+    const [activeFilter, setActiveFilter] = React.useState<string | null>(null);
 
     const [createTask] = useMutation(CREATE_TASK);
     const [createSubtask] = useMutation(CREATE_SUBTASK);
@@ -35,6 +37,8 @@ export const usePlanification = () => {
     });
 
 
+    const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
+
     const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
@@ -42,12 +46,15 @@ export const usePlanification = () => {
     const [getTask] = useLazyQuery(GET_TASK);
     const [getSubtask] = useLazyQuery(GET_SUBTASK);
     
+    const states = taskStateData?.taskStatuses || [];
+    const taskState = states.map((s: ITaskStatus) => s.name);
 
     const handleAddTask = () => {
         setIsPopupOpen(true);
     };
 
     const handleCancel = () => {
+        setSelectedInfoTask(null);
         setIsPopupOpen(false);
     };
 
@@ -55,6 +62,15 @@ export const usePlanification = () => {
         setSelectedSubtask(null);
         setIsPopupSubtaskOpen(false);
     };
+
+     
+     const handleFilterClick = (filter: string) => {
+        if (activeFilter === filter) {
+            setActiveFilter(null);
+        } else {
+            setActiveFilter(filter);
+        }
+     };
 
     const handleSaveTask = async (task: any) => {
         try {
@@ -443,6 +459,7 @@ export const usePlanification = () => {
         handleUpdateSubtask,
         handleUpdateTask,
         handleCancelSubtask,
+        handleFilterClick,
         isPopupOpen,
         isPopupSubtaskOpen,
         selectedTaskId,
@@ -456,5 +473,7 @@ export const usePlanification = () => {
         selectedInfoTask,
         selectedSubtask,
         expandedRow,
+        taskState,
+        activeFilter,
     };
 };

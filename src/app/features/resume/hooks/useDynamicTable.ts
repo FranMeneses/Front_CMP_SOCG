@@ -56,7 +56,10 @@ export function useDynamicTable(tasks: ITask[]) {
 
     const getWidth = (percentage: number) => {
         if (percentage === 100) return "w-full";
-        if (percentage > 30 && percentage < 100) return "w-3/4";
+        if (percentage > 70 && percentage < 100) return "w-3/4";
+        if (percentage > 50 && percentage < 70) return "w-1/2";
+        if (percentage > 30 && percentage < 50) return "w-1/3";
+        if (percentage > 0 && percentage < 30) return "w-1/6";
         if (percentage === 0 ) return ;
         return "w-1/4";
     }

@@ -23,16 +23,16 @@ export default function Reportability() {
   } = useReportability();
 
   const { userRole } = useHooks();
-  const { valleys, loadingValleys, loadingFaenas } = useData();
+  const { valleys } = useData();
   
   const [isLoading, setIsLoading] = useState(true);
   const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
 
   useEffect(() => {
-    if (!reportabilityLoading && !loadingValleys && !loadingFaenas) {
+    if (!reportabilityLoading) {
       setIsLoading(false);
     }
-  }, [reportabilityLoading, loadingValleys, loadingFaenas]);
+  }, [reportabilityLoading]);
 
   return (
     <div className="overflow-x-hidden">
@@ -60,21 +60,34 @@ export default function Reportability() {
               <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
           )}
-          <main className="flex-1 p-4 overflow-y-auto">
-            <div className="flex flex-col gap-4">
-              <h1 className="text-2xl font-bold">Reportabilidad</h1>
-              <DropdownMenu
-                buttonText="Transversal"
-                items={valleyNames} 
-                onSelect={(item) => handleDropdownSelect(item)}
-                data-test-id="dropdown-menu"
-              />
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="w-full md:w-3/4 md:ml-4">
-                  <Calendar calendarView={calendarView} events={calendarEvents} data-test-id="calendar"/>
+          <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
+            <div className="flex flex-col h-full bg-white rounded-lg shadow">
+              <div className="p-4 pb-4 border-b">
+                <h1 className="text-2xl font-bold mb-4">Reportabilidad</h1>
+                <DropdownMenu
+                  buttonText="Transversal"
+                  items={valleyNames} 
+                  onSelect={(item) => handleDropdownSelect(item)}
+                  data-test-id="dropdown-menu"
+                />
+              </div>
+              <div className="flex flex-col md:flex-row h-full">
+                <div className="flex-1 p-4 border-r">
+                  <div className="overflow-x-auto">
+                    <Calendar 
+                      calendarView={calendarView} 
+                      events={calendarEvents} 
+                      data-test-id="calendar"
+                    />
+                  </div>
                 </div>
-                <div className="w-full md:w-1/6 md:ml-12 mt-4 md:mt-16 p-4 rounded-lg border text-2xl font-medium">
-                  <Legend valley={valleyNames} valleyColors={ValleyColors} /> 
+                <div className="w-full md:w-72 p-4 border-t md:border-t-0 md:border-l">
+                  <div>
+                    <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
+                      Valles
+                    </h2>
+                    <Legend valley={valleyNames} valleyColors={ValleyColors} />
+                  </div>
                 </div>
               </div>
             </div>

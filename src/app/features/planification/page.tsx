@@ -54,24 +54,12 @@ export default function Planification() {
                                 <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                             </aside>
                         )}
-                        <main className="p-4 h-full overflow-y-auto">
+                        <main className="p-4 h-full overflow-y-auto bg-gray-50">
                             <div className="flex flex-col gap-4">
                                 <h1 className="text-2xl font-bold">Planificación</h1>
                                 <div className="">
                                     <div className="flex-1">
-                                        <div className="flex flex-row justify-between items-center mb-4">
-                                            <Button
-                                                onClick={handleAddTask}
-                                                variant="ghost"
-                                                size="default"
-                                                className="flex flex-row cursor-pointer "
-                                                data-test-id="add-task-button"
-                                            >
-                                                <Plus size={25} color="black" />
-                                                <span className="mx-2">Añadir</span>
-                                            </Button>
-                                        </div>
-                                        <div>
+                                        <div className="bg-white rounded-lg shadow-md p-4">
                                             <TasksTable
                                                 tasks={detailedTasks}
                                                 subtasks={subTasks}
