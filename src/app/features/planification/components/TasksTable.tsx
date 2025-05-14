@@ -1,6 +1,5 @@
 'use client';
 import React from "react";
-import { ValleysTasksTableColumns } from "@/constants/tableConstants";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../hooks/usePlanification";
 import { Pen, Plus, ZoomIn } from "lucide-react";
@@ -31,7 +30,9 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
         handleCancel,
         handleCancelSubtask,
         handleSaveTask,
+        handleFilterClick,
         isPopupOpen, 
+        activeFilter,
         isPopupSubtaskOpen,
         selectedInfoTask,
         selectedSubtask,
@@ -40,8 +41,6 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
      } = usePlanification();
 
      const { currentValleyName } = useHooks();
-     // Estado para el filtro activo
-     const [activeFilter, setActiveFilter] = React.useState("NO iniciada"); {/*TODO: Agregar filtro para la tabla y mover al hook*/}
 
     return (
         <div>
@@ -50,7 +49,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
                 </div>
                 <Button 
                     onClick={() => setIsPopupOpen(true)}
-                    className="bg-blue-500 text-white flex items-center gap-1"
+                    className="bg-[#4f67b8e0] text-white flex items-center gap-1"
                 >
                     <Plus size={16} /> Añadir
                 </Button>
@@ -70,7 +69,7 @@ const TasksTable: React.FC<TasksTableProps> = ({ tasks, subtasks }) => {
                                 "bg-gray-200 text-gray-800 font-medium"
                                 : "bg-white hover:bg-gray-100"
                         }`}
-                        onClick={() => setActiveFilter(filter)}
+                        onClick={() => handleFilterClick(filter)}
                     >
                         {filter}
                     </Button>
