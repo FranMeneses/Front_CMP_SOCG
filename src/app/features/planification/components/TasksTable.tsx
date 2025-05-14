@@ -13,9 +13,9 @@ import { ITaskDetails } from "@/app/models/ITasks";
 interface TasksTableProps {
     tasks: ITaskDetails[];
     subtasks: ISubtask[];
-    taskStates?: string[];  // Añade esta prop
-    onFilterClick?: (filter: string) => void;  // Añade esta prop
-    activeFilter?: string | null;  // Añade esta prop
+    taskStates?: string[];  
+    onFilterClick?: (filter: string) => void;  
+    activeFilter?: string | null; 
 }
 
 const TasksTable: React.FC<TasksTableProps> = ({ 
