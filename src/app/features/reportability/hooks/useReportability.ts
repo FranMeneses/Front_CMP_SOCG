@@ -82,13 +82,10 @@ export function useReportability() {
             });
             const task = data?.task;
     
-            const endDate = new Date(subtask.endDate);
-            endDate.setDate(endDate.getDate() + 1);
-    
             return {
               title: subtask.name,
-              start: endDate.toISOString(),
-              end: endDate.toISOString(),
+              start: subtask.endDate,
+              end: subtask.endDate,
               progress: subtask.status.percentage,
               valley: handleGetValley(task?.valleyId ?? 5),
               faena: handleGetFaena(task?.faenaId ?? 11),

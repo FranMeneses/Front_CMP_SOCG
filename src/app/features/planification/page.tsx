@@ -15,7 +15,6 @@ export default function Planification() {
     const {
         handleCancel,
         setIsPopupOpen,
-        handleAddTask,
         handleSaveTask,
         toggleSidebar,
         isPopupOpen,
@@ -23,6 +22,9 @@ export default function Planification() {
         subTasks,
         isSidebarOpen,
         detailedTasks,
+        taskState,         
+        handleFilterClick, 
+        activeFilter,      
     } = usePlanification();
 
     const { userRole,currentValleyName } = useHooks();
@@ -63,6 +65,9 @@ export default function Planification() {
                                             <TasksTable
                                                 tasks={detailedTasks}
                                                 subtasks={subTasks}
+                                                taskStates={taskState}
+                                                onFilterClick={handleFilterClick}
+                                                activeFilter={activeFilter}
                                                 data-test-id="tasks-table"
                                             />
                                         </div>
@@ -71,14 +76,6 @@ export default function Planification() {
                             </div>
                         </main>
                     </div>
-                    <Modal isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-                        <ValleyTaskForm
-                            onCancel={handleCancel}
-                            onSave={handleSaveTask}
-                            valley={currentValleyName ? currentValleyName : ""}
-                            data-test-id="task-form"
-                        />
-                    </Modal>
                 </>
             )}
         </div>

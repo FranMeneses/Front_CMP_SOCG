@@ -17,27 +17,21 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) =>
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<any>(null); //TODO: Define the type for selectedEvent
 
-  const handleEventClick = (info: any) => {
-
-    const startDate = new Date(info.event.startStr);
-    startDate.setDate(startDate.getDate() + 1);
-
-    const formattedStartDate = new Date(startDate).toLocaleDateString("es-CL", {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric",
-    });
+const handleEventClick = (info: any) => {
+  const [datePart] = info.event.startStr.split('T');
+  const [year, month, day] = datePart.split('-');
   
+  const formattedStartDate = `${day}/${month}/${year}`;
 
-    setSelectedEvent({
-      title: info.event.title,
-      valley: info.event.extendedProps.valley,
-      start: formattedStartDate,
-      progress: info.event.extendedProps.progress,
-      faena: info.event.extendedProps.faena,
-    });
-    setIsModalOpen(true); 
-  };
+  setSelectedEvent({
+    title: info.event.title,
+    valley: info.event.extendedProps.valley,
+    start: formattedStartDate,
+    progress: info.event.extendedProps.progress,
+    faena: info.event.extendedProps.faena,
+  });
+  setIsModalOpen(true); 
+};
 
   const closeModal = () => {
     setIsModalOpen(false); 
@@ -66,6 +60,7 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) =>
         aspectRatio={1.5}
         events={events}
         eventClick={handleEventClick} 
+        timeZone="UTC"
       />
 
       {isModalOpen && selectedEvent && (

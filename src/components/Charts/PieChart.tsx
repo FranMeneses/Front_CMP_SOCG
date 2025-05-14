@@ -66,7 +66,6 @@ const PieChart = ({
       if (labelIndex !== -1) {
         setVisibleLegend((prev) => (prev === legend ? null : legend));
         
-        // El resto del código permanece igual
         chart.setActiveElements([
           {
             datasetIndex: 0,

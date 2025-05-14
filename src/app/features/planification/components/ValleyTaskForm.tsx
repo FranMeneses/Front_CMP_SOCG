@@ -20,7 +20,10 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
     dropdownItems,
     handleInputChange,
     handleSave,
+    getFaenaNameById,
   } = useValleyTaskForm(onSave, valley, isEditing, infoTask);
+
+  const selectedFaenaName = isEditing ? getFaenaNameById(formState.faena) : "";
 
   return (
     <div data-test-id="task-form">
@@ -156,7 +159,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           onSelect={(value) => handleInputChange("faena", value)}
           isInModal={true}
           disabled = {isEditing ? true : false}
-          selectedValue={faenas[Number(formState.faena) - 1]}
+          selectedValue={selectedFaenaName}
           data-test-id="task-faena-dropdown"
         />
       </div>
@@ -172,7 +175,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         <Button
           variant="default"
           onClick={handleSave}
-          className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
+          className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6] cursor-pointer disabled:cursor-default"
           disabled={!formState.name || !formState.origin || !formState.type || !formState.scope || !formState.interaction || !formState.faena}
           data-test-id="save-button"
         >

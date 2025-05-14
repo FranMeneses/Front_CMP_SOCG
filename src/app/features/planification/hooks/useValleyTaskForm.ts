@@ -128,20 +128,32 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
         }
     }, [initialValues]);
     
-
     const [faenas, setFaenas] = useState<string[]>([]);
+    const [faenaMap, setFaenaMap] = useState<{ [key: string]: string }>({});
+
+    useEffect(() => {
+    // Crear un mapa entre nombres de faenas y sus IDs
+    if (Faenas) {
+        const newFaenaMap: Record<string, number> = {};
+        Faenas.forEach((faena: IValley, index) => {
+            newFaenaMap[faena.name] = faena.id || index + 1;
+        });
+        setFaenaMap(Object.fromEntries(Object.entries(newFaenaMap).map(([key, value]) => [key, value.toString()])));
+    }
+}, [Faenas]);
 
     const handleInputChange = useCallback((field: string, value: string) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     }, []);
 
     const handleSave = useCallback(() => {
+        console.log(formState);
         let taskDetails = {};
         if (!isEditing) {
             taskDetails = {
                 ...formState,
                 valley: valleyNames.findIndex((v) => v === valley) + 1,
-                faena: faenaNames.findIndex((f) => f === formState.faena) + 1,
+                faena: formState.faena ? faenaMap[formState.faena] : null,
                 risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
                 state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s: string | number) => s === formState.state) + 1,
                 interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
@@ -178,26 +190,38 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
             faena: "",
         });
         setFaenas([]);
-    }, [formState, onSave]);
+    }, [formState, onSave, faenaMap]);
 
     const handleValleySelect = useCallback((valleyName: string) => {
         if (!faenaNames || faenaNames.length === 0) {
             setFaenas([]);
             return;
         }
-    
+
         switch (valleyName) {
             case "Valle de Copiapó":
-                setFaenas(faenaNames.slice(0, Math.min(3, faenaNames.length)));
+                const copiapoFaenas = faenaNames.slice(0, Math.min(3, faenaNames.length));
+                if (faenaNames.length > 9) {
+                    copiapoFaenas.push(faenaNames[9]);
+                }
+                setFaenas(copiapoFaenas);
                 break;
             case "Valle del Huasco":
                 if (faenaNames.length > 3) {
-                    setFaenas(faenaNames.slice(3, Math.min(6, faenaNames.length)));
+                    const huascoFaenas = faenaNames.slice(3, Math.min(6, faenaNames.length));
+                    if (faenaNames.length > 9) {
+                        huascoFaenas.push(faenaNames[9]);
+                    }
+                    setFaenas(huascoFaenas);
                 }
                 break;
             case "Valle del Elqui":
                 if (faenaNames.length > 6) {
-                    setFaenas(faenaNames.slice(6, Math.min(9, faenaNames.length)));
+                    const elquiFaenas = faenaNames.slice(6, Math.min(9, faenaNames.length));
+                    if (faenaNames.length > 9) {
+                        elquiFaenas.push(faenaNames[9]);
+                    }
+                    setFaenas(elquiFaenas);
                 }  
                 break;
             case "Transversal":
@@ -225,11 +249,18 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string,  i
         risk: taskRisk || []
     }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk]);
 
+    const getFaenaNameById = useCallback((id: string | number) => {
+        if (!id || !Faenas) return "";
+        const faena = Faenas.find(f => (f.id || "").toString() === id.toString());
+        return faena ? faena.name : "";
+    }, [Faenas]);
+
     return {
         formState,
         faenas,
         dropdownItems,
         handleInputChange,
         handleSave,
+        getFaenaNameById,
     };
 };

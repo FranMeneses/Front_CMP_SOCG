@@ -192,6 +192,32 @@ export const GET_TASK_STATUSES = gql`
   }
 `;
 
+// Query para obtener las tareas por valle y estado
+export const GET_TASKS_BY_VALLEY_AND_STATUS = gql`
+  query GetTasksByValleyAndStatus($valleyId: Int!, $statusId: Int!) {
+    tasksByValleyAndStatus(valleyId: $valleyId, statusId: $statusId) {
+      id
+      name
+      description
+      statusId
+      status {
+        id
+        name
+      }
+      faenaId
+      faena {
+        id
+        name
+      }
+      valleyId
+      valley {
+        id
+        name
+      }
+    }
+  }
+`;
+
 // Mutación para crear una tarea
 export const CREATE_TASK = gql`
 mutation CreateTask($input: CreateTaskDto!) {

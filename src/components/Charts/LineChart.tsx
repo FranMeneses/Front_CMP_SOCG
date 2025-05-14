@@ -63,7 +63,6 @@ const LineChart = ({
           const legend = legendItem.text;
           const clickedId = data.datasets.find(ds => ds.label === legend)?.id;
           
-          // Si se encontró un ID, seleccionar todos los datasets con ese ID
           if (clickedId) {
             onLegendClick(legend);
             setChartKey((prevKey) => prevKey + 1);
