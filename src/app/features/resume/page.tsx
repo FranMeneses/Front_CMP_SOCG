@@ -23,8 +23,8 @@ export default function Resume() {
     selectedLegend,
     selectedTaskId,
     subtasks,
-    yearlyBudgetTotal,
-    yearlyExpensesTotal,
+    formattedBudget,
+    formattedExpenses,
     handleLegendClick,
     handleTaskClick,
     toggleSidebar,
@@ -78,11 +78,11 @@ export default function Resume() {
                     <h3 className="text-[#070707] font-light text-sm mb-1">Iniciativas en desarrollo</h3> 
                   </div>
                   <div className="bg-[#b5f1a8e0] p-4 rounded-lg shadow">
-                    <p className="text-4xl font-semibold">{yearlyBudgetTotal} USD</p>
+                    <p className="text-4xl font-semibold">{formattedBudget} USD</p>
                     <h3 className="text-[#070707] font-light text-sm mb-1">Presupuesto total</h3> 
                   </div>
                   <div className="bg-[#f6a5a5e0] p-4 rounded-lg shadow">  
-                    <p className="text-4xl font-semibold">{yearlyExpensesTotal} USD</p>
+                    <p className="text-4xl font-semibold">{formattedExpenses} USD</p>
                     <h3 className="text-[#070707] font-light text-sm mb-1">Gasto total</h3> 
                   </div>
                 </div>

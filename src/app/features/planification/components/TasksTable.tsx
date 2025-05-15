@@ -2,14 +2,16 @@
 import React from "react";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../hooks/usePlanification";
-import { Pen, Plus, ZoomIn } from "lucide-react";
+import { Plus } from "lucide-react";
 import Modal from "@/components/Modal";
 import ValleyTaskForm from "./ValleyTaskForm";
 import { Button } from "@/components/ui/button";
 import ValleySubtaskForm from "./ValleySubtaskForm";
 import { useHooks } from "../../hooks/useHooks";
 import { ITaskDetails } from "@/app/models/ITasks";
-import { useValleySubtasksForm } from "../hooks/useValleySubtasksForm";
+import TaskRow from "./TaskRow";
+import SubtasksTable from "./SubtasksTable";
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -50,19 +52,50 @@ const TasksTable: React.FC<TasksTableProps> = ({
         selectedSubtask,
         expandedRow,
         taskState,
+        
+        isDeleteTaskModalOpen,
+        isDeleteSubtaskModalOpen,
+        itemToDeleteId,
+        setIsDeleteTaskModalOpen,
+        setIsDeleteSubtaskModalOpen,
+        setItemToDeleteId,
+        handleDeleteTask,
+        handleDeleteSubtask
     } = usePlanification();
 
     const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
     const actualHandleFilterClick = onFilterClick || hookHandleFilterClick;
     const actualTaskState = taskStates || taskState;
 
-     const { currentValleyName } = useHooks();
+    const { currentValleyName, userRole } = useHooks();
+
+    const renderFilterButtons = () => (
+        <div className="flex gap-2 mb-4">
+            {actualTaskState.map((filter: string) => (
+                <Button
+                    key={filter}
+                    variant="outline"
+                    className={`px-4 py-2 text-sm rounded-md hover:cursor-pointer ${
+                        actualActiveFilter === filter
+                            ? filter === "Completada" ? "bg-green-100 text-green-800 font-medium" : 
+                            filter === "En Proceso" ? "bg-blue-100 text-blue-800 font-medium" :
+                            filter === "En Espera" ? "bg-yellow-100 text-yellow-800 font-medium" :
+                            filter === "Cancelada" ? "bg-red-100 text-red-800 font-medium" :
+                            "bg-gray-200 text-gray-800 font-medium"
+                            : "bg-white hover:bg-gray-100"
+                    }`}
+                    onClick={() => actualHandleFilterClick(filter)}
+                >
+                    {filter}
+                </Button>
+            ))}
+        </div>
+    );
 
     return (
         <div>
             <div className="flex justify-between items-center mb-2">
-                <div>
-                </div>
+                <div></div>
                 <Button 
                     onClick={() => setIsPopupOpen(true)}
                     className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
@@ -71,26 +104,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 </Button>
             </div>
             
-            <div className="flex gap-2 mb-4">
-                {actualTaskState.map((filter: string) => (
-                    <Button
-                        key={filter}
-                        variant="outline"
-                        className={`px-4 py-2 text-sm rounded-md hover:cursor-pointer ${
-                            actualActiveFilter === filter
-                                ? filter === "Completada" ? "bg-green-100 text-green-800 font-medium" : 
-                                filter === "En Proceso" ? "bg-blue-100 text-blue-800 font-medium" :
-                                filter === "En Espera" ? "bg-yellow-100 text-yellow-800 font-medium" :
-                                filter === "Cancelada" ? "bg-red-100 text-red-800 font-medium" :
-                                "bg-gray-200 text-gray-800 font-medium"
-                                : "bg-white hover:bg-gray-100"
-                        }`}
-                        onClick={() => actualHandleFilterClick(filter)}
-                    >
-                        {filter}
-                    </Button>
-                ))}
-            </div>
+            {renderFilterButtons()}
             
             <div className="overflow-x-auto rounded-lg shadow">
                 <table className="w-full">
@@ -111,96 +125,32 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
                         {tasks.map((task) => (
                             <React.Fragment key={task.id}>
-                                <tr>
-                                    <td
-                                        className="px-4 py-2 text-left cursor-pointer text-black font-semibold"
-                                        onClick={() => handleOnTaskClick(task.id ?? '')}
-                                    >
-                                        {task.name}
-                                    </td>
-                                    <td className="py-2 text-left">{task.description}</td>
-                                    <td className="py-2 text-center">{task.faena.name}</td>
-                                    <td className="py-2 text-center">{task.budget || "-"}</td>
-                                    <td className="py-2 text-center">{task.startDate ? formatDate(task.startDate) : "-"}</td>
-                                    <td className="py-2 text-center">{task.endDate ? formatDate(task.endDate) : "-"}</td>
-                                    <td className="py-2 text-center">{getRemainingDays(task)}</td>
-                                    <td className="py-2 text-center">{task.finishedDate ? formatDate(task.finishedDate) : "-"}</td>
-                                    <td className="py-2 text-center">
-                                        <span className={`px-2 py-1 rounded-full text-xs ${
-                                            task.status.name === "Completada" ? "bg-green-100 text-green-800" : 
-                                            task.status.name === "En Proceso" ? "bg-blue-100 text-blue-800" :
-                                            task.status.name === "En Espera" ? "bg-yellow-100 text-yellow-800" :
-                                            task.status.name === "Cancelada" ? "bg-red-100 text-red-800" :
-                                            "bg-gray-100 text-gray-800"
-                                        }`}>
-                                            {task.status.name || "NO iniciada"}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-2 text-center">
-                                        <ZoomIn
-                                            size={20}
-                                            color="#041e3e"
-                                            className="cursor-pointer"
-                                            onClick={() => handleSeeInformation(task.id ?? '')}
-                                        />
-                                    </td>
-                                </tr>
+                                <TaskRow 
+                                    task={task}
+                                    formatDate={formatDate}
+                                    getRemainingDays={getRemainingDays}
+                                    handleOnTaskClick={handleOnTaskClick}
+                                    handleSeeInformation={handleSeeInformation}
+                                    setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
+                                    setItemToDeleteId={setItemToDeleteId}
+                                    userRole={userRole}
+                                />
+                                
                                 {expandedRow === task.id && (
-                                <tr>
-                                    <td colSpan={10} className="bg-[#f8f8f8]">
-                                        <div className="flex flex-row justify-between items-center px-4 py-2">
-                                            <h2 className="font-medium text-sm ml-4 text-black">Subtareas:</h2>
-                                            <Button
-                                                onClick={() => setIsPopupSubtaskOpen(true)}
-                                                variant="ghost"
-                                                size="sm"
-                                                className="flex items-center gap-1 hover:bg-gray-200"
-                                            >
-                                                <Plus size={16} color="black" />
-                                            </Button>
-                                        </div>
-                                        <table className="w-full text-left">
-                                            <thead className="bg-gray-50">
-                                                <tr>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Nombre</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Descripción</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Faena</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Presupuesto</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Inicio</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Finalización</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Días Restantes</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha de Termino</th>
-                                                    <th className="px-4 py-2 text-left text-xs font-medium text-gray-500"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-[#cacaca]">
-                                                {subtasks
-                                                    .filter((subtask) => subtask.taskId === task.id)
-                                                    .map((subtask) => (
-                                                        <tr key={subtask.id}>
-                                                            <td className="px-4 py-2">{subtask.name}</td>
-                                                            <td className="px-4 py-2">{subtask.description}</td>
-                                                            <td className="px-4 py-2">-</td>
-                                                            <td className="px-4 py-2">{subtask.budget}</td>
-                                                            <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
-                                                            <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
-                                                            <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>
-                                                            <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
-                                                            <td className="px-4 py-2">
-                                                                <Pen
-                                                                    size={18}
-                                                                    color="#041e3e"
-                                                                    className="cursor-pointer"
-                                                                    onClick={() => handleGetSubtask(subtask.id)}
-                                                                />
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            )}
+                                    <tr>
+                                        <SubtasksTable 
+                                            subtasks={subtasks}
+                                            taskId={task.id || ''}
+                                            formatDate={formatDate}
+                                            getRemainingSubtaskDays={getRemainingSubtaskDays}
+                                            handleGetSubtask={handleGetSubtask}
+                                            setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
+                                            setItemToDeleteId={setItemToDeleteId}
+                                            setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
+                                            userRole={userRole}
+                                        />
+                                    </tr>
+                                )}
                             </React.Fragment>
                         ))}
                     </tbody>
@@ -212,27 +162,28 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     <ValleyTaskForm
                         onCancel={handleCancel}
                         onSave={handleUpdateTask}
-                        valley={currentValleyName ? currentValleyName : ""}
+                        valley={currentValleyName || ""}
                         data-test-id="task-form"
                         details={true}
                         isEditing={true}
                         infoTask={selectedInfoTask}
                     />
                 ) : (
-                        <ValleyTaskForm
-                            onCancel={handleCancel}
-                            onSave={handleSaveTask}
-                            valley={currentValleyName ? currentValleyName : ""}
-                            data-test-id="task-form"
-                        />
+                    <ValleyTaskForm
+                        onCancel={handleCancel}
+                        onSave={handleSaveTask}
+                        valley={currentValleyName || ""}
+                        data-test-id="task-form"
+                    />
                 )}
             </Modal>
+            
             <Modal isOpen={isPopupSubtaskOpen} onClose={() => setIsPopupSubtaskOpen(false)}>
                 {selectedSubtask ? (
                     <ValleySubtaskForm
                         onCancel={handleCancelSubtask}
                         onSave={handleUpdateSubtask}
-                        valley={currentValleyName ? currentValleyName : ""}
+                        valley={currentValleyName || ""}
                         isEditing={true}
                         data-test-id="subtask-form"
                         subtask={selectedSubtask}
@@ -241,7 +192,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     <ValleySubtaskForm
                         onCancel={handleCancelSubtask}
                         onSave={handleCreateSubtask}
-                        valley={currentValleyName ? currentValleyName : ""}
+                        valley={currentValleyName || ""}
                         data-test-id="subtask-form"
                         subtask={{
                             name: "",
@@ -260,6 +211,20 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     />
                 )}
             </Modal>
+            
+            <DeleteConfirmationModal 
+                isOpen={isDeleteTaskModalOpen}
+                onClose={() => setIsDeleteTaskModalOpen(false)}
+                onConfirm={handleDeleteTask}
+                itemType="tarea"
+            />
+            
+            <DeleteConfirmationModal 
+                isOpen={isDeleteSubtaskModalOpen}
+                onClose={() => setIsDeleteSubtaskModalOpen(false)}
+                onConfirm={handleDeleteSubtask}
+                itemType="subtarea"
+            />
         </div>
     );
 };

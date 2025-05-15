@@ -267,10 +267,11 @@ export const UPDATE_TASK = gql`
 
 // Mutación para eliminar una tarea
 export const DELETE_TASK = gql`
-  mutation DeleteTask($id: ID!) {
-    deleteTask(id: $id) {
+  mutation RemoveTask($id: ID!) {
+    removeTask(id: $id) {
       id
       name
+      description
     }
   }
 `;

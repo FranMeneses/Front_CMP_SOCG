@@ -26,7 +26,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
     },
     {
       title: "Planificación",
@@ -34,7 +34,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
     },
     {
       title: "Beneficiarios",
@@ -42,7 +42,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
     },
     {
       title: "Reportabilidad",
@@ -50,7 +50,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
-      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento"]
+      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento","Admin"]
     },
     {
       title: "Programación",
@@ -58,7 +58,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
     },
     {
       title: "Resumen",
@@ -66,7 +66,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/resume",
       icon: ChartPie,
       isActive: pathname === "/features/resume",
-      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento"]
+      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento","Admin"]
     },
   ];
 

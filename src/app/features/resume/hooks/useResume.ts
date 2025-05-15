@@ -13,6 +13,8 @@ export function useResume() {
     const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState(0);
     const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
     const [budgetLoading, setBudgetLoading] = useState(true);
+    const [formattedBudget, setFormattedBudget] = useState("");
+    const [formattedExpenses, setFormattedExpenses] = useState("");
     
     const { data, loading: tasksLoading, error } = useQuery(GET_TASKS);
     const [getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
@@ -35,6 +37,12 @@ export function useResume() {
 
     const toggleSidebar = () => {
         setIsSidebarOpen((prev) => !prev);
+    };
+
+    const formatCurrency = (value: number): string => {
+        return new Intl.NumberFormat('es-ES', {
+            maximumFractionDigits: 0
+        }).format(value);
     };
 
     const handleGetSubtasks = async (selectedTaskId: string) => {
@@ -106,9 +114,11 @@ export function useResume() {
             try {
                 const budgetTotal = await YearlyBudget();
                 setYearlyBudgetTotal(budgetTotal);
+                setFormattedBudget(formatCurrency(budgetTotal));
                 
                 const expensesTotal = await YearlyExpenses();
                 setYearlyExpensesTotal(expensesTotal);
+                setFormattedExpenses(formatCurrency(expensesTotal));
             } catch (error) {
                 console.error("Error loading budget data:", error);
             } finally {
@@ -131,8 +141,8 @@ export function useResume() {
         selectedTaskId,
         subtasks,
         subtasksLoading,
-        yearlyBudgetTotal,
-        yearlyExpensesTotal,
+        formattedBudget,
+        formattedExpenses,
         handleLegendClick,
         handleTaskClick,
         toggleSidebar,
