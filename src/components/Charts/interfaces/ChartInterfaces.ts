@@ -1,16 +1,3 @@
-export interface GanttChartData {
-    datasets: Array<{
-        data: Array<{
-            x: [number, number]; 
-            y: string; 
-            assigned: string;
-            progress: number;
-        }>;
-        backgroundColor: string[];
-        hoverBackgroundColor: string[];
-    }>;
-}
-
 export interface BarChartData {
     labels: string[];
     datasets: Array<{
@@ -31,18 +18,6 @@ export interface PieChartProps {
   }>;
 }
 
-export interface LineChartData {
-    labels: string[];
-    datasets: Array<{
-        label: string;
-        data: number[];
-        borderColor: string;
-        backgroundColor: string;
-        id?: string;
-    }>;
-}
-
-// Define base interface for shared properties
 interface BaseChartDataset {
     label: string;
     data: number[];
@@ -52,7 +27,6 @@ interface BaseChartDataset {
     borderWidth?: number;
 }
 
-// Line-specific dataset interface
 interface LineDataset extends BaseChartDataset {
     type: 'line';
     borderDash?: number[];
@@ -62,7 +36,6 @@ interface LineDataset extends BaseChartDataset {
     tension?: number;
 }
 
-// Bar-specific dataset interface
 interface BarDataset extends BaseChartDataset {
     type: 'bar';
     hoverBackgroundColor?: string;
@@ -71,7 +44,6 @@ interface BarDataset extends BaseChartDataset {
     order?: number;
 }
 
-// Enhanced ComboChartData interface that can handle both dataset types
 export interface ComboChartData {
     labels: string[];
     datasets: Array<LineDataset | BarDataset | (BaseChartDataset & { type?: 'line' | 'bar' })>;

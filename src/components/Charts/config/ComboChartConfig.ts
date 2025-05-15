@@ -73,10 +73,8 @@ export const ComboChartOptions = ({
           const label = context.dataset.label || '';
           const value = context.parsed.y;
           
-          // Determinar si es gasto o presupuesto
           const isExpense = label.includes('Gastos');
           const prefix = isExpense ? 'Gasto' : 'Presupuesto';
-          // Extraer el valle
           const valleyName = isExpense ? label.replace('Gastos ', '') : label;
           
           let formattedValue = '';

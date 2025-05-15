@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import ValleySubtaskForm from "./ValleySubtaskForm";
 import { useHooks } from "../../hooks/useHooks";
 import { ITaskDetails } from "@/app/models/ITasks";
+import { useValleySubtasksForm } from "../hooks/useValleySubtasksForm";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -27,7 +28,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
 }) => {
     
     const { 
-        getRemainingDays, 
+        getRemainingDays,
         getRemainingSubtaskDays,
         formatDate,
         handleSeeInformation, 

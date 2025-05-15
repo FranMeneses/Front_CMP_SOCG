@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
-import { GET_PRIORITIES, GET_SUBTASK_STATUSES } from "@/app/api/subtasks";
-import { IPriority, ISubtasksStatus } from "@/app/models/ISubtasks";
+import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK } from "@/app/api/subtasks";
+import { IPriority, ISubtask, ISubtasksStatus } from "@/app/models/ISubtasks";
 
 interface Beneficiary {
     id: string;
@@ -23,15 +23,16 @@ interface SubtasksInitialValues {
     priority?: string;
 }
 
-// TODO: Define the type for the subtask object
-
 export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: any) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
     const {data: beneficiariesData} = useQuery(GET_BENEFICIARIES);
 
     const [beneficiariesMap, setBeneficiariesMap] = useState<Record<string, string>>({});
-    
     const [beneficiariesIdToNameMap, setBeneficiariesIdToNameMap] = useState<Record<string, string>>({});
+
+    const [createSubtask] = useMutation(CREATE_SUBTASK);
+    const [updateSubtask] = useMutation(UPDATE_SUBTASK);
+    const [getSubtask] = useLazyQuery(GET_SUBTASK);
 
     const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);
     const {data: subtaskStateData} = useQuery(GET_SUBTASK_STATUSES);
@@ -41,6 +42,93 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
 
     const subtaskPriority = priority.map((p: IPriority) => p.name);
     const subtaskState = state.map((s: ISubtasksStatus) => s.name);
+
+    const handleGetSubtask = async (subtaskId: string) => {
+        try {
+            const { data: subtaskData } = await getSubtask({
+                variables: { id: subtaskId },
+            });
+            if (subtaskData && subtaskData.subtask) {
+                const subtaskWithDefaults = {
+                    ...subtaskData.subtask,
+                    priorityId: subtaskData.subtask.priorityId || 1,  
+                    number: subtaskData.subtask.number || "",
+                    name: subtaskData.subtask.name || "",
+                    description: subtaskData.subtask.description || "",
+                    budget: subtaskData.subtask.budget || 0,
+                    startDate: subtaskData.subtask.startDate || new Date().toISOString(),
+                    endDate: subtaskData.subtask.endDate || new Date().toISOString(),
+                };
+                return subtaskWithDefaults;
+            } else {
+                console.warn("No data found for the given subtask ID:", subtaskId);
+                return null;
+            }
+        } catch (error) {
+            console.error("Error fetching subtask:", error);
+            return null;
+        }
+    };
+
+    const handleCreateSubtask = async (subtask: ISubtask, selectedTaskId: string) => {
+        try {
+            const { data } = await createSubtask({
+                variables: {
+                    input: {
+                        taskId: selectedTaskId,
+                        number: subtask.number,
+                        name: subtask.name,
+                        description: subtask.description,
+                        budget: subtask.budget,
+                        startDate: subtask.startDate,
+                        endDate: subtask.endDate,
+                        beneficiaryId: subtask.beneficiaryId ? subtask.beneficiaryId : null,
+                        statusId: 1,
+                        priorityId: subtask.priority,
+                    },
+                },
+            });
+            if (!data?.createSubtask?.id) {
+                throw new Error("Subtask creation failed: ID is undefined.");
+            }
+            return data.createSubtask.id;
+        }
+        catch (error) {
+            console.error("Error creating subtask:", error);
+            throw error;
+        }
+    };
+
+    const handleUpdateSubtask = async (subtask: ISubtask, selectedTaskId: string, selectedSubtask: ISubtask | null) => {
+        try {
+            const { data } = await updateSubtask({
+                variables: {
+                    id: selectedSubtask?.id,
+                    input: {
+                        taskId: selectedTaskId,
+                        number: subtask.number,
+                        name: subtask.name,
+                        description: subtask.description,
+                        budget: subtask.budget,
+                        expense: subtask.expense,
+                        beneficiaryId: subtask.beneficiaryId ? subtask.beneficiaryId : null,
+                        startDate: subtask.startDate,
+                        endDate: subtask.endDate,
+                        statusId: subtask.status,
+                        priorityId: subtask.priority,
+                    },
+                },
+            });
+            if (!data?.updateSubtask?.id) {
+                throw new Error("Subtask update failed: ID is undefined.");
+            }
+            return data.updateSubtask.id;
+        }
+        catch (error) {
+            console.error("Error updating subtask:", error);
+            throw error;
+        }
+    };
 
     const [subtaskFormState, setSubtaskFormState] = useState({
         name: subtasksInitialValues?.name || "",
@@ -180,5 +268,8 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
         dropdownItems,
         handleSubtaskInputChange,
         handleSaveSubtask,
+        handleGetSubtask,
+        handleCreateSubtask,
+        handleUpdateSubtask,
     };
 };
