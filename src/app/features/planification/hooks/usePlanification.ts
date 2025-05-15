@@ -185,15 +185,56 @@ export const usePlanification = () => {
     }, [data, mainQueryLoading, getSubtasks]);
 
 
-    const getRemainingDays = (task: any) => {
+    const getRemainingDays = (task: ITaskDetails) => {
         const end = new Date(task.endDate);
         if (task.status.name === "NO iniciada") {
             return "-";
         }
-        if (task.status.name === "Completada" || task.status.name === "Completada con Informe Final") {
-            return 0;
+        if (task.status.name === "Completada") {
+            const taskSubtasks = subTasks.filter(subtask => subtask.taskId === task.id);
+            if (taskSubtasks.length === 0) {
+                return 0;
+            }
+
+            const subtaskDays = taskSubtasks.map(subtask => {
+                const daysValue = getRemainingSubtaskDays(subtask);
+                return daysValue === "-" ? Number.MAX_SAFE_INTEGER : Number(daysValue);
+            });
+
+            const validDays = subtaskDays.filter(days => days !== Number.MAX_SAFE_INTEGER);
+            if (validDays.length === 0) {
+                return 0;
+            }
+            
+            return Math.min(...validDays);
         }
         if (task.status.name === "Cancelada") {
+            return 0;
+        }
+        else {
+            const today = new Date();
+            const diffTime = end.getTime() - today.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (isNaN(diffDays)) {
+                return "-";
+            }
+            return diffDays;
+        }
+    };
+    
+    const getRemainingSubtaskDays = (subtask: ISubtask) => {
+        const end = new Date(subtask.endDate);
+        if (subtask.status.name === "Completada con Informe Final") {
+            const finishDate = new Date(subtask.finalDate);
+            const startDate = new Date(subtask.startDate);
+            const diffTime = finishDate.getTime() - startDate.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (isNaN(diffDays)) {
+                return "-";
+            }
+            return diffDays;
+        }
+        if (subtask.status.name === "Cancelada") {
             return 0;
         }
         else {
@@ -283,24 +324,24 @@ export const usePlanification = () => {
         }
     };
 
-useEffect(() => {
-    const fetchTaskDetails = async () => {
-        if (!mainQueryLoading && !isLoadingSubtasks) {
-            try {
-                if (data?.tasksByValley) {
-                    const tasks = await loadTasksWithDetails();
-                    setDetailedTasks(tasks);
+    useEffect(() => {
+        const fetchTaskDetails = async () => {
+            if (!mainQueryLoading && !isLoadingSubtasks) {
+                try {
+                    if (data?.tasksByValley) {
+                        const tasks = await loadTasksWithDetails();
+                        setDetailedTasks(tasks);
+                    }
+                } catch (error) {
+                    console.error("Error loading task details:", error);
+                } finally {
+                    setIsInitialLoad(false);
                 }
-            } catch (error) {
-                console.error("Error loading task details:", error);
-            } finally {
-                setIsInitialLoad(false);
             }
-        }
-    };
-    
-    fetchTaskDetails();
-}, [data, mainQueryLoading, isLoadingSubtasks]);
+        };
+        
+        fetchTaskDetails();
+    }, [data, mainQueryLoading, isLoadingSubtasks]);
 
     const handleGetTaskBudget = async (taskId: string) => {
         try {
@@ -523,6 +564,7 @@ useEffect(() => {
         toggleSidebar,
         createTask,
         getRemainingDays,
+        getRemainingSubtaskDays,
         setIsPopupOpen,
         setIsPopupSubtaskOpen,
         setSelectedTaskId,

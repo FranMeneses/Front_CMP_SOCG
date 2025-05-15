@@ -28,6 +28,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     
     const { 
         getRemainingDays, 
+        getRemainingSubtaskDays,
         formatDate,
         handleSeeInformation, 
         handleGetSubtask,
@@ -182,7 +183,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                                             <td className="px-4 py-2">{subtask.budget}</td>
                                                             <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
                                                             <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
-                                                            <td className="px-4 py-2">{getRemainingDays(subtask)}</td>
+                                                            <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>
                                                             <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
                                                             <td className="px-4 py-2">
                                                                 <Pen
