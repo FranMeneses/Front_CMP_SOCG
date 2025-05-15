@@ -39,6 +39,9 @@ export function useHooks() {
             case "gerente":
                 router.push("/features/resume");
                 break;
+            case "admin":
+                router.push("/features/resume");
+                break;
             case "superintendente":
                 router.push("/features/resume");
                 break;

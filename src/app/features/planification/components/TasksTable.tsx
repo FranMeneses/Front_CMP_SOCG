@@ -1,8 +1,8 @@
 'use client';
-import React from "react";
+import React, { useState } from "react"; // Añadir useState
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../hooks/usePlanification";
-import { Pen, Plus, ZoomIn } from "lucide-react";
+import { Pen, Plus, Trash, ZoomIn, AlertCircle } from "lucide-react"; // Añadir AlertCircle
 import Modal from "@/components/Modal";
 import ValleyTaskForm from "./ValleyTaskForm";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,10 @@ const TasksTable: React.FC<TasksTableProps> = ({
     onFilterClick,
     activeFilter: propActiveFilter
 }) => {
+    
+    const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
+    const [isDeleteSubtaskModalOpen, setIsDeleteSubtaskModalOpen] = useState(false);
+    const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
     
     const { 
         getRemainingDays,
@@ -56,7 +60,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const actualHandleFilterClick = onFilterClick || hookHandleFilterClick;
     const actualTaskState = taskStates || taskState;
 
-     const { currentValleyName } = useHooks();
+    const { currentValleyName, userRole } = useHooks();
+
 
     return (
         <div>
@@ -136,13 +141,21 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                             {task.status.name || "NO iniciada"}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-2 text-center">
+                                    <td className="px-4 py-2 text-center flex flex-row">
                                         <ZoomIn
                                             size={20}
                                             color="#041e3e"
-                                            className="cursor-pointer"
+                                            className="cursor-pointer mr-4"
                                             onClick={() => handleSeeInformation(task.id ?? '')}
                                         />
+                                        {userRole === "Admin" && (
+                                            <Trash
+                                                size={20}
+                                                color="#041e3e"
+                                                className="cursor-pointer"
+                                                onClick={() => setIsDeleteTaskModalOpen(true)}
+                                            />
+                                        )}
                                     </td>
                                 </tr>
                                 {expandedRow === task.id && (
@@ -186,13 +199,21 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                                             <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
                                                             <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>
                                                             <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
-                                                            <td className="px-4 py-2">
+                                                            <td className="px-4 py-2 flex flex-row">
                                                                 <Pen
                                                                     size={18}
                                                                     color="#041e3e"
-                                                                    className="cursor-pointer"
+                                                                    className="cursor-pointer mr-4"
                                                                     onClick={() => handleGetSubtask(subtask.id)}
                                                                 />
+                                                                {userRole === "Admin" && (
+                                                                    <Trash
+                                                                        size={20}
+                                                                        color="#041e3e"
+                                                                        className="cursor-pointer"
+                                                                        onClick={() => setIsDeleteSubtaskModalOpen(true)}
+                                                                    />
+                                                                )}
                                                             </td>
                                                         </tr>
                                                     ))}
@@ -207,6 +228,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 </table>
             </div>
             
+            {/* Modal para tareas y subtareas */}
             <Modal isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
                 {selectedInfoTask ? (
                     <ValleyTaskForm
@@ -259,6 +281,62 @@ const TasksTable: React.FC<TasksTableProps> = ({
                         }}
                     />
                 )}
+            </Modal>
+            
+            {/* Modal de confirmación para eliminar tarea */}
+            <Modal isOpen={isDeleteTaskModalOpen} onClose={() => setIsDeleteTaskModalOpen(false)}>
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto">
+                    <div className="flex items-center justify-center mb-4">
+                        <AlertCircle className="h-12 w-12 text-red-500" />
+                    </div>
+                    <h2 className="text-xl font-bold mb-4 text-center">Confirmar eliminación</h2>
+                    <p className="text-sm text-gray-600 mb-6 text-center">
+                        ¿Estás seguro de que quieres eliminar esta tarea? Esta acción no se puede deshacer.
+                    </p>
+                    <div className="flex justify-center space-x-4">
+                        <Button 
+                            variant="outline" 
+                            onClick={() => setIsDeleteTaskModalOpen(false)}
+                            className="px-4 py-2"
+                        >
+                            Cancelar
+                        </Button>
+                        <Button 
+                            className="bg-red-600 text-white px-4 py-2 hover:bg-red-700"
+                            onClick={() => console.log("Eliminar tarea")}
+                        >
+                            Eliminar
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
+            
+            {/* Modal de confirmación para eliminar subtarea */}
+            <Modal isOpen={isDeleteSubtaskModalOpen} onClose={() => setIsDeleteSubtaskModalOpen(false)}>
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto">
+                    <div className="flex items-center justify-center mb-4">
+                        <AlertCircle className="h-12 w-12 text-red-500" />
+                    </div>
+                    <h2 className="text-xl font-bold mb-4 text-center">Confirmar eliminación</h2>
+                    <p className="text-sm text-gray-600 mb-6 text-center">
+                        ¿Estás seguro de que quieres eliminar esta subtarea? Esta acción no se puede deshacer.
+                    </p>
+                    <div className="flex justify-center space-x-4">
+                        <Button 
+                            variant="outline" 
+                            onClick={() => setIsDeleteSubtaskModalOpen(false)}
+                            className="px-4 py-2"
+                        >
+                            Cancelar
+                        </Button>
+                        <Button 
+                            className="bg-red-600 text-white px-4 py-2 hover:bg-red-700"
+                            onClick={() => console.log("Eliminar subtarea")}
+                        >
+                            Eliminar
+                        </Button>
+                    </div>
+                </div>
             </Modal>
         </div>
     );
