@@ -52,6 +52,8 @@ export const ComboChartOptions = ({
         grid: {
           display: false,
         },
+        offset: true,
+        stacked: false, 
       },
     },
     plugins: {

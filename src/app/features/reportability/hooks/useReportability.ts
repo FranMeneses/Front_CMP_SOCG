@@ -86,7 +86,9 @@ export function useReportability() {
               title: subtask.name,
               start: subtask.endDate,
               end: subtask.endDate,
+              startDate: subtask.startDate,
               progress: subtask.status.percentage,
+              status: subtask.status.name,
               valley: handleGetValley(task?.valleyId ?? 5),
               faena: handleGetFaena(task?.faenaId ?? 11),
               color: handleGetColor(task?.valleyId ?? 5),
@@ -109,6 +111,7 @@ export function useReportability() {
   useEffect(() => {
     if (Subtasks.length > 0) {
       fetchCalendarEvents(Subtasks);
+      console.log(calendarEvents);
     } else {
       setEventsLoading(false);
     }

@@ -21,12 +21,18 @@ const handleEventClick = (info: any) => {
   const [datePart] = info.event.startStr.split('T');
   const [year, month, day] = datePart.split('-');
   
-  const formattedStartDate = `${day}/${month}/${year}`;
+  const formattedStar = `${day}/${month}/${year}`;
+
+  const [startDatePart] = info.event.extendedProps.startDate.split('T');
+  const [startYear, startMonth, startDay] = startDatePart.split('-');
+  const formattedStartDate = `${startDay}/${startMonth}/${startYear}`;
 
   setSelectedEvent({
     title: info.event.title,
     valley: info.event.extendedProps.valley,
-    start: formattedStartDate,
+    start: formattedStar,
+    startDate: formattedStartDate,
+    status: info.event.extendedProps.status,
     progress: info.event.extendedProps.progress,
     faena: info.event.extendedProps.faena,
   });
