@@ -4,7 +4,7 @@ import { IValley } from "@/app/models/IValleys";
 import { GET_ALL_RISKS, GET_ALL_ORIGINS, GET_ALL_INVESTMENTS, GET_ALL_INTERACTIONS, GET_ALL_SCOPES, GET_ALL_TYPES, GET_TASK_INFO } from "@/app/api/infoTask";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { IInteraction, IInvestment, IOrigin, IRisk, IScope, IType } from "@/app/models/IInfoTask";
-import { GET_TASK_STATUSES, GET_TASK, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, UPDATE_TASK } from "@/app/api/tasks";
+import { GET_TASK_STATUSES, GET_TASK, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, UPDATE_TASK, DELETE_TASK } from "@/app/api/tasks";
 import { IInfoTask, ITaskStatus } from "@/app/models/ITasks";
 import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 
@@ -32,6 +32,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
     const [updateTask] = useMutation(UPDATE_TASK);
     const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
+    const [deleteTask] = useMutation(DELETE_TASK);
     
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
@@ -65,6 +66,21 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
     const taskScope = scopes.map((s: IScope) => s.name);
     const taskType = types.map((t: IType) => t.name);
     const taskState = states.map((s: ITaskStatus) => s.name);
+
+    const handleDeleteTask = async (taskId: string) => {
+        try {
+            const { data } = await deleteTask({
+                variables: { id: taskId },
+            });
+            if (data) {
+                console.log("Task deleted successfully:", data);
+            } else {
+                console.warn("No data found for the given task ID:", taskId);
+            }
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+    };
 
     const handleGetTaskBudget = async (taskId: string) => {
         try {
@@ -376,5 +392,6 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
         handleGetInfoTask,
         handleGetTaskFaena,
         handleUpdateTask,
+        handleDeleteTask,
     };
 };

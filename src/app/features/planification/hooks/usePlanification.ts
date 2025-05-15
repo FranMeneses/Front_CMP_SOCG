@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, GET_TASKS_BY_VALLEY, GET_TASKS_BY_VALLEY_AND_STATUS, GET_TASK_STATUSES, GET_TASK_SUBTASKS } from "@/app/api/tasks";
+import { CREATE_TASK, DELETE_TASK, GET_TASKS_BY_VALLEY, GET_TASKS_BY_VALLEY_AND_STATUS, GET_TASK_STATUSES, GET_TASK_SUBTASKS } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { useHooks } from "../../hooks/useHooks";
@@ -27,6 +27,10 @@ export const usePlanification = () => {
     const [isLoadingSubtasks, setIsLoadingSubtasks] = useState<boolean>(false);
     const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
     const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
+
+    const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
+    const [isDeleteSubtaskModalOpen, setIsDeleteSubtaskModalOpen] = useState(false);
+    const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
     
     const dummyTask = (task: any) => {};
     const dummySubtask = (subtask: any) => {};
@@ -66,6 +70,31 @@ export const usePlanification = () => {
         setIsPopupSubtaskOpen(false);
     };
     
+      const handleDeleteTask = () => {
+        try {
+            valleyTaskForm.handleDeleteTask(itemToDeleteId!);
+            setIsDeleteTaskModalOpen(false);
+            refetch();
+            window.location.reload();
+        } catch (error) {
+            console.error("Error deleting task:", error);
+        }
+        setIsDeleteTaskModalOpen(false);
+    };
+    
+    const handleDeleteSubtask = () => {
+        try {
+            valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
+            setIsDeleteSubtaskModalOpen(false);
+            refetch();
+            window.location.reload();
+        }
+        catch (error) {
+            console.error("Error deleting subtask:", error);
+        }
+        setIsDeleteSubtaskModalOpen(false);
+    };
+
     const handleGetTasksByStatus = async (statusId: number) => {
         try {
             setIsLoadingTaskDetails(true);
@@ -401,18 +430,23 @@ export const usePlanification = () => {
     };
 
     return {
-        setTableOption,
+        setTableOption,       
+        setIsPopupOpen,
+        setIsPopupSubtaskOpen,
+        setSelectedTaskId,
+        setIsSidebarOpen,
+        setIsDeleteSubtaskModalOpen,
+        setIsDeleteTaskModalOpen,
+        setItemToDeleteId,
         handleAddTask,
         handleSaveTask,
+        handleDeleteTask,
+        handleDeleteSubtask,
         handleOnTaskClick,
         toggleSidebar,
         createTask,
         getRemainingDays,
         getRemainingSubtaskDays,
-        setIsPopupOpen,
-        setIsPopupSubtaskOpen,
-        setSelectedTaskId,
-        setIsSidebarOpen,
         handleCancel,
         formatDate,
         handleSeeInformation,
@@ -423,6 +457,9 @@ export const usePlanification = () => {
         handleCancelSubtask,
         handleFilterClick,
         isPopupOpen,
+        isDeleteSubtaskModalOpen,
+        isDeleteTaskModalOpen,
+        itemToDeleteId,
         isPopupSubtaskOpen,
         selectedTaskId,
         isSidebarOpen,

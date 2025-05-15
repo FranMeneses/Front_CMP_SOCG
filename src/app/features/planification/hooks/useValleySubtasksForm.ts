@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
-import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK } from "@/app/api/subtasks";
+import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK, DELETE_SUBTASK } from "@/app/api/subtasks";
 import { IPriority, ISubtask, ISubtasksStatus } from "@/app/models/ISubtasks";
 
 interface Beneficiary {
@@ -33,6 +33,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
     const [createSubtask] = useMutation(CREATE_SUBTASK);
     const [updateSubtask] = useMutation(UPDATE_SUBTASK);
     const [getSubtask] = useLazyQuery(GET_SUBTASK);
+    const [deleteSubtask] = useMutation(DELETE_SUBTASK);
 
     const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);
     const {data: subtaskStateData} = useQuery(GET_SUBTASK_STATUSES);
@@ -69,6 +70,21 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
             return null;
         }
     };
+
+    const handleDeleteSubtask = async (subtaskId: string) => {
+        try {
+            const { data } = await deleteSubtask({
+                variables: { id: subtaskId },
+            });
+            if (!data?.deleteSubtask?.id) {
+                throw new Error("Subtask deletion failed: ID is undefined.");
+            }
+            return data.deleteSubtask.id;
+        } catch (error) {
+            console.error("Error deleting subtask:", error);
+            throw error;
+        }
+    }
 
     const handleCreateSubtask = async (subtask: ISubtask, selectedTaskId: string) => {
         try {
@@ -271,5 +287,6 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
         handleGetSubtask,
         handleCreateSubtask,
         handleUpdateSubtask,
+        handleDeleteSubtask,
     };
 };

@@ -148,10 +148,11 @@ export const UPDATE_SUBTASK = gql`
 
 // Mutación para eliminar una subtarea
 export const DELETE_SUBTASK = gql`
-  mutation DeleteSubtask($id: ID!) {
-    deleteSubtask(id: $id) {
+  mutation RemoveSubtask($id: ID!) {
+    removeSubtask(id: $id) {
       id
       name
+      description
     }
   }
 `;
