@@ -4,7 +4,7 @@ import { useData } from "@/context/DataContext";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado copiapó");
+    const [userRole, setUserRole] = useState<string>("gerente");
     const { valleys } = useData();
 
     const valleyIdByRole = useMemo(() => {
@@ -12,6 +12,7 @@ export function useHooks() {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
             "encargado copiapó": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
             "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.id || 2,
+            "Admin": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
         };
     }, [valleys]);
 
