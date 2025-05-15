@@ -1,16 +1,3 @@
-export interface GanttChartData {
-    datasets: Array<{
-        data: Array<{
-            x: [number, number]; 
-            y: string; 
-            assigned: string;
-            progress: number;
-        }>;
-        backgroundColor: string[];
-        hoverBackgroundColor: string[];
-    }>;
-}
-
 export interface BarChartData {
     labels: string[];
     datasets: Array<{
@@ -31,13 +18,33 @@ export interface PieChartProps {
   }>;
 }
 
-export interface LineChartData {
+interface BaseChartDataset {
+    label: string;
+    data: number[];
+    backgroundColor: string;
+    borderColor: string;
+    id?: string;
+    borderWidth?: number;
+}
+
+interface LineDataset extends BaseChartDataset {
+    type: 'line';
+    borderDash?: number[];
+    pointRadius?: number;
+    fill?: boolean;
+    order?: number;
+    tension?: number;
+}
+
+interface BarDataset extends BaseChartDataset {
+    type: 'bar';
+    hoverBackgroundColor?: string;
+    barPercentage?: number;
+    categoryPercentage?: number;
+    order?: number;
+}
+
+export interface ComboChartData {
     labels: string[];
-    datasets: Array<{
-        label: string;
-        data: number[];
-        borderColor: string;
-        backgroundColor: string;
-        id?: string;
-    }>;
+    datasets: Array<LineDataset | BarDataset | (BaseChartDataset & { type?: 'line' | 'bar' })>;
 }

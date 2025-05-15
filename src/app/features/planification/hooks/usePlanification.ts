@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, GET_TASK, GET_TASK_STATUSES, GET_TASK_SUBTASKS, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASKS_BY_VALLEY, GET_TASKS_BY_VALLEY_AND_STATUS, UPDATE_TASK } from "@/app/api/tasks";
-import { CREATE_INFO_TASK, GET_TASK_INFO, UPDATE_INFO_TASK } from "@/app/api/infoTask";
+import { CREATE_TASK, GET_TASKS_BY_VALLEY, GET_TASKS_BY_VALLEY_AND_STATUS, GET_TASK_STATUSES, GET_TASK_SUBTASKS } from "@/app/api/tasks";
+import { CREATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
-import { CREATE_SUBTASK, GET_SUBTASK, UPDATE_SUBTASK } from "@/app/api/subtasks";
 import { useHooks } from "../../hooks/useHooks";
 import { IInfoTask, ITask, ITaskDetails, ITaskStatus } from "@/app/models/ITasks";
 import React from "react";
+import { useValleyTaskForm } from "./useValleyTaskForm";
+import { useValleySubtasksForm } from "./useValleySubtasksForm";
 
 export const usePlanification = () => {
-
     const { currentValleyId } = useHooks();
 
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
@@ -28,12 +28,14 @@ export const usePlanification = () => {
     const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
     const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
     
+    const dummyTask = (task: any) => {};
+    const dummySubtask = (subtask: any) => {};
+
+    const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
+    const valleySubtaskForm = useValleySubtasksForm(dummySubtask);
+    
     const [createTask] = useMutation(CREATE_TASK);
-    const [createSubtask] = useMutation(CREATE_SUBTASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
-    const [updateTask] = useMutation(UPDATE_TASK); 
-    const [updateSubtask] = useMutation(UPDATE_SUBTASK); 
-    const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
 
     const { data, loading: mainQueryLoading, error, refetch } = useQuery(GET_TASKS_BY_VALLEY, {
         variables: { valleyId: currentValleyId },
@@ -43,12 +45,7 @@ export const usePlanification = () => {
     const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
 
     const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
-    const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS)
-    const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
-    const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
-    const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
-    const [getTask] = useLazyQuery(GET_TASK);
-    const [getSubtask] = useLazyQuery(GET_SUBTASK);
+    const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS);
     
     const states = taskStateData?.taskStatuses || [];
     const taskState = states.map((s: ITaskStatus) => s.name);
@@ -106,8 +103,8 @@ export const usePlanification = () => {
         };
     }
 
-
     const handleSaveTask = async (task: any) => {
+        console.log("Saving task:", task);
         try {
             const { data } = await createTask({
                 variables: {
@@ -184,16 +181,55 @@ export const usePlanification = () => {
         }
     }, [data, mainQueryLoading, getSubtasks]);
 
-
-    const getRemainingDays = (task: any) => {
+    const getRemainingDays = (task: ITaskDetails) => {
         const end = new Date(task.endDate);
         if (task.status.name === "NO iniciada") {
             return "-";
         }
-        if (task.status.name === "Completada" || task.status.name === "Completada con Informe Final") {
-            return 0;
+        if (task.status.name === "Completada") {
+            const taskSubtasks = subTasks.filter(subtask => subtask.taskId === task.id);
+            if (taskSubtasks.length === 0) {
+                return 0;
+            }
+
+            const subtaskDays = taskSubtasks.map(subtask => {
+                const daysValue = getRemainingSubtaskDays(subtask);
+                return daysValue === "-" ? Number.MAX_SAFE_INTEGER : Number(daysValue);
+            });
+
+            const validDays = subtaskDays.filter(days => days !== Number.MAX_SAFE_INTEGER);
+            if (validDays.length === 0) {
+                return 0;
+            }
+            
+            return Math.min(...validDays);
         }
         if (task.status.name === "Cancelada") {
+            return 0;
+        }
+        else {
+            const today = new Date();
+            const diffTime = end.getTime() - today.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (isNaN(diffDays)) {
+                return "-";
+            }
+            return diffDays;
+        }
+    };
+    const getRemainingSubtaskDays = (subtask: ISubtask) => {
+        const end = new Date(subtask.endDate);
+        if (subtask.status.name === "Completada con Informe Final") {
+            const finishDate = new Date(subtask.finalDate);
+            const startDate = new Date(subtask.startDate);
+            const diffTime = finishDate.getTime() - startDate.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (isNaN(diffDays)) {
+                return "-";
+            }
+            return diffDays;
+        }
+        if (subtask.status.name === "Cancelada") {
             return 0;
         }
         else {
@@ -233,7 +269,7 @@ export const usePlanification = () => {
             const detailedTasks = await Promise.all(tasks.map(async (task: ITask) => {
                 const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.id);
                 
-                const budget = task.id ? await handleGetTaskBudget(task.id) : null;
+                const budget = task.id ? await valleyTaskForm.handleGetTaskBudget(task.id) : null;
                 
                 const startDate = associatedSubtasks.length
                     ? new Date(Math.min(...associatedSubtasks.map((subtask) => new Date(subtask.startDate).getTime())))
@@ -283,109 +319,29 @@ export const usePlanification = () => {
         }
     };
 
-useEffect(() => {
-    const fetchTaskDetails = async () => {
-        if (!mainQueryLoading && !isLoadingSubtasks) {
-            try {
-                if (data?.tasksByValley) {
-                    const tasks = await loadTasksWithDetails();
-                    setDetailedTasks(tasks);
+    useEffect(() => {
+        const fetchTaskDetails = async () => {
+            if (!mainQueryLoading && !isLoadingSubtasks) {
+                try {
+                    if (data?.tasksByValley) {
+                        const tasks = await loadTasksWithDetails();
+                        setDetailedTasks(tasks);
+                    }
+                } catch (error) {
+                    console.error("Error loading task details:", error);
+                } finally {
+                    setIsInitialLoad(false);
                 }
-            } catch (error) {
-                console.error("Error loading task details:", error);
-            } finally {
-                setIsInitialLoad(false);
             }
-        }
-    };
-    
-    fetchTaskDetails();
-}, [data, mainQueryLoading, isLoadingSubtasks]);
-
-    const handleGetTaskBudget = async (taskId: string) => {
-        try {
-            const { data: budgetData } = await getTaskBudget({
-                variables: { id: taskId },
-            });
-            if (budgetData) {
-                return budgetData.taskTotalBudget;
-            } else {
-                console.warn("No data found for the given task ID:", taskId);
-                return null;
-            }
-        } catch (error) {
-            console.error("Error fetching task budget:", error);
-            return null;
-        }
-    };
-
-    const handleGetTaskExpenses = async (taskId: string) => {
-        try {
-            const { data: expensesData } = await getTaskExpenses({
-                variables: { id: taskId },
-            });
-            if (expensesData) {
-                return expensesData.taskTotalExpense;
-            } else {
-                console.warn("No data found for the given task ID:", taskId);
-                return null;
-            }
-        } catch (error) {
-            console.error("Error fetching task expenses:", error);
-            return null;
-        }
-    };
-
-    const handleGetInfoTask = async (taskId: string) => {
-        try {
-            const { data: infoData } = await getInfoTask({
-                variables: { id: taskId },
-            });
-            if (infoData) {
-                return infoData.taskInfo;
-            } else {
-                console.warn("No data found for the given task ID:", taskId);
-                return null;
-            }
-        } catch (error) {
-            console.error("Error fetching task information:", error);
-            return null;
-        }
-    };
-
-    const handleGetSubtask = async (subtaskId: string) => {
-        try {
-            const { data: subtaskData } = await getSubtask({
-                variables: { id: subtaskId },
-            });
-            if (subtaskData && subtaskData.subtask) {
-                const subtaskWithDefaults = {
-                    ...subtaskData.subtask,
-                    priorityId: subtaskData.subtask.priorityId || 1,  
-                    number: subtaskData.subtask.number || "",
-                    name: subtaskData.subtask.name || "",
-                    description: subtaskData.subtask.description || "",
-                    budget: subtaskData.subtask.budget || 0,
-                    startDate: subtaskData.subtask.startDate || new Date().toISOString(),
-                    endDate: subtaskData.subtask.endDate || new Date().toISOString(),
-                };
-                setSelectedSubtask(subtaskWithDefaults);
-                setIsPopupSubtaskOpen(true);
-                return subtaskWithDefaults;
-            } else {
-                console.warn("No data found for the given subtask ID:", subtaskId);
-                return null;
-            }
-        } catch (error) {
-            console.error("Error fetching subtask:", error);
-            return null;
-        }
-    };
+        };
+        
+        fetchTaskDetails();
+    }, [data, mainQueryLoading, isLoadingSubtasks]);
 
     const handleSeeInformation = async (taskId: string) => {
         setSelectedTaskId(taskId);
         try {
-            const taskInfo = await handleGetInfoTask(taskId);
+            const taskInfo = await valleyTaskForm.handleGetInfoTask(taskId);
             if (taskInfo) {
                 setSelectedInfoTask(taskInfo);
                 setIsPopupOpen(true);
@@ -396,122 +352,51 @@ useEffect(() => {
             console.error("Error handling task information:", error);
         }
     };
-
-    const handleGetTaskFaena = async (taskId: string) => {
+    
+    const handleGetSubtask = async (subtaskId: string) => {
         try {
-            const { data: taskData } = await getTask({
-                variables: { id: taskId },
-            });
-            if (taskData) {
-                return taskData.task.faenaId;
-            } else {
-                console.warn("No data found for the given task ID:", taskId);
-                return null;
+            const subtask = await valleySubtaskForm.handleGetSubtask(subtaskId);
+            if (subtask) {
+                setSelectedSubtask(subtask);
+                setIsPopupSubtaskOpen(true);
+                return subtask;
             }
+            return null;
         } catch (error) {
-            console.error("Error fetching task:", error);
+            console.error("Error in handleGetSubtask:", error);
             return null;
         }
-    }
+    };
 
     const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
-            const { data } = await createSubtask({
-                variables: {
-                    input: {
-                        taskId: selectedTaskId,
-                        number: subtask.number,
-                        name: subtask.name,
-                        description: subtask.description,
-                        budget: subtask.budget,
-                        startDate: subtask.startDate,
-                        endDate: subtask.endDate,
-                        beneficiaryId: subtask.beneficiaryId ? subtask.beneficiaryId : null,
-                        statusId: 1,
-                        priorityId: subtask.priority,
-                    },
-                },
-            });
-            if (!data?.createSubtask?.id) {
-                throw new Error("Subtask creation failed: ID is undefined.");
-            }
+            await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
-            refetch(); 
+            refetch();
             window.location.reload();
+        } catch (error) {
+            console.error("Error in handleCreateSubtask:", error);
         }
-        catch (error) {
-            console.error("Error creating subtask:", error);
-        }
-    }
+    };
 
     const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
-            const { data } = await updateSubtask({
-                variables: {
-                    id: selectedSubtask?.id,
-                    input: {
-                        taskId: selectedTaskId,
-                        number: subtask.number,
-                        name: subtask.name,
-                        description: subtask.description,
-                        budget: subtask.budget,
-                        expense: subtask.expense,
-                        beneficiaryId: subtask.beneficiaryId ? subtask.beneficiaryId : null,
-                        startDate: subtask.startDate,
-                        endDate: subtask.endDate,
-                        statusId: subtask.status,
-                        priorityId: subtask.priority,
-                    },
-                },
-            });
-            if (!data?.updateSubtask?.id) {
-                throw new Error("Subtask update failed: ID is undefined.");
-            }
+            await valleySubtaskForm.handleUpdateSubtask(subtask, selectedTaskId!, selectedSubtask);
             setIsPopupSubtaskOpen(false);
             window.location.reload();
-        }
-        catch (error) {
-            console.error("Error updating subtask:", error);
+        } catch (error) {
+            console.error("Error in handleUpdateSubtask:", error);
         }
     };
 
     const handleUpdateTask = async (task: any) => {
         try {
-            const { data } = await updateTask({
-                variables: {
-                    id: selectedTaskId,
-                    input: {
-                        name: task.name,
-                        description: task.description,
-                        statusId: task.state,
-                    },
-                },
-            });
-
-            if (!data?.updateTask?.id) {
-                throw new Error("Task update failed: ID is undefined.");
-            }
-            const { data: infoData } = await updateInfoTask({
-                variables: {
-                    id: selectedInfoTask?.id,
-                    input: {
-                        taskId: selectedTaskId,
-                        originId: task.origin,
-                        investmentId: task.investment,
-                        typeId: task.type,
-                        scopeId: task.scope,
-                        interactionId: task.interaction,
-                        riskId: task.risk,
-                    },
-                },
-            });
-
+            const updatedTaskId = await valleyTaskForm.handleUpdateTask(task, selectedTaskId!, selectedInfoTask);
             setIsPopupOpen(false);
-            setSelectedTaskId(data.updateTask.id);
+            setSelectedTaskId(updatedTaskId);
             window.location.reload();
-        }
-        catch (error) {
-            console.error("Error updating task:", error);
+        } catch (error) {
+            console.error("Error in handleUpdateTask:", error);
         }
     };
 
@@ -523,6 +408,7 @@ useEffect(() => {
         toggleSidebar,
         createTask,
         getRemainingDays,
+        getRemainingSubtaskDays,
         setIsPopupOpen,
         setIsPopupSubtaskOpen,
         setSelectedTaskId,
@@ -530,9 +416,6 @@ useEffect(() => {
         handleCancel,
         formatDate,
         handleSeeInformation,
-        handleGetTaskBudget,
-        handleGetTaskExpenses,
-        handleGetTaskFaena,
         handleGetSubtask,
         handleCreateSubtask,
         handleUpdateSubtask,

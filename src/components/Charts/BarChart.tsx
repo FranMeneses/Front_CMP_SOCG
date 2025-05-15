@@ -3,7 +3,7 @@ import { Bar } from 'react-chartjs-2';
 import { useRef } from 'react';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartOptions } from 'chart.js';
 import { BarChartData } from './interfaces/ChartInterfaces';
-import { BarChartOptions } from './config/ChartConfig';
+import { BarChartOptions } from './config/BarChartConfig';
 import { useResizeCharts } from './hooks/useResizeCharts';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);

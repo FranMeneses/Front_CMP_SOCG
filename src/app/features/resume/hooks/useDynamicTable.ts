@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { GET_TASK_PROGRESS } from "@/app/api/tasks";
 import { ITask } from "@/app/models/ITasks";
+import { ISubtask } from "@/app/models/ISubtasks";
 
 export function useDynamicTable(tasks: ITask[]) {
     const [taskProgressMap, setTaskProgressMap] = useState<Record<string, number>>({});
@@ -30,8 +31,15 @@ export function useDynamicTable(tasks: ITask[]) {
         }
     }, [tasks, fetchTaskProgress]);
 
-    const calculateRemainingDays = (endDate: string) => {
-        const end = new Date(endDate);
+    const calculateRemainingDays = (subtask: ISubtask) => {
+        const end = new Date(subtask.endDate);
+        if (subtask.status.percentage === 100) {
+            const finishDate = new Date(subtask.finalDate);
+            const startDate = new Date(subtask.startDate);
+            const diffTime = finishDate.getTime() - startDate.getTime(); 
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
         const today = new Date();
         const diffTime = end.getTime() - today.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

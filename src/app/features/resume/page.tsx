@@ -1,7 +1,6 @@
 'use client';
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
-import LineChart from "@/components/Charts/LineChart";
 import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
 import DynamicTable from "@/app/features/resume/components/DynamicTable";
@@ -12,8 +11,9 @@ import { usePieChart } from "./hooks/usePieChart";
 
 import { pieChartDataSummarySpecialistMock } from "../../../../mocks/chartDataSummaryMock";
 import { useBarChart } from "./hooks/useBarChart";
-import { useLineChart } from "./hooks/useLineChart";
+import { useComboChart } from "./hooks/useComboChart";
 import { useEffect, useState } from "react";
+import ComboChart from "@/components/Charts/ComboChart";
 
 export default function Resume() {
   const {
@@ -32,16 +32,16 @@ export default function Resume() {
 
   const {pieChartData} = usePieChart();
   const {barChartData, loading: barChartLoading} = useBarChart();
-  const {lineChartData, loading: lineChartLoading} = useLineChart();
+  const {comboChartData, loading: comboChartLoading} = useComboChart();
   const {userRole} = useHooks();
   
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    if (!resumeLoading && !barChartLoading && !lineChartLoading) {
+    if (!resumeLoading && !barChartLoading && !comboChartLoading) {
       setIsLoading(false);
     }
-  }, [resumeLoading, barChartLoading, lineChartLoading]);
+  }, [resumeLoading, barChartLoading, comboChartLoading]);
 
   return (
     <div className="overflow-x-hidden">
@@ -89,11 +89,11 @@ export default function Resume() {
 
                 <div className="bg-white p-4 rounded-lg shadow">
                   <div className="w-5/6 aspect-w-16 aspect-h-9 mx-auto h-full">
-                    <LineChart
-                      data={lineChartData}
+                    <ComboChart
+                      data={comboChartData}
                       selectedLegend={selectedLegend}
                       onLegendClick={handleLegendClick}
-                      data-test-id="line-chart"
+                      data-test-id="combo-chart"
                     />
                   </div>
                 </div>
