@@ -6,7 +6,7 @@ import { useData } from "@/context/DataContext";
 import { useLazyQuery } from "@apollo/client/react";
 import { useState, useEffect, useRef } from "react";
 
-export function useLineChart() {
+export function useComboChart() {
   const [getMonthlyBudgets] = useLazyQuery(GET_VALLEY_MONTHLY_BUDGETS);
   const [getMonthlyExpenses] = useLazyQuery(GET_VALLEY_MONTHLY_EXPENSES);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ export function useLineChart() {
   const [huascoExpenses, setHuascoExpenses] = useState<number[]>([]);
   const [elquiExpenses, setElquiExpenses] = useState<number[]>([]);
   
-  const [lineChartData, setLineChartData] = useState<{
+  const [comboChartData, setComboChartData] = useState<{
     labels: string[];
     datasets: { label: string; data: number[]; borderColor: string; backgroundColor: string; borderDash?:[number,number], hidden?:boolean , id?:string}[];
   }>({
@@ -98,7 +98,7 @@ export function useLineChart() {
   }, [getMonthlyBudgets, getMonthlyExpenses]);
 
   useEffect(() => {
-    setLineChartData({
+    setComboChartData({
       labels: Months,
       datasets: [
         {
@@ -151,7 +151,7 @@ export function useLineChart() {
   }, [copiapoBudget, huascoBudget, elquiBudget, copiapoExpenses, huascoExpenses, elquiExpenses]); 
 
   return {
-    lineChartData,
+    comboChartData,
     loading
   };
 }

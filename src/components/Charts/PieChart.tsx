@@ -2,7 +2,7 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from 'chart.js';
 import { useRef, useState } from 'react';
-import { PieChartOptions } from "./config/ChartConfig";
+import { PieChartOptions } from "./config/PieChartConfig";
 import { PieChartProps } from "./interfaces/ChartInterfaces";
 import { useResizeCharts } from "./hooks/useResizeCharts";
 
