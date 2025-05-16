@@ -115,7 +115,6 @@ export const useTasksData = (currentValleyId: number | undefined) => {
   };
 
   const getRemainingDays = (task: ITaskDetails) => {
-    console.log("task", task);
     const end = new Date(task.endDate);
     if (task.status.name === "NO iniciada") {
       return "-";

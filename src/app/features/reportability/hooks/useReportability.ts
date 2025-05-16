@@ -111,7 +111,6 @@ export function useReportability() {
   useEffect(() => {
     if (Subtasks.length > 0) {
       fetchCalendarEvents(Subtasks);
-      console.log(calendarEvents);
     } else {
       setEventsLoading(false);
     }

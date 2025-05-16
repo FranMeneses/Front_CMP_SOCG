@@ -47,12 +47,10 @@ export function useResume() {
 
     const handleGetSubtasks = async (selectedTaskId: string) => {
         try {
-            console.log("Fetching subtasks for task ID:", selectedTaskId);
             const { data } = await getSubtasks({
                 variables: { id: selectedTaskId }, 
             });
             if (data && data.taskSubtasks) {
-                console.log("Subtasks data:", data.taskSubtasks);
                 setSubtasks(data.taskSubtasks);
             } else {
                 console.warn("No subtasks found for task ID:", selectedTaskId);
@@ -73,8 +71,6 @@ export function useResume() {
                     variables: { monthName: month, year: new Date().getFullYear() },
                 });
                 
-                console.log(`Budget data for ${month}:`, BudgetData);
-                
                 if (BudgetData && BudgetData.totalBudgetByMonth) {
                     totalBudget += BudgetData.totalBudgetByMonth || 0;
                 }
@@ -94,8 +90,6 @@ export function useResume() {
                 const { data: ExpensesData } = await getMonthExpenses({
                     variables: { monthName: month, year: new Date().getFullYear()},
                 });
-                
-                console.log("Monthly expenses data:", ExpensesData);
                 
                 if (ExpensesData && ExpensesData.totalExpenseByMonth) {
                     totalExpenses += ExpensesData.totalExpenseByMonth || 0;
