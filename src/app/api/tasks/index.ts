@@ -18,6 +18,10 @@ export const GET_TASKS = gql`
         id
         name
       }
+      status {
+        id
+        name
+      }
     }
   }
 `;
@@ -37,6 +41,10 @@ export const GET_TASK = gql`
         name
       }
       faena {
+        id
+        name
+      }
+      status {
         id
         name
       }

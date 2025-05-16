@@ -1,5 +1,5 @@
 'use client'
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_FAENAS, GET_ALL_VALLEYS } from '@/app/api/tasks';
 import { IValley } from '@/app/models/IValleys';
