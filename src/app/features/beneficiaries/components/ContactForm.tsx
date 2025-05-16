@@ -60,12 +60,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                 <input
                     type="email"
                     value={email}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-                        if (emailRegex.test(value) || value === "") {
-                            setEmail(value);
-                        }
+                    onChange={(e) => { setEmail(e.target.value);  // Optional: Add email validation here
                     }}
                     className="border border-gray-300 rounded-md p-2 w-full"
                     data-test-id="contact-email"

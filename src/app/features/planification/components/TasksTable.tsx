@@ -12,6 +12,7 @@ import { ITaskDetails } from "@/app/models/ITasks";
 import TaskRow from "./TaskRow";
 import SubtasksTable from "./SubtasksTable";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
+import DropdownMenu from "@/components/Dropdown";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -52,10 +53,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
         selectedSubtask,
         expandedRow,
         taskState,
-        
         isDeleteTaskModalOpen,
         isDeleteSubtaskModalOpen,
-        itemToDeleteId,
         setIsDeleteTaskModalOpen,
         setIsDeleteSubtaskModalOpen,
         setItemToDeleteId,
@@ -67,7 +66,22 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const actualHandleFilterClick = onFilterClick || hookHandleFilterClick;
     const actualTaskState = taskStates || taskState;
 
-    const { currentValleyName, userRole } = useHooks();
+    const { currentValleyName, userRole, valleysName } = useHooks();
+
+    const dropdownValley = () => {
+        return (
+            <div className="mb-4">
+                <DropdownMenu
+                    buttonText="Seleccione valle"
+                    isInModal={true}
+                    items={valleysName}
+                    onSelect={(item) => console.log(item)}
+                    selectedValue={currentValleyName ?? ""}
+                    data-test-id="task-valley-dropdown"
+                />
+            </div>
+        )
+    };
 
     const renderFilterButtons = () => (
         <div className="flex gap-2 mb-4">
@@ -95,7 +109,9 @@ const TasksTable: React.FC<TasksTableProps> = ({
     return (
         <div>
             <div className="flex justify-between items-center mb-2">
-                <div></div>
+                <div>
+                    {userRole != "encargado copiapó" && userRole != "encargado huasco" && userRole != "encargado valle elqui" && dropdownValley()}
+                </div>
                 <Button 
                     onClick={() => setIsPopupOpen(true)}
                     className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
@@ -103,7 +119,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     <Plus size={16} /> Añadir
                 </Button>
             </div>
-            
+
             {renderFilterButtons()}
             
             <div className="overflow-x-auto rounded-lg shadow">

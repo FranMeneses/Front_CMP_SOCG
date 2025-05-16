@@ -17,7 +17,7 @@ export default function Home() {
     setTimeout(e => {
       setIsButtonDisabled(false);
     }, 5000, e);
-    handleLoginRedirect(user);
+    handleLoginRedirect('gerente');
   };
 
 

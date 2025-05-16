@@ -83,7 +83,7 @@ const ComboChart = ({
           pointHoverRadius: 6,
           fill: false,
           order: 0, 
-          tension: 0.4, 
+          tension: 0.4,
         };
       } else {
         return {
@@ -96,7 +96,7 @@ const ComboChart = ({
           borderWidth: 1,
           barPercentage: 0.7,
           categoryPercentage: 0.8,
-          order: 1, 
+          order: 1,
         };
       }
     })

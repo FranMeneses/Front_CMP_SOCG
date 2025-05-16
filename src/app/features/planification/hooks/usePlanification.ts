@@ -1,33 +1,27 @@
-import { useState, useEffect } from "react";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_TASK, DELETE_TASK, GET_TASKS_BY_VALLEY, GET_TASKS_BY_VALLEY_AND_STATUS, GET_TASK_STATUSES, GET_TASK_SUBTASKS } from "@/app/api/tasks";
+import { useState } from "react";
+import { useMutation } from "@apollo/client";
+import { CREATE_TASK, DELETE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { useHooks } from "../../hooks/useHooks";
-import { IInfoTask, ITask, ITaskDetails, ITaskStatus } from "@/app/models/ITasks";
+import { IInfoTask } from "@/app/models/ITasks";
 import React from "react";
 import { useValleyTaskForm } from "./useValleyTaskForm";
 import { useValleySubtasksForm } from "./useValleySubtasksForm";
+import { useTasksData } from "./useTaskData";
 
 export const usePlanification = () => {
     const { currentValleyId } = useHooks();
-
+    
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [tableOption, setTableOption] = useState<string>("Tareas");
-    const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
     const [selectedInfoTask, setSelectedInfoTask] = useState<IInfoTask | null>(null);
     const [selectedSubtask, setSelectedSubtask] = useState<ISubtask | null>(null);
     const [expandedRow, setExpandedRow] = useState<string>('');
-    const [detailedTasks, setDetailedTasks] = useState<ITaskDetails[]>([]);
-    const [activeFilter, setActiveFilter] = React.useState<string | null>(null);
-
-    const [isLoadingSubtasks, setIsLoadingSubtasks] = useState<boolean>(false);
-    const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
-    const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
-
+    
     const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
     const [isDeleteSubtaskModalOpen, setIsDeleteSubtaskModalOpen] = useState(false);
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
@@ -38,23 +32,23 @@ export const usePlanification = () => {
     const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
     const valleySubtaskForm = useValleySubtasksForm(dummySubtask);
     
+    const {
+        data,
+        loading,
+        error,
+        refetch,
+        subTasks,
+        detailedTasks,
+        taskState,
+        activeFilter,
+        getRemainingDays,
+        getRemainingSubtaskDays,
+        formatDate,
+        handleFilterClick,
+    } = useTasksData(currentValleyId ?? undefined);
+    
     const [createTask] = useMutation(CREATE_TASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
-
-    const { data, loading: mainQueryLoading, error, refetch } = useQuery(GET_TASKS_BY_VALLEY, {
-        variables: { valleyId: currentValleyId },
-        skip: !currentValleyId,
-    });
-
-    const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
-
-    const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
-    const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS);
-    
-    const states = taskStateData?.taskStatuses || [];
-    const taskState = states.map((s: ITaskStatus) => s.name);
-
-    const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || isInitialLoad;
 
     const handleAddTask = () => {
         setIsPopupOpen(true);
@@ -70,7 +64,7 @@ export const usePlanification = () => {
         setIsPopupSubtaskOpen(false);
     };
     
-      const handleDeleteTask = () => {
+    const handleDeleteTask = () => {
         try {
             valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
@@ -94,43 +88,6 @@ export const usePlanification = () => {
         }
         setIsDeleteSubtaskModalOpen(false);
     };
-
-    const handleGetTasksByStatus = async (statusId: number) => {
-        try {
-            setIsLoadingTaskDetails(true);
-            const { data } = await getTasksByStatus({
-                variables: { valleyId: currentValleyId, statusId },
-            });
-            return data?.tasksByValleyAndStatus || [];
-        } catch (error) {
-            console.error("Error fetching tasks by valley:", error);
-            return [];
-        } finally {
-            setIsLoadingTaskDetails(false);
-        }
-    };
-
-    const handleFilterClick = async (filter: string) => {
-        if (activeFilter === filter) {
-            setActiveFilter(null);
-            await refetch();
-            
-            const tasks = await loadTasksWithDetails();
-            setDetailedTasks(tasks);
-        } else {
-            const statusId = states.find((state: ITaskStatus) => state.name === filter)?.id;
-            if (statusId) {
-                try {
-                    setActiveFilter(filter);
-                    const filteredTasks = await handleGetTasksByStatus(statusId);
-                    const detailedFilteredTasks = await processTasksWithDetails(filteredTasks);
-                    setDetailedTasks(detailedFilteredTasks);
-                } catch (error) {
-                    console.error("Error filtering tasks:", error);
-                }
-            }
-        };
-    }
 
     const handleSaveTask = async (task: any) => {
         console.log("Saving task:", task);
@@ -180,192 +137,6 @@ export const usePlanification = () => {
     const toggleSidebar = () => {
         setIsSidebarOpen((prev) => !prev);
     };
-
-    useEffect(() => {
-        const fetchSubtasks = async () => {
-            if (data?.tasksByValley) {
-                setIsLoadingSubtasks(true);
-                try {
-                    const allSubtasks = await Promise.all(
-                        data.tasksByValley.map(async (task: ITask) => {
-                            const { data: subtaskData } = await getSubtasks({
-                                variables: { id: task.id },
-                            });
-                            return subtaskData?.taskSubtasks || [];
-                        })
-                    );
-
-                    const flattenedSubtasks = allSubtasks.flat();
-                    setSubtasks(flattenedSubtasks);
-                } catch (error) {
-                    console.error("Error fetching subtasks:", error);
-                } finally {
-                    setIsLoadingSubtasks(false);
-                }
-            }
-        };
-
-        if (!mainQueryLoading && data?.tasksByValley) {
-            fetchSubtasks();
-        }
-    }, [data, mainQueryLoading, getSubtasks]);
-
-    const getRemainingDays = (task: ITaskDetails) => {
-        const end = new Date(task.endDate);
-        if (task.status.name === "NO iniciada") {
-            return "-";
-        }
-        if (task.status.name === "Completada") {
-            const taskSubtasks = subTasks.filter(subtask => subtask.taskId === task.id);
-            if (taskSubtasks.length === 0) {
-                return 0;
-            }
-
-            const subtaskDays = taskSubtasks.map(subtask => {
-                const daysValue = getRemainingSubtaskDays(subtask);
-                return daysValue === "-" ? Number.MAX_SAFE_INTEGER : Number(daysValue);
-            });
-
-            const validDays = subtaskDays.filter(days => days !== Number.MAX_SAFE_INTEGER);
-            if (validDays.length === 0) {
-                return 0;
-            }
-            
-            return Math.min(...validDays);
-        }
-        if (task.status.name === "Cancelada") {
-            return 0;
-        }
-        else {
-            const today = new Date();
-            const diffTime = end.getTime() - today.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (isNaN(diffDays)) {
-                return "-";
-            }
-            return diffDays;
-        }
-    };
-    const getRemainingSubtaskDays = (subtask: ISubtask) => {
-        const end = new Date(subtask.endDate);
-        if (subtask.status.name === "Completada con Informe Final") {
-            const finishDate = new Date(subtask.finalDate);
-            const startDate = new Date(subtask.startDate);
-            const diffTime = finishDate.getTime() - startDate.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (isNaN(diffDays)) {
-                return "-";
-            }
-            return diffDays;
-        }
-        if (subtask.status.name === "Cancelada") {
-            return 0;
-        }
-        else {
-            const today = new Date();
-            const diffTime = end.getTime() - today.getTime();
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            if (isNaN(diffDays)) {
-                return "-";
-            }
-            return diffDays;
-        }
-    };
-
-    const formatDate = (isoDate: string): string => {
-        if (isoDate === null || isoDate === undefined || isoDate === "-") {
-            return "-";
-        }
-        
-        try {
-            const date = new Date(isoDate);
-            
-            const year = date.getUTCFullYear();
-            const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-            const day = String(date.getUTCDate()).padStart(2, "0");
-            
-            return `${day}-${month}-${year}`;
-        } catch (error) {
-            console.error("Error formatting date:", error);
-            return "-";
-        }
-    };
-
-    const processTasksWithDetails = async (tasks: ITask[]) => {
-        if (!tasks || tasks.length === 0) return [];
-        
-        try {
-            const detailedTasks = await Promise.all(tasks.map(async (task: ITask) => {
-                const associatedSubtasks = subTasks.filter((subtask) => subtask.taskId === task.id);
-                
-                const budget = task.id ? await valleyTaskForm.handleGetTaskBudget(task.id) : null;
-                
-                const startDate = associatedSubtasks.length
-                    ? new Date(Math.min(...associatedSubtasks.map((subtask) => new Date(subtask.startDate).getTime())))
-                    : null;
-            
-                const endDate = associatedSubtasks.length
-                    ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.endDate).getTime())))
-                    : null;
-            
-                const validFinalDates = associatedSubtasks
-                    .filter(subtask => subtask.finalDate && !isNaN(new Date(subtask.finalDate).getTime()))
-                    .map(subtask => new Date(subtask.finalDate).getTime());
-                
-                const finishDate = validFinalDates.length > 0
-                    ? new Date(Math.max(...validFinalDates))
-                    : null;
-            
-                return {
-                    ...task,
-                    budget: budget || 0,  
-                    startDate: startDate ? startDate.toISOString() : "-",
-                    endDate: endDate ? endDate.toISOString() : "-",
-                    finishedDate: finishDate ? finishDate.toISOString() : "-",
-                };
-            }));
-            
-            return detailedTasks;
-        } catch (error) {
-            console.error("Error processing filtered tasks:", error);
-            return [];
-        }
-    };
-
-    const loadTasksWithDetails = async () => {
-        if (!data?.tasksByValley) return [];
-        
-        setIsLoadingTaskDetails(true);
-        
-        try {
-            const detailedTasks = await processTasksWithDetails(data.tasksByValley);
-            return detailedTasks;
-        } catch (error) {
-            console.error("Error loading detailed tasks:", error);
-            return [];
-        } finally {
-            setIsLoadingTaskDetails(false);
-        }
-    };
-
-    useEffect(() => {
-        const fetchTaskDetails = async () => {
-            if (!mainQueryLoading && !isLoadingSubtasks) {
-                try {
-                    if (data?.tasksByValley) {
-                        const tasks = await loadTasksWithDetails();
-                        setDetailedTasks(tasks);
-                    }
-                } catch (error) {
-                    console.error("Error loading task details:", error);
-                } finally {
-                    setIsInitialLoad(false);
-                }
-            }
-        };
-        
-        fetchTaskDetails();
-    }, [data, mainQueryLoading, isLoadingSubtasks]);
 
     const handleSeeInformation = async (taskId: string) => {
         setSelectedTaskId(taskId);

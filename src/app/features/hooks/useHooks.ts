@@ -1,10 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
+import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("gerente");
+    const [userRole, setUserRole] = useState<string>("encargado comunicaciones");
+    const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys } = useData();
 
     const valleyIdByRole = useMemo(() => {
@@ -12,7 +14,9 @@ export function useHooks() {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
             "encargado copiapó": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
             "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.id || 2,
-            "Admin": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
+            "Admin": valleys?.find(v => v.name === "Transversal")?.id || 4,
+            "encargado comunicaciones": valleys?.find(v => v.name === "Transversal")?.id || 4,
+            "encargado cumplimiento": valleys?.find(v => v.name === "Transversal")?.id || 4,
         };
     }, [valleys]);
 
@@ -21,18 +25,53 @@ export function useHooks() {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.name || "Valle del Elqui",
             "encargado copiapó": valleys?.find(v => v.name === "Valle de Copiapó")?.name || "Valle de Copiapó",
             "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.name || "Valle del Huasco",
+            "Admin": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
+            "encargado comunicaciones": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
+            "encargado cumplimiento": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
+            "gerente": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
         };
-    }
-    , [valleys]);
+    }, [valleys]);
+
+    useEffect(() => {
+        if (valleys && valleys.length > 0 && !currentValley) {
+            const roleBasedId = valleyIdByRole[userRole as keyof typeof valleyIdByRole];
+            const defaultValley = valleys.find(v => v.id === roleBasedId) || valleys[0];
+            setCurrentValley(defaultValley);
+        }
+    }, [valleys, userRole, valleyIdByRole, currentValley]);
 
     const currentValleyName = useMemo(() => {
-        return valleyNamesByRole[userRole as keyof typeof valleyNamesByRole] || null;
-    }
-    , [valleyNamesByRole, userRole]);
+        if (currentValley) {
+            return currentValley.name;
+        }
+        return valleyNamesByRole[userRole as keyof typeof valleyNamesByRole] || "";
+    }, [currentValley, valleyNamesByRole, userRole]);
 
     const currentValleyId = useMemo(() => {
+        if (currentValley) {
+            return currentValley.id;
+        }
         return valleyIdByRole[userRole as keyof typeof valleyIdByRole] || null;
-    }, [valleyIdByRole, userRole]);
+    }, [currentValley, valleyIdByRole, userRole]);
+
+    const valleysName = valleys?.map((valley) => valley.name) || [];
+
+    const handleSetCurrentValley = (valleyNameOrObject: string | IValley) => {
+        if (!valleys) return;
+
+        let newValley: IValley | undefined;
+
+        if (typeof valleyNameOrObject === 'string') {
+            newValley = valleys.find(v => v.name === valleyNameOrObject);
+        } else {
+            newValley = valleyNameOrObject;
+        }
+
+        if (newValley) {
+            setCurrentValley(newValley);
+            console.log("Valle cambiado a:", newValley.name);
+        }
+    };
 
     const handleLoginRedirect = (role: string) => {
         setUserRole(role);
@@ -67,7 +106,12 @@ export function useHooks() {
     return {
         handleLoginRedirect,
         userRole,
-        currentValleyName,
-        currentValleyId 
+        setUserRole,
+        currentValley,
+        currentValleyName, 
+        currentValleyId,
+        valleysName,
+        valleys,
+        setCurrentValley: handleSetCurrentValley,
     };
 }
