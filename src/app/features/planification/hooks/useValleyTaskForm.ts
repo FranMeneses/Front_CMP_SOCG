@@ -286,6 +286,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
+                process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null
             };
         } else {
             taskDetails = {

@@ -100,6 +100,7 @@ export const usePlanification = () => {
                         valleyId: task.valley,
                         faenaId: task.faena,
                         statusId: 1,
+                        processId: task.process,
                     },
                 },
             });

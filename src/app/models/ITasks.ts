@@ -54,3 +54,8 @@ export interface ITaskDetails extends ITask {
     endDate: string;
     finishedDate: string;
 }
+
+export interface ITaskProcess {
+    id: string;
+    name: string;
+}
