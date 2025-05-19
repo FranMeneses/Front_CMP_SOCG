@@ -5,9 +5,9 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado valle elqui");	
+    const [userRole, setUserRole] = useState<string>("encargado comunicaciones");	
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
-    const { valleys } = useData();
+    const { valleys, faenas } = useData();
 
     const valleyIdByRole = useMemo(() => {
         return {
@@ -40,12 +40,14 @@ export function useHooks() {
         }
     }, [valleys, userRole, valleyIdByRole, currentValley]);
 
+
     const currentValleyName = useMemo(() => {
         if (currentValley) {
             return currentValley.name;
         }
         return valleyNamesByRole[userRole as keyof typeof valleyNamesByRole] || "";
     }, [currentValley, valleyNamesByRole, userRole]);
+
 
     const currentValleyId = useMemo(() => {
         if (currentValley) {
@@ -54,8 +56,11 @@ export function useHooks() {
         return valleyIdByRole[userRole as keyof typeof valleyIdByRole] || null;
     }, [currentValley, valleyIdByRole, userRole]);
 
-    const valleysName = valleys?.map((valley) => valley.name) || [];
 
+    const valleysName = valleys?.map((valley) => valley.name) || [];
+    const faenasName = faenas?.map((faena) => faena.name) || [];
+
+    
     const handleSetCurrentValley = (valleyNameOrObject: string | IValley) => {
         if (!valleys) return;
 
@@ -103,6 +108,8 @@ export function useHooks() {
         }
     };
 
+    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
+
     return {
         handleLoginRedirect,
         userRole,
@@ -111,6 +118,9 @@ export function useHooks() {
         currentValleyName, 
         currentValleyId,
         valleysName,
+        faenasName,
+        isValleyManager,
+        faenas,
         valleys,
         setCurrentValley: handleSetCurrentValley,
     };

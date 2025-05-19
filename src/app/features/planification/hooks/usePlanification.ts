@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { CREATE_TASK, DELETE_TASK } from "@/app/api/tasks";
+import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { useHooks } from "../../hooks/useHooks";
-import { IInfoTask } from "@/app/models/ITasks";
-import React from "react";
+import { IInfoTask, ITask } from "@/app/models/ITasks";
 import { useValleyTaskForm } from "./useValleyTaskForm";
 import { useValleySubtasksForm } from "./useValleySubtasksForm";
 import { useTasksData } from "./useTaskData";
+import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 
 export const usePlanification = () => {
-    const { currentValleyId } = useHooks();
+    const { currentValleyId, isValleyManager } = useHooks();
     
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
+    const [isCommunicationModalOpen, setIsCommunicationModalOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+    const [selectedTask, setSelectedTask] = useState<ITask | undefined>(undefined);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-    const [tableOption, setTableOption] = useState<string>("Tareas");
     const [selectedInfoTask, setSelectedInfoTask] = useState<IInfoTask | null>(null);
     const [selectedSubtask, setSelectedSubtask] = useState<ISubtask | null>(null);
     const [expandedRow, setExpandedRow] = useState<string>('');
@@ -31,6 +32,8 @@ export const usePlanification = () => {
 
     const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
     const valleySubtaskForm = useValleySubtasksForm(dummySubtask);
+    const communicationTaskForm = useCommunicationTaskForm(dummyTask);
+    
     
     const {
         data,
@@ -48,7 +51,67 @@ export const usePlanification = () => {
     } = useTasksData(currentValleyId ?? undefined);
     
     const [createTask] = useMutation(CREATE_TASK);
+    const [updateTask] = useMutation(UPDATE_TASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
+
+    const handleCreateTask = () => {
+
+        if (isValleyManager) {
+            setIsPopupOpen(true);
+        }
+        else {
+            setIsCommunicationModalOpen(true);
+        }
+    };
+
+    const handleSaveCommunication = async (task: ITask) => {
+        try {
+            const { data } = await createTask({
+                variables: {
+                    input: {
+                        name: task.name,
+                        description: task.description,
+                        valleyId: task.valleyId,
+                        faenaId: task.faenaId,
+                        statusId: task.statusId,
+                        processId: task.processId,
+                    }
+                }
+            })
+        }catch (error) {
+            console.error("Error saving communication task:", error);
+        }
+        setIsCommunicationModalOpen(false);
+        refetch();
+    };
+        
+    const handleUpdateCommunication = async (task: ITask) => {
+        try {
+            console.log("Updating communication task:", task);
+            const { data } = await updateTask({
+                variables: {
+                    id: selectedTaskId,
+                    input: {
+                        name: task.name,
+                        description: task.description,
+                        valleyId: task.valleyId,
+                        faenaId: task.faenaId,
+                        statusId: task.statusId,
+                        processId: task.processId,
+                    }
+                }
+            })
+        }catch (error) {
+            console.error("Error updating communication task:", error);
+        }
+        refetch();
+        setIsCommunicationModalOpen(false);
+    };
+
+    const handleCancelCommunication = () => {
+        setSelectedTask(undefined);
+        setIsCommunicationModalOpen(false);
+    };
 
     const handleAddTask = () => {
         setIsPopupOpen(true);
@@ -139,18 +202,32 @@ export const usePlanification = () => {
         setIsSidebarOpen((prev) => !prev);
     };
 
-    const handleSeeInformation = async (taskId: string) => {
+    const handleSeeInformation = async (taskId: string, userRole: string) => {
         setSelectedTaskId(taskId);
-        try {
-            const taskInfo = await valleyTaskForm.handleGetInfoTask(taskId);
-            if (taskInfo) {
-                setSelectedInfoTask(taskInfo);
-                setIsPopupOpen(true);
-            } else {
-                console.warn("No task information found for the given task ID:", taskId);
+        if (isValleyManager) {
+            try {
+                const taskInfo = await valleyTaskForm.handleGetInfoTask(taskId);
+                if (taskInfo) {
+                    setSelectedInfoTask(taskInfo);
+                    setIsPopupOpen(true);
+                } else {
+                    console.warn("No task information found for the given task ID:", taskId);
+                }
+            } catch (error) {
+                console.error("Error handling task information:", error);
             }
-        } catch (error) {
-            console.error("Error handling task information:", error);
+        }
+        else  {
+            try {
+                const taskInfo = await communicationTaskForm.handleGetTask(taskId);
+                if (taskInfo) {
+                    setSelectedTask(taskInfo);
+                    setIsCommunicationModalOpen(true);
+                }
+            }
+            catch (error) {
+                console.error("Error fetching task information:", error);
+            }
         }
     };
     
@@ -202,10 +279,11 @@ export const usePlanification = () => {
     };
 
     return {
-        setTableOption,       
         setIsPopupOpen,
         setIsPopupSubtaskOpen,
+        setIsCommunicationModalOpen,
         setSelectedTaskId,
+        setSelectedTask,
         setIsSidebarOpen,
         setIsDeleteSubtaskModalOpen,
         setIsDeleteTaskModalOpen,
@@ -228,14 +306,19 @@ export const usePlanification = () => {
         handleUpdateTask,
         handleCancelSubtask,
         handleFilterClick,
+        handleCreateTask,
+        handleSaveCommunication,
+        handleUpdateCommunication,
+        handleCancelCommunication,
+        selectedTask,
         isPopupOpen,
         isDeleteSubtaskModalOpen,
         isDeleteTaskModalOpen,
+        isCommunicationModalOpen,
         itemToDeleteId,
         isPopupSubtaskOpen,
         selectedTaskId,
         isSidebarOpen,
-        tableOption,
         data,
         loading, 
         error,

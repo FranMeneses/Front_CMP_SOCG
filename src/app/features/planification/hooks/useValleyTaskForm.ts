@@ -40,7 +40,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
 
     const {valleys, faenas: Faenas} = useData();
-    const valleyNames = valleys ? valleys.map((valley: IValley) => valley.name) : [];
+    const valleyNames = valleys ? valleys.map((valley: IValley) => valley.name) : []; // TODO: CHANGE TO USEHOOKS
     const faenaNames = Faenas ? Faenas.map((faena: IValley) => faena.name) : [];
 
     const {data: riskData} = useQuery(GET_ALL_RISKS);
