@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { 
     GET_TASKS,
-    GET_TASKS_BY_VALLEY, 
+    GET_TASKS_BY_PROCESS,
+    // GET_TASKS_BY_VALLEY, 
     GET_TASKS_BY_VALLEY_AND_STATUS, 
     GET_TASK_STATUSES, 
     GET_TASK_SUBTASKS 
@@ -11,7 +12,7 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { ITask, ITaskDetails, ITaskStatus } from "@/app/models/ITasks";
 import { useValleyTaskForm } from "./useValleyTaskForm";
 
-export const useTasksData = (currentValleyId: number | undefined) => {
+export const useTasksData = (currentValleyId: number | undefined, userRole:string) => {
   const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
   const [detailedTasks, setDetailedTasks] = useState<ITaskDetails[]>([]);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -21,9 +22,27 @@ export const useTasksData = (currentValleyId: number | undefined) => {
   const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
-  const validValleyIds = [1, 2, 3];
-  
-  const shouldUseValleyQuery = currentValleyId !== undefined && validValleyIds.includes(currentValleyId);
+
+  const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos publicos"];
+
+  const getCurrentProcessId = (userRole: string) => {
+    switch(userRole) {
+      case "encargado copiapó":
+        return 1;
+      case "encargado huasco":
+        return 2;
+      case "encargado valle elqui":
+        return 3;
+      case "encargado comunicaciones":
+        return 4;
+      case "encargado asuntos publicos":
+        return 5;
+      default:
+        return 6;
+    }
+  };
+
+  const shouldUseProcessQuery = validRoles.includes(userRole.toLowerCase());
 
   const dummyTask = (task: any) => {};
   const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
@@ -33,9 +52,9 @@ export const useTasksData = (currentValleyId: number | undefined) => {
     loading: valleyQueryLoading, 
     error: valleyQueryError, 
     refetch: refetchValleyTasks 
-  } = useQuery(GET_TASKS_BY_VALLEY, {
-    variables: { valleyId: currentValleyId },
-    skip: !shouldUseValleyQuery,
+  } = useQuery(GET_TASKS_BY_PROCESS, { 
+    variables: { processId: getCurrentProcessId(userRole) },
+    skip: !shouldUseProcessQuery,
   });
 
   const { 
@@ -44,7 +63,7 @@ export const useTasksData = (currentValleyId: number | undefined) => {
     error: allTasksQueryError,
     refetch: refetchAllTasks 
   } = useQuery(GET_TASKS, {
-    skip: shouldUseValleyQuery,
+    skip: shouldUseProcessQuery,
   });
 
   const { data: taskStateData } = useQuery(GET_TASK_STATUSES);
@@ -52,15 +71,15 @@ export const useTasksData = (currentValleyId: number | undefined) => {
   const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
   const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS);
   
-  const tasks = shouldUseValleyQuery 
-    ? (valleyData?.tasksByValley || []) 
+  const tasks = shouldUseProcessQuery 
+    ? (valleyData?.tasksByProcess || []) 
     : (allTasksData?.tasks || []);
   
-  const error = shouldUseValleyQuery ? valleyQueryError : allTasksQueryError;
-  const mainQueryLoading = shouldUseValleyQuery ? valleyQueryLoading : allTasksQueryLoading;
+  const error = shouldUseProcessQuery ? valleyQueryError : allTasksQueryError;
+  const mainQueryLoading = shouldUseProcessQuery ? valleyQueryLoading : allTasksQueryLoading;
   
   const refetch = async () => {
-    return shouldUseValleyQuery ? refetchValleyTasks() : refetchAllTasks();
+    return shouldUseProcessQuery ? refetchValleyTasks() : refetchAllTasks();
   };
   
   const states = taskStateData?.taskStatuses || [];
@@ -70,15 +89,16 @@ export const useTasksData = (currentValleyId: number | undefined) => {
 
   useEffect(() => {
     setTasksData(tasks);
-  }, [valleyData, allTasksData, shouldUseValleyQuery]);
+    console.log("Tasks data updated:", userRole);
+  }, [valleyData, allTasksData, shouldUseProcessQuery]);
 
   const handleGetTasksByStatus = async (statusId: number) => {
     try {
       setIsLoadingTaskDetails(true);
       
-      if (shouldUseValleyQuery) {
+      if (shouldUseProcessQuery) {
         const { data } = await getTasksByStatus({
-          variables: { valleyId: currentValleyId, statusId },
+          variables: { valleyId: currentValleyId, statusId }, //TODO: CHANGE CURRENT VALLEY ID FOR PROCESS ID
         });
         return data?.tasksByValleyAndStatus || [];
       } else {
@@ -301,7 +321,7 @@ export const useTasksData = (currentValleyId: number | undefined) => {
     fetchTaskDetails();
   }, [tasks, mainQueryLoading, isLoadingSubtasks]);
 
-  const unifiedData = shouldUseValleyQuery
+  const unifiedData = shouldUseProcessQuery
     ? valleyData
     : { tasksByValley: allTasksData?.tasks || [] };
 
@@ -320,6 +340,5 @@ export const useTasksData = (currentValleyId: number | undefined) => {
     formatDate,
     handleFilterClick,
     setActiveFilter,
-    isValleyMode: shouldUseValleyQuery,
   };
 };
