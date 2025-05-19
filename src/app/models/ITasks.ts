@@ -8,9 +8,11 @@ export interface ITask {
     valleyId: number;
     faenaId: number;
     statusId: number;
-    valley: IValley;
-    faena: IFaena;
-    status: ITaskStatus;
+    processId?: number;
+    valley?: IValley;
+    faena?: IFaena;
+    status?: ITaskStatus;
+    process?: ITaskProcess;
 }
 
 export interface CreateTaskInput {
@@ -53,4 +55,9 @@ export interface ITaskDetails extends ITask {
     startDate: string;
     endDate: string;
     finishedDate: string;
+}
+
+export interface ITaskProcess {
+    id: string;
+    name: string;
 }

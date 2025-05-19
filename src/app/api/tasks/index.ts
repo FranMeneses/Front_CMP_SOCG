@@ -10,6 +10,7 @@ export const GET_TASKS = gql`
       valleyId
       faenaId
       statusId
+      processId
       valley {
         id
         name
@@ -19,6 +20,10 @@ export const GET_TASKS = gql`
         name
       }
       status {
+        id
+        name
+      }
+      process {
         id
         name
       }
@@ -36,6 +41,7 @@ export const GET_TASK = gql`
       valleyId
       faenaId
       statusId
+      processId
       valley {
         id
         name
@@ -45,6 +51,10 @@ export const GET_TASK = gql`
         name
       }
       status {
+        id
+        name
+      }
+      process {
         id
         name
       }
@@ -60,6 +70,7 @@ export const GET_TASKS_BY_VALLEY = gql`
       name
       description
       statusId
+      processId
       status {
         id
         name
@@ -71,6 +82,10 @@ export const GET_TASKS_BY_VALLEY = gql`
       }
       valleyId
       valley {
+        id
+        name
+      }
+      process {
         id
         name
       }
@@ -245,6 +260,10 @@ mutation CreateTask($input: CreateTaskDto!) {
       id
       name
     }
+    process {
+      id
+      name
+    }
   }
 }
 `;
@@ -269,6 +288,10 @@ export const UPDATE_TASK = gql`
         id
         name
       }
+      process {
+        id
+        name
+      }
     }
   }
 `;
@@ -280,6 +303,16 @@ export const DELETE_TASK = gql`
       id
       name
       description
+    }
+  }
+`;
+
+// Query para obtener todos los procesos
+export const GET_ALL_PROCESSES = gql`
+  query GetAllProcesses {
+    processes {
+      id
+      name
     }
   }
 `;

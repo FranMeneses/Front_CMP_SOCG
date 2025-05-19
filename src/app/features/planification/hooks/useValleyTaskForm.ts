@@ -40,7 +40,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
 
     const {valleys, faenas: Faenas} = useData();
-    const valleyNames = valleys ? valleys.map((valley: IValley) => valley.name) : [];
+    const valleyNames = valleys ? valleys.map((valley: IValley) => valley.name) : []; // TODO: CHANGE TO USEHOOKS
     const faenaNames = Faenas ? Faenas.map((faena: IValley) => faena.name) : [];
 
     const {data: riskData} = useQuery(GET_ALL_RISKS);
@@ -286,6 +286,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
+                process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null
             };
         } else {
             taskDetails = {

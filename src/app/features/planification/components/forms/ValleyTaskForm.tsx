@@ -117,7 +117,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
       {details && (
         <>
           <div className="mb-4 truncate">
-            <label className="block text-sm font-medium mb-1">Presupuesto</label>
+            <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
             <input
               type="number"
               value={formState.budget}
@@ -128,7 +128,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             />
           </div>
           <div className="mb-4 truncate">
-            <label className="block text-sm font-medium mb-1">Gasto</label>
+            <label className="block text-sm font-medium mb-1">Gasto (USD)</label>
             <input
               type="number"
               value={formState.expenses}

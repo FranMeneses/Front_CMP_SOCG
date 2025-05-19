@@ -1,18 +1,15 @@
 'use client';
 import React from "react";
 import { ISubtask } from "@/app/models/ISubtasks";
-import { usePlanification } from "../hooks/usePlanification";
+import { usePlanification } from "../../hooks/usePlanification";
 import { Plus } from "lucide-react";
-import Modal from "@/components/Modal";
-import ValleyTaskForm from "./ValleyTaskForm";
 import { Button } from "@/components/ui/button";
-import ValleySubtaskForm from "./ValleySubtaskForm";
-import { useHooks } from "../../hooks/useHooks";
+import { useHooks } from "../../../hooks/useHooks";
 import { ITaskDetails } from "@/app/models/ITasks";
 import TaskRow from "./TaskRow";
 import SubtasksTable from "./SubtasksTable";
-import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import DropdownMenu from "@/components/Dropdown";
+import TaskModals from "../TaskModalForms";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -45,12 +42,15 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCancel,
         handleCancelSubtask,
         handleSaveTask,
+        setIsCommunicationModalOpen,
         handleFilterClick: hookHandleFilterClick,
         isPopupOpen, 
         activeFilter: hookActiveFilter,
         isPopupSubtaskOpen,
         selectedInfoTask,
+        selectedTask,
         selectedSubtask,
+        isCommunicationModalOpen,
         expandedRow,
         taskState,
         isDeleteTaskModalOpen,
@@ -59,7 +59,11 @@ const TasksTable: React.FC<TasksTableProps> = ({
         setIsDeleteSubtaskModalOpen,
         setItemToDeleteId,
         handleDeleteTask,
-        handleDeleteSubtask
+        handleDeleteSubtask,
+        handleCreateTask,
+        handleSaveCommunication,
+        handleUpdateCommunication,
+        handleCancelCommunication,
     } = usePlanification();
 
     const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
@@ -113,7 +117,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     {userRole != "encargado copiapó" && userRole != "encargado huasco" && userRole != "encargado valle elqui" && dropdownValley()}
                 </div>
                 <Button 
-                    onClick={() => setIsPopupOpen(true)}
+                    onClick={() => handleCreateTask()}
                     className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
                 >
                     <Plus size={16} /> Añadir
@@ -173,73 +177,39 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 </table>
             </div>
             
-            <Modal isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
-                {selectedInfoTask ? (
-                    <ValleyTaskForm
-                        onCancel={handleCancel}
-                        onSave={handleUpdateTask}
-                        valley={currentValleyName || ""}
-                        data-test-id="task-form"
-                        details={true}
-                        isEditing={true}
-                        infoTask={selectedInfoTask}
-                    />
-                ) : (
-                    <ValleyTaskForm
-                        onCancel={handleCancel}
-                        onSave={handleSaveTask}
-                        valley={currentValleyName || ""}
-                        data-test-id="task-form"
-                    />
-                )}
-            </Modal>
-            
-            <Modal isOpen={isPopupSubtaskOpen} onClose={() => setIsPopupSubtaskOpen(false)}>
-                {selectedSubtask ? (
-                    <ValleySubtaskForm
-                        onCancel={handleCancelSubtask}
-                        onSave={handleUpdateSubtask}
-                        valley={currentValleyName || ""}
-                        isEditing={true}
-                        data-test-id="subtask-form"
-                        subtask={selectedSubtask}
-                    />
-                ) : (
-                    <ValleySubtaskForm
-                        onCancel={handleCancelSubtask}
-                        onSave={handleCreateSubtask}
-                        valley={currentValleyName || ""}
-                        data-test-id="subtask-form"
-                        subtask={{
-                            name: "",
-                            number: "",
-                            description: "",
-                            budget: "",
-                            expenses: "",
-                            startDate: "",
-                            endDate: "",
-                            finishDate: "",
-                            beneficiary: "",
-                            status: "",  
-                            priorityId: "",     
-                            taskId: expandedRow 
-                        }}
-                    />
-                )}
-            </Modal>
-            
-            <DeleteConfirmationModal 
-                isOpen={isDeleteTaskModalOpen}
-                onClose={() => setIsDeleteTaskModalOpen(false)}
-                onConfirm={handleDeleteTask}
-                itemType="tarea"
-            />
-            
-            <DeleteConfirmationModal 
-                isOpen={isDeleteSubtaskModalOpen}
-                onClose={() => setIsDeleteSubtaskModalOpen(false)}
-                onConfirm={handleDeleteSubtask}
-                itemType="subtarea"
+            <TaskModals
+                isPopupOpen={isPopupOpen}
+                setIsPopupOpen={setIsPopupOpen}
+                selectedInfoTask={selectedInfoTask}
+                handleCancel={handleCancel}
+                handleUpdateTask={handleUpdateTask}
+                handleSaveTask={handleSaveTask}
+                
+                isPopupSubtaskOpen={isPopupSubtaskOpen}
+                setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
+                selectedSubtask={selectedSubtask}
+                handleCancelSubtask={handleCancelSubtask}
+                handleUpdateSubtask={handleUpdateSubtask}
+                handleCreateSubtask={handleCreateSubtask}
+                selectedTaskId={expandedRow}
+                
+                isCommunicationModalOpen={isCommunicationModalOpen}
+                selectedTask={selectedTask}
+                setIsCommunicationModalOpen={setIsCommunicationModalOpen}
+                handleSaveCommunication={handleSaveCommunication}
+                handleUpdateCommunication={handleUpdateCommunication}
+                handleCancelCommunication={handleCancelCommunication}
+                
+                isDeleteTaskModalOpen={isDeleteTaskModalOpen}
+                isDeleteSubtaskModalOpen={isDeleteSubtaskModalOpen}
+                setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
+                setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
+                handleDeleteTask={handleDeleteTask}
+                handleDeleteSubtask={handleDeleteSubtask}
+                
+                currentValleyName={currentValleyName}
+
+                userRole={userRole}
             />
         </div>
     );

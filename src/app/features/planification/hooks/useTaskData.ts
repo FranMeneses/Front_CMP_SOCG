@@ -82,7 +82,7 @@ export const useTasksData = (currentValleyId: number | undefined) => {
         });
         return data?.tasksByValleyAndStatus || [];
       } else {
-        return tasksData.filter(task => task.status.id === statusId);
+        return tasksData.filter(task => task.status?.id === statusId);
       }
     } catch (error) {
       console.error("Error fetching tasks by status:", error);
@@ -116,10 +116,10 @@ export const useTasksData = (currentValleyId: number | undefined) => {
 
   const getRemainingDays = (task: ITaskDetails) => {
     const end = new Date(task.endDate);
-    if (task.status.name === "NO iniciada") {
+    if (task.status?.name === "NO iniciada") {
       return "-";
     }
-    if (task.status.name === "Completada") {
+    if (task.status?.name === "Completada") {
       const taskSubtasks = subTasks.filter(subtask => subtask.taskId === task.id);
       if (taskSubtasks.length === 0) {
         return 0;
@@ -137,7 +137,7 @@ export const useTasksData = (currentValleyId: number | undefined) => {
       
       return Math.min(...validDays);
     }
-    if (task.status.name === "Cancelada") {
+    if (task.status?.name === "Cancelada") {
       return 0;
     }
     else {

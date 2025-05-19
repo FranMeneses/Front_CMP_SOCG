@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useValleySubtasksForm } from "../hooks/useValleySubtasksForm";
+import { useValleySubtasksForm } from "../../hooks/useValleySubtasksForm";
 import DropdownMenu from "@/components/Dropdown";
 
 interface ValleySubtaskFormProps {
@@ -10,7 +10,7 @@ interface ValleySubtaskFormProps {
     subtask?: any; // TODO: Define the type for the subtask object
 }
 
-export default function ValleySubtaskForm({ onSave, onCancel, isEditing, valley, subtask }: ValleySubtaskFormProps) {
+export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask }: ValleySubtaskFormProps) {
     const {
         subtaskFormState,
         dropdownItems,
@@ -51,7 +51,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, valley,
                 />
             </div>
             <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Presupuesto</label>
+                <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
                 <input
                     type="number"
                     value={subtaskFormState.budget}
@@ -104,7 +104,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, valley,
                 />
             </div>
             <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Gastos</label>
+                <label className="block text-sm font-medium mb-1">Gastos (USD) </label>
                 <input
                     type="number"
                     value={subtaskFormState.expense}

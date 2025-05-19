@@ -2,7 +2,7 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadinSpinner";
-import TasksTable from "./components/TasksTable";
+import TasksTable from "./components/Table/TasksTable";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";
 
