@@ -7,17 +7,24 @@ import esLocale from "@fullcalendar/core/locales/es";
 import { useState } from "react";
 import Modal from "../Modal";
 import CalendarForm from "@/app/features/reportability/components/CalendarForm";
+import { IEvent } from "@/app/models/ICalendar";
 
 interface CalendarComponentProps {
   calendarView: string;
-  events: Array<{ title: string; start: string; end: string; color: string; allDay: boolean }>;
+  events: IEvent[]
+  onMonthChange?: (year: number, month: number) => void;
 }
 
-const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events }) => {
+const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMonthChange }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null); //TODO: Define the type for selectedEvent
+  const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null); 
+  const [currentMonth, setCurrentMonth] = useState<{year: number, month: number}>(() => {
+    const now = new Date();
+    return {year: now.getFullYear(), month: now.getMonth() + 2};
+  });
 
 const handleEventClick = (info: any) => {
+  console.log("Event clicked:", info.event);
   const [datePart] = info.event.startStr.split('T');
   const [year, month, day] = datePart.split('-');
   
@@ -65,7 +72,7 @@ const handleEventClick = (info: any) => {
         height="auto"
         aspectRatio={1.5}
         events={events}
-        eventClick={handleEventClick} 
+        eventClick={handleEventClick}
         timeZone="UTC"
       />
 

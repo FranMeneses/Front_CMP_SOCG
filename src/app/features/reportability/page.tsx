@@ -34,6 +34,10 @@ export default function Reportability() {
     }
   }, [reportabilityLoading]);
 
+  const handleMonthChange = (year: number, month: number) => {
+  console.log(`Mes actual: ${month}/${year}`);
+};
+
   return (
     <div className="overflow-x-hidden">
       <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
@@ -78,6 +82,7 @@ export default function Reportability() {
                       calendarView={calendarView} 
                       events={calendarEvents} 
                       data-test-id="calendar"
+                      onMonthChange={handleMonthChange}
                     />
                     
                     <div className="mt-4 border-t pt-4">
@@ -85,14 +90,14 @@ export default function Reportability() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="rounded shadow-sm border p-3">
                           <p className="text-sm text-gray-500">Tareas planeadas</p>
-                          <p className="text-2xl font-bold">{calendarEvents?.length || 0}</p>
+                          <p className="text-2xl font-bold">{calendarEvents?.length || 0}</p> {/*TODO: CAMBIAR POR FUNCIÓN CUANDO ESTE DISPONIBLE*/}
                         </div>
                         <div className="border p-3 rounded shadow-sm">
                           <p className="text-sm text-gray-500">Distribución por valle</p>
                           <div className="text-sm mt-1">
                             {valleys && valleyNames.map((valley) => {
                               const valleyEvents = calendarEvents?.filter(event => 
-                                event.valleyName === valley
+                                event.valley === valley
                               ).length || 0;
                               return (
                                 <div key={valley} className="flex justify-between items-center mt-1">
@@ -103,7 +108,7 @@ export default function Reportability() {
                                     ></span>
                                     {valley}:
                                   </span>
-                                  <span className="font-medium">{valleyEvents}</span>
+                                  <span className="font-medium">{valleyEvents}</span> {/*TODO: CAMBIAR POR FUNCIÓN CUANDO ESTE DISPONIBLE*/}
                                 </div>
                               );
                             })}

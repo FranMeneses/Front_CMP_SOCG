@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { useValleySubtasksForm } from "../../hooks/useValleySubtasksForm";
 import DropdownMenu from "@/components/Dropdown";
+import { ISubtask } from "@/app/models/ISubtasks";
 
 interface ValleySubtaskFormProps {
-    onSave: any; // TODO: Define the type for the task object
+    onSave: any;
     onCancel: () => void;
     isEditing?: boolean;
     valley: string;
-    subtask?: any; // TODO: Define the type for the subtask object
+    subtask?: ISubtask;
 }
 
 export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask }: ValleySubtaskFormProps) {
@@ -120,7 +121,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     items={dropdownItems.subtaskState}
                     onSelect={(value) => {handleSubtaskInputChange("state", value)}}
                     isInModal={true}
-                    selectedValue={dropdownItems.subtaskState[subtask.status.id - 1]}
+                    selectedValue={dropdownItems.subtaskState[(subtask?.status?.id ?? 1) - 1]}
                     data-test-id="subtask-state-dropdown"
                 />
             </div>
@@ -133,7 +134,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     items={dropdownItems.subtaskPriority}
                     onSelect={(value) => handleSubtaskInputChange("priority", value)}
                     isInModal={true}
-                    selectedValue={dropdownItems.subtaskPriority[subtask.priorityId - 1]}
+                    selectedValue={dropdownItems.subtaskPriority[(subtask?.priorityId ?? 1) - 1]}
                     data-test-id="subtask-priority-dropdown"
                 />
             </div>
@@ -150,7 +151,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     variant="default"
                     onClick={handleSaveSubtask}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
-                    disabled={!subtaskFormState.name || !subtaskFormState.budget || !subtaskFormState.endDate || !subtaskFormState.startDate || !subtaskFormState. priority}
+                    disabled={!subtaskFormState.name || !subtaskFormState.budget || !subtaskFormState.endDate || !subtaskFormState.startDate || !subtaskFormState.priority} //TODO: VER PORQUE LA PRIORIDAD NO ESTA BLOQUEANDO
                     data-test-id="save-button"
                 >
                 Guardar

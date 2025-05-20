@@ -27,7 +27,7 @@ export interface IInfoTask {
     id: string;
     taskId: string;
     originId:number;
-    invesmentId:number;
+    investmentId:number;
     typeId:number;
     scopeId:number;
     interactionId:number;

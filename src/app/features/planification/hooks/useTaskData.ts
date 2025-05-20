@@ -11,6 +11,7 @@ import {
 import { ISubtask } from "@/app/models/ISubtasks";
 import { ITask, ITaskDetails, ITaskStatus } from "@/app/models/ITasks";
 import { useValleyTaskForm } from "./useValleyTaskForm";
+import { TaskDetails } from "@/app/models/ITaskForm";
 
 export const useTasksData = (currentValleyId: number | undefined, userRole:string) => {
   const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
@@ -44,7 +45,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
 
   const shouldUseProcessQuery = validRoles.includes(userRole.toLowerCase());
 
-  const dummyTask = (task: any) => {};
+  const dummyTask = (task: TaskDetails) => {};
   const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
 
   const { 

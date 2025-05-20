@@ -5,13 +5,16 @@ import { GET_SUBTASKS, GET_VALLEY_SUBTASKS } from "@/app/api/subtasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { ValleyColors } from "@/constants/valleys";
 import { useData } from "@/context/DataContext";
+import { IEvent } from "@/app/models/ICalendar";
+import { IValley } from "@/app/models/IValleys";
+import { IFaena } from "@/app/models/IFaena";
 
 export function useReportability() {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<string>("Transversal");
   const [calendarView, setCalendarView] = useState<string>("dayGridMonth");
   const [Subtasks, setSubtasks] = useState<ISubtask[]>([]);
-  const [calendarEvents, setCalendarEvents] = useState<any[]>([]); //TODO: Define the type for calendarEvents
+  const [calendarEvents, setCalendarEvents] = useState<IEvent[]>([]); 
   const { data, loading: subtasksLoading, error } = useQuery(GET_SUBTASKS);
   const [getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK);
   const [GetValleySubtasks, { loading: valleySubtasksLoading }] = useLazyQuery(GET_VALLEY_SUBTASKS);
@@ -62,12 +65,12 @@ export function useReportability() {
   };
 
   const handleGetValley = (valleyId: number) => {
-    const valley = valleys.find((v: any) => v.id === valleyId);
+    const valley = valleys.find((v: IValley) => v.id === valleyId);
     return valley ? valley.name : "Valle desconocido";
   };
 
   const handleGetFaena = (faenaId: number) => {
-    const faena = faenas.find((f: any) => f.id === faenaId);
+    const faena = faenas.find((f: IFaena) => f.id === faenaId);
     return faena ? faena.name : "Faena desconocida";
   };
 
@@ -87,7 +90,7 @@ export function useReportability() {
               start: subtask.endDate,
               end: subtask.endDate,
               startDate: subtask.startDate,
-              progress: subtask.status.percentage,
+              progress: String(subtask.status.percentage),
               status: subtask.status.name,
               valley: handleGetValley(task?.valleyId ?? 5),
               faena: handleGetFaena(task?.faenaId ?? 11),
@@ -123,7 +126,7 @@ export function useReportability() {
       setSubtasks(data?.subtasks || []);
       await fetchCalendarEvents(data?.subtasks || []); 
     } else {
-      const valley = valleys.find((v: any) => v.name === item);
+      const valley = valleys.find((v: IValley) => v.name === item);
       const valleyId = valley ? valley.id : 0;
       
       try {

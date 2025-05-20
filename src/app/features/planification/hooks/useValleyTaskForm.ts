@@ -7,27 +7,10 @@ import { IInteraction, IInvestment, IOrigin, IRisk, IScope, IType } from "@/app/
 import { GET_TASK_STATUSES, GET_TASK, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, UPDATE_TASK, DELETE_TASK } from "@/app/api/tasks";
 import { IInfoTask, ITaskStatus } from "@/app/models/ITasks";
 import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
+import { ISubtask } from "@/app/models/ISubtasks";
+import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 
-interface InitialValues {
-    name?: string;
-    description?: string;
-    origin?: number;
-    investment?: number;
-    type?: number;
-    scope?: number;
-    interaction?: number;
-    priority?: number;
-    state?: number;
-    budget?: number;
-    expenses?: number;
-    startDate?: string;
-    endDate?: string;
-    risk?: number;
-    finishDate?: string;
-    faena?: number;
-}
-
-export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, isEditing?:boolean, infoTask?:any, subtask?: any) => {
+export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
     const [updateTask] = useMutation(UPDATE_TASK);
@@ -150,7 +133,7 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
         }
     };
 
-    const handleUpdateTask = async (task: any, selectedTaskId: string, selectedInfoTask: IInfoTask | null) => {
+    const handleUpdateTask = async (task: TaskDetails, selectedTaskId: string, selectedInfoTask: IInfoTask | null) => {
         try {
             const { data } = await updateTask({
                 variables: {
@@ -214,13 +197,13 @@ export const useValleyTaskForm = (onSave: (task: any) => void, valley:string, is
             setInitialValues({
               name: infoTask.task.name || "",
               description: infoTask.task.description || "",
-              origin: infoTask.originId || "",
-              investment: infoTask.investmentId || "",
-              type: infoTask.typeId || "",
-              scope: infoTask.scopeId || "",
-              interaction: infoTask.interactionId || "",
-              risk: infoTask.riskId || "",
-              state: infoTask.task.statusId || "",
+              origin: typeof infoTask.originId === "number" ? infoTask.originId : undefined,
+              investment: typeof infoTask.investmentId === "number" ? infoTask.investmentId : undefined,
+              type: typeof infoTask.typeId === "number" ? infoTask.typeId : undefined,
+              scope: typeof infoTask.scopeId === "number" ? infoTask.scopeId : undefined,
+              interaction: typeof infoTask.interactionId === "number" ? infoTask.interactionId : undefined,
+              risk: typeof infoTask.riskId === "number" ? infoTask.riskId : undefined,
+              state: typeof infoTask.task.statusId === "number" ? infoTask.task.statusId : undefined,
               budget: budget || "",
               expenses: expenses || "",
               faena: faena || "",
