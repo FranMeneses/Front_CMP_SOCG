@@ -5,22 +5,23 @@ import ValleySubtaskForm from "./forms/ValleySubtaskForm";
 import CommunicationForm from "./forms/CommunicationForm";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import { ISubtask } from "@/app/models/ISubtasks";
-import { ITask } from '@/app/models/ITasks';
+import { IInfoTask, ITask } from '@/app/models/ITasks';
+import { Task } from '@/app/models/ITaskForm';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
     setIsPopupOpen: (isOpen: boolean) => void;
-    selectedInfoTask: any | null;
+    selectedInfoTask: IInfoTask | null;
     handleCancel: () => void;
-    handleUpdateTask: (task: any) => void;
-    handleSaveTask: (task: any) => void;
+    handleUpdateTask: (task: Task) => void;
+    handleSaveTask: (task: Task) => void;
     
     isPopupSubtaskOpen: boolean;
     setIsPopupSubtaskOpen: (isOpen: boolean) => void;
     selectedSubtask: ISubtask | null;
     handleCancelSubtask: () => void;
-    handleUpdateSubtask: (subtask: any) => void;
-    handleCreateSubtask: (subtask: any) => void;
+    handleUpdateSubtask: (subtask: ISubtask) => void;
+    handleCreateSubtask: (subtask: ISubtask) => void;
     selectedTaskId: string | null;
     
     isCommunicationModalOpen: boolean;
@@ -123,18 +124,28 @@ const TaskModals: React.FC<TaskModalsProps> = ({
                     valley={currentValleyName || ""}
                     data-test-id="subtask-form"
                     subtask={{
-                    name: "",
-                    number: "",
-                    description: "",
-                    budget: "",
-                    expenses: "",
-                    startDate: "",
-                    endDate: "",
-                    finishDate: "",
-                    beneficiary: "",
-                    status: "",  
-                    priorityId: "",     
-                    taskId: selectedTaskId 
+                        id: "",
+                        name: "",
+                        number: 0,
+                        description: "",
+                        budget: 0,
+                        expense: 0,
+                        startDate: "",
+                        endDate: "",
+                        finalDate: "",
+                        beneficiaryId: "",
+                        status: {
+                            id: 0,
+                            name: "",
+                            percentage: 0
+                        },
+                        statusId: 0,
+                        priorityId: 0,
+                        priority: {
+                            id: 0,
+                            name: ""
+                        },
+                        taskId: selectedTaskId ?? ""
                     }}
                 />
                 )}

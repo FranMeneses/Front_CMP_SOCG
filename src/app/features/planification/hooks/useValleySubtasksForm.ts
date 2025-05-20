@@ -3,27 +3,10 @@ import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
 import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK, DELETE_SUBTASK } from "@/app/api/subtasks";
 import { IPriority, ISubtask, ISubtasksStatus } from "@/app/models/ISubtasks";
+import { SubtasksInitialValues, Beneficiary, ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
+import { IBeneficiary } from "@/app/models/IBeneficiary";
 
-interface Beneficiary {
-    id: string;
-    legalName: string;
-  }  
-
-interface SubtasksInitialValues {
-    name?: string;
-    number?: string;
-    description?: string;
-    budget?: string;
-    expense?: string;
-    startDate?: string;
-    endDate?: string;
-    finishDate?: string;
-    beneficiary?: string;
-    state?: string;
-    priority?: string;
-}
-
-export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: any) => {
+export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) => void, subtask?: ISubtask) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
     const {data: beneficiariesData} = useQuery(GET_BENEFICIARIES);
 
@@ -192,16 +175,16 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
 
                 setSubtasksInitialValues({
                     name: subtask.name || "",
-                    number: subtask.number || "",
+                    number: subtask.number !== undefined && subtask.number !== null ? String(subtask.number) : "",
                     description: subtask.description || "",
-                    budget: subtask.budget || "",
-                    expense: subtask.expense || "",
+                    budget: subtask.budget !== undefined && subtask.budget !== null ? String(subtask.budget) : "",
+                    expense: subtask.expense !== undefined && subtask.expense !== null ? String(subtask.expense) : "",
                     startDate: formatDateForInput(subtask.startDate) || "",
                     endDate: formatDateForInput(subtask.endDate) || "",
                     finishDate: formatDateForInput(subtask.finalDate) || "", 
                     beneficiary: beneficiaryName, 
-                    state: subtask.statusId || "",
-                    priority: subtask.priorityId || "",
+                    state: subtask.statusId !== undefined && subtask.statusId !== null ? String(subtask.statusId) : "",
+                    priority: subtask.priorityId !== undefined && subtask.priorityId !== null ? String(subtask.priorityId) : "",
                 });
             }
             catch (error) {
@@ -269,7 +252,7 @@ export const useValleySubtasksForm = (onSave: (subtask: any) => void, subtask?: 
 
     const dropdownItems = useMemo(() => {
         const beneficiaryNames = beneficiariesData?.beneficiaries
-            ? beneficiariesData.beneficiaries.map((beneficiary: any) => beneficiary.legalName)
+            ? beneficiariesData.beneficiaries.map((beneficiary: IBeneficiary) => beneficiary.legalName)
             : [];
 
         return {

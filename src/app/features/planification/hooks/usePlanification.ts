@@ -9,6 +9,8 @@ import { useValleyTaskForm } from "./useValleyTaskForm";
 import { useValleySubtasksForm } from "./useValleySubtasksForm";
 import { useTasksData } from "./useTaskData";
 import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
+import { Task, TaskDetails } from "@/app/models/ITaskForm";
+import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 
 export const usePlanification = () => {
     const { currentValleyId, isValleyManager, userRole } = useHooks();
@@ -27,10 +29,11 @@ export const usePlanification = () => {
     const [isDeleteSubtaskModalOpen, setIsDeleteSubtaskModalOpen] = useState(false);
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
     
-    const dummyTask = (task: any) => {};
-    const dummySubtask = (subtask: any) => {};
+    const dummyInfoTask = (task: TaskDetails) => {}; 
+    const dummyTask = (task: any) => {}; // TODO: Define the type for the task object
+    const dummySubtask = (subtask: ExtendedSubtaskValues) => {}; 
 
-    const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
+    const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
     const valleySubtaskForm = useValleySubtasksForm(dummySubtask);
     const communicationTaskForm = useCommunicationTaskForm(dummyTask);
     
@@ -152,7 +155,7 @@ export const usePlanification = () => {
         setIsDeleteSubtaskModalOpen(false);
     };
 
-    const handleSaveTask = async (task: any) => {
+    const handleSaveTask = async (task: Task) => { // TODO: Define the type for the task object
         console.log("Saving task:", task);
         try {
             const { data } = await createTask({
@@ -247,6 +250,7 @@ export const usePlanification = () => {
     };
 
     const handleCreateSubtask = async (subtask: ISubtask) => {
+        console.log("Creating subtask:", subtask);
         try {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
@@ -267,7 +271,7 @@ export const usePlanification = () => {
         }
     };
 
-    const handleUpdateTask = async (task: any) => {
+    const handleUpdateTask = async (task: Task) => { 
         try {
             const updatedTaskId = await valleyTaskForm.handleUpdateTask(task, selectedTaskId!, selectedInfoTask);
             setIsPopupOpen(false);

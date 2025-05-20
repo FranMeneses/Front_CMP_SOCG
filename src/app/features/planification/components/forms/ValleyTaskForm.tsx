@@ -1,15 +1,16 @@
 'use client';
 import { useValleyTaskForm } from "@/app/features/planification/hooks/useValleyTaskForm";
+import { IInfoTask } from "@/app/models/ITasks";
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 
 interface ValleyTaskFormProps {
-  onSave: any; // TODO: Define the type for the task object
+  onSave: any;
   onCancel: () => void;
   details?: boolean;
   isEditing?: boolean;
   valley: string;
-  infoTask?: any; //TODO: Define the type for the task object
+  infoTask?: IInfoTask;
 }
 
 export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, details, infoTask }: ValleyTaskFormProps) {
@@ -53,7 +54,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           items={dropdownItems.origin}
           onSelect={(value) => handleInputChange("origin", value)}
           buttonText="Seleccione Origen"
-          selectedValue={dropdownItems.origin[infoTask?.originId - 1]}
+          selectedValue={infoTask?.originId ? dropdownItems.origin[infoTask.originId - 1] : undefined}
           isInModal={true}
         />
       </div>
@@ -64,7 +65,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           items={dropdownItems.investment}
           onSelect={(value) => handleInputChange("investment", value)}
           isInModal={true}
-          selectedValue={dropdownItems.investment[infoTask?.investmentId - 1]}
+          selectedValue={infoTask?.investmentId !== undefined ? dropdownItems.investment[infoTask.investmentId - 1] : undefined}
           data-test-id="task-investment-dropdown"
         />
       </div>
@@ -75,7 +76,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           items={dropdownItems.type}
           onSelect={(value) => handleInputChange("type", value)}
           isInModal={true}
-          selectedValue={dropdownItems.type[infoTask?.typeId - 1]}
+          selectedValue={infoTask?.typeId ? dropdownItems.type[infoTask.typeId - 1] : undefined}
           data-test-id="task-type-dropdown"
         />
       </div>
@@ -86,7 +87,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           items={dropdownItems.scope}
           onSelect={(value) => handleInputChange("scope", value)}
           isInModal={true}
-          selectedValue={dropdownItems.scope[infoTask?.scopeId - 1]}
+          selectedValue={infoTask?.scopeId !== undefined ? dropdownItems.scope[infoTask.scopeId - 1] : undefined}
           data-test-id="task-scope-dropdown"
         />
       </div>
@@ -97,7 +98,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           items={dropdownItems.interaction}
           onSelect={(value) => handleInputChange("interaction", value)}
           isInModal={true}
-          selectedValue={dropdownItems.interaction[infoTask?.interactionId - 1]}
+          selectedValue={infoTask?.interactionId !== undefined ? dropdownItems.interaction[infoTask.interactionId - 1] : undefined}
           data-test-id="task-interaction-dropdown"
         />
       </div>
@@ -109,7 +110,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             items={dropdownItems.state}
             onSelect={(value) => handleInputChange("state", value)}
             isInModal={true}
-            selectedValue={dropdownItems.state[infoTask?.task.statusId - 1]}
+            selectedValue={infoTask?.task?.statusId ? dropdownItems.state[infoTask.task.statusId - 1] : undefined}
             data-test-id="task-state-dropdown"
           />
         </div>
@@ -147,7 +148,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           items={dropdownItems.risk}
           onSelect={(value) => handleInputChange("risk", value)}
           isInModal={true}
-          selectedValue={dropdownItems.risk[infoTask?.riskId - 1]}
+          selectedValue={infoTask?.riskId !== undefined ? dropdownItems.risk[infoTask.riskId - 1] : undefined}
           data-test-id="task-risk-dropdown"
         />
       </div>
