@@ -120,7 +120,6 @@ export const useBeneficiaries = () => {
                 },
             });
     
-            console.log("Contacto actualizado:", data.updateContact);
             await refetch();
         } catch (err) {
             console.error("Error actualizando contacto:", err);
@@ -149,7 +148,6 @@ export const useBeneficiaries = () => {
 
             await refetch();
     
-            console.log("Beneficiario actualizado:", updatedBeneficiaryData);
         } catch (err) {
             console.error("Error actualizando el beneficiario:", err);
         }
@@ -159,7 +157,6 @@ export const useBeneficiaries = () => {
         try {
             const beneficiaryData = await handleGetBeneficiary(beneficiaryId);
             setSelectedBeneficiary(beneficiaryData);
-            console.log("Beneficiario obtenido:", beneficiaryId);
             setIsEditModalOpen(true); 
         } catch (error) {
             console.error("Error al obtener el beneficiario:", error);

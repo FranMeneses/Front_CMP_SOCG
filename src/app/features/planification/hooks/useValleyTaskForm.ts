@@ -56,7 +56,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 variables: { id: taskId },
             });
             if (data) {
-                console.log("Task deleted successfully:", data);
             } else {
                 console.warn("No data found for the given task ID:", taskId);
             }

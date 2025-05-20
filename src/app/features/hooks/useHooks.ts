@@ -76,7 +76,6 @@ export function useHooks() {
 
         if (newValley) {
             setCurrentValley(newValley);
-            console.log("Valle cambiado a:", newValley.name);
         }
     };
 

@@ -134,7 +134,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     items={dropdownItems.subtaskPriority}
                     onSelect={(value) => handleSubtaskInputChange("priority", value)}
                     isInModal={true}
-                    selectedValue={dropdownItems.subtaskPriority[(subtask?.priorityId ?? 1) - 1]}
+                    selectedValue={subtask?.priorityId !== undefined ? dropdownItems.subtaskPriority[subtask.priorityId - 1] : undefined}
                     data-test-id="subtask-priority-dropdown"
                 />
             </div>
@@ -150,8 +150,8 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                 <Button
                     variant="default"
                     onClick={handleSaveSubtask}
-                    className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
-                    disabled={!subtaskFormState.name || !subtaskFormState.budget || !subtaskFormState.endDate || !subtaskFormState.startDate || !subtaskFormState.priority} //TODO: VER PORQUE LA PRIORIDAD NO ESTA BLOQUEANDO
+                    className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6] hover:cursor-pointer"
+                    disabled={!subtaskFormState.name || !subtaskFormState.budget || !subtaskFormState.endDate || !subtaskFormState.startDate || !subtaskFormState.priority} 
                     data-test-id="save-button"
                 >
                 Guardar

@@ -79,7 +79,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     buttonText="Seleccione valle"
                     isInModal={true}
                     items={valleysName}
-                    onSelect={(item) => console.log(item)}
+                    onSelect={(item) => console.log(item)}  //TODO: AGREGAR FUNCIONALIDAD
                     selectedValue={currentValleyName ?? ""}
                     data-test-id="task-valley-dropdown"
                 />

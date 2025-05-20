@@ -135,7 +135,6 @@ export const useCommunicationTaskForm = (
                 processId: isPublicAffair ? 5 : 4,
             }
         }
-        console.log("newTask", newTask);
         onSave(newTask);
         
         setFormState({

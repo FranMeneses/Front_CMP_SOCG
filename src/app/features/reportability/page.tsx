@@ -36,7 +36,6 @@ export default function Reportability() {
   }, [reportabilityLoading]);
 
   const handleMonthChange = (year: number, month: number) => {
-  console.log(`Mes actual: ${month}/${year}`);
 };
 
   return (

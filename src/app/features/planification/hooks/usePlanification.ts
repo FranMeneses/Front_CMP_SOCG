@@ -91,7 +91,6 @@ export const usePlanification = () => {
         
     const handleUpdateCommunication = async (task: ITask) => {
         try {
-            console.log("Updating communication task:", task);
             const { data } = await updateTask({
                 variables: {
                     id: selectedTaskId,
@@ -156,8 +155,7 @@ export const usePlanification = () => {
         setIsDeleteSubtaskModalOpen(false);
     };
 
-    const handleSaveTask = async (task: Task) => { // TODO: Define the type for the task object
-        console.log("Saving task:", task);
+    const handleSaveTask = async (task: Task) => { 
         try {
             const { data } = await createTask({
                 variables: {
@@ -251,7 +249,6 @@ export const usePlanification = () => {
     };
 
     const handleCreateSubtask = async (subtask: ISubtask) => {
-        console.log("Creating subtask:", subtask);
         try {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
