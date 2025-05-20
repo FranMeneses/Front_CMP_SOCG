@@ -11,7 +11,7 @@ import { useTasksData } from "./useTaskData";
 import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 
 export const usePlanification = () => {
-    const { currentValleyId, isValleyManager } = useHooks();
+    const { currentValleyId, isValleyManager, userRole } = useHooks();
     
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
@@ -48,7 +48,7 @@ export const usePlanification = () => {
         getRemainingSubtaskDays,
         formatDate,
         handleFilterClick,
-    } = useTasksData(currentValleyId ?? undefined);
+    } = useTasksData(currentValleyId ?? undefined, userRole);
     
     const [createTask] = useMutation(CREATE_TASK);
     const [updateTask] = useMutation(UPDATE_TASK);

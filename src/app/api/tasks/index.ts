@@ -316,3 +316,34 @@ export const GET_ALL_PROCESSES = gql`
     }
   }
 `;
+
+//Query para obtener todas las tareas por proceso
+export const GET_TASKS_BY_PROCESS = gql`
+  query GetTasksByProcess($processId: Int!) {
+    tasksByProcess(processId: $processId) {
+      id
+      name
+      description
+      statusId
+      status {
+        id
+        name
+      }
+      faenaId
+      faena {
+        id
+        name
+      }
+      valleyId
+      valley {
+        id
+        name
+      }
+      processId
+      process {
+        id
+        name
+      }
+    }
+  }
+`;

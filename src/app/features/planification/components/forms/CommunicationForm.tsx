@@ -9,19 +9,22 @@ interface CommunicationFormProps {
     onCancel: () => void;
     isEditing?: boolean;
     selectedTask?: ITask;
+    userRole?: string;
 }
 
 export default function CommunicationForm({ 
     onSave, 
     onCancel, 
     isEditing = false, 
-    selectedTask 
+    selectedTask,
+    userRole
 }: CommunicationFormProps) {
 
     const { formState, dropdownItems, handleSave, handleInputChange } = useCommunicationTaskForm(
         onSave, 
         isEditing, 
-        selectedTask
+        selectedTask,
+        userRole
     );
 
     const { valleysName, faenasName } = useHooks();

@@ -5,7 +5,7 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado comunicaciones");	
+    const [userRole, setUserRole] = useState<string>("encargado asuntos públicos");	
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys, faenas } = useData();
 
@@ -16,6 +16,7 @@ export function useHooks() {
             "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.id || 2,
             "Admin": valleys?.find(v => v.name === "Transversal")?.id || 4,
             "encargado comunicaciones": valleys?.find(v => v.name === "Transversal")?.id || 4,
+            "encargado asuntos públicos": valleys?.find(v => v.name === "Transversal")?.id || 4,
             "encargado cumplimiento": valleys?.find(v => v.name === "Transversal")?.id || 4,
         };
     }, [valleys]);
@@ -27,6 +28,7 @@ export function useHooks() {
             "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.name || "Valle del Huasco",
             "Admin": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
             "encargado comunicaciones": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
+            "encargado asuntos públicos": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
             "encargado cumplimiento": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
             "gerente": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
         };
@@ -92,6 +94,12 @@ export function useHooks() {
                 break;
             case "encargado cumplimiento":
                 router.push("/features/resume");
+                break;
+            case "encargado asuntos públicos":
+                router.push("/features/planification");
+                break;
+            case "encargado comunicaciones":
+                router.push("/features/planification");
                 break;
             case "encargado valle elqui":
                 router.push("/features/planification");
