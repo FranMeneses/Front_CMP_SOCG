@@ -11,6 +11,7 @@ import { useReportability } from "./hooks/useReportability";
 import { useHooks } from "../hooks/useHooks";
 import { useData } from "@/context/DataContext";
 import { useEffect, useState } from "react";
+import TaskResume from "./components/TaskResume";
 
 export default function Reportability() {
   const {
@@ -84,38 +85,7 @@ export default function Reportability() {
                       data-test-id="calendar"
                       onMonthChange={handleMonthChange}
                     />
-                    
-                    <div className="mt-4 border-t pt-4">
-                      <h3 className="text-lg font-medium mb-3">Resumen del Mes</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="rounded shadow-sm border p-3">
-                          <p className="text-sm text-gray-500">Tareas planeadas</p>
-                          <p className="text-2xl font-bold">{calendarEvents?.length || 0}</p> {/*TODO: CAMBIAR POR FUNCIÓN CUANDO ESTE DISPONIBLE*/}
-                        </div>
-                        <div className="border p-3 rounded shadow-sm">
-                          <p className="text-sm text-gray-500">Distribución por valle</p>
-                          <div className="text-sm mt-1">
-                            {valleys && valleyNames.map((valley) => {
-                              const valleyEvents = calendarEvents?.filter(event => 
-                                event.valley === valley
-                              ).length || 0;
-                              return (
-                                <div key={valley} className="flex justify-between items-center mt-1">
-                                  <span className="flex items-center">
-                                    <span 
-                                      className="inline-block w-3 h-3 rounded-full mr-2" 
-                                      style={{backgroundColor: ValleyColors[valleyNames.indexOf(valley)] || '#888'}}
-                                    ></span>
-                                    {valley}:
-                                  </span>
-                                  <span className="font-medium">{valleyEvents}</span> {/*TODO: CAMBIAR POR FUNCIÓN CUANDO ESTE DISPONIBLE*/}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    {TaskResume(calendarEvents, valleys, valleyNames, ValleyColors)}
                   </div>
                 </div>
                 <div className="w-full md:w-72 p-4 border-t md:border-t-0 md:border-l">

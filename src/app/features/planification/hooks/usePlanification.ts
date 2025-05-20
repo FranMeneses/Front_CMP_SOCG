@@ -11,6 +11,7 @@ import { useTasksData } from "./useTaskData";
 import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task, TaskDetails } from "@/app/models/ITaskForm";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
+import { ITaskForm } from "@/app/models/ICommunicationsForm";
 
 export const usePlanification = () => {
     const { currentValleyId, isValleyManager, userRole } = useHooks();
@@ -30,7 +31,7 @@ export const usePlanification = () => {
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
     
     const dummyInfoTask = (task: TaskDetails) => {}; 
-    const dummyTask = (task: any) => {}; // TODO: Define the type for the task object
+    const dummyTask = (task: ITaskForm) => {}; 
     const dummySubtask = (subtask: ExtendedSubtaskValues) => {}; 
 
     const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");

@@ -57,7 +57,7 @@ export default function CommunicationForm({
                     data-test-id="communication-description-input"
                 />
             </div>
-            <div className="mb-4">
+            {/* <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">Valle</label>
                 <DropdownMenu
                     buttonText={formState.valleyId || "Seleccione valle"}
@@ -78,7 +78,7 @@ export default function CommunicationForm({
                     selectedValue={formState.faenaId}
                     data-test-id="communication-faena-dropdown"
                 />
-            </div>
+            </div> */}
             {isEditing && (
                 <>
                     <div className="mb-4">
@@ -127,7 +127,7 @@ export default function CommunicationForm({
                 <Button
                     variant="default"
                     onClick={() => handleSave()}
-                    disabled={!formState.name || !formState.description || !formState.valleyId || !formState.faenaId}
+                    disabled={!formState.name || !formState.description}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
