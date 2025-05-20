@@ -24,7 +24,6 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMo
   });
 
 const handleEventClick = (info: any) => {
-  console.log("Event clicked:", info.event);
   const [datePart] = info.event.startStr.split('T');
   const [year, month, day] = datePart.split('-');
   

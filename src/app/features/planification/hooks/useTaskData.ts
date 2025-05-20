@@ -90,7 +90,6 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
 
   useEffect(() => {
     setTasksData(tasks);
-    console.log("Tasks data updated:", userRole);
   }, [processData, allTasksData, shouldUseProcessQuery]);
 
   const handleGetTasksByStatus = async (statusId: number) => {

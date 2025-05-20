@@ -45,7 +45,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
     },
     {
-      title: "Reportabilidad",
+      title: "Programación",
       href: "/features/reportability",
       displayHref: "/reportability",
       icon: CalendarFold,
@@ -53,7 +53,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       admitedRoles: ["gerente", "superintendente", "encargado cumplimiento","Admin"]
     },
     {
-      title: "Programación",
+      title: "Plan de trabajo",
       href: "/features/schedule",
       displayHref: "/schedule",
       icon: CalendarRange,

@@ -35,7 +35,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             if (subtaskData && subtaskData.subtask) {
                 const subtaskWithDefaults = {
                     ...subtaskData.subtask,
-                    priorityId: subtaskData.subtask.priorityId || 1,  
+                    priorityId: subtaskData.subtask.priorityId || "",  
                     number: subtaskData.subtask.number || "",
                     name: subtaskData.subtask.name || "",
                     description: subtaskData.subtask.description || "",

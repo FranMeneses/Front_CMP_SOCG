@@ -124,20 +124,17 @@ export const useCommunicationTaskForm = (
             newTask = {
                 ...formState,
                 statusId: 1,
-                valleyId: valleysName.findIndex((v) => v === formState.valleyId) + 1,
-                faenaId: faenasName.findIndex((f) => f === formState.faenaId) + 1,
+                valleyId: valleysName.findIndex((v) => v === "Transversal") + 1,
+                faenaId: faenasName.findIndex((f) => f === "Transversal") + 1,
                 processId: isPublicAffair ? 5 : 4,
             };
         }else {
             newTask = {
                 ...formState,
                 statusId: Number(formState.statusId) ? Number(formState.statusId) : taskStatuses.findIndex((s: string | number) => s === formState.statusId) + 1,
-                valleyId: valleysName.findIndex((v) => v === formState.valleyId) + 1,
-                faenaId: faenasName.findIndex((f) => f === formState.faenaId) + 1,
                 processId: isPublicAffair ? 5 : 4,
             }
         }
-        console.log("newTask", newTask);
         onSave(newTask);
         
         setFormState({

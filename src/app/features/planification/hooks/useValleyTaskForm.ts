@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useData } from "@/context/DataContext";
 import { IValley } from "@/app/models/IValleys";
 import { GET_ALL_RISKS, GET_ALL_ORIGINS, GET_ALL_INVESTMENTS, GET_ALL_INTERACTIONS, GET_ALL_SCOPES, GET_ALL_TYPES, GET_TASK_INFO } from "@/app/api/infoTask";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
@@ -9,6 +8,7 @@ import { IInfoTask, ITaskStatus } from "@/app/models/ITasks";
 import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
+import { useHooks } from "../../hooks/useHooks";
 
 export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
@@ -22,9 +22,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const [getTask] = useLazyQuery(GET_TASK);
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
 
-    const {valleys, faenas: Faenas} = useData();
-    const valleyNames = valleys ? valleys.map((valley: IValley) => valley.name) : []; // TODO: CHANGE TO USEHOOKS
-    const faenaNames = Faenas ? Faenas.map((faena: IValley) => faena.name) : [];
+    const {valleysName: valleyNames, faenasName: faenaNames, faenas: Faenas} = useHooks();
 
     const {data: riskData} = useQuery(GET_ALL_RISKS);
     const {data: originData} = useQuery(GET_ALL_ORIGINS);
@@ -56,7 +54,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 variables: { id: taskId },
             });
             if (data) {
-                console.log("Task deleted successfully:", data);
             } else {
                 console.warn("No data found for the given task ID:", taskId);
             }
@@ -242,14 +239,14 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const [faenaMap, setFaenaMap] = useState<{ [key: string]: string }>({});
 
     useEffect(() => {
-    if (Faenas) {
-        const newFaenaMap: Record<string, number> = {};
-        Faenas.forEach((faena: IValley, index) => {
-            newFaenaMap[faena.name] = faena.id || index + 1;
-        });
-        setFaenaMap(Object.fromEntries(Object.entries(newFaenaMap).map(([key, value]) => [key, value.toString()])));
-    }
-}, [Faenas]);
+        if (Faenas) {
+            const newFaenaMap: Record<string, number> = {};
+            Faenas.forEach((faena: IValley, index) => {
+                newFaenaMap[faena.name] = faena.id || index + 1;
+            });
+            setFaenaMap(Object.fromEntries(Object.entries(newFaenaMap).map(([key, value]) => [key, value.toString()])));
+        }
+    }, [Faenas]);
 
     const handleInputChange = useCallback((field: string, value: string) => {
         setFormState((prev) => ({ ...prev, [field]: value }));

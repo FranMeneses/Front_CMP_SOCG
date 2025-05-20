@@ -123,30 +123,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
                     onSave={handleCreateSubtask}
                     valley={currentValleyName || ""}
                     data-test-id="subtask-form"
-                    subtask={{
-                        id: "",
-                        name: "",
-                        number: 0,
-                        description: "",
-                        budget: 0,
-                        expense: 0,
-                        startDate: "",
-                        endDate: "",
-                        finalDate: "",
-                        beneficiaryId: "",
-                        status: {
-                            id: 0,
-                            name: "",
-                            percentage: 0
-                        },
-                        statusId: 0,
-                        priorityId: 0,
-                        priority: {
-                            id: 0,
-                            name: ""
-                        },
-                        taskId: selectedTaskId ?? ""
-                    }}
+                    subtask={undefined}
                 />
                 )}
         </Modal>

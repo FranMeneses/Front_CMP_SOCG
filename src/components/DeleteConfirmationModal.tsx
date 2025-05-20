@@ -24,7 +24,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         </div>
         <h2 className="text-xl font-bold mb-4 text-center">Confirmar eliminación</h2>
         <p className="text-sm text-gray-600 mb-6 text-center">
-          ¿Estás seguro de que quieres eliminar esta {itemType}? Esta acción no se puede deshacer.
+          ¿Estás seguro de que quieres eliminar esta {itemType}? Esta acción no se puede deshacer. {/*TODO: AGREGAR CONFIRMACIÓN DE ADMINISTRADOR*/}
         </p>
         <div className="flex justify-center space-x-4">
           <Button 
