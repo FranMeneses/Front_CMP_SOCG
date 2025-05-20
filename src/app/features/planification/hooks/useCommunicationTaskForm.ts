@@ -7,7 +7,8 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 export const useCommunicationTaskForm = (
     onSave: any, 
     isEditing?: boolean,
-    selectedTask?: ITask
+    selectedTask?: ITask,
+    userRole?: string
 ) => {
 
     const [getTask] = useLazyQuery(GET_TASK);
@@ -19,6 +20,7 @@ export const useCommunicationTaskForm = (
 
     const taskStatuses = status.map((s: ITaskStatus) => s.name);
 
+    const isPublicAffair = userRole === "encargado asuntos públicos" 
 
     const { valleysName, faenasName } = useHooks();
 
@@ -124,7 +126,7 @@ export const useCommunicationTaskForm = (
                 statusId: 1,
                 valleyId: valleysName.findIndex((v) => v === formState.valleyId) + 1,
                 faenaId: faenasName.findIndex((f) => f === formState.faenaId) + 1,
-                processId: 4
+                processId: isPublicAffair ? 5 : 4,
             };
         }else {
             newTask = {
@@ -132,7 +134,7 @@ export const useCommunicationTaskForm = (
                 statusId: Number(formState.statusId) ? Number(formState.statusId) : taskStatuses.findIndex((s: string | number) => s === formState.statusId) + 1,
                 valleyId: valleysName.findIndex((v) => v === formState.valleyId) + 1,
                 faenaId: faenasName.findIndex((f) => f === formState.faenaId) + 1,
-                processId: 4,
+                processId: isPublicAffair ? 5 : 4,
             }
         }
         console.log("newTask", newTask);

@@ -23,7 +23,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
 
-  const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos publicos"];
+  const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos públicos"];
 
   const getCurrentProcessId = (userRole: string) => {
     switch(userRole) {
@@ -35,7 +35,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         return 3;
       case "encargado comunicaciones":
         return 4;
-      case "encargado asuntos publicos":
+      case "encargado asuntos públicos":
         return 5;
       default:
         return 6;
@@ -48,7 +48,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
 
   const { 
-    data: valleyData, 
+    data: processData, 
     loading: valleyQueryLoading, 
     error: valleyQueryError, 
     refetch: refetchValleyTasks 
@@ -72,7 +72,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS);
   
   const tasks = shouldUseProcessQuery 
-    ? (valleyData?.tasksByProcess || []) 
+    ? (processData?.tasksByProcess || []) 
     : (allTasksData?.tasks || []);
   
   const error = shouldUseProcessQuery ? valleyQueryError : allTasksQueryError;
@@ -90,7 +90,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   useEffect(() => {
     setTasksData(tasks);
     console.log("Tasks data updated:", userRole);
-  }, [valleyData, allTasksData, shouldUseProcessQuery]);
+  }, [processData, allTasksData, shouldUseProcessQuery]);
 
   const handleGetTasksByStatus = async (statusId: number) => {
     try {
@@ -322,7 +322,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   }, [tasks, mainQueryLoading, isLoadingSubtasks]);
 
   const unifiedData = shouldUseProcessQuery
-    ? valleyData
+    ? processData
     : { tasksByValley: allTasksData?.tasks || [] };
 
   return {

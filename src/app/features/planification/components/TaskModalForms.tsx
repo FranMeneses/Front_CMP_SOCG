@@ -75,7 +75,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
 }) => {
 
     const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
-    const isCommunicationManager = userRole === "encargado comunicaciones"
+    const isCommunicationManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos";
 
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;
 
@@ -148,6 +148,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
                 onSave={isEditingCommunication ? handleUpdateCommunication : handleSaveCommunication}
                 isEditing={isEditingCommunication} 
                 selectedTask={selectedTask}
+                userRole={userRole}
             />
             </Modal>
         )}
