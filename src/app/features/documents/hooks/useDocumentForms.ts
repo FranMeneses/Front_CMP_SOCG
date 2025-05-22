@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_SUBTASKS } from '@/app/api/subtasks';
 import { GET_TASKS } from '@/app/api/tasks';
@@ -9,7 +9,7 @@ import { IDocumentType } from '@/app/models/IDocuments';
 
 export interface FormData {
     file: File | null;
-    documentType: string | number;
+    documentType: string;
     task: string;
     subtask: string;
 }
@@ -28,7 +28,7 @@ export function useDocumentForms() {
 
     const getDocumentTypeText = () => {
         if (!formData.documentType) return "Seleccione tipo de documento";
-        const selectedType = dropdownOptions.documentTypes.find(item => item.id === formData.documentType);
+        const selectedType = dropdownOptions.documentTypes.find(item => String(item.id) === formData.documentType);
         return selectedType ? selectedType.label : "Seleccione tipo de documento";
     };
     
@@ -52,12 +52,12 @@ export function useDocumentForms() {
     };
 
     const handleDocumentTypeChange = (selectedLabel: string) => {
-        const documentTypes = documentTypesData?.documentTypes || [];
+        const documentTypes = documentTypesData?.getAllDocumentTypes || [];
         const selectedType = documentTypes.find((type: IDocumentType) => type.tipo_documento === selectedLabel);
         if (selectedType) {
             setFormData({
                 ...formData,
-                documentType: selectedType.id_tipo_documento
+                documentType: selectedType.id_tipo_documento.toString() 
             });
         }
     };

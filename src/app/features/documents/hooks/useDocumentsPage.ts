@@ -14,7 +14,6 @@ export function useDocumentsPage() {
     const handleUploadFile = async (formData: DocumentFormData) => {
         try {
             await handleUpload(formData);
-            
             setIsFormOpen(false);
         } catch (error) {
             console.error("Error en handleUploadFile:", error);
