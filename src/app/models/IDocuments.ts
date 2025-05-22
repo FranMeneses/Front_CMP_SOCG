@@ -29,3 +29,8 @@ export interface IDocumentInput {
     id_tarea?: string,
     id_subtarea?: string,
 }
+
+export interface IDocumentType {
+    id_tipo_documento: number,
+    tipo_documento: string,
+}

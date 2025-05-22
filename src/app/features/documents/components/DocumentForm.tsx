@@ -48,7 +48,7 @@ export default function CommunicationForm({
                 <DropdownMenu
                     buttonText={getDocumentTypeText()}
                     isInModal={true}
-                    items={dropdownOptions.documentTypes.map(item => item.label)} 
+                    items={dropdownOptions.documentTypes.map((item) => item.label)} 
                     onSelect={(label) => handleDocumentTypeChange(label)}
                     selectedValue={getDocumentTypeText()}
                     data-test-id="document-type-dropdown"

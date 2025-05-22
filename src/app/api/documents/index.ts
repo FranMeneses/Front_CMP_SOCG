@@ -79,3 +79,13 @@ export const DELETE_DOCUMENT = gql`
         deleteDocument(id_documento: $idDocumento)
     }
 `;
+
+// QUERY TO GET DOCUMENT TYPES
+export const GET_ALL_DOCUMENT_TYPES = gql`
+    query {
+        getAllDocumentTypes {
+            id_tipo_documento
+            tipo_documento
+        }
+    }
+`;

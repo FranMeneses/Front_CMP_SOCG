@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_SUBTASKS } from '@/app/api/subtasks';
 import { GET_TASKS } from '@/app/api/tasks';
 import { ITask } from '@/app/models/ITasks';
 import { ISubtask } from '@/app/models/ISubtasks';
+import { GET_ALL_DOCUMENT_TYPES } from '@/app/api/documents';
+import { IDocumentType } from '@/app/models/IDocuments';
 
 export interface FormData {
     file: File | null;
-    documentType: string;
+    documentType: string | number;
     task: string;
     subtask: string;
 }
@@ -22,6 +24,7 @@ export function useDocumentForms() {
     
     const {data: subtasksData, loading: isLoadingSubtask, error: subtaskError} = useQuery(GET_SUBTASKS);
     const {data: tasksData, loading: isLoadingTask, error: taskError} = useQuery(GET_TASKS);
+    const {data: documentTypesData, loading: isLoadingDocumentsTypes, error: documentsTypesError} = useQuery(GET_ALL_DOCUMENT_TYPES);
 
     const getDocumentTypeText = () => {
         if (!formData.documentType) return "Seleccione tipo de documento";
@@ -41,12 +44,6 @@ export function useDocumentForms() {
         return selectedSubtask ? selectedSubtask.label : "Seleccione subtarea";
     };
 
-    const documentTypes = [
-        { id: "1", name: "Oficio" },
-        { id: "2", name: "Informe" },
-        { id: "3", name: "Memorándum" }
-    ];
-
     const handleFileChange = (file: File) => {
         setFormData({
             ...formData,
@@ -55,11 +52,12 @@ export function useDocumentForms() {
     };
 
     const handleDocumentTypeChange = (selectedLabel: string) => {
-        const selectedType = documentTypes.find(type => type.name === selectedLabel);
+        const documentTypes = documentTypesData?.documentTypes || [];
+        const selectedType = documentTypes.find((type: IDocumentType) => type.tipo_documento === selectedLabel);
         if (selectedType) {
             setFormData({
                 ...formData,
-                documentType: selectedType.id 
+                documentType: selectedType.id_tipo_documento
             });
         }
     };
@@ -99,9 +97,10 @@ export function useDocumentForms() {
 
     const tasks = tasksData?.tasks || [];
     const subtasks = subtasksData?.subtasks || [];
+    const documentTypes = documentTypesData?.getAllDocumentTypes || [];
 
     const dropdownOptions = {
-        documentTypes: documentTypes.map(type => ({ id: type.id, label: type.name })),
+        documentTypes: Array.isArray(documentTypes) ? documentTypes.map((type: IDocumentType) => ({ id: type.id_tipo_documento, label: type.tipo_documento })) : [],
         tasks: Array.isArray(tasks) ? tasks.map((task: ITask) => ({ id: task.id, label: task.name })) : [],
         subtasks: Array.isArray(subtasks) ? subtasks.map((subtask: ISubtask) => ({ id: subtask.id, label: subtask.name })) : []
     };
@@ -118,6 +117,6 @@ export function useDocumentForms() {
         getDocumentTypeText,
         getTaskText,
         getSubtaskText,
-        isLoading: isLoadingSubtask || isLoadingTask
+        isLoading: isLoadingSubtask || isLoadingTask || isLoadingDocumentsTypes,
     };
 }
