@@ -1,35 +1,24 @@
 'use client';
-import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadinSpinner";
 import { useHooks } from "../hooks/useHooks";
-import { documents } from "../../../../mocks/documentsMock";
 import { DocumentTable } from "./components/DocumentsTable";
-import { FileUploadButton } from "./components/FileUploadButton";
+import { useDocumentsGraph } from "./hooks/useDocumentsGraph";
+import { useDocumentsPage } from "./hooks/useDocumentsPage";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import DocumentForm from "./components/DocumentForm";
+import Modal from "@/components/Modal";
+import { useState } from "react";
 
 export default function Documents() {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const { userRole } = useHooks();
+    const { documentsList, isLoading } = useDocumentsGraph();
+    const { isSidebarOpen, isFormOpen, toggleSidebar,handleOpenForm, setIsFormOpen, handleUploadFile } = useDocumentsPage();
+    
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen((prev) => !prev);
-    };
-
-    const handleFileChange = (file: File) => {
-        console.log(file);
-    };
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 2000);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="overflow-x-hidden">
                 <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
@@ -63,14 +52,28 @@ export default function Documents() {
                         <h1 className="text-2xl font-bold">Centro Documental</h1>
                         <div className="flex flex-row">
                             <div className="w-full ml-4">
-                                <FileUploadButton onFileChange={handleFileChange} />
-                                <DocumentTable documents={documents} />
+                                <Button 
+                                    onClick={handleOpenForm}
+                                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
+                                >
+                                    <Plus size={16} /> Añadir
+                                </Button>
+                                <DocumentTable documents={documentsList} />
                             </div>
                         </div>
                     </div>
                 </main>
             </div>
+            
+            <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)}>
+                <div className="mb-4">
+                    <h2 className="text-xl font-semibold">Añadir nuevo documento</h2>
+                </div>
+                <DocumentForm 
+                    onSave={handleUploadFile}
+                    onCancel={() => setIsFormOpen(false)}
+                />
+            </Modal>
         </div>
     );
-    {/*TODO: AGREGAR FILTROS Y QUIEN SUBIO DOCUMENTOS*/}
 }

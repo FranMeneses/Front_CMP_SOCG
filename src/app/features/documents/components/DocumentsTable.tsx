@@ -1,15 +1,9 @@
 'use client';
 import React from 'react';
-
-interface Document {
-  name: string;
-  date: string;
-  type: string;
-  initiative: string;
-}
+import { IDocumentList } from '@/app/models/IDocuments';
 
 interface DocumentTableProps {
-  documents: Document[];
+  documents: IDocumentList[];
 }
 
 export const DocumentTable = ({ documents }: DocumentTableProps) => {
@@ -33,11 +27,9 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                   alt="PDF Icon"
                   className="w-6 h-6 mr-2"
                 />
-                {doc.name}
               </td>
-              <td className="px-4 py-2 text-center border-b border-gray-300">{doc.date}</td>
+              <td className="px-4 py-2 text-center border-b border-gray-300">{doc.createdAt.toISOString()}</td>
               <td className="px-4 py-2 text-center border-b border-gray-300">{doc.type}</td>
-              <td className="px-4 py-2 text-center border-b border-gray-300">{doc.initiative}</td>
             </tr>
           ))}
         </tbody>
