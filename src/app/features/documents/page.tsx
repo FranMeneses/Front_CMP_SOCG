@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import DocumentForm from "./components/DocumentForm";
 import Modal from "@/components/Modal";
-import { useState } from "react";
 
 export default function Documents() {
     const { userRole } = useHooks();

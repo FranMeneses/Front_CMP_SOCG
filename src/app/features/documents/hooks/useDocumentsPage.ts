@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDocumentsRest } from "./useDocumentsRest";
+import { FormData as DocumentFormData } from './useDocumentForms';
 
 export function useDocumentsPage() {
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -10,8 +11,14 @@ export function useDocumentsPage() {
         setIsSidebarOpen((prev) => !prev);
     };
 
-    const handleUploadFile = (file: File) => {
-        handleUpload(file);
+    const handleUploadFile = async (formData: DocumentFormData) => {
+        try {
+            await handleUpload(formData);
+            
+            setIsFormOpen(false);
+        } catch (error) {
+            console.error("Error en handleUploadFile:", error);
+        }
     };
     
     const handleOpenForm = () => {
