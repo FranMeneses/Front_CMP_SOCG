@@ -3,8 +3,9 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { 
     GET_TASKS,
     GET_TASKS_BY_PROCESS,
+    GET_TASKS_BY_PROCESS_AND_STATUS,
     // GET_TASKS_BY_VALLEY, 
-    GET_TASKS_BY_VALLEY_AND_STATUS, 
+    // GET_TASKS_BY_VALLEY_AND_STATUS, 
     GET_TASK_STATUSES, 
     GET_TASK_SUBTASKS 
 } from "@/app/api/tasks";
@@ -70,7 +71,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const { data: taskStateData } = useQuery(GET_TASK_STATUSES);
   
   const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
-  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS);
+  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS);
   
   const tasks = shouldUseProcessQuery 
     ? (processData?.tasksByProcess || []) 
@@ -98,9 +99,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       
       if (shouldUseProcessQuery) {
         const { data } = await getTasksByStatus({
-          variables: { valleyId: currentValleyId, statusId }, //TODO: CHANGE CURRENT VALLEY ID FOR PROCESS ID
+          variables: { processId: getCurrentProcessId(userRole), statusId },
         });
-        return data?.tasksByValleyAndStatus || [];
+        console.log("Tasks by status data:", data);
+        return data?.tasksByProcessAndStatus || [];
       } else {
         return tasksData.filter(task => task.status?.id === statusId);
       }
@@ -108,6 +110,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       console.error("Error fetching tasks by status:", error);
       return [];
     } finally {
+      console.log("Tasks by status fetched successfully", getCurrentProcessId(userRole));
       setIsLoadingTaskDetails(false);
     }
   };
