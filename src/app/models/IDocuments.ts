@@ -19,8 +19,10 @@ export interface ITipoDocumento {
 }
 
 export interface IDocumentList {
-    type: string,
-    createdAt: Date,
+    id_documento: number,
+    nombre_archivo: string,
+    fecha_carga: Date,
+    tipo_doc: IDocumentType,
 }
 
 export interface IDocumentInput {

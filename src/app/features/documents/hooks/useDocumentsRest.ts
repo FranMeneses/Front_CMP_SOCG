@@ -11,40 +11,55 @@ export const useDocumentsRest = () => {
 
     const { handleUploadDocument } = useDocumentsGraph();
 
-    // Modificar para aceptar toda la información del formulario
+    /**
+     * Sube un documento al servidor
+     * @param formData Datos del formulario, incluyendo el archivo y metadatos
+     * @description Maneja la subida de un archivo y su metadata asociada
+     */
     const handleUpload = async (formData: DocumentFormData) => {
         try {
             if (!formData.file) {
                 throw new Error('No se ha seleccionado ningún archivo');
             }
-            
-            // Crear FormData para enviar el archivo
-            const fileFormData = new FormData();
-            fileFormData.append('file', formData.file);
-            
-            // También añadir los metadatos al FormData
-            fileFormData.append('documentType', formData.documentType);
-            fileFormData.append('taskId', formData.task);
-            fileFormData.append('subtaskId', formData.subtask);
 
-            // Subir archivo y metadatos juntos
+            const fileFormData = new FormData();
+            fileFormData.append('file', formData.file); 
+
+            fileFormData.append('documentType', formData.documentType.toString());
+            fileFormData.append('taskId', formData.task.toString());
+            fileFormData.append('subtaskId', formData.subtask.toString());
+            fileFormData.append('option', formData.option.toString());
+
+            console.log('Subiendo archivo:', formData.task);
+            console.log('Subiendo archivo:', formData.option);
+
             const response = await axios.post('http://localhost:4000/documents/upload', fileFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             
-            console.log('Archivo subido:', response.data);
-            
             if (response.data.success) {
-                const graphqlMetadata = {
-                    ruta: response.data.ruta,
-                    tipo_documento: parseInt(formData.documentType),
-                    id_tarea: formData.task,
-                    id_subtarea: formData.subtask,
-                };
-                
-                await handleUploadDocument(graphqlMetadata);
+                if (formData.option === 'Tarea') {
+                    const graphqlMetadata = {
+                        ruta: response.data.ruta,
+                        nombre_archivo: response.data.filename,
+                        tipo_documento: Number(formData.documentType), 
+                        id_tarea: formData.task,
+                    };
+
+                    await handleUploadDocument(graphqlMetadata);
+                }
+                if (formData.option === 'Subtarea') {
+                    const graphqlMetadata = {
+                        ruta: response.data.ruta,
+                        nombre_archivo: response.data.filename,
+                        tipo_documento: Number(formData.documentType), 
+                        id_subtarea: formData.subtask,
+                    };
+
+                    await handleUploadDocument(graphqlMetadata);
+                }
                 
                 return {
                     success: true,

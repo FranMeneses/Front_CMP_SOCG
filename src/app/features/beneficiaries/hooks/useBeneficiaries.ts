@@ -21,6 +21,9 @@ export const useBeneficiaries = () => {
     const [updateContact] = useMutation(UPDATE_CONTACT);
     const [updateBeneficiary] = useMutation(UPDATE_BENEFICIARY);
 
+    /**
+     * Cargar los beneficiarios al iniciar el componente
+     */
     useEffect(() => {
         if (data?.beneficiaries) {
             setLocalBeneficiaries(data.beneficiaries);
@@ -36,6 +39,14 @@ export const useBeneficiaries = () => {
         setExpandedRow(expandedRow === id ? null : id);
     };
 
+
+    /**
+     * Obtiene un beneficiario por su ID
+     * @param beneficiaryId Id del beneficiario a obtener
+     * @description Maneja la obtención de un beneficiario específico utilizando su ID
+     * @returns 
+     */
+
     const handleGetBeneficiary = async (beneficiaryId: string) => {
         try {
             const { data } = await getBeneficiary({
@@ -47,6 +58,12 @@ export const useBeneficiaries = () => {
         }
     };
 
+    /**
+     * Maneja la creación de un nuevo contacto
+     * @param contact Datos del contacto a crear
+     * @description Crea un nuevo contacto 
+     * @returns 
+     */
     const handleAddContact = async (contact: { name: string; position: string; email: string; phone: string }) => {
         try {
             const { data } = await createContact({
@@ -72,6 +89,12 @@ export const useBeneficiaries = () => {
         }
     };
 
+    /**
+     * Maneja la creación de un nuevo beneficiario
+     * @param beneficiary Datos del beneficiario a crear
+     * @description Crea un nuevo beneficiario 
+     * @returns 
+     */
     const handleAddBeneficiary = async (beneficiary: { legalName: string; rut: string; address: string; entityType: string; representative: string; hasLegalPersonality: boolean }) => {
         try {
             const { data } = await createBeneficiary({
@@ -100,6 +123,12 @@ export const useBeneficiaries = () => {
         }
     };
 
+    /**
+     * Maneja la actualización de un contacto
+     * @param contact Datos del contacto a actualizar
+     * @description Actualiza los datos del contacto seleccionado
+     * @returns 
+     */
     const handleUpdateContact = async (contact: { id?: string; name: string; position: string; email: string; phone: string }) => {
         try {
             if (!contact.id) {
@@ -126,6 +155,13 @@ export const useBeneficiaries = () => {
         }
     };
 
+    /**
+     * Maneja la actualización de un beneficiario
+     * @param beneficiaryId Id del beneficiario a actualizar
+     * @param updatedBeneficiary Datos actualizados del beneficiario
+     * @description Actualiza los datos del beneficiario seleccionado
+     * @returns 
+     */
     const handleUpdateBeneficiary = async (beneficiaryId: string, updatedBeneficiary: IBeneficiary) => {
         try {
             const { legalName, rut, address, entityType, representative, hasLegalPersonality } = updatedBeneficiary;
@@ -153,6 +189,11 @@ export const useBeneficiaries = () => {
         }
     };
 
+    /**
+     * Maneja la edición de un beneficiario
+     * @param beneficiaryId Id del beneficiario a editar
+     * @description Abre el modal de edición de beneficiario con los datos del beneficiario seleccionado
+     */
     const handleEditBeneficiary = async (beneficiaryId: string) => {
         try {
             const beneficiaryData = await handleGetBeneficiary(beneficiaryId);
@@ -163,6 +204,11 @@ export const useBeneficiaries = () => {
         }
     };
 
+    /**
+     * Maneja la edición de un contacto
+     * @param contact Contacto a editar
+     * @description Abre el modal de edición de contacto con los datos del contacto seleccionado
+     */
     const handleEditContact = async (contact: IContact) => {
         const updatedContact = contact;
         setSelectedContact(updatedContact);

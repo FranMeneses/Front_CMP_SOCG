@@ -12,6 +12,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
       <table className="min-w-full">
         <thead>
           <tr className="text-black uppercase text-sm leading-normal">
+            <th className='py-3 px-6 text-center border-b border-gray-300'></th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Nombre</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Fecha</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Tipo</th>
@@ -19,19 +20,35 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
           </tr>
         </thead>
         <tbody className="cursor-pointer text-sm text-gray-700">
-          {documents.map((doc, index) => (
-            <tr key={index} className="hover:bg-gray-50">
-              <td className="px-4 py-2 flex items-center border-b border-gray-300">
-                <img
-                  src="/pdfIcon.png"
-                  alt="PDF Icon"
-                  className="w-6 h-6 mr-2"
-                />
+          {documents && documents.length > 0 ? (
+            documents.map((doc, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                <td className="px-4 py-2 border-b border-gray-300">
+                  <div className="flex items-center">
+                    <img
+                      src="/pdfIcon.png"
+                      alt="PDF Icon"
+                      className="w-6 h-6 mr-2"
+                    />
+                  </div>
+                </td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  {doc.nombre_archivo || 'Sin nombre'}
+                </td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  {doc.fecha_carga ? new Date(doc.fecha_carga).toLocaleDateString() : 'N/A'}
+                </td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">{doc.tipo_doc.tipo_documento || 'N/A'}</td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">{doc.tipo_doc.tipo_documento || 'N/A'}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={5} className="px-4 py-2 text-center border-b border-gray-300">
+                No hay documentos disponibles
               </td>
-              <td className="px-4 py-2 text-center border-b border-gray-300">{doc.createdAt.toISOString()}</td>
-              <td className="px-4 py-2 text-center border-b border-gray-300">{doc.type}</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
     </div>

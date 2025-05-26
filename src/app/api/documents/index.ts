@@ -2,25 +2,37 @@ import { gql } from "@apollo/client";
 
 // QUERY TO GET ALL DOCUMENTS
 export const GET_DOCUMENTS = gql`
-    query GetDocuments($tipoDocumento: Int) {
-        documents(tipo_documento: $tipoDocumento) {
+  query  {
+    documents {
+      id_documento
+      id_tarea
+      id_subtarea
+      tipo_documento
+      ruta
+      fecha_carga
+      nombre_archivo
+      tipo_doc {
+        id_tipo_documento
+        tipo_documento
+      }
+    }
+  }
+`;
+
+// QUERY TO GET DOCUMENTS BY TYPE ID
+export const GET_DOCUMENTS_BY_TYPE = gql`
+    query GetDocuments($tipo_documento: Int) {
+        documents(tipo_documento: $tipo_documento) {
             id_documento
             id_tarea
             id_subtarea
             tipo_documento
             ruta
             fecha_carga
+            nombre_archivo
             tipo_doc {
-            id_tipo_documento
-            tipo_documento
-            }
-            tarea {
-            id
-            name
-            }
-            subtarea {
-            id
-            name
+                id_tipo_documento
+                tipo_documento
             }
         }
     }
@@ -37,16 +49,16 @@ export const GET_DOCUMENT = gql`
             ruta
             fecha_carga
             tipo_doc {
-            id_tipo_documento
-            tipo_documento
+                id_tipo_documento
+                tipo_documento
             }
             tarea {
-            id
-            name
+                id
+                name
             }
             subtarea {
-            id
-            name
+                id
+                name
             }
         }
     }
