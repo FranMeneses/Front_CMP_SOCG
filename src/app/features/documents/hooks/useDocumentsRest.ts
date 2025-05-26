@@ -86,32 +86,20 @@ export const useDocumentsRest = () => {
                 responseType: 'blob', 
             });
 
-            console.log(response.data);
-
             const contentType = response.headers['content-type'];
             
             const contentDisposition = response.headers['content-disposition'];
             let filename = `document-${documentId}`;
             
+            console.log('Content-Disposition:', contentDisposition);
+            console.log('Content-Type:', contentType);
+
             if (contentDisposition) {
                 const filenameMatch = contentDisposition.match(/filename="(.+)"/);
                 if (filenameMatch && filenameMatch.length >= 2) {
                     filename = filenameMatch[1];
                 }
             }
-
-            if (!filename.includes('.')) {
-                if (contentType === 'application/pdf') {
-                    filename += '.pdf';
-                } else if (contentType === 'application/vnd.ms-excel' || 
-                        contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
-                    filename += '.xlsx';
-                } else if (contentType === 'application/msword' || 
-                        contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-                    filename += '.docx';
-                }
-            }
-
             const url = window.URL.createObjectURL(new Blob([response.data], { 
                 type: contentType 
             }));
