@@ -6,7 +6,7 @@ import "./styles/frappe-gantt.css";
 import { ISubtaskScheduler } from "@/app/models/ISubtasks";
 
 
-export default function GanttChart({ tasks }: { tasks: ISubtaskScheduler[]; }) {
+export default function GanttChart({ subtasks }: { subtasks: ISubtaskScheduler[]; }) {
   const ganttRef = useRef<HTMLDivElement | null>(null);
   const [viewMode, setViewMode] = useState<"Day" | "Week" | "Month">("Day");
 
@@ -15,7 +15,7 @@ export default function GanttChart({ tasks }: { tasks: ISubtaskScheduler[]; }) {
 
     ganttRef.current.innerHTML = "";
 
-    const gantt = new Gantt(ganttRef.current, tasks, {
+    const gantt = new Gantt(ganttRef.current, subtasks, {
       view_mode: viewMode,
       language: "es",
       container_height: screen.availHeight,
@@ -30,7 +30,7 @@ export default function GanttChart({ tasks }: { tasks: ISubtaskScheduler[]; }) {
         ganttRef.current.innerHTML = "";
       }
     };
-  }, [viewMode, tasks]);
+  }, [viewMode, subtasks]);
 
   return (
     <div className="h-fit w-full">

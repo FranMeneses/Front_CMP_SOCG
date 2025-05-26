@@ -22,6 +22,10 @@ export function useReportability() {
 
   const { valleys, faenas } = useData();
 
+  /**
+   * Hook para manejar la carga de subtareas y eventos del calendario.
+   * @description Este hook se encarga de cargar las subtareas y los eventos del calendario, así como de manejar el estado del sidebar y la vista del calendario.
+   */
   useEffect(() => {
     if (data?.subtasks) {
       setSubtasks(data.subtasks);
@@ -30,6 +34,10 @@ export function useReportability() {
     }
   }, [data, error]);
 
+  /**
+   * Hook para manejar el cambio de vista del calendario según el tamaño de la ventana.
+   * @description Este hook ajusta la vista del calendario a "listWeek" en pantallas pequeñas y a "dayGridMonth" en pantallas grandes.
+   */
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -49,6 +57,12 @@ export function useReportability() {
     setIsSidebarOpen((prev) => !prev);
   };
 
+  /**
+   * Función para obtener el color del valle según su ID.
+   * @description Utiliza un switch para devolver el color correspondiente al valle basado en su ID.
+   * @param valleyId ID del valle para obtener su color.
+   * @returns 
+   */
   const handleGetColor = (valleyId: number) => {
     switch (valleyId) {
       case 1:
@@ -64,16 +78,33 @@ export function useReportability() {
     }
   };
 
+  /**
+   * Función para obtener el nombre del valle según su ID.
+   * @description Busca en el array de valles el nombre correspondiente al ID proporcionado.
+   * @param valleyId ID del valle para obtener su nombre.
+   * @returns 
+   */
   const handleGetValley = (valleyId: number) => {
     const valley = valleys.find((v: IValley) => v.id === valleyId);
     return valley ? valley.name : "Valle desconocido";
   };
 
+  /**
+   * Función para obtener el nombre de la faena según su ID.
+   * @description Busca en el array de faenas el nombre correspondiente al ID proporcionado.
+   * @param faenaId ID de la faena para obtener su nombre.
+   * @returns 
+   */
   const handleGetFaena = (faenaId: number) => {
     const faena = faenas.find((f: IFaena) => f.id === faenaId);
     return faena ? faena.name : "Faena desconocida";
   };
 
+  /**
+   * Función para obtener los eventos del calendario de las subtareas.
+   * @description Realiza una consulta para cada subtarea, obteniendo los detalles de la tarea asociada y formateando los eventos del calendario.
+   * @param subtasks Subtareas a las que se les desea obtener los eventos del calendario.
+   */
   const fetchCalendarEvents = async (subtasks: ISubtask[]) => {
     setEventsLoading(true);
     try {
@@ -111,6 +142,10 @@ export function useReportability() {
     }
   };
   
+  /**
+   * Hook para cargar los eventos del calendario al cambiar las subtareas.
+   * @description Este efecto se ejecuta cada vez que las subtareas cambian, llamando a la función fetchCalendarEvents para actualizar los eventos del calendario.
+   */
   useEffect(() => {
     if (Subtasks.length > 0) {
       fetchCalendarEvents(Subtasks);
@@ -119,6 +154,11 @@ export function useReportability() {
     }
   }, [Subtasks, getTask]);
   
+  /**
+   * Función para manejar la selección de un valle o subtarea en el dropdown.
+   * @description Actualiza el estado del item seleccionado y obtiene las subtareas correspondientes al valle o subtarea seleccionada, así como los eventos del calendario.
+   * @param item Nombre del valle o subtarea seleccionada en el dropdown.
+   */
   const handleDropdownSelect = async (item: string) => {
     setSelectedItem(item);
   
@@ -141,6 +181,10 @@ export function useReportability() {
     }
   };
 
+  /**
+   * Hook para manejar la carga de subtareas del valle seleccionado.
+   * @description Este efecto se ejecuta cada vez que el valle seleccionado cambia, obteniendo las subtareas correspondientes y actualizando los eventos del calendario.
+   */
   const loading = subtasksLoading || taskLoading || valleySubtasksLoading || eventsLoading;
 
   return {

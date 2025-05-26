@@ -12,6 +12,10 @@ export function usePieChart() {
     const {valleys} = useData();
     const Valleys = valleys ? valleys.map(valley => valley.name) : [];
 
+    /**
+     * Función para manejar las tareas del Valle de Copiapó.
+     * @description Realiza una consulta para obtener el número de tareas del valle y actualiza el estado correspondiente.
+     */
     const handleCopiapoValleyTasks = async () => {
         try {
             const { data } = await valleyTasks({
@@ -29,6 +33,10 @@ export function usePieChart() {
         }
     };
     
+    /**
+     * Función para manejar las tareas del Valle del Huasco.
+     * @description Realiza una consulta para obtener el número de tareas del valle y actualiza el estado correspondiente.
+     */
     const handleHuascoValleyTasks = async () => {
         try {
             const { data } = await valleyTasks({
@@ -46,6 +54,10 @@ export function usePieChart() {
         }
     };
     
+    /**
+     * Función para manejar las tareas del Valle de Elqui.
+     * @description Realiza una consulta para obtener el número de tareas del valle y actualiza el estado correspondiente.
+     */
     const handleElquiValleyTasks = async () => {
         try {
             const { data } = await valleyTasks({
@@ -63,6 +75,10 @@ export function usePieChart() {
         }
     };
     
+    /**
+     * Función para manejar las tareas del Valle Transversal.
+     * @description Realiza una consulta para obtener el número de tareas del valle y actualiza el estado correspondiente.
+     */
     const handleTransversalValleyTasks = async () => {
         try {
             const { data } = await valleyTasks({
@@ -80,6 +96,10 @@ export function usePieChart() {
         }
     };
 
+    /**
+     * Hook para inicializar las tareas de los valles.
+     * @description Este efecto se ejecuta una vez al cargar el componente, llamando a las funciones para manejar las tareas de cada valle.
+     */
     useEffect(() => {
         handleCopiapoValleyTasks();
         handleHuascoValleyTasks();
@@ -87,6 +107,10 @@ export function usePieChart() {
         handleTransversalValleyTasks();
     }, []);
 
+    /**
+     * Datos para el gráfico de pastel.
+     * @description Este objeto contiene las etiquetas y los datos para el gráfico de pastel, incluyendo los colores de fondo y de hover.
+     */
     const pieChartData = {
         labels: Valleys,
         datasets: [

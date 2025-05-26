@@ -96,6 +96,11 @@ export function useHooks() {
         }
     };
 
+    /**
+     * Función para manejar la redirección después del inicio de sesión.
+     * @description Redirige al usuario a la página correspondiente según su rol.
+     * @param role Rol del usuario para redirigir a la página correspondiente
+     */
     const handleLoginRedirect = (role: string) => {
         setUserRole(role);
         switch (role) {
@@ -132,6 +137,11 @@ export function useHooks() {
         }
     };
 
+    /**
+     * Verifica si el usuario es un encargado de valle.
+     * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
+     * @returns 
+     */
     const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
 
     return {

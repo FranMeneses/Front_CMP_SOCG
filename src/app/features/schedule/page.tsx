@@ -8,7 +8,7 @@ import { useSchedule } from "./hooks/useSchedule";
 import { useHooks } from "../hooks/useHooks";
 
 export default function Schedule() {
-  const { loading, isSidebarOpen, toggleSidebar, tasks } = useSchedule();
+  const { loading, isSidebarOpen, toggleSidebar, subtasks } = useSchedule();
 
   const { userRole } = useHooks();
 
@@ -43,7 +43,7 @@ export default function Schedule() {
               <h1 className="text-2xl font-bold">Programación de iniciativas</h1>
             </div>
             <div className="flex-1 px-4 pb-4 h-full">
-              <GanttChart tasks={tasks} data-test-id="gantt-chart"/>
+              <GanttChart subtasks={subtasks} data-test-id="gantt-chart"/>
             </div>
           </main>
         </div>
