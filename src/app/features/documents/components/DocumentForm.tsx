@@ -2,7 +2,7 @@ import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { FileUploadButton } from "./FileUploadButton";
 import { useDocumentForms } from "../hooks/useDocumentForms";
-import LoadingSpinner from "@/components/LoadinSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface CommunicationFormProps {
     onSave: (formData: any) => void;

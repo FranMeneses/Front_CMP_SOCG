@@ -1,6 +1,6 @@
 'use client';
 import { Header } from "@/components/Header";
-import LoadingSpinner from "@/components/LoadinSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Sidebar } from "@/components/Sidebar";
 import BeneficiariesTable from "./components/BeneficiariesTable";
 import { useBeneficiaries } from "./hooks/useBeneficiaries";

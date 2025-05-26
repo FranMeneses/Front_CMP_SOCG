@@ -15,6 +15,9 @@ export function useSchedule() {
     variables: { valleyId: currentValleyId },
     skip: !currentValleyId,
   });
+  const [getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK, {
+    fetchPolicy: "network-only",
+  });
   
   const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
   const [processingTasks, setProcessingTasks] = useState(false);
@@ -64,7 +67,21 @@ export function useSchedule() {
     return 'rgba(230, 76, 55, 0.5)'; 
   };
 
-
+  /**
+   * Función para obtener los detalles de una tarea específica.
+   * @param taskId - ID de la tarea a obtener.
+   * @returns Detalles de la tarea o null si no se encuentra.
+   */
+  const getTaskDetails = async (taskId: string) => {
+    try {
+      const { data } = await getTask({ variables: { id: taskId } });
+      return data?.task || null;
+    }
+    catch (error) {
+      console.error("Error fetching task details:", error);
+      return null;
+    }
+  }
 
   /**
    * Mapea las subtareas a un formato adecuado para el gráfico de Gantt.
@@ -84,6 +101,7 @@ export function useSchedule() {
         start: startUTC,
         end: endUTC,
         taskId: subtask.taskId,
+        state: subtask.status.name,
         progress: subtask.status.percentage,
         color: getColor(subtask.status.percentage),
         color_progress: getColor(subtask.status.percentage),
@@ -97,5 +115,6 @@ export function useSchedule() {
     toggleSidebar,
     getColor,
     subtasks,
+    getTaskDetails 
   };
 }

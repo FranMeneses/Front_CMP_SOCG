@@ -33,6 +33,7 @@ export interface ISubtaskScheduler {
     start: string;
     end: string;
     progress: number;
-    taskId?: string;
+    taskId: string;
     color: string;
+    state: string;
 }

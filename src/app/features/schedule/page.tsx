@@ -3,7 +3,7 @@
 import GanttChart from "@/components/Charts/Gantt/GanttChart";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
-import LoadingSpinner from "@/components/LoadinSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { useSchedule } from "./hooks/useSchedule";
 import { useHooks } from "../hooks/useHooks";
 

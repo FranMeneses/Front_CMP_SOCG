@@ -1,7 +1,7 @@
 'use client';
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
-import LoadingSpinner from "@/components/LoadinSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { useHooks } from "../hooks/useHooks";
 import { DocumentTable } from "./components/DocumentsTable";
 import { useDocumentsGraph } from "./hooks/useDocumentsGraph";
