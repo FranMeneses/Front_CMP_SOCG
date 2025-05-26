@@ -3,8 +3,7 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { 
     GET_TASKS,
     GET_TASKS_BY_PROCESS,
-    // GET_TASKS_BY_VALLEY, 
-    GET_TASKS_BY_VALLEY_AND_STATUS, 
+    GET_TASKS_BY_PROCESS_AND_STATUS,
     GET_TASK_STATUSES, 
     GET_TASK_SUBTASKS 
 } from "@/app/api/tasks";
@@ -26,6 +25,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
 
   const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos públicos"];
 
+  /**
+   * Función para obtener el ID del proceso actual según el rol del usuario
+   * @description Determina el ID del proceso actual basado en el rol del usuario
+   * @param userRole Role del usuario actual
+   * @returns 
+   */
   const getCurrentProcessId = (userRole: string) => {
     switch(userRole) {
       case "encargado copiapó":
@@ -43,6 +48,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
 
+  /**
+   * Determina si se debe usar la consulta de procesos
+   * @description Verifica si el rol del usuario es uno de los roles válidos para usar la consulta de procesos
+   */
   const shouldUseProcessQuery = validRoles.includes(userRole.toLowerCase());
 
   const dummyTask = (task: TaskDetails) => {};
@@ -70,7 +79,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const { data: taskStateData } = useQuery(GET_TASK_STATUSES);
   
   const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
-  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_VALLEY_AND_STATUS);
+  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS);
   
   const tasks = shouldUseProcessQuery 
     ? (processData?.tasksByProcess || []) 
@@ -88,19 +97,32 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
 
   const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || isInitialLoad;
 
+
+  /**
+   * Hook para manejar el estado de las tareas
+   * @description Inicializa el estado de las tareas y subtareas, y configura los efectos secundarios para cargar los datos
+   */
   useEffect(() => {
     setTasksData(tasks);
   }, [processData, allTasksData, shouldUseProcessQuery]);
 
+
+  /**
+   * Función para obtener las tareas filtradas por estado
+   * @description Maneja la obtención de tareas filtradas por estado utilizando la consulta GraphQL o filtrando localmente
+   * @param statusId ID del estado de la tarea
+   * @returns 
+   */
   const handleGetTasksByStatus = async (statusId: number) => {
     try {
       setIsLoadingTaskDetails(true);
       
       if (shouldUseProcessQuery) {
         const { data } = await getTasksByStatus({
-          variables: { valleyId: currentValleyId, statusId }, //TODO: CHANGE CURRENT VALLEY ID FOR PROCESS ID
+          variables: { processId: getCurrentProcessId(userRole), statusId },
         });
-        return data?.tasksByValleyAndStatus || [];
+        console.log("Tasks by status data:", data);
+        return data?.tasksByProcessAndStatus || [];
       } else {
         return tasksData.filter(task => task.status?.id === statusId);
       }
@@ -108,10 +130,17 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       console.error("Error fetching tasks by status:", error);
       return [];
     } finally {
+      console.log("Tasks by status fetched successfully", getCurrentProcessId(userRole));
       setIsLoadingTaskDetails(false);
     }
   };
 
+
+  /**
+   * Función para manejar el clic en un filtro
+   * @description Maneja el clic en un filtro de estado de tarea, actualiza el estado activo y refetch de tareas
+   * @param filter Nombre del filtro seleccionado
+   */
   const handleFilterClick = async (filter: string) => {
     if (activeFilter === filter) {
       setActiveFilter(null);
@@ -134,6 +163,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
 
+  /**
+   * Función para obtener los días restantes de una tarea
+   * @description Calcula los días restantes para completar una tarea según su estado y fecha de finalización
+   * @param task Tarea para calcular los días restantes
+   * @returns 
+   */
   const getRemainingDays = (task: ITaskDetails) => {
     const end = new Date(task.endDate);
     if (task.status?.name === "NO iniciada") {
@@ -171,6 +206,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
 
+  /**
+   * Función para obtener los días restantes de una subtarea
+   * @description Calcula los días restantes para completar una subtarea según su estado y fecha de finalización
+   * @param subtask Subtarea para calcular los días restantes
+   * @returns 
+   */
   const getRemainingSubtaskDays = (subtask: ISubtask) => {
     const end = new Date(subtask.endDate);
     if (subtask.status.name === "Completada con Informe Final") {
@@ -197,6 +238,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
 
+  /**
+   * Función para formatear una fecha en formato ISO
+   * @description Convierte una fecha en formato ISO a un formato legible (DD-MM-YYYY)
+   * @param isoDate Fecha en formato ISO para formatear
+   * @returns 
+   */
   const formatDate = (isoDate: string): string => {
     if (isoDate === null || isoDate === undefined || isoDate === "-") {
       return "-";
@@ -216,6 +263,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
 
+  /**
+   * Función para procesar las tareas con detalles adicionales
+   * @description Maneja la obtención de detalles adicionales de las tareas, como presupuesto, fechas de inicio y fin, y subtareas asociadas
+   * @param tasks Lista de tareas a procesar
+   * @returns 
+   */
   const processTasksWithDetails = async (tasks: ITask[]) => {
     if (!tasks || tasks.length === 0) return [];
     
@@ -257,6 +310,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
 
+  /**
+   * Función para cargar las tareas con detalles adicionales
+   * @description Maneja la carga de tareas con detalles adicionales, como presupuesto, fechas de inicio y fin, y subtareas asociadas
+   */
   const loadTasksWithDetails = async () => {
     if (!tasks || tasks.length === 0) return [];
     
@@ -273,6 +330,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
 
+  /**
+   * Hook para inicializar el estado de las subtareas
+   * @description Maneja la carga de subtareas al inicio o cuando cambian las tareas, el estado de carga principal o el estado de carga de subtareas
+   */
   useEffect(() => {
     const fetchSubtasks = async () => {
       if (tasks && tasks.length > 0) {
@@ -302,6 +363,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   }, [tasks, mainQueryLoading, getSubtasks]);
 
+  /**
+   * Hook para cargar los detalles de las tareas al inicio
+   * @description Maneja la carga de detalles de las tareas al inicio o cuando cambian las tareas, el estado de carga principal o el estado de carga de subtareas
+   */
   useEffect(() => {
     const fetchTaskDetails = async () => {
       if (!mainQueryLoading && !isLoadingSubtasks) {

@@ -347,3 +347,65 @@ export const GET_TASKS_BY_PROCESS = gql`
     }
   }
 `;
+
+// Query para obtener las tareas por proceso y valle
+export const GET_TASKS_BY_PROCESS_AND_VALLEY = gql`
+  query TasksByProcessAndValley($processId: Int!, $valleyId: Int!) {
+    tasksByProcessAndValley(processId: $processId, valleyId: $valleyId) {
+      id
+      name
+      description
+      valleyId
+      faenaId
+      processId
+      statusId
+      valley {
+        id
+        name
+      }
+      faena {
+        id
+        name
+      }
+      process {
+        id
+        name
+      }
+      status {
+        id
+        name
+      }
+    }
+  }
+`;
+
+// Query para obtener las tareas por proceso y estado
+export const GET_TASKS_BY_PROCESS_AND_STATUS = gql`
+  query TasksByProcessAndStatus($processId: Int!, $statusId: Int!) {
+    tasksByProcessAndStatus(processId: $processId, statusId: $statusId) {
+      id
+      name
+      description
+      valleyId
+      faenaId
+      processId
+      statusId
+      valley {
+        id
+        name
+      }
+      faena {
+        id
+        name
+      }
+      process {
+        id
+        name
+      }
+      status {
+        id
+        name
+      }
+    }
+  }
+`;

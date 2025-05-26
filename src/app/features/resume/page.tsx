@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
 import DynamicTable from "@/app/features/resume/components/DynamicTable";
-import LoadingSpinner from "@/components/LoadinSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { useResume } from "./hooks/useResume";
 import { useHooks } from "../hooks/useHooks";
 import { usePieChart } from "./hooks/usePieChart";

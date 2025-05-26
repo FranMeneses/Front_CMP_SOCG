@@ -58,10 +58,10 @@ export default function DropdownMenu({
   }, []);
 
   return (
-    <div
-      ref={dropdownRef}
-      className={`relative w-full ${isInModal ? '' : 'md:w-1/4'}`} 
-    >
+      <div
+        ref={dropdownRef}
+        className={`relative ${isInModal ? 'w-full' : 'w-auto'}`} 
+      >
       <div className={`${isInModal ? 'z-[1050]' : 'z-[50]'}`}>
         <Button
           variant="outline"

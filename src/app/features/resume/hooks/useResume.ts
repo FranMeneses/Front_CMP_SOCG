@@ -39,12 +39,23 @@ export function useResume() {
         setIsSidebarOpen((prev) => !prev);
     };
 
+    /**
+     * Función para formatear un valor numérico como moneda.
+     * @description Utiliza Intl.NumberFormat para formatear el valor numérico a una cadena de texto con formato de moneda.
+     * @param value Valor numérico a formatear.
+     * @returns 
+     */
     const formatCurrency = (value: number): string => {
         return new Intl.NumberFormat('es-ES', {
             maximumFractionDigits: 0
         }).format(value);
     };
 
+    /**
+     * Función para obtener las subtareas de una tarea seleccionada.
+     * @description Realiza una consulta para obtener las subtareas de la tarea seleccionada por su ID.
+     * @param selectedTaskId ID de la tarea seleccionada para obtener sus subtareas.
+     */
     const handleGetSubtasks = async (selectedTaskId: string) => {
         try {
             const { data } = await getSubtasks({
@@ -62,6 +73,11 @@ export function useResume() {
         }
     };
 
+    /**
+     * Función para calcular el presupuesto anual.
+     * @description Recorre los meses del año y realiza una consulta para obtener el presupuesto total de cada mes, sumando los resultados.
+     * @returns 
+     */
     const YearlyBudget = async () => {
         let totalBudget = 0;
         
@@ -82,6 +98,11 @@ export function useResume() {
         }
     };
 
+    /**
+     * Función para calcular los gastos anuales.
+     * @description Recorre los meses del año y realiza una consulta para obtener el total de gastos de cada mes, sumando los resultados.
+     * @returns 
+     */
     const YearlyExpenses = async () => {
         let totalExpenses = 0;
         
@@ -102,6 +123,10 @@ export function useResume() {
         }
     };
   
+    /**
+     * Hook para cargar los datos del presupuesto y gastos anuales.
+     * @description Este efecto se ejecuta una vez al montar el componente, cargando los datos del presupuesto y gastos anuales.
+     */
     useEffect(() => {
         const loadBudgetData = async () => {
             setBudgetLoading(true);

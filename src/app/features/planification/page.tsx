@@ -1,7 +1,7 @@
 'use client';
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
-import LoadingSpinner from "@/components/LoadinSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import TasksTable from "./components/Table/TasksTable";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";

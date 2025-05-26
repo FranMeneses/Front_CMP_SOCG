@@ -3,7 +3,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import './styles/index.css';
 import DropdownMenu from "@/components/Dropdown";
-import LoadingSpinner from "@/components/LoadinSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { ValleyColors } from "@/constants/valleys";
 import Calendar from "@/components/Calendar/Calendar";
 import { Legend } from "./components/Legend";

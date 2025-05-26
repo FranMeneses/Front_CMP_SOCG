@@ -57,28 +57,6 @@ export default function CommunicationForm({
                     data-test-id="communication-description-input"
                 />
             </div>
-            {/* <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Valle</label>
-                <DropdownMenu
-                    buttonText={formState.valleyId || "Seleccione valle"}
-                    isInModal={true}
-                    items={valleysName} 
-                    onSelect={(value) => handleInputChange('valleyId', value)}
-                    selectedValue={formState.valleyId}
-                    data-test-id="communication-valley-dropdown"
-                />
-            </div>
-            <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Faena</label>
-                <DropdownMenu
-                    buttonText={formState.faenaId || "Seleccione faena"}
-                    isInModal={true}
-                    items={faenasName} 
-                    onSelect={(value) => handleInputChange('faenaId', value)}
-                    selectedValue={formState.faenaId}
-                    data-test-id="communication-faena-dropdown"
-                />
-            </div> */}
             {isEditing && (
                 <>
                     <div className="mb-4">

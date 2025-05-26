@@ -5,10 +5,13 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado comunicaciones");	
+    const [userRole, setUserRole] = useState<string>("encargado copiapó");	
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys, faenas } = useData();
 
+    /**
+     * Manejo de los IDs de los valles según el rol del usuario
+     */
     const valleyIdByRole = useMemo(() => {
         return {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
@@ -21,6 +24,9 @@ export function useHooks() {
         };
     }, [valleys]);
 
+    /**
+     * Manejo de los nombres de los valles según el rol del usuario
+     */
     const valleyNamesByRole = useMemo(() => {
         return {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.name || "Valle del Elqui",
@@ -34,6 +40,9 @@ export function useHooks() {
         };
     }, [valleys]);
 
+    /**
+     * Manejo del valle actual según el rol del usuario
+     */
     useEffect(() => {
         if (valleys && valleys.length > 0 && !currentValley) {
             const roleBasedId = valleyIdByRole[userRole as keyof typeof valleyIdByRole];
@@ -42,7 +51,9 @@ export function useHooks() {
         }
     }, [valleys, userRole, valleyIdByRole, currentValley]);
 
-
+    /**
+     * Manejo del nombre del valle actual según el rol del usuario
+     */
     const currentValleyName = useMemo(() => {
         if (currentValley) {
             return currentValley.name;
@@ -50,7 +61,9 @@ export function useHooks() {
         return valleyNamesByRole[userRole as keyof typeof valleyNamesByRole] || "";
     }, [currentValley, valleyNamesByRole, userRole]);
 
-
+    /**
+     * Manejo del ID del valle actual según el rol del usuario
+     */
     const currentValleyId = useMemo(() => {
         if (currentValley) {
             return currentValley.id;
@@ -62,7 +75,11 @@ export function useHooks() {
     const valleysName = valleys?.map((valley) => valley.name) || [];
     const faenasName = faenas?.map((faena) => faena.name) || [];
 
-    
+    /**
+     *  Manejo de los nombres de los valles
+     * @param valleyNameOrObject 
+     * @returns 
+     */
     const handleSetCurrentValley = (valleyNameOrObject: string | IValley) => {
         if (!valleys) return;
 
@@ -79,6 +96,11 @@ export function useHooks() {
         }
     };
 
+    /**
+     * Función para manejar la redirección después del inicio de sesión.
+     * @description Redirige al usuario a la página correspondiente según su rol.
+     * @param role Rol del usuario para redirigir a la página correspondiente
+     */
     const handleLoginRedirect = (role: string) => {
         setUserRole(role);
         switch (role) {
@@ -115,6 +137,11 @@ export function useHooks() {
         }
     };
 
+    /**
+     * Verifica si el usuario es un encargado de valle.
+     * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
+     * @returns 
+     */
     const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
 
     return {

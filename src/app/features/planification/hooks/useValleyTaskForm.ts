@@ -48,6 +48,11 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const taskType = types.map((t: IType) => t.name);
     const taskState = states.map((s: ITaskStatus) => s.name);
 
+    /**
+     * Función para eliminar una tarea
+     * @description Maneja la eliminación de una tarea utilizando su ID
+     * @param taskId ID de la tarea a eliminar
+     */
     const handleDeleteTask = async (taskId: string) => {
         try {
             const { data } = await deleteTask({
@@ -62,6 +67,12 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     };
 
+    /**
+     * Función para obtener el presupuesto de una tarea por su ID
+     * @description Maneja la obtención del presupuesto total de una tarea específica utilizando su ID
+     * @param taskId ID de la tarea para obtener el presupuesto
+     * @returns 
+     */
     const handleGetTaskBudget = async (taskId: string) => {
         try {
             const { data: budgetData } = await getTaskBudget({
@@ -79,6 +90,12 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     };
 
+    /**
+     * Función para obtener los gastos de una tarea por su ID
+     * @description Maneja la obtención del total de gastos de una tarea específica utilizando su ID
+     * @param taskId ID de la tarea para obtener los gastos
+     * @returns 
+     */
     const handleGetTaskExpenses = async (taskId: string) => {
         try {
             const { data: expensesData } = await getTaskExpenses({
@@ -96,6 +113,12 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     };
 
+    /**
+     * Función para obtener información de una tarea por su ID
+     * @description Maneja la obtención de información detallada de una tarea específica utilizando su ID
+     * @param taskId ID de la tarea para obtener la información
+     * @returns 
+     */
     const handleGetInfoTask = async (taskId: string) => {
         try {
             const { data: infoData } = await getInfoTask({
@@ -113,6 +136,12 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     };
 
+    /**
+     * Función para obtener el ID de la faena asociada a una tarea por su ID
+     * @description Maneja la obtención del ID de la faena asociada a una tarea específica utilizando su ID
+     * @param taskId ID de la tarea para obtener el ID de la faena
+     * @returns 
+     */
     const handleGetTaskFaena = async (taskId: string) => {
         try {
             const { data: taskData } = await getTask({
@@ -130,6 +159,14 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     };
 
+    /**
+     * Función para actualizar una tarea y su información asociada
+     * @description Maneja la actualización de una tarea y su información asociada utilizando los datos proporcionados
+     * @param task Detalles de la tarea a actualizar
+     * @param selectedTaskId ID de la tarea seleccionada para actualizar
+     * @param selectedInfoTask Información de la tarea seleccionada para actualizar
+     * @returns 
+     */
     const handleUpdateTask = async (task: TaskDetails, selectedTaskId: string, selectedInfoTask: IInfoTask | null) => {
         try {
             const { data } = await updateTask({
@@ -169,6 +206,10 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     };
 
+    /**
+     * Estado del formulario
+     * @description Maneja el estado del formulario con los valores iniciales proporcionados o vacíos
+     */
     const [formState, setFormState] = useState({
         name: initialValues?.name || "",
         description: initialValues?.description || "",
@@ -184,6 +225,10 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         faena: initialValues?.faena || "",
     });
 
+    /**
+     * Función para obtener los valores iniciales del formulario
+     * @description Maneja la obtención de los valores iniciales del formulario basados en la tarea proporcionada
+     */
     const fetchInitialValues = async () => {
         if (infoTask) {
           try {
@@ -212,10 +257,18 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     };
 
+    /**
+     * Hook para obtener los valores iniciales del formulario
+     * @description Utiliza useEffect para llamar a fetchInitialValues cuando la tarea o subtarea cambian
+     */
     useEffect(() => {
         fetchInitialValues();
       }, [infoTask,subtask]);
 
+    /**
+    * Hook para establecer los valores del formulario inicial
+    * @description Utiliza useEffect para establecer los valores del formulario cuando initialValues cambian
+    */
     useEffect(() => {
         if (initialValues) {
             setFormState({
@@ -238,6 +291,10 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const [faenas, setFaenas] = useState<string[]>([]);
     const [faenaMap, setFaenaMap] = useState<{ [key: string]: string }>({});
 
+    /**
+     * Hook para establecer el mapa de faenas
+     * @description Utiliza useEffect para crear un mapa de faenas cuando Faenas cambian
+     */
     useEffect(() => {
         if (Faenas) {
             const newFaenaMap: Record<string, number> = {};
@@ -248,10 +305,20 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     }, [Faenas]);
 
+    /**
+     * Función para manejar los cambios en los campos del formulario
+     * @description Actualiza el estado del formulario cuando un campo cambia
+     * @param field Nombre del campo que cambió
+     * @param value Nuevo valor del campo
+     */
     const handleInputChange = useCallback((field: string, value: string) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     }, []);
 
+    /**
+     * Función para manejar el guardado del formulario
+     * @description Prepara los datos de la tarea y llama a la función onSave con los detalles de la tarea
+     */
     const handleSave = useCallback(() => {
         let taskDetails = {};
         if (!isEditing) {
@@ -298,6 +365,11 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         setFaenas([]);
     }, [formState, onSave, faenaMap]);
 
+    /**
+     * Función para manejar la selección de un valle
+     * @description Actualiza las faenas disponibles según el valle seleccionado
+     * @param valleyName Nombre del valle seleccionado
+     */
     const handleValleySelect = useCallback((valleyName: string) => {
         if (!faenaNames || faenaNames.length === 0) {
             setFaenas([]);
@@ -341,6 +413,10 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         }
     }, [faenaNames]);
 
+    /**
+     * Hook para manejar la selección del valle
+     * @description Utiliza useEffect para llamar a handleValleySelect cuando el valle cambia
+     */
     useEffect(() => {
         handleValleySelect(valley);
     },[valley]);
@@ -355,6 +431,12 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         risk: taskRisk || []
     }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk]);
 
+    /**
+     * Función para obtener el nombre de una faena por su ID
+     * @description Busca el nombre de la faena en la lista de faenas utilizando su ID
+     * @param id ID de la faena
+     * @returns Nombre de la faena o cadena vacía si no se encuentra
+     */
     const getFaenaNameById = useCallback((id: string | number) => {
         if (!id || !Faenas) return "";
         const faena = Faenas.find(f => (f.id || "").toString() === id.toString());

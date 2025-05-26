@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-
+/**
+ * Función para obtener las tasas de cambio de USD, UF y CLP.
+ * Utiliza la API de mindicador.cl para obtener los valores actuales.
+ * @returns 
+ */
 export const useExchangeRates = () => {
   const [exchangeRates, setExchangeRates] = useState({
     USD: 1,
@@ -7,6 +11,9 @@ export const useExchangeRates = () => {
     CLP: 1,
   });
 
+  /**
+   * Hook para obtener las tasas de cambio al montar el componente.
+   */
   useEffect(() => {
     const fetchExchangeRates = async () => {
       try {

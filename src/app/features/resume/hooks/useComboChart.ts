@@ -30,12 +30,20 @@ export function useComboChart() {
   const { valleys } = useData();
   const valleyNames = useRef<string[]>([]);
   
+  /**
+   * Effect para actualizar los nombres de los valles cuando cambian los datos de los valles.
+   * @description Este efecto se ejecuta cada vez que los valles cambian, actualizando los nombres de los valles en una referencia.
+   */
   useEffect(() => {
     if (valleys) {
       valleyNames.current = valleys.map(valley => valley.name);
     }
   }, [valleys]);
 
+  /**
+   * Effect para obtener los presupuestos y gastos mensuales de los valles.
+   * @description Este efecto se ejecuta una vez al cargar el componente, obteniendo los presupuestos y gastos mensuales de los valles Copiapó, Huasco y Elqui.
+   */
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -97,6 +105,10 @@ export function useComboChart() {
     fetchData();
   }, [getMonthlyBudgets, getMonthlyExpenses]);
 
+  /**
+   * Effect para actualizar los datos del gráfico combinado.
+   * @description Este efecto se ejecuta cada vez que cambian los presupuestos o gastos de los valles, actualizando los datos del gráfico combinado.
+   */
   useEffect(() => {
     setComboChartData({
       labels: Months,

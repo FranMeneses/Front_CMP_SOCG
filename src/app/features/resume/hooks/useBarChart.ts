@@ -12,10 +12,15 @@ export function useBarChart() {
     const [elquiData, setElquiData] = useState<number[]>([]);
     const [loading, setLoading] = useState(true);
     
-      const { valleys } = useData();
-      const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
-      const investmentNames = investmentData?.investments.map((investment: IInvestment )=> investment.line) || [];
+    const { valleys } = useData();
+    const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
+    const investmentNames = investmentData?.investments.map((investment: IInvestment )=> investment.line) || [];
 
+    /**
+     * Función para obtener las inversiones del Valle de Copiapó.
+     * @description Realiza una consulta para cada inversión del valle y devuelve un array con el número de tareas por inversión.
+     * @returns 
+     */
     const handleGetCopiapoInvesment = async () => {
         try {
             const results = await Promise.all(
@@ -40,6 +45,11 @@ export function useBarChart() {
         }
     };
 
+    /**
+     * Función para obtener las inversiones del Valle del Huasco.
+     * @description Realiza una consulta para cada inversión del valle y devuelve un array con el número de tareas por inversión.
+     * @returns 
+     */
     const handleGetHuascoInvesment = async () => {
         try {
             const results = await Promise.all(
@@ -64,6 +74,11 @@ export function useBarChart() {
         }
     };
 
+    /**
+     * Función para obtener las inversiones del Valle del Elqui.
+     * @description Realiza una consulta para cada inversión del valle y devuelve un array con el número de tareas por inversión.
+     * @returns 
+     */
     const handleGetElquiInvesment = async () => {
         try {
             const results = await Promise.all(
@@ -88,6 +103,10 @@ export function useBarChart() {
         }
     };
 
+    /**
+     * Hook para obtener los datos de las inversiones de los valles.
+     * @description Utiliza useEffect para llamar a las funciones de obtención de datos al cargar el componente.
+     */
     useEffect(() => {
         const fetchAllData = async () => {
             setLoading(true);
@@ -102,6 +121,10 @@ export function useBarChart() {
         fetchAllData();
     }, []); 
 
+    /**
+     * Genera los datos para el gráfico de barras.
+     * @description Crea un objeto con las etiquetas y los datasets necesarios para el gráfico de barras.
+     */
     const barChartData = {
         labels: investmentNames,
         datasets: [

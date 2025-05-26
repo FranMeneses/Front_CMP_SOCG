@@ -8,6 +8,10 @@ export function useDynamicTable(tasks: ITask[]) {
     const [taskProgressMap, setTaskProgressMap] = useState<Record<string, number>>({});
     const [getTaskProgress] = useLazyQuery(GET_TASK_PROGRESS);
 
+    /**
+     * Función para obtener el progreso de las tareas.
+     * @description Esta función recorre las tareas y obtiene el progreso de cada una, almacenándolo en un mapa.
+     */
     const fetchTaskProgress = useCallback(async () => {
         const progressMap: Record<string, number> = {};
         for (const task of tasks) {
@@ -25,12 +29,22 @@ export function useDynamicTable(tasks: ITask[]) {
         setTaskProgressMap(progressMap);
     }, [tasks, getTaskProgress]);
 
+    /**
+     * Hook para actualizar el progreso de las tareas cuando cambian las tareas.
+     * @description Este efecto se ejecuta cada vez que las tareas cambian, llamando a la función fetchTaskProgress.
+     */
     useEffect(() => {
         if (tasks.length > 0) {
             fetchTaskProgress();
         }
     }, [tasks, fetchTaskProgress]);
 
+    /**
+     * Función para calcular los días restantes de una subtarea.
+     * @description Esta función calcula los días restantes para completar una subtarea, considerando su fecha de finalización y estado.
+     * @param subtask Subtarea para calcular los días restantes.
+     * @returns 
+     */
     const calculateRemainingDays = (subtask: ISubtask) => {
         const end = new Date(subtask.endDate);
         if (subtask.status.percentage === 100) {
@@ -46,6 +60,12 @@ export function useDynamicTable(tasks: ITask[]) {
         return diffDays;
     };
 
+    /**
+     * Función para formatear una fecha en formato ISO a un formato legible.
+     * @param isoDate Fecha en formato ISO para formatear.
+     * @description Esta función toma una fecha en formato ISO y la convierte a un formato legible (DD-MM-YYYY).
+     * @returns 
+     */
     const formatDate = (isoDate: string): string => {
         const date = new Date(isoDate);
     
@@ -56,12 +76,24 @@ export function useDynamicTable(tasks: ITask[]) {
         return `${day}-${month}-${year}`; 
     };
 
+    /**
+     * Función para obtener el color de la barra de progreso según el porcentaje.
+     * @param percentage Porcentaje de progreso de la tarea.
+     * @description Esta función devuelve un color específico para la barra de progreso según el porcentaje de progreso de la tarea.
+     * @returns 
+     */
     const getColor = (percentage: number) => {
         if (percentage === 100) return "bg-green-500";
         if (percentage > 30 && percentage < 100) return "bg-yellow-500";
         return "bg-red-500";
     };
 
+    /**
+     * Función para obtener la clase de ancho de la barra de progreso según el porcentaje.
+     * @param percentage Porcentaje de progreso de la tarea.
+     * @description Esta función devuelve una clase de ancho específica para la barra de progreso según el porcentaje de progreso de la tarea.
+     * @returns 
+     */
     const getWidth = (percentage: number) => {
         if (percentage === 100) return "w-full";
         if (percentage > 70 && percentage < 100) return "w-3/4";
