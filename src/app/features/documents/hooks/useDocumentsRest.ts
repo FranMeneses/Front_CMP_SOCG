@@ -76,39 +76,59 @@ export const useDocumentsRest = () => {
         }
     };
  
-const handleDownload = async (documentId: string) => {
-    try {
-        const response = await axios.get(`http://localhost:4000/documents/download/${documentId}`, {
-            responseType: 'blob', 
-        });
+    /**
+     * Función para descargar un documento
+     * @param documentId ID del documento a descargar
+     */
+    const handleDownload = async (documentId: string) => {
+        try {
+            const response = await axios.get(`http://localhost:4000/documents/download/${documentId}`, {
+                responseType: 'blob', 
+            });
 
-        const contentDisposition = response.headers['content-disposition'];
-        let filename = `document-${documentId}`;
-        
-        if (contentDisposition) {
-            const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-            if (filenameMatch && filenameMatch.length >= 2) {
-                filename = filenameMatch[1];
+            console.log(response.data);
+
+            const contentType = response.headers['content-type'];
+            
+            const contentDisposition = response.headers['content-disposition'];
+            let filename = `document-${documentId}`;
+            
+            if (contentDisposition) {
+                const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                if (filenameMatch && filenameMatch.length >= 2) {
+                    filename = filenameMatch[1];
+                }
             }
-        }
 
-        const url = window.URL.createObjectURL(new Blob([response.data], { 
-            type: response.headers['content-type'] 
-        }));
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', filename); 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        setTimeout(() => window.URL.revokeObjectURL(url), 100);
-    } catch (error) {
-        console.error('Error al descargar el documento:', error);
-        throw error;
-    }
-};
+            if (!filename.includes('.')) {
+                if (contentType === 'application/pdf') {
+                    filename += '.pdf';
+                } else if (contentType === 'application/vnd.ms-excel' || 
+                        contentType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                    filename += '.xlsx';
+                } else if (contentType === 'application/msword' || 
+                        contentType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                    filename += '.docx';
+                }
+            }
+
+            const url = window.URL.createObjectURL(new Blob([response.data], { 
+                type: contentType 
+            }));
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename); 
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            setTimeout(() => window.URL.revokeObjectURL(url), 100);
+        } catch (error) {
+            console.error('Error al descargar el documento:', error);
+            throw error;
+        }
+    };
 
     return { documents, loading, error, handleUpload, handleDownload };
 }

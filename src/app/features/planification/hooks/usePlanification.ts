@@ -43,11 +43,11 @@ export const usePlanification = () => {
         data,
         loading,
         error,
-        refetch,
         subTasks,
         detailedTasks,
         taskState,
         activeFilter,
+        refetch,
         getRemainingDays,
         getRemainingSubtaskDays,
         formatDate,
@@ -58,6 +58,10 @@ export const usePlanification = () => {
     const [updateTask] = useMutation(UPDATE_TASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
 
+    /**
+     * Función para manejar la creación de una nueva tarea
+     * @description Abre el modal para crear una nueva tarea, dependiendo del rol del usuario
+     */
     const handleCreateTask = () => {
 
         if (isValleyManager) {
@@ -68,6 +72,11 @@ export const usePlanification = () => {
         }
     };
 
+    /**
+     * Función para guardar una nueva tarea 
+     * @param task Tarea a guardar
+     * @description Guarda una nueva tarea
+     */
     const handleSaveCommunication = async (task: ITask) => {
         try {
             const { data } = await createTask({
@@ -88,7 +97,12 @@ export const usePlanification = () => {
         setIsCommunicationModalOpen(false);
         refetch();
     };
-        
+      
+    /**
+     * Función para actualizar una tarea de comunicación
+     * @description Actualiza una tarea de comunicación existente
+     * @param task Tarea a actualizar
+     */
     const handleUpdateCommunication = async (task: ITask) => {
         try {
             const { data } = await updateTask({
@@ -111,25 +125,46 @@ export const usePlanification = () => {
         setIsCommunicationModalOpen(false);
     };
 
+    /**
+     * Función para cancelar la creación de una tarea asociada a comunicación
+     * @description Cierra el modal de comunicación sin guardar cambios
+     */
     const handleCancelCommunication = () => {
         setSelectedTask(undefined);
         setIsCommunicationModalOpen(false);
     };
 
+    /**
+     * Función para manejar la adición de una nueva tarea
+     * @description Abre el modal para agregar una nueva tarea
+     */
     const handleAddTask = () => {
         setIsPopupOpen(true);
     };
 
+    /**
+     * Función para cancelar la creación o edición de una tarea
+     * @description Cierra el modal de tarea sin guardar cambios
+     */
     const handleCancel = () => {
         setSelectedInfoTask(null);
         setIsPopupOpen(false);
     };
 
+    /**
+     * Función para cancelar la edición de una sub-tarea
+     * @description Cierra el modal de sub-tarea sin guardar cambios
+     */
     const handleCancelSubtask = () => {
         setSelectedSubtask(null);
         setIsPopupSubtaskOpen(false);
     };
     
+    /**
+     * Función para eliminar una tarea
+     * @description Abre el modal de confirmación para eliminar una tarea
+     * @param taskId ID de la tarea a eliminar
+     */
     const handleDeleteTask = () => {
         try {
             valleyTaskForm.handleDeleteTask(itemToDeleteId!);
@@ -142,6 +177,11 @@ export const usePlanification = () => {
         setIsDeleteTaskModalOpen(false);
     };
     
+    /**
+     * Función para eliminar una sub-tarea
+     * @description Abre el modal de confirmación para eliminar una sub-tarea
+     * @param subtaskId ID de la sub-tarea a eliminar
+     */
     const handleDeleteSubtask = () => {
         try {
             valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
@@ -155,6 +195,11 @@ export const usePlanification = () => {
         setIsDeleteSubtaskModalOpen(false);
     };
 
+    /**
+     * Función para guardar una nueva tarea
+     * @description Guarda una nueva tarea en la base de datos
+     * @param task Tarea a guardar
+     */
     const handleSaveTask = async (task: Task) => { 
         try {
             const { data } = await createTask({
@@ -195,6 +240,11 @@ export const usePlanification = () => {
         setIsPopupOpen(false);
     };
 
+    /**
+     * Función para manejar el clic en una tarea
+     * @description Alterna la selección y expansión de una tarea al hacer clic en ella
+     * @param taskId ID de la tarea a manejar
+     */
     const handleOnTaskClick = (taskId: string) => {
         setSelectedTaskId((prev) => (prev === taskId ? null : taskId));
         setExpandedRow((prev) => (prev === taskId ? '' : taskId));
@@ -204,6 +254,12 @@ export const usePlanification = () => {
         setIsSidebarOpen((prev) => !prev);
     };
 
+    /**
+     * Función para ver información de una tarea
+     * @description Abre un modal para ver información detallada de una tarea
+     * @param taskId ID de la tarea para ver información
+     * @param userRole Rol del usuario
+     */
     const handleSeeInformation = async (taskId: string, userRole: string) => {
         setSelectedTaskId(taskId);
         if (isValleyManager) {
@@ -233,6 +289,11 @@ export const usePlanification = () => {
         }
     };
     
+    /**
+     * Función para manejar el clic en una sub-tarea
+     * @description Abre un modal para ver o editar una sub-tarea
+     * @param subtaskId ID de la sub-tarea a manejar
+     */
     const handleGetSubtask = async (subtaskId: string) => {
         try {
             const subtask = await valleySubtaskForm.handleGetSubtask(subtaskId);
@@ -248,6 +309,11 @@ export const usePlanification = () => {
         }
     };
 
+    /**
+     * Función para crear una nueva sub-tarea
+     * @description Abre un modal para crear una nueva sub-tarea
+     * @param taskId ID de la tarea a la que se añadirá la sub-tarea
+     */
     const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
@@ -259,6 +325,11 @@ export const usePlanification = () => {
         }
     };
 
+    /**
+     * Función para actualizar una sub-tarea
+     * @description Abre un modal para editar una sub-tarea existente
+     * @param subtask Sub-tarea a actualizar
+     */
     const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
             await valleySubtaskForm.handleUpdateSubtask(subtask, selectedTaskId!, selectedSubtask);
@@ -269,6 +340,11 @@ export const usePlanification = () => {
         }
     };
 
+    /**
+     * Función para actualizar una tarea
+     * @description Abre un modal para editar una tarea existente
+     * @param task Tarea a actualizar
+     */
     const handleUpdateTask = async (task: Task) => { 
         try {
             const updatedTaskId = await valleyTaskForm.handleUpdateTask(task, selectedTaskId!, selectedInfoTask);

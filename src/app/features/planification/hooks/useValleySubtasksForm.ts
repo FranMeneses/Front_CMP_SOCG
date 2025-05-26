@@ -27,6 +27,12 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
     const subtaskPriority = priority.map((p: IPriority) => p.name);
     const subtaskState = state.map((s: ISubtasksStatus) => s.name);
 
+    /**
+     * Función para obtener una subtarea por su ID
+     * @description Maneja la obtención de una subtarea específica utilizando su ID
+     * @param subtaskId ID de la subtarea a obtener
+     * @returns 
+     */
     const handleGetSubtask = async (subtaskId: string) => {
         try {
             const { data: subtaskData } = await getSubtask({
@@ -54,6 +60,12 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         }
     };
 
+    /**
+     * Función para eliminar una subtarea por su ID
+     * @description Maneja la eliminación de una subtarea específica utilizando su ID
+     * @param subtaskId ID de la subtarea a eliminar
+     * @returns 
+     */
     const handleDeleteSubtask = async (subtaskId: string) => {
         try {
             const { data } = await deleteSubtask({
@@ -69,6 +81,13 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         }
     }
 
+    /**
+     * Función para crear una nueva subtarea
+     * @description Maneja la creación de una nueva subtarea
+     * @param subtask Objeto que contiene los detalles de la subtarea a crear
+     * @param selectedTaskId ID de la tarea a la que se asociará la subtarea
+     * @returns 
+     */
     const handleCreateSubtask = async (subtask: ISubtask, selectedTaskId: string) => {
         try {
             const { data } = await createSubtask({
@@ -98,6 +117,14 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         }
     };
 
+    /**
+     * Función para actualizar una subtarea existente
+     * @description Maneja la actualización de una subtarea específica utilizando su ID
+     * @param subtask Objeto que contiene los detalles actualizados de la subtarea
+     * @param selectedTaskId ID de la tarea a la que se asociará la subtarea
+     * @param selectedSubtask Objeto que representa la subtarea seleccionada para actualizar
+     * @returns 
+     */
     const handleUpdateSubtask = async (subtask: ISubtask, selectedTaskId: string, selectedSubtask: ISubtask | null) => {
         try {
             const { data } = await updateSubtask({
@@ -129,6 +156,10 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         }
     };
 
+    /**
+     * Estado para manejar el formulario de subtareas
+     * @description Maneja el estado del formulario de subtareas, incluyendo los valores iniciales y cambios en los campos
+     */
     const [subtaskFormState, setSubtaskFormState] = useState({
         name: subtasksInitialValues?.name || "",
         number: subtasksInitialValues?.number || "",
@@ -143,6 +174,10 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         priority: subtasksInitialValues?.priority || "",
     });
 
+    /**
+     * Hook para inicializar los valores del formulario de subtareas
+     * @description Utiliza useEffect para establecer los valores iniciales del formulario de subtareas basados en los datos de beneficiarios
+     */
     useEffect(() => {
         if (beneficiariesData?.beneficiaries) {
             const nameToIdMap: Record<string, string> = {};
@@ -158,6 +193,11 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         }
     }, [beneficiariesData]);
 
+    /**
+     * Función para obtener los valores iniciales del formulario de subtareas
+     * @description Maneja la obtención de los valores iniciales del formulario de subtareas basados en los datos de la subtarea y los beneficiarios
+     * @returns
+     */
     const fetchSubtaskInitialValues = async () => {
         if (subtask) {
             try {
@@ -193,12 +233,20 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         }
     };
 
+    /**
+     * Hook para establecer los valores iniciales del formulario de subtareas
+     * @description Utiliza useEffect para establecer los valores iniciales del formulario de subtareas cuando se cargan los beneficiarios
+     */
     useEffect(() => {
         if (Object.keys(beneficiariesIdToNameMap).length > 0) {
             fetchSubtaskInitialValues();
         }
     }, [subtask, beneficiariesIdToNameMap]);
 
+    /**
+     * Hook para manejar los cambios en los campos del formulario de subtareas
+     * @description Utiliza useCallback para manejar los cambios en los campos del formulario de subtareas
+     */
     useEffect(() => {
         if (subtasksInitialValues) {
             setSubtaskFormState({
@@ -217,10 +265,20 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         }
     }, [subtasksInitialValues]);
 
+    /**
+     * Función para manejar los cambios en los campos del formulario de subtareas
+     * @description Maneja los cambios en los campos del formulario de subtareas y actualiza el estado correspondiente
+     * @param field Campo del formulario que se está actualizando
+     * @param value Nuevo valor para el campo del formulario
+     */
     const handleSubtaskInputChange = useCallback((field: string, value: string) => {
         setSubtaskFormState((prev) => ({ ...prev, [field]: value }));
     }, []);
 
+    /**
+     * Función para guardar los cambios en la subtarea
+     * @description Maneja el guardado de los cambios en la subtarea, incluyendo la creación o actualización según corresponda
+     */
     const handleSaveSubtask = useCallback(() => {
         const beneficiaryId = beneficiariesMap[subtaskFormState.beneficiary] || "";
         

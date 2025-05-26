@@ -24,6 +24,10 @@ export const useCommunicationTaskForm = (
 
     const { valleysName, faenasName } = useHooks();
 
+    /**
+     * Estado del formulario
+     * @description Maneja el estado del formulario para la creación o edición de tareas
+     */
     const [formState, setFormState] = useState({
         name: "",
         description: "",
@@ -34,6 +38,12 @@ export const useCommunicationTaskForm = (
         expense: 0,
     });
 
+    /**
+     * Función para obtener una tarea por su ID
+     * @description Maneja la obtención de una tarea específica utilizando su ID
+     * @param id ID de la tarea a obtener
+     * @returns 
+     */
     const handleGetTask = async (id :string) => {
         try {
             const { data } = await getTask({
@@ -45,6 +55,13 @@ export const useCommunicationTaskForm = (
             return null;
         }
     };
+
+    /**
+     * Función para obtener el presupuesto de una tarea por su ID
+     * @description Maneja la obtención del presupuesto total de una tarea específica utilizando su ID
+     * @param id ID de la tarea para obtener el presupuesto
+     * @returns 
+     */
     const handleGetTaskBudget = async (id: string) => {
         try {
             const { data } = await getTaskBudget({
@@ -57,6 +74,13 @@ export const useCommunicationTaskForm = (
         }
     };
 
+
+    /**
+     * Función para obtener los gastos de una tarea por su ID
+     * @description Maneja la obtención del total de gastos de una tarea específica utilizando su ID
+     * @param id ID de la tarea para obtener los gastos
+     * @returns 
+     */
     const handleGetTaskExpenses = async (id: string) => {
         try {
             const { data } = await getTaskExpenses({
@@ -69,6 +93,10 @@ export const useCommunicationTaskForm = (
         }
     };
 
+    /**
+     * Función para obtener los valores iniciales del formulario
+     * @description Maneja la obtención de los valores iniciales del formulario para una tarea específica
+     */
     const fetchInitialValues = async () => {
         
         const budget = await handleGetTaskBudget(selectedTask?.id ? selectedTask.id : "");
@@ -95,6 +123,10 @@ export const useCommunicationTaskForm = (
         }
     }
 
+    /**
+     * Hook para manejar los efectos secundarios relacionados con la edición de tareas
+     * @description Este hook se ejecuta cuando se cambia el estado de edición o la tarea seleccionada
+     */
     useEffect(() => {
         if (isEditing && selectedTask) {
             fetchInitialValues();
@@ -112,11 +144,21 @@ export const useCommunicationTaskForm = (
     }, [isEditing, selectedTask]);
 
 
+    /**
+     * Función para manejar los cambios en los campos del formulario
+     * @param field Campo del formulario que se está actualizando
+     * @param value Nuevo valor para el campo del formulario
+     * @description Actualiza el estado del formulario con el nuevo valor del campo especificado
+     */
     const handleInputChange = useCallback((field: string, value: string) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     }, []);
 
 
+    /**
+     * Función para manejar el guardado del formulario
+     * @description Maneja el guardado de los datos del formulario, ya sea creando una nueva tarea o actualizando una existente
+     */
     const handleSave = useCallback(() => {
         let newTask ={};
 
@@ -148,6 +190,7 @@ export const useCommunicationTaskForm = (
         });
 
     }, [formState, valleysName, faenasName, onSave, isEditing]);
+
 
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
