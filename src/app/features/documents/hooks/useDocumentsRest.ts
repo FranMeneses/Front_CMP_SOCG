@@ -76,5 +76,39 @@ export const useDocumentsRest = () => {
         }
     };
  
-    return { documents, loading, error, handleUpload };
+const handleDownload = async (documentId: string) => {
+    try {
+        const response = await axios.get(`http://localhost:4000/documents/download/${documentId}`, {
+            responseType: 'blob', 
+        });
+
+        const contentDisposition = response.headers['content-disposition'];
+        let filename = `document-${documentId}`;
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+            if (filenameMatch && filenameMatch.length >= 2) {
+                filename = filenameMatch[1];
+            }
+        }
+
+        const url = window.URL.createObjectURL(new Blob([response.data], { 
+            type: response.headers['content-type'] 
+        }));
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename); 
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => window.URL.revokeObjectURL(url), 100);
+    } catch (error) {
+        console.error('Error al descargar el documento:', error);
+        throw error;
+    }
+};
+
+    return { documents, loading, error, handleUpload, handleDownload };
 }

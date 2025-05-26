@@ -2,7 +2,7 @@ import { ISubtask } from "./ISubtasks"
 import { ITask } from "./ITasks"
 
 export interface IDocument {
-    id_documento: number,
+    id_documento: string,
     id_tarea: string,
     id_subtarea: string,
     tipo_documento: number,
@@ -14,12 +14,12 @@ export interface IDocument {
 }
 
 export interface ITipoDocumento {
-    id_tipo_documento: number,
+    id_tipo_documento: string,
     tipo_documento: string,
 }
 
 export interface IDocumentList {
-    id_documento: number,
+    id_documento: string,
     nombre_archivo: string,
     fecha_carga: Date,
     tipo_doc: IDocumentType,
@@ -33,6 +33,6 @@ export interface IDocumentInput {
 }
 
 export interface IDocumentType {
-    id_tipo_documento: number,
+    id_tipo_documento: string,
     tipo_documento: string,
 }

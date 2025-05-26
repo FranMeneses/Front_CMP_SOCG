@@ -1,12 +1,14 @@
 'use client';
 import React from 'react';
 import { IDocumentList } from '@/app/models/IDocuments';
+import { useDocumentsRest } from '../hooks/useDocumentsRest';
 
 interface DocumentTableProps {
   documents: IDocumentList[];
 }
 
 export const DocumentTable = ({ documents }: DocumentTableProps) => {
+  const { handleDownload } = useDocumentsRest();
   return (
     <div className="overflow-x-auto rounded-lg">
       <table className="min-w-full">
@@ -32,7 +34,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                     />
                   </div>
                 </td>
-                <td className="px-4 py-2 text-center border-b border-gray-300">
+                <td className="px-4 py-2 text-center border-b border-gray-300 text-blue-900" onClick={() => handleDownload(doc.id_documento)}>
                   {doc.nombre_archivo || 'Sin nombre'}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
