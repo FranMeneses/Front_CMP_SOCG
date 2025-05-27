@@ -129,7 +129,6 @@ export function useDocumentForms() {
         setFormData({
             ...formData,
             option: selectedOption,
-            // Limpiamos el valor de subtarea si cambia la opción, para mantener consistencia
             subtask: selectedOption === "Tarea" ? "" : formData.subtask
         });
     };

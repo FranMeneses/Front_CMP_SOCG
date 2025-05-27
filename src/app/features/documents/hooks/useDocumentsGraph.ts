@@ -50,6 +50,7 @@ export function useDocumentsGraph() {
         }
         finally {
             refetch();
+            window.location.reload();
         }
     };
 
