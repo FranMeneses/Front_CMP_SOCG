@@ -70,18 +70,18 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const actualHandleFilterClick = onFilterClick || hookHandleFilterClick;
     const actualTaskState = taskStates || taskState;
 
-    const { currentValleyName, userRole, valleysName } = useHooks();
+    const { currentValleyName, userRole } = useHooks();
 
     const dropdownValley = () => {
         return (
             <div className="mb-4">
                 <DropdownMenu
-                    buttonText="Seleccione valle"
+                    buttonText="Seleccione departamento"
                     isInModal={true}
-                    items={valleysName}
+                    items={[]}
                     onSelect={(item) => console.log(item)}  //TODO: AGREGAR FUNCIONALIDAD PEDIR A FRANCISCO MODIFICAR LA FUNCIÓN DE PROCESS AND VALLEY 
-                    selectedValue={currentValleyName ?? ""}
-                    data-test-id="task-valley-dropdown"
+                    selectedValue={""}
+                    data-test-id="task-department-dropdown"
                 />
             </div>
         )
@@ -114,7 +114,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         <div>
             <div className="flex justify-between items-center mb-2">
                 <div>
-                    {userRole != "encargado copiapó" && userRole != "encargado huasco" && userRole != "encargado valle elqui" && dropdownValley()}
+                    {userRole === "encargado cumplimiento" && dropdownValley()}
                 </div>
                 <Button 
                     onClick={() => handleCreateTask()}
@@ -126,20 +126,19 @@ const TasksTable: React.FC<TasksTableProps> = ({
 
             {renderFilterButtons()}
             
-            {/* TODO: DARLE MAS PADDING A LAS FECHAS */}
             <div className="overflow-x-auto rounded-lg shadow">
                 <table className="w-full">
                     <thead className="bg-gray-100">
                         <tr className="text-sm text-gray-700">
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Nombre</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Descripción</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Faena</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Presupuesto</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Fecha Inicio</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Fecha Finalización</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Días Restantes</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Fecha de Termino</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Estado</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Nombre</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Descripción</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Faena</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Presupuesto</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Inicio</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Finalización</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Días Restantes</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha de Termino</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Estado</th>
                             <th colSpan={1}/>
                         </tr>
                     </thead>
