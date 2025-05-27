@@ -41,7 +41,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                   {doc.fecha_carga ? new Date(doc.fecha_carga).toLocaleDateString() : 'N/A'}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">{doc.tipo_doc.tipo_documento || 'N/A'}</td>
-                <td className="px-4 py-2 text-center border-b border-gray-300">{doc.tipo_doc.tipo_documento || 'N/A'}</td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">{doc.tarea?.name || 'N/A'}</td>
               </tr>
             ))
           ) : (

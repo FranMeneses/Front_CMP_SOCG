@@ -23,6 +23,8 @@ export interface IDocumentList {
     nombre_archivo: string,
     fecha_carga: Date,
     tipo_doc: IDocumentType,
+    id_tarea: string,
+    tarea: ITask | null,
 }
 
 export interface IDocumentInput {

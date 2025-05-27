@@ -15,7 +15,7 @@ import { useEffect } from "react";
 
 export default function Documents() {
     const { userRole } = useHooks();
-    const { documents, isLoading } = useDocumentsGraph();
+    const { documentsWithTasks, isLoading, tasksLoaded } = useDocumentsGraph();
     const { 
         isSidebarOpen, 
         isFormOpen, 
@@ -32,14 +32,14 @@ export default function Documents() {
     } = useDocumentsPage();
 
     useEffect(() => {
-        setupDocumentFiltering(documents);
-    }, [documents?.length]);
+        setupDocumentFiltering(documentsWithTasks);
+    }, [documentsWithTasks, tasksLoaded]);
 
     const onSelectType = (selectedOption: string) => {
         const selected = documentTypes.find(type => type.name === selectedOption);
         
         if (selected) {
-            handleTypeSelect(selected.id, selected.name, documents);
+            handleTypeSelect(selected.id, selected.name, documentsWithTasks);
         }
     };
 

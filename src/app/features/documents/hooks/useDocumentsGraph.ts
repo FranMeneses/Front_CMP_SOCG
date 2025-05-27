@@ -1,21 +1,27 @@
 import { CREATE_DOCUMENT, GET_DOCUMENTS, GET_DOCUMENTS_BY_TYPE } from "@/app/api/documents";
-import { IDocumentInput } from "@/app/models/IDocuments";
+import { GET_TASK } from "@/app/api/tasks";
+import { IDocument, IDocumentInput, IDocumentList } from "@/app/models/IDocuments";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useDocumentsGraph() {
-    // Query para obtener todos los documentos
-    const { data, loading: isLoading, error, refetch } = useQuery(GET_DOCUMENTS, {
+    const [documentsWithTasks, setDocumentsWithTasks] = useState<IDocumentList[]>([]);
+    const [tasksLoaded, setTasksLoaded] = useState(false);
+    
+    const { data: documentsData, loading: documentLoading, error, refetch } = useQuery(GET_DOCUMENTS, {
         fetchPolicy: 'network-only'
     });
-    
-    // Query lazy para obtener documentos por tipo (solo se ejecuta cuando se llama a la función)
     const [getDocumentsByType, { 
         loading: isLoadingByType, 
         data: documentsByType 
     }] = useLazyQuery(GET_DOCUMENTS_BY_TYPE);
 
     const [createDocument] = useMutation(CREATE_DOCUMENT);
+
+    const [getTaskDocuments, {
+        loading: isLoadingTaskDocuments,
+        data: taskDocumentsData,}
+    ] = useLazyQuery(GET_TASK);
 
     /**
      * Crea metadata en la base de datos
@@ -57,11 +63,65 @@ export function useDocumentsGraph() {
         }
     };
 
+    /**
+     * Obtiene la tarea asociada a un documento
+     * @param idTarea ID de la tarea
+     * @return Tarea asociada al documento
+     */
+    const fetchTaskDocuments = async (idTarea: string) => {
+        try {
+            const response = await getTaskDocuments({ 
+                variables: { id: idTarea } 
+            });
+            return response.data?.task || null;
+        } catch (error) {
+            console.error("Error fetching task documents:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Hook para cargar documentos y tareas asociadas
+     * @description Este hook se encarga de cargar los documentos y las tareas asociadas a ellos, actualizando el estado de los documentos con las tareas correspondientes.
+     */
+    useEffect(() => {
+        const loadTasksForDocuments = async () => {
+            if (!documentsData?.documents) return;
+            
+            setTasksLoaded(false);
+            
+            const updatedDocuments = documentsData.documents.map((doc: IDocument) => ({
+                ...doc,
+                tipo_doc: doc.tipo_doc ? { ...doc.tipo_doc } : null,
+            }));
+            
+            const promises = updatedDocuments
+                .filter((doc: IDocument) => doc.id_tarea)
+                .map(async (doc: IDocument) => {
+                    const task = await fetchTaskDocuments(doc.id_tarea);
+                    if (task) {
+                        doc.tarea = task;
+                    }
+                    return doc;
+                });
+            
+            await Promise.all(promises);
+            setDocumentsWithTasks(updatedDocuments);
+            setTasksLoaded(true);
+        };
+        
+        loadTasksForDocuments();
+    }, [documentsData]);
+
+
+    const isLoading = documentLoading || isLoadingByType || isLoadingTaskDocuments;
+
     return {
-        documents: data?.documents || [],
+        documents: tasksLoaded ? documentsWithTasks : (documentsData?.documents || []),
+        documentsWithTasks,
         isLoading,
+        tasksLoaded,
         handleUploadDocument,
         fetchDocumentsByType,
-        isLoadingByType
     };
 }

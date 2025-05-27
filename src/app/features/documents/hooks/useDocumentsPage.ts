@@ -15,7 +15,7 @@ export function useDocumentsPage() {
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
     
     const { handleUpload } = useDocumentsRest();
-    const { fetchDocumentsByType } = useDocumentsGraph();
+    const { fetchDocumentsByType, documentsWithTasks } = useDocumentsGraph();
     
     const [filteredDocuments, setFilteredDocuments] = useState<IDocumentList[]>([]);
     
