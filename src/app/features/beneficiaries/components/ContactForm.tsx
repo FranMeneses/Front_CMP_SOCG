@@ -60,7 +60,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                 <input
                     type="email"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value);  // Optional: Add email validation here
+                    onChange={(e) => { setEmail(e.target.value); 
                     }}
                     className="border border-gray-300 rounded-md p-2 w-full"
                     data-test-id="contact-email"

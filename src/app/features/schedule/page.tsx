@@ -40,7 +40,7 @@ export default function Schedule() {
           )}
           <main className="flex-1 p-4 overflow-y-auto bg-gray-50">
             <div className="p-4 pb-2">
-              <h1 className="text-2xl font-bold">Programación de iniciativas</h1>
+              <h1 className="text-2xl font-bold">Plan de trabajo</h1>
             </div>
             <div className="flex-1 px-4 pb-4 h-full">
               <GanttChart subtasks={subtasks} data-test-id="gantt-chart"/>

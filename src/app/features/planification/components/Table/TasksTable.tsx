@@ -126,6 +126,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
 
             {renderFilterButtons()}
             
+            {/* TODO: DARLE MAS PADDING A LAS FECHAS */}
             <div className="overflow-x-auto rounded-lg shadow">
                 <table className="w-full">
                     <thead className="bg-gray-100">

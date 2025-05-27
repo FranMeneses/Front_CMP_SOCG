@@ -114,7 +114,6 @@ export function useDocumentsGraph() {
     const enrichDocumentsWithTasksAndSubtasks = async (documents: IDocumentList[]) => {
         if (!documents || documents.length === 0) return [];
         
-        // Crear copias profundas de cada documento para que sean extensibles
         const updatedDocuments = documents.map((doc: IDocumentList) => ({
             ...doc,
             tipo_doc: doc.tipo_doc,

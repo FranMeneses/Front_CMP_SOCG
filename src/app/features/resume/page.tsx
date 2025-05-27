@@ -15,6 +15,8 @@ import { useComboChart } from "./hooks/useComboChart";
 import { useEffect, useState } from "react";
 import ComboChart from "@/components/Charts/ComboChart";
 
+// TODO: ARREGLAR BUG VISUAL DE COMBO CHART
+
 export default function Resume() {
   const {
     loading: resumeLoading,
