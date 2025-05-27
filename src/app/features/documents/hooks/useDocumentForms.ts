@@ -4,7 +4,7 @@ import { GET_TASK_SUBTASKS, GET_TASKS } from '@/app/api/tasks';
 import { ITask } from '@/app/models/ITasks';
 import { ISubtask } from '@/app/models/ISubtasks';
 import { GET_ALL_DOCUMENT_TYPES } from '@/app/api/documents';
-import { IDocumentType } from '@/app/models/IDocuments';
+import { ITipoDocumento } from '@/app/models/IDocuments';
 
 export interface FormData {
     file: File | null;
@@ -79,7 +79,7 @@ export function useDocumentForms() {
      */
     const handleDocumentTypeChange = (selectedLabel: string) => {
         const documentTypes = documentTypesData?.getAllDocumentTypes || [];
-        const selectedType = documentTypes.find((type: IDocumentType) => type.tipo_documento === selectedLabel);
+        const selectedType = documentTypes.find((type: ITipoDocumento) => type.tipo_documento === selectedLabel);
         if (selectedType) {
             setFormData({
                 ...formData,
@@ -129,7 +129,6 @@ export function useDocumentForms() {
         setFormData({
             ...formData,
             option: selectedOption,
-            // Limpiamos el valor de subtarea si cambia la opción, para mantener consistencia
             subtask: selectedOption === "Tarea" ? "" : formData.subtask
         });
     };
@@ -162,7 +161,7 @@ export function useDocumentForms() {
      * Opciones para los dropdowns
      */
     const dropdownOptions = {
-        documentTypes: Array.isArray(documentTypes) ? documentTypes.map((type: IDocumentType) => ({ id: type.id_tipo_documento, label: type.tipo_documento })) : [],
+        documentTypes: Array.isArray(documentTypes) ? documentTypes.map((type: ITipoDocumento) => ({ id: type.id_tipo_documento, label: type.tipo_documento })) : [],
         tasks: Array.isArray(tasks) ? tasks.map((task: ITask) => ({ id: task.id, label: task.name })) : [],
         subtasks: Array.isArray(subtasks) ? subtasks.map((subtask: ISubtask) => ({ id: subtask.id, label: subtask.name })) : []
     };

@@ -35,6 +35,7 @@ export const GET_SUBTASK = gql`
   query GetSubtask($id: ID!) {
     subtask(id: $id) {
       id
+      taskId
       name
       number
       description
