@@ -24,7 +24,8 @@ export interface IDocumentList {
     fecha_carga: Date,
     tipo_doc: IDocumentType,
     id_tarea: string,
-    tarea: ITask | null,
+    tarea?: ITask | null,
+    subtarea?: ISubtask | null,
 }
 
 export interface IDocumentInput {

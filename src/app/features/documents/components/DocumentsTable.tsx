@@ -19,6 +19,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
             <th className="py-3 px-6 text-center border-b border-gray-300">Fecha</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Tipo</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Iniciativa</th>
+            <th className="py-3 px-6 text-center border-b border-gray-300">Subtarea</th>
           </tr>
         </thead>
         <tbody className="cursor-pointer text-sm text-gray-700">
@@ -34,14 +35,22 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                     />
                   </div>
                 </td>
-                <td className="px-4 py-2 text-center border-b border-gray-300 text-blue-900" onClick={() => handleDownload(doc.id_documento)}>
+                <td className="px-4 py-2 text-center border-b border-gray-300 text-blue-900" 
+                  onClick={() => handleDownload(doc.id_documento)}>
                   {doc.nombre_archivo || 'Sin nombre'}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
                   {doc.fecha_carga ? new Date(doc.fecha_carga).toLocaleDateString() : 'N/A'}
                 </td>
-                <td className="px-4 py-2 text-center border-b border-gray-300">{doc.tipo_doc.tipo_documento || 'N/A'}</td>
-                <td className="px-4 py-2 text-center border-b border-gray-300">{doc.tarea?.name || 'N/A'}</td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  {doc.tipo_doc.tipo_documento || 'N/A'}
+                </td>
+                <td className="px-4 py-2 text-center border-b border-gray-300">
+                  {doc.tarea?.name || 'N/A'}
+                </td>
+                <td className='px-4 py-2 text-center border-b border-gray-300'>
+                  {doc.subtarea?.name || 'N/A'}
+                </td>
               </tr>
             ))
           ) : (

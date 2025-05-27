@@ -1,6 +1,9 @@
 import { CREATE_DOCUMENT, GET_DOCUMENTS, GET_DOCUMENTS_BY_TYPE } from "@/app/api/documents";
+import { GET_SUBTASK } from "@/app/api/subtasks";
 import { GET_TASK } from "@/app/api/tasks";
 import { IDocument, IDocumentInput, IDocumentList } from "@/app/models/IDocuments";
+import { ISubtask } from "@/app/models/ISubtasks";
+import { ITask } from "@/app/models/ITasks";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 
@@ -22,6 +25,11 @@ export function useDocumentsGraph() {
         loading: isLoadingTaskDocuments,
         data: taskDocumentsData,}
     ] = useLazyQuery(GET_TASK);
+
+    const [getSubtaskDocuments, {
+        loading: isLoadingSubtaskDocuments,
+        data: subtaskDocumentsData,
+    }] = useLazyQuery(GET_SUBTASK);
 
     /**
      * Crea metadata en la base de datos
@@ -81,8 +89,25 @@ export function useDocumentsGraph() {
     };
 
     /**
-     * Hook para cargar documentos y tareas asociadas
-     * @description Este hook se encarga de cargar los documentos y las tareas asociadas a ellos, actualizando el estado de los documentos con las tareas correspondientes.
+     * Obtiene la subtarea asociada a un documento
+     * @param idSubtarea ID de la subtarea
+     * @return Subtarea asociada al documento
+     */
+    const fetchSubtaskDocuments = async (idSubtarea: string) => {
+        try {
+            const response = await getSubtaskDocuments({ 
+                variables: { id: idSubtarea } 
+            });
+            return response.data?.subtask || null;
+        } catch (error) {
+            console.error("Error fetching subtask documents:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Hook para cargar documentos con sus tareas y subtareas asociadas
+     * @description Este hook se encarga de cargar los documentos y las tareas o subtareas asociadas a ellos, actualizando el estado de los documentos.
      */
     useEffect(() => {
         const loadTasksForDocuments = async () => {
@@ -98,14 +123,32 @@ export function useDocumentsGraph() {
             const promises = updatedDocuments
                 .filter((doc: IDocument) => doc.id_tarea)
                 .map(async (doc: IDocument) => {
-                    const task = await fetchTaskDocuments(doc.id_tarea);
+                    const task: ITask = await fetchTaskDocuments(doc.id_tarea);
                     if (task) {
                         doc.tarea = task;
                     }
                     return doc;
                 });
             
+            const promisesSubtask = updatedDocuments
+                .filter((doc: IDocument) => doc.id_subtarea)
+                .map(async (doc: IDocument) => {
+                    const subtask: ISubtask = await fetchSubtaskDocuments(doc.id_subtarea);
+                    if (subtask) {
+                        doc.subtarea = subtask;
+                    }
+                    const task: ITask = await fetchTaskDocuments(doc.subtarea?.taskId || '');
+                    if (task) {
+                        doc.tarea = task;
+                    }
+                    return doc;
+                });
+
             await Promise.all(promises);
+            await Promise.all(promisesSubtask);
+
+            console.log("Updated documents with tasks:", updatedDocuments);
+
             setDocumentsWithTasks(updatedDocuments);
             setTasksLoaded(true);
         };
