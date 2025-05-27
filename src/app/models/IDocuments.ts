@@ -22,8 +22,9 @@ export interface IDocumentList {
     id_documento: string,
     nombre_archivo: string,
     fecha_carga: Date,
-    tipo_doc: IDocumentType,
-    id_tarea: string,
+    tipo_doc: ITipoDocumento,
+    id_tarea?: string,
+    id_subtarea?: string,
     tarea?: ITask | null,
     subtarea?: ISubtask | null,
 }
@@ -33,9 +34,4 @@ export interface IDocumentInput {
     ruta: string,
     id_tarea?: string,
     id_subtarea?: string,
-}
-
-export interface IDocumentType {
-    id_tipo_documento: string,
-    tipo_documento: string,
 }

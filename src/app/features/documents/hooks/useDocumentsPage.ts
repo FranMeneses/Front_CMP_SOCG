@@ -15,7 +15,11 @@ export function useDocumentsPage() {
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
     
     const { handleUpload } = useDocumentsRest();
-    const { fetchDocumentsByType, documentsWithTasks } = useDocumentsGraph();
+    const { 
+        fetchDocumentsByType, 
+        documentsWithTasks,
+        enrichDocumentsWithTasksAndSubtasks
+    } = useDocumentsGraph();
     
     const [filteredDocuments, setFilteredDocuments] = useState<IDocumentList[]>([]);
     
@@ -72,7 +76,10 @@ export function useDocumentsPage() {
                 setFilteredDocuments(allDocuments);
             } else {
                 const filteredDocs = await fetchDocumentsByType(typeId);
-                setFilteredDocuments(filteredDocs);
+                
+                const enrichedFilteredDocs = await enrichDocumentsWithTasksAndSubtasks(filteredDocs);
+                
+                setFilteredDocuments(enrichedFilteredDocs);
             }
         } catch (error) {
             console.error("Error al filtrar documentos:", error);

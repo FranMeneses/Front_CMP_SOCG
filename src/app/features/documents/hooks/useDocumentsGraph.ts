@@ -105,6 +105,52 @@ export function useDocumentsGraph() {
         }
     };
 
+        /**
+     * Enriquece los documentos con información de tareas y subtareas
+     * @param documents Lista de documentos a enriquecer
+     * @returns Documentos enriquecidos con información de tareas y subtareas
+     */
+    const enrichDocumentsWithTasksAndSubtasks = async (documents: IDocumentList[]) => {
+        if (!documents || documents.length === 0) return [];
+        
+        // Crear copias profundas de cada documento para que sean extensibles
+        const updatedDocuments = documents.map((doc: IDocumentList) => ({
+            ...doc,
+            tipo_doc: doc.tipo_doc,
+        }));
+        
+        const promises = updatedDocuments
+            .filter((doc) => doc.id_tarea)
+            .map(async (doc) => {
+                if (!doc.id_tarea) return doc;
+                const task: ITask = await fetchTaskDocuments(doc.id_tarea);
+                if (task) {
+                    doc.tarea = task;
+                }
+                return doc;
+            });
+        
+        const promisesSubtask = updatedDocuments
+            .filter((doc) => doc.id_subtarea)
+            .map(async (doc) => {
+                if (!doc.id_subtarea) return doc;
+                const subtask: ISubtask = await fetchSubtaskDocuments(doc.id_subtarea);
+                if (subtask) {
+                    doc.subtarea = subtask;
+                }
+                const task: ITask = await fetchTaskDocuments(doc.subtarea?.taskId || '');
+                if (task) {
+                    doc.tarea = task;
+                }
+                return doc;
+            });
+
+        await Promise.all(promises);
+        await Promise.all(promisesSubtask);
+        
+        return updatedDocuments;
+    };
+
     /**
      * Hook para cargar documentos con sus tareas y subtareas asociadas
      * @description Este hook se encarga de cargar los documentos y las tareas o subtareas asociadas a ellos, actualizando el estado de los documentos.
@@ -112,44 +158,9 @@ export function useDocumentsGraph() {
     useEffect(() => {
         const loadTasksForDocuments = async () => {
             if (!documentsData?.documents) return;
-            
             setTasksLoaded(false);
-            
-            const updatedDocuments = documentsData.documents.map((doc: IDocument) => ({
-                ...doc,
-                tipo_doc: doc.tipo_doc ? { ...doc.tipo_doc } : null,
-            }));
-            
-            const promises = updatedDocuments
-                .filter((doc: IDocument) => doc.id_tarea)
-                .map(async (doc: IDocument) => {
-                    const task: ITask = await fetchTaskDocuments(doc.id_tarea);
-                    if (task) {
-                        doc.tarea = task;
-                    }
-                    return doc;
-                });
-            
-            const promisesSubtask = updatedDocuments
-                .filter((doc: IDocument) => doc.id_subtarea)
-                .map(async (doc: IDocument) => {
-                    const subtask: ISubtask = await fetchSubtaskDocuments(doc.id_subtarea);
-                    if (subtask) {
-                        doc.subtarea = subtask;
-                    }
-                    const task: ITask = await fetchTaskDocuments(doc.subtarea?.taskId || '');
-                    if (task) {
-                        doc.tarea = task;
-                    }
-                    return doc;
-                });
-
-            await Promise.all(promises);
-            await Promise.all(promisesSubtask);
-
-            console.log("Updated documents with tasks:", updatedDocuments);
-
-            setDocumentsWithTasks(updatedDocuments);
+            const enrichedDocuments = await enrichDocumentsWithTasksAndSubtasks(documentsData.documents);
+            setDocumentsWithTasks(enrichedDocuments);
             setTasksLoaded(true);
         };
         
@@ -166,5 +177,6 @@ export function useDocumentsGraph() {
         tasksLoaded,
         handleUploadDocument,
         fetchDocumentsByType,
+        enrichDocumentsWithTasksAndSubtasks,
     };
 }
