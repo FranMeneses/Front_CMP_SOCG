@@ -17,13 +17,9 @@ export function useTaskResume() {
                     valleyId: valleyId
                 }
             });
-            if (data.subtasksByMonthYearAndValley.length > 0) {
-                return data.subtasksByMonthYearAndValley.length;
-            }
-            if (data.subtasksByMonthYearAndValley.length == 0) {
-                console.log("CASO B")
-                return 0;
-            }
+            
+            return data.subtasksByMonthYearAndValley.length;
+
         }
         catch (error) {
             console.error("Error obtaining subtasks:", error);

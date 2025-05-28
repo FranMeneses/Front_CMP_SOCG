@@ -22,15 +22,15 @@ export default function Reportability() {
     isSidebarOpen,
     calendarView,
     calendarEvents,
+    selectedItem,
   } = useReportability();
 
-  const { userRole } = useHooks();
+  const { userRole, valleysName } = useHooks();
   const { valleys } = useData();
   
   const [isLoading, setIsLoading] = useState(true);
   const [month, setMonth] = useState<string>();
   const [year, setYear] = useState<number>();
-  const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
 
   useEffect(() => {
     if (!reportabilityLoading) {
@@ -75,7 +75,7 @@ export default function Reportability() {
                 <h1 className="text-2xl font-bold mb-4">Programación y reportabilidad</h1>
                 <DropdownMenu
                   buttonText="Transversal"
-                  items={valleyNames} 
+                  items={valleysName} 
                   onSelect={(item) => handleDropdownSelect(item)}
                   data-test-id="dropdown-menu"
                 />
@@ -92,8 +92,9 @@ export default function Reportability() {
                     <div className="w-full mt-4">
                       <TaskResume 
                         calendarEvents={calendarEvents}
-                        valleys={valleys}
-                        valleyNames={valleyNames}
+                        valleys={valleys} 
+                        selectedValley={selectedItem}
+                        valleyNames={valleysName}
                         ValleyColors={ValleyColors}
                         month={month || ""}
                         year={year || 0}
@@ -106,7 +107,7 @@ export default function Reportability() {
                     <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
                       Valles
                     </h2>
-                    <Legend valley={valleyNames} valleyColors={ValleyColors} />
+                    <Legend valley={valleysName} valleyColors={ValleyColors} />
                   </div>
                 </div>
               </div>

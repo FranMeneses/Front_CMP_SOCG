@@ -1,13 +1,14 @@
 import { IEvent } from "@/app/models/ICalendar";
 import { IValley } from "@/app/models/IValleys";
 import { useTaskResume } from "../hooks/useTaskResume";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface TaskResumeProps {
     calendarEvents: IEvent[];
     valleys: IValley[];
     valleyNames: string[];
     ValleyColors: string[];
+    selectedValley: string;
     month: string;
     year: number;
 }
@@ -18,19 +19,20 @@ export default function TaskResume({
     valleyNames, 
     ValleyColors, 
     month, 
+    selectedValley,
     year 
 }: TaskResumeProps) {
     
     const { handleGetSubtasksByMonthYearAndValley, handleGetTotalSubtasksByMonthYear } = useTaskResume();
     const [valleySubtasks, setValleySubtasks] = useState<Record<string, number>>({});
-    const [totalSubtasks, setTotalSubtasks] = useState<number>();
+    const [totalSubtasks, setTotalSubtasks] = useState<number>(0);
 
-    useEffect(() => {
-        const loadSubtasks = async () => {
-            if (!month || !year || !valleys?.length) return;
-            
-            const subtasksData: Record<string, number> = {};
-            
+    const loadSubtasks = useCallback(async () => {
+        if (!month || !year || !valleys?.length) return;
+        
+        const subtasksData: Record<string, number> = {};
+        
+        if (selectedValley === "Transversal") {
             for (const valley of valleys) {
                 try {
                     const count = await handleGetSubtasksByMonthYearAndValley(month, valley.id, year);
@@ -50,10 +52,24 @@ export default function TaskResume({
                 console.error("Error loading total subtasks:", error);
                 setTotalSubtasks(0);
             }
-        };
+        } else {
+            const valley = valleys.find((v: IValley) => v.name === selectedValley);
+            const count = valley?.id !== undefined 
+                ? await handleGetSubtasksByMonthYearAndValley(month, valley.id, year) 
+                : 0;
+            
+            if (valley?.id !== undefined) {
+                subtasksData[valley.id] = count;
+                setValleySubtasks(subtasksData);
+            }
+            
+            setTotalSubtasks(count);
+        }
+    }, [month, year, valleys, selectedValley, handleGetSubtasksByMonthYearAndValley, handleGetTotalSubtasksByMonthYear]);
 
+    useEffect(() => {
         loadSubtasks();
-    }, [month, year, valleys, handleGetSubtasksByMonthYearAndValley, handleGetTotalSubtasksByMonthYear]);
+    }, [loadSubtasks]);
 
     return (
         <div className="mt-4 border-t pt-4">
