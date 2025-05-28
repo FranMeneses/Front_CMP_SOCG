@@ -65,9 +65,9 @@ export default function Reportability() {
             </aside>
           )}
           <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
-            <div className="flex flex-col h-full bg-white rounded-lg shadow">
+            <div className="flex flex-col bg-white rounded-lg shadow overflow-y-auto">
               <div className="p-4 pb-4 border-b">
-                <h1 className="text-2xl font-bold mb-4">Reportabilidad</h1>
+                <h1 className="text-2xl font-bold mb-4">Programación y reportabilidad</h1>
                 <DropdownMenu
                   buttonText="Transversal"
                   items={valleyNames} 
@@ -75,16 +75,18 @@ export default function Reportability() {
                   data-test-id="dropdown-menu"
                 />
               </div>
-              <div className="flex flex-col md:flex-row h-full">
-                <div className="flex-1 p-4 border-r">
-                  <div className="overflow-x-auto">
+              <div className="flex flex-col md:flex-row">
+                <div className="flex-1 p-4 border-r overflow-y-auto">
+                  <div className="flex flex-col w-full">
                     <Calendar 
                       calendarView={calendarView} 
                       events={calendarEvents} 
                       data-test-id="calendar"
                       onMonthChange={handleMonthChange}
                     />
-                    {TaskResume(calendarEvents, valleys, valleyNames, ValleyColors)}
+                    <div className="w-full mt-4">
+                      {TaskResume(calendarEvents, valleys, valleyNames, ValleyColors)}
+                    </div>
                   </div>
                 </div>
                 <div className="w-full md:w-72 p-4 border-t md:border-t-0 md:border-l">
