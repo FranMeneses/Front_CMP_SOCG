@@ -52,6 +52,7 @@ export const usePlanification = () => {
         getRemainingSubtaskDays,
         formatDate,
         handleFilterClick,
+        handleFilterByProcess,
     } = useTasksData(currentValleyId ?? undefined, userRole);
     
     const [createTask] = useMutation(CREATE_TASK);
@@ -356,6 +357,8 @@ export const usePlanification = () => {
         }
     };
 
+    console.log("detailedTasks en usePlanification:", detailedTasks);
+
     return {
         setIsPopupOpen,
         setIsPopupSubtaskOpen,
@@ -388,6 +391,7 @@ export const usePlanification = () => {
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
+        handleFilterByProcess,
         selectedTask,
         isPopupOpen,
         isDeleteSubtaskModalOpen,
@@ -407,5 +411,6 @@ export const usePlanification = () => {
         expandedRow,
         taskState,
         activeFilter,
+        allProcesses: useTasksData(currentValleyId ?? undefined, userRole).allProcesses,
     };
 };

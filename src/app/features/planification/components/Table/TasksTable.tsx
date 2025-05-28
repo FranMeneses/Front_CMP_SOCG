@@ -2,14 +2,16 @@
 import React from "react";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../../hooks/usePlanification";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { useHooks } from "../../../hooks/useHooks";
 import { ITaskDetails } from "@/app/models/ITasks";
 import TaskRow from "./TaskRow";
 import SubtasksTable from "./SubtasksTable";
-import DropdownMenu from "@/components/Dropdown";
+import TaskFilters from "./TaskFilters";
+import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
+import { useTaskFilters } from "../../hooks/useTaskFilters";
+import { IProcess } from "@/app/models/IProcess";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -23,14 +25,14 @@ const TasksTable: React.FC<TasksTableProps> = ({
     tasks, 
     subtasks,
     taskStates,
-    onFilterClick,
     activeFilter: propActiveFilter
 }) => {
-    
     const { 
+
         getRemainingDays,
         getRemainingSubtaskDays,
         formatDate,
+
         handleSeeInformation, 
         handleGetSubtask,
         setIsPopupOpen, 
@@ -44,6 +46,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleSaveTask,
         setIsCommunicationModalOpen,
         handleFilterClick: hookHandleFilterClick,
+
         isPopupOpen, 
         activeFilter: hookActiveFilter,
         isPopupSubtaskOpen,
@@ -55,76 +58,53 @@ const TasksTable: React.FC<TasksTableProps> = ({
         taskState,
         isDeleteTaskModalOpen,
         isDeleteSubtaskModalOpen,
+        allProcesses,
+
+        handleFilterByProcess,
         setIsDeleteTaskModalOpen,
         setIsDeleteSubtaskModalOpen,
         setItemToDeleteId,
         handleDeleteTask,
         handleDeleteSubtask,
+
         handleCreateTask,
+
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
     } = usePlanification();
 
-    const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
-    const actualHandleFilterClick = onFilterClick || hookHandleFilterClick;
-    const actualTaskState = taskStates || taskState;
-
     const { currentValleyName, userRole } = useHooks();
+    
+    const { 
+        filteredTasks, 
+        selectedProcess,
+        activeStatusFilter,
+        handleProcessFilterChange,
+        handleStatusFilterChange,
+    } = useTaskFilters(tasks, allProcesses, handleFilterByProcess);
 
-    const dropdownValley = () => {
-        return (
-            <div className="mb-4">
-                <DropdownMenu
-                    buttonText="Seleccione departamento"
-                    isInModal={true}
-                    items={[]}
-                    onSelect={(item) => console.log(item)}  //TODO: AGREGAR FUNCIONALIDAD PEDIR A FRANCISCO MODIFICAR LA FUNCIÓN DE PROCESS AND VALLEY 
-                    selectedValue={""}
-                    data-test-id="task-department-dropdown"
-                />
-            </div>
-        )
+    const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
+    const actualTaskState = taskStates || taskState;
+    const handleLocalFilterClick = (filter: string) => {
+        handleStatusFilterChange(filter);
     };
-
-    const renderFilterButtons = () => (
-        <div className="flex gap-2 mb-4">
-            {actualTaskState.map((filter: string) => (
-                <Button
-                    key={filter}
-                    variant="outline"
-                    className={`px-4 py-2 text-sm rounded-md hover:cursor-pointer ${
-                        actualActiveFilter === filter
-                            ? filter === "Completada" ? "bg-green-100 text-green-800 font-medium" : 
-                            filter === "En Proceso" ? "bg-blue-100 text-blue-800 font-medium" :
-                            filter === "En Espera" ? "bg-yellow-100 text-yellow-800 font-medium" :
-                            filter === "Cancelada" ? "bg-red-100 text-red-800 font-medium" :
-                            "bg-gray-200 text-gray-800 font-medium"
-                            : "bg-white hover:bg-gray-100"
-                    }`}
-                    onClick={() => actualHandleFilterClick(filter)}
-                >
-                    {filter}
-                </Button>
-            ))}
-        </div>
-    );
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-2">
-                <div>
-                    {userRole === "encargado cumplimiento" && dropdownValley()}
-                </div>
-                <Button 
-                    onClick={() => handleCreateTask()}
-                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
-                >
-                    <Plus size={16} /> Añadir
-                </Button>
-            </div>
+            <TaskTableHeader 
+                userRole={userRole}
+                allProcesses={allProcesses}
+                selectedProcess={selectedProcess}
+                handleProcessFilterChange={handleProcessFilterChange}
+                handleCreateTask={handleCreateTask}
+            />
 
-            {renderFilterButtons()}
+            <TaskFilters 
+                taskStates={actualTaskState}
+                activeFilter={activeStatusFilter} 
+                handleFilterClick={handleLocalFilterClick} 
+            />
             
             <div className="overflow-x-auto rounded-lg shadow">
                 <table className="w-full">
@@ -143,7 +123,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                         </tr>
                     </thead>
                     <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
-                        {tasks.map((task) => (
+                        {filteredTasks.map((task) => (
                             <React.Fragment key={task.id}>
                                 <TaskRow 
                                     task={task}
@@ -208,7 +188,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 handleDeleteSubtask={handleDeleteSubtask}
                 
                 currentValleyName={currentValleyName}
-
                 userRole={userRole}
             />
         </div>

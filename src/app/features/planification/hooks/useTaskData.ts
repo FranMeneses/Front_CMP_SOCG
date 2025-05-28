@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { 
+  GET_ALL_PROCESSES,
     GET_TASKS,
     GET_TASKS_BY_PROCESS,
     GET_TASKS_BY_PROCESS_AND_STATUS,
@@ -11,6 +12,7 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { ITask, ITaskDetails, ITaskStatus } from "@/app/models/ITasks";
 import { useValleyTaskForm } from "./useValleyTaskForm";
 import { TaskDetails } from "@/app/models/ITaskForm";
+import { IProcess } from "@/app/models/IProcess";
 
 export const useTasksData = (currentValleyId: number | undefined, userRole:string) => {
   const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
@@ -76,15 +78,24 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     skip: shouldUseProcessQuery,
   });
 
+  const {
+    data: allProcessData,
+    loading: allProcessQueryLoading,
+    error: allProcessQueryError,
+  } = useQuery(GET_ALL_PROCESSES);
+
   const { data: taskStateData } = useQuery(GET_TASK_STATUSES);
   
   const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
   const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS);
+  const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
   
   const tasks = shouldUseProcessQuery 
     ? (processData?.tasksByProcess || []) 
     : (allTasksData?.tasks || []);
   
+  const allProcesses = allProcessData?.processes || [];
+
   const error = shouldUseProcessQuery ? valleyQueryError : allTasksQueryError;
   const mainQueryLoading = shouldUseProcessQuery ? valleyQueryLoading : allTasksQueryLoading;
   
@@ -95,7 +106,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const states = taskStateData?.taskStatuses || [];
   const taskState = states.map((s: ITaskStatus) => s.name);
 
-  const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || isInitialLoad;
+  const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || isInitialLoad || allProcessQueryLoading;
 
 
   /**
@@ -386,6 +397,39 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     fetchTaskDetails();
   }, [tasks, mainQueryLoading, isLoadingSubtasks]);
 
+  /**
+  * Función para filtrar tareas por proceso
+  * @description Filtra las tareas según el ID del proceso seleccionado
+  * @param processId ID del proceso para filtrar
+  */
+  const handleFilterByProcess = async (processId: number) => {
+    try {
+      setIsLoadingTaskDetails(true);
+      
+      if (processId) {
+        const { data } = await getTasksByProcess({
+          variables: { processId },
+        });
+        
+        const filteredTasks = data?.tasksByProcess || [];
+        const detailedFilteredTasks = await processTasksWithDetails(filteredTasks);
+        setDetailedTasks(detailedFilteredTasks); 
+        console.log("Filtrando por processId:", processId);
+        console.log("Tareas filtradas:", detailedFilteredTasks);
+        return detailedFilteredTasks; 
+      } else {
+        const processedTasks = await loadTasksWithDetails();
+        setDetailedTasks(processedTasks);
+        return processedTasks;
+      }
+    } catch (error) {
+      console.error("Error filtering tasks by process:", error);
+      return []; 
+    } finally {
+      setIsLoadingTaskDetails(false);
+    }
+  };
+
   const unifiedData = shouldUseProcessQuery
     ? processData
     : { tasksByValley: allTasksData?.tasks || [] };
@@ -394,12 +438,14 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     data: unifiedData,
     loading,
     error,
-    refetch,
     subTasks,
     detailedTasks,
     states,
     taskState,
     activeFilter,
+    allProcesses,
+    refetch,
+    handleFilterByProcess,
     getRemainingDays,
     getRemainingSubtaskDays,
     formatDate,
