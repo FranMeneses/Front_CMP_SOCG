@@ -30,9 +30,6 @@ export const useDocumentsRest = () => {
             fileFormData.append('subtaskId', formData.subtask.toString());
             fileFormData.append('option', formData.option.toString());
 
-            console.log('Subiendo archivo:', formData.task);
-            console.log('Subiendo archivo:', formData.option);
-
             const response = await axios.post('http://localhost:4000/documents/upload', fileFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -90,9 +87,7 @@ export const useDocumentsRest = () => {
             
             const contentDisposition = response.headers['content-disposition'];
             let filename = `document-${documentId}`;
-            
-            console.log('Content-Disposition:', contentDisposition);
-            console.log('Content-Type:', contentType);
+
 
             if (contentDisposition) {
                 const filenameMatch = contentDisposition.match(/filename="(.+)"/);

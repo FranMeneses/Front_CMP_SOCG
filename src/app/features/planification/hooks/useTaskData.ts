@@ -414,8 +414,6 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         const filteredTasks = data?.tasksByProcess || [];
         const detailedFilteredTasks = await processTasksWithDetails(filteredTasks);
         setDetailedTasks(detailedFilteredTasks); 
-        console.log("Filtrando por processId:", processId);
-        console.log("Tareas filtradas:", detailedFilteredTasks);
         return detailedFilteredTasks; 
       } else {
         const processedTasks = await loadTasksWithDetails();
