@@ -7,6 +7,7 @@ import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
+import { useHooks } from '../../hooks/useHooks';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
@@ -75,7 +76,8 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     selectedTask,
 }) => {
 
-    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
+    const { isValleyManager } = useHooks();
+
     const isCommunicationManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos";
 
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;

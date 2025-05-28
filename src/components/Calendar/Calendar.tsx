@@ -20,30 +20,47 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMo
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null); 
   const [currentMonth, setCurrentMonth] = useState<{year: number, month: number}>(() => {
     const now = new Date();
-    return {year: now.getFullYear(), month: now.getMonth() + 2};
+    return {year: now.getFullYear(), month: now.getMonth() + 1};
   });
 
-const handleEventClick = (info: any) => {
-  const [datePart] = info.event.startStr.split('T');
-  const [year, month, day] = datePart.split('-');
-  
-  const formattedStar = `${day}/${month}/${year}`;
+  const handleDatesSet = (info: any) => {
+    const start = new Date(info.start);
+    const end = new Date(info.end);
+    
+    const middleDate = new Date((start.getTime() + end.getTime()) / 2);
+    
+    const year = middleDate.getFullYear();
+    const month = middleDate.getMonth() + 1; 
+    
+    setCurrentMonth({ year, month });
+    
+    if (onMonthChange) {
+      onMonthChange(year, month);
+    }
+  };
 
-  const [startDatePart] = info.event.extendedProps.startDate.split('T');
-  const [startYear, startMonth, startDay] = startDatePart.split('-');
-  const formattedStartDate = `${startDay}/${startMonth}/${startYear}`;
+  const handleEventClick = (info: any) => {
+    const [datePart] = info.event.startStr.split('T');
+    const [year, month, day] = datePart.split('-');
+    
+    const formattedStar = `${day}/${month}/${year}`;
 
-  setSelectedEvent({
-    title: info.event.title,
-    valley: info.event.extendedProps.valley,
-    start: formattedStar,
-    startDate: formattedStartDate,
-    status: info.event.extendedProps.status,
-    progress: info.event.extendedProps.progress,
-    faena: info.event.extendedProps.faena,
-  });
-  setIsModalOpen(true); 
-};
+    const [startDatePart] = info.event.extendedProps.startDate.split('T');
+    const [startYear, startMonth, startDay] = startDatePart.split('-');
+    const formattedStartDate = `${startDay}/${startMonth}/${startYear}`;
+
+    setSelectedEvent({
+      title: info.event.title,
+      valley: info.event.extendedProps.valley,
+      taskId: info.event.extendedProps.taskId,
+      start: formattedStar,
+      startDate: formattedStartDate,
+      status: info.event.extendedProps.status,
+      progress: info.event.extendedProps.progress,
+      faena: info.event.extendedProps.faena,
+    });
+    setIsModalOpen(true); 
+  };
 
   const closeModal = () => {
     setIsModalOpen(false); 
@@ -73,6 +90,7 @@ const handleEventClick = (info: any) => {
         events={events}
         eventClick={handleEventClick}
         timeZone="UTC"
+        datesSet={handleDatesSet}
       />
 
       {isModalOpen && selectedEvent && (

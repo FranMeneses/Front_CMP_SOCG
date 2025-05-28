@@ -178,3 +178,37 @@ export const GET_PRIORITIES = gql`
     }
   }
 `;
+
+export const GET_SUBTASKS_BY_MONTH_YEAR_AND_VALLEY = gql`
+  query GetSubtasksByMonthYearAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
+    subtasksByMonthYearAndValley(monthName: $monthName, year: $year, valleyId: $valleyId) {
+      id
+      taskId
+      number
+      name
+      description
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      beneficiaryId
+      statusId
+      priorityId
+      status {
+        id
+        name
+        percentage
+      }
+      priority {
+        id
+        name
+      }
+      beneficiary {
+        id
+        legalName
+        rut
+      }
+    }
+  }
+`;

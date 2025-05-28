@@ -357,8 +357,6 @@ export const usePlanification = () => {
         }
     };
 
-    console.log("detailedTasks en usePlanification:", detailedTasks);
-
     return {
         setIsPopupOpen,
         setIsPopupSubtaskOpen,

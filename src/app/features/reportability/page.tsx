@@ -12,6 +12,7 @@ import { useHooks } from "../hooks/useHooks";
 import { useData } from "@/context/DataContext";
 import { useEffect, useState } from "react";
 import TaskResume from "./components/TaskResume";
+import { Months } from "@/constants/months";
 
 export default function Reportability() {
   const {
@@ -27,6 +28,8 @@ export default function Reportability() {
   const { valleys } = useData();
   
   const [isLoading, setIsLoading] = useState(true);
+  const [month, setMonth] = useState<string>();
+  const [year, setYear] = useState<number>();
   const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
 
   useEffect(() => {
@@ -36,7 +39,9 @@ export default function Reportability() {
   }, [reportabilityLoading]);
 
   const handleMonthChange = (year: number, month: number) => {
-};
+    setMonth(Months[month-1]);
+    setYear(year);
+  };
 
   return (
     <div className="overflow-x-hidden">
@@ -85,7 +90,14 @@ export default function Reportability() {
                       onMonthChange={handleMonthChange}
                     />
                     <div className="w-full mt-4">
-                      {TaskResume(calendarEvents, valleys, valleyNames, ValleyColors)}
+                      <TaskResume 
+                        calendarEvents={calendarEvents}
+                        valleys={valleys}
+                        valleyNames={valleyNames}
+                        ValleyColors={ValleyColors}
+                        month={month || ""}
+                        year={year || 0}
+                      />
                     </div>
                   </div>
                 </div>
