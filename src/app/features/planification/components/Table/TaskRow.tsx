@@ -37,8 +37,6 @@ const TaskRow: React.FC<TaskRowProps> = ({
       >
         {task.name}
       </td>
-      <td className="py-2 text-left">{task.description}</td>
-      <td className="py-2 text-center">{task.faena?.name || "-"}</td>
       <td className="py-2 text-center">{task.budget || "-"}</td>
       <td className="py-2 px-2 text-center">{task.startDate ? formatDate(task.startDate) : "-"}</td>
       <td className="py-2 px-2 text-center">{task.endDate ? formatDate(task.endDate) : "-"}</td>

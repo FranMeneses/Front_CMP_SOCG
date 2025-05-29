@@ -111,15 +111,13 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     <thead className="bg-gray-100">
                         <tr className="text-sm text-gray-700">
                             <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Nombre</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Descripción</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Faena</th>
                             <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Presupuesto</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Inicio</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Finalización</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Días Restantes</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha de Termino</th>
                             <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Estado</th>
-                            <th colSpan={1}/>
+                            <th colSpan={3}/>
                         </tr>
                     </thead>
                     <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">

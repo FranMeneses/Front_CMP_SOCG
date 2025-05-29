@@ -87,9 +87,9 @@ export const UPDATE_DOCUMENT = gql`
 
 // MUTATION TO DELETE DOCUMENT
 export const DELETE_DOCUMENT = gql`
-    mutation DeleteDocument($idDocumento: String!) {
-        deleteDocument(id_documento: $idDocumento)
-    }
+  mutation DeleteDocument($id_documento: String!) {
+    deleteDocument(id_documento: $id_documento)
+  }
 `;
 
 // QUERY TO GET DOCUMENT TYPES

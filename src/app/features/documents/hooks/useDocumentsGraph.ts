@@ -1,4 +1,4 @@
-import { CREATE_DOCUMENT, GET_DOCUMENTS, GET_DOCUMENTS_BY_TYPE } from "@/app/api/documents";
+import { CREATE_DOCUMENT, DELETE_DOCUMENT, GET_DOCUMENTS, GET_DOCUMENTS_BY_TYPE } from "@/app/api/documents";
 import { GET_SUBTASK } from "@/app/api/subtasks";
 import { GET_TASK } from "@/app/api/tasks";
 import { IDocument, IDocumentInput, IDocumentList } from "@/app/models/IDocuments";
@@ -20,6 +20,7 @@ export function useDocumentsGraph() {
     }] = useLazyQuery(GET_DOCUMENTS_BY_TYPE);
 
     const [createDocument] = useMutation(CREATE_DOCUMENT);
+    const [deleteDocument] = useMutation(DELETE_DOCUMENT);
 
     const [getTaskDocuments, {
         loading: isLoadingTaskDocuments,
@@ -106,7 +107,22 @@ export function useDocumentsGraph() {
         }
     };
 
-        /**
+    /**
+     * Función para eliminar un documento
+     * @param idDocumento ID del documento a eliminar
+     */
+    const handleDeleteDocument = async (idDocumento: string) => {
+        try {
+            await deleteDocument({
+                variables: { id_documento: idDocumento },
+            });
+            console.log("Document deleted successfully");
+        } catch (error) {
+            console.error("Error deleting document:", error);
+        } 
+    };
+
+    /**
      * Enriquece los documentos con información de tareas y subtareas
      * @param documents Lista de documentos a enriquecer
      * @returns Documentos enriquecidos con información de tareas y subtareas
@@ -178,5 +194,6 @@ export function useDocumentsGraph() {
         handleUploadDocument,
         fetchDocumentsByType,
         enrichDocumentsWithTasksAndSubtasks,
+        handleDeleteDocument,
     };
 }

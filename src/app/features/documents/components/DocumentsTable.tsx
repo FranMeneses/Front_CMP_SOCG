@@ -2,6 +2,8 @@
 import React from 'react';
 import { IDocumentList } from '@/app/models/IDocuments';
 import { useDocumentsRest } from '../hooks/useDocumentsRest';
+import { Trash } from 'lucide-react';
+import { useDocumentsGraph } from '../hooks/useDocumentsGraph';
 
 interface DocumentTableProps {
   documents: IDocumentList[];
@@ -9,6 +11,7 @@ interface DocumentTableProps {
 
 export const DocumentTable = ({ documents }: DocumentTableProps) => {
   const { handleDownload } = useDocumentsRest();
+  const { handleDeleteDocument } = useDocumentsGraph();
   return (
     <div className="overflow-x-auto rounded-lg">
       <table className="min-w-full">
@@ -20,6 +23,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
             <th className="py-3 px-6 text-center border-b border-gray-300">Tipo</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Iniciativa</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Subtarea</th>
+            <th className='py-3 px-6 text-center border-b border-gray-300'></th>
           </tr>
         </thead>
         <tbody className="cursor-pointer text-sm text-gray-700">
@@ -50,6 +54,13 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                 </td>
                 <td className='px-4 py-2 text-center border-b border-gray-300'>
                   {doc.subtarea?.name || 'N/A'}
+                </td>
+                <td className='px-4 py-2 text-center border-b border-gray-300'>
+                  <Trash
+                    className="w-5 h-5 cursor-pointer"
+                    color='#041e3e'
+                    onClick={() => handleDeleteDocument(doc.id_documento)}
+                  />
                 </td>
               </tr>
             ))

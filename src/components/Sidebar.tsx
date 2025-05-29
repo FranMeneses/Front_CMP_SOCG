@@ -34,7 +34,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","encargado comunicaciones","Admin"]
     },
     {
       title: "Beneficiarios",
@@ -50,7 +50,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
-      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento","Admin"]
+      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento","Admin", "encargado comunicaciones"]
     },
     {
       title: "Plan de trabajo",
@@ -58,7 +58,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco"]
     },
     {
       title: "Resumen",
