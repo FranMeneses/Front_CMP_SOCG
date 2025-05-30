@@ -66,10 +66,13 @@ export default function Beneficiaries() {
                     isOpen={isPopupOpen}
                     onClose={() => setIsPopupOpen(false)}
                     children={
-                        <BeneficiariesForm 
-                            onSave={handleAddBeneficiary} 
-                            onCancel={() => setIsPopupOpen(false)}
-                        />
+                        <>
+                        <h2 className="text-lg font-bold mb-4">Añadir Beneficiario</h2>
+                            <BeneficiariesForm 
+                                onSave={handleAddBeneficiary} 
+                                onCancel={() => setIsPopupOpen(false)}
+                            />
+                        </>
                     }
                     data-test-id="add-beneficiary-modal"
                     >

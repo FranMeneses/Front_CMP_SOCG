@@ -5,13 +5,13 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado cumplimiento"); // Valor por defecto, se puede cambiar según la lógica de tu aplicación	
+    const [userRole, setUserRole] = useState<string>("encargado comunicaciones"); 
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys, faenas } = useData();
 
     /**
-     * Manejo de los IDs de los valles según el rol del usuario
-     */
+    * Manejo de los IDs de los valles según el rol del usuario
+    */
     const valleyIdByRole = useMemo(() => {
         return {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
@@ -25,8 +25,8 @@ export function useHooks() {
     }, [valleys]);
 
     /**
-     * Manejo de los nombres de los valles según el rol del usuario
-     */
+    * Manejo de los nombres de los valles según el rol del usuario
+    */
     const valleyNamesByRole = useMemo(() => {
         return {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.name || "Valle del Elqui",
@@ -41,8 +41,8 @@ export function useHooks() {
     }, [valleys]);
 
     /**
-     * Manejo del valle actual según el rol del usuario
-     */
+    * Manejo del valle actual según el rol del usuario
+    */
     useEffect(() => {
         if (valleys && valleys.length > 0 && !currentValley) {
             const roleBasedId = valleyIdByRole[userRole as keyof typeof valleyIdByRole];
@@ -52,8 +52,8 @@ export function useHooks() {
     }, [valleys, userRole, valleyIdByRole, currentValley]);
 
     /**
-     * Manejo del nombre del valle actual según el rol del usuario
-     */
+    * Manejo del nombre del valle actual según el rol del usuario
+    */
     const currentValleyName = useMemo(() => {
         if (currentValley) {
             return currentValley.name;
@@ -62,8 +62,8 @@ export function useHooks() {
     }, [currentValley, valleyNamesByRole, userRole]);
 
     /**
-     * Manejo del ID del valle actual según el rol del usuario
-     */
+    * Manejo del ID del valle actual según el rol del usuario
+    */
     const currentValleyId = useMemo(() => {
         if (currentValley) {
             return currentValley.id;

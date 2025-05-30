@@ -3,6 +3,7 @@ import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { useCommunicationTaskForm } from "../../hooks/useCommunicationTaskForm";
 import { ITask } from "@/app/models/ITasks";
+import { IProcess } from "@/app/models/IProcess";
 
 interface CommunicationFormProps {
     onSave: any;
@@ -20,14 +21,14 @@ export default function CommunicationForm({
     userRole
 }: CommunicationFormProps) {
 
-    const { formState, dropdownItems, handleSave, handleInputChange } = useCommunicationTaskForm(
+    const { formState, dropdownItems, processes, handleSave, handleInputChange } = useCommunicationTaskForm(
         onSave, 
         isEditing, 
         selectedTask,
         userRole
     );
 
-    const { valleysName, faenasName } = useHooks();
+    const { valleys } = useHooks();
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
 
@@ -57,6 +58,28 @@ export default function CommunicationForm({
                     data-test-id="communication-description-input"
                 />
             </div>
+            <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Valle</label>
+                <DropdownMenu
+                    buttonText={"Seleccione el valle asociado"}
+                    isInModal={true}
+                    items={valleys.map(valley => valley.name)} 
+                    onSelect={(value) => handleInputChange('valleyId', value)}
+                    selectedValue={valleys.find(valley => valley.id === selectedTask?.valleyId)?.name }
+                    data-test-id="communication-faena-dropdown"
+                />
+            </div>
+            <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Proceso</label>
+                <DropdownMenu
+                    buttonText={"Seleccione el proceso asociado"}
+                    isInModal={true}
+                    items={dropdownItems.processes} 
+                    onSelect={(value) => handleInputChange('processId', value)}
+                    selectedValue={isEditing && selectedTask ? formState.processId : ""}
+                    data-test-id="communication-faena-dropdown"
+                />
+            </div>  
             {isEditing && (
                 <>
                     <div className="mb-4">

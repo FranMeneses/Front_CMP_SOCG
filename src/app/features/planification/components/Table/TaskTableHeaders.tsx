@@ -20,21 +20,27 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     handleProcessFilterChange, 
     handleCreateTask 
 }) => {
+    
+    const isCommunicationRole = userRole === "encargado asuntos públicos" || userRole === "encargado comunicaciones";
+
     const renderProcessDropdown = () => {
-        if (userRole !== "encargado cumplimiento") return null;
-        
-        return (
+        if (userRole === "encargado cumplimiento" || isCommunicationRole) {
+            return (
             <div className="mb-4">
                 <DropdownMenu
                     buttonText="Seleccione proceso"
                     isInModal={false}
-                    items={["Todos los procesos", ...allProcesses.map((process: IProcess) => process.name)]}
+                    items={isCommunicationRole ? ["Todos los procesos", ...allProcesses.filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name)).map((p: IProcess) => p.name)] : ["Todos los procesos", ...allProcesses.map((process: IProcess) => process.name)]}
                     onSelect={handleProcessFilterChange}
                     selectedValue={selectedProcess?.name || "Todos los procesos"}
                     data-test-id="task-process-dropdown"
                 />
             </div>
-        );
+            );
+        }
+        else {
+            return null;
+        }
     };
 
     return (

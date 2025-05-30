@@ -42,7 +42,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin", "encargado comunicaciones"]
     },
     {
       title: "Programación",

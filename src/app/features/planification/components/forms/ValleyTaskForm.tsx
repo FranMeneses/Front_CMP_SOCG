@@ -28,6 +28,9 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
 
   return (
     <div data-test-id="task-form">
+      <h2 className="text-lg font-semibold mb-4">
+        {isEditing ? "Editar Tarea" : "Nueva Tarea"}
+      </h2>
       <div className="mb-4 truncate">
         <label className="block text-sm font-medium mb-1">Nombre</label>
         <input
