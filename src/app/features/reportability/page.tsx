@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import './styles/index.css';
 import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { ValleyColors } from "@/constants/valleys";
+import { ValleyColors, CommunicationsColors } from "@/constants/colors";
 import Calendar from "@/components/Calendar/Calendar";
 import { Legend } from "./components/Legend";
 import { useReportability } from "./hooks/useReportability";
@@ -23,9 +23,11 @@ export default function Reportability() {
     calendarView,
     calendarEvents,
     selectedItem,
+    filteredProcessesNames,
+    processes,
   } = useReportability();
 
-  const { userRole, valleysName } = useHooks();
+  const { userRole, valleysName, isCommunicationsManager } = useHooks();
   const { valleys } = useData();
   
   const [isLoading, setIsLoading] = useState(true);
@@ -74,8 +76,8 @@ export default function Reportability() {
               <div className="p-4 pb-4 border-b">
                 <h1 className="text-2xl font-bold mb-4">Programación y reportabilidad</h1>
                 <DropdownMenu
-                  buttonText="Transversal"
-                  items={valleysName} 
+                  buttonText={isCommunicationsManager? "Transversales":"Transversal"}
+                  items={isCommunicationsManager? filteredProcessesNames : valleysName} 
                   onSelect={(item) => handleDropdownSelect(item)}
                   data-test-id="dropdown-menu"
                 />
@@ -89,25 +91,31 @@ export default function Reportability() {
                       data-test-id="calendar"
                       onMonthChange={handleMonthChange}
                     />
-                    <div className="w-full mt-4">
-                      <TaskResume 
-                        calendarEvents={calendarEvents}
-                        valleys={valleys} 
-                        selectedValley={selectedItem}
-                        valleyNames={valleysName}
-                        ValleyColors={ValleyColors}
-                        month={month || ""}
-                        year={year || 0}
-                      />
+                    <div className="w-full mt-4"> 
+                      {isCommunicationsManager ? (
+                        <></>
+                        ) : (
+                          <>
+                            <TaskResume 
+                              calendarEvents={calendarEvents}
+                              valleys={valleys} 
+                              selectedValley={selectedItem}
+                              valleyNames={valleysName}
+                              ValleyColors={ValleyColors}
+                              month={month || ""}
+                              year={year || 0}
+                            />
+                          </>
+                        )}
                     </div>
                   </div>
                 </div>
                 <div className="w-full md:w-72 p-4 border-t md:border-t-0 md:border-l">
                   <div>
                     <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
-                      Valles
+                      {isCommunicationsManager ? 'Procesos' : 'Valles'}
                     </h2>
-                    <Legend valley={valleysName} valleyColors={ValleyColors} />
+                    <Legend valley={isCommunicationsManager ? filteredProcessesNames : valleysName} valleyColors={isCommunicationsManager ? CommunicationsColors : ValleyColors} />
                   </div>
                 </div>
               </div>

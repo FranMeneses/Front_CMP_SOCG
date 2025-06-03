@@ -212,3 +212,31 @@ export const GET_SUBTASKS_BY_MONTH_YEAR_AND_VALLEY = gql`
     }
   }
 `;
+
+export const SUBTASKS_BY_PROCESS = gql`
+  query GetSubtasksByProcess($processId: Int!) {
+    subtasksByProcess(processId: $processId) {
+      id
+      taskId
+      name
+      description
+      number
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      status {
+        name
+        percentage
+      }
+      priority {
+        name
+      }
+      beneficiary {
+        legalName
+        rut
+      }
+    }
+  }
+`;

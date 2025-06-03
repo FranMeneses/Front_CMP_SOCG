@@ -143,6 +143,8 @@ export function useHooks() {
      * @returns 
      */
     const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
+    
+    const isCommunicationsManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos";
 
     return {
         handleLoginRedirect,
@@ -154,6 +156,7 @@ export function useHooks() {
         valleysName,
         faenasName,
         isValleyManager,
+        isCommunicationsManager,
         faenas,
         valleys,
         setCurrentValley: handleSetCurrentValley,

@@ -35,7 +35,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
         className="px-4 py-2 text-left cursor-pointer text-black font-semibold"
         onClick={() => handleOnTaskClick(task.id ?? '')}
       >
-        {task.name}
+        {task.name.toUpperCase()}
       </td>
       <td className="py-2 text-center">{task.budget || "-"}</td>
       <td className="py-2 px-2 text-center">{task.startDate ? formatDate(task.startDate) : "-"}</td>

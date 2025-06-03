@@ -76,9 +76,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     selectedTask,
 }) => {
 
-    const { isValleyManager } = useHooks();
-
-    const isCommunicationManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos";
+    const { isValleyManager, isCommunicationsManager } = useHooks();
 
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;
 
@@ -131,7 +129,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         </Modal>
             
         {/* Communication Modal */}
-        {isCommunicationManager && (
+        {isCommunicationsManager && (
             <Modal isOpen={isCommunicationModalOpen} onClose={() => setIsCommunicationModalOpen(false)}>
             <CommunicationForm
                 onCancel={handleCancelCommunication}

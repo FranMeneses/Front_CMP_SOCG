@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DropdownMenu from "@/components/Dropdown";
 import { IProcess } from "@/app/models/IProcess";
+import { useHooks } from '@/app/features/hooks/useHooks';
 
 interface TaskTableHeaderProps {
     userRole: string;
@@ -20,17 +21,16 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     handleProcessFilterChange, 
     handleCreateTask 
 }) => {
-    
-    const isCommunicationRole = userRole === "encargado asuntos públicos" || userRole === "encargado comunicaciones";
+    const { isCommunicationsManager } = useHooks();
 
     const renderProcessDropdown = () => {
-        if (userRole === "encargado cumplimiento" || isCommunicationRole) {
+        if (userRole === "encargado cumplimiento" || isCommunicationsManager) {
             return (
             <div className="mb-4">
                 <DropdownMenu
                     buttonText="Seleccione proceso"
                     isInModal={false}
-                    items={isCommunicationRole ? ["Todos los procesos", ...allProcesses.filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name)).map((p: IProcess) => p.name)] : ["Todos los procesos", ...allProcesses.map((process: IProcess) => process.name)]}
+                    items={isCommunicationsManager ? ["Todos los procesos", ...allProcesses.filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name)).map((p: IProcess) => p.name)] : ["Todos los procesos", ...allProcesses.map((process: IProcess) => process.name)]}
                     onSelect={handleProcessFilterChange}
                     selectedValue={selectedProcess?.name || "Todos los procesos"}
                     data-test-id="task-process-dropdown"
