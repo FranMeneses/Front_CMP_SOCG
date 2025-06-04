@@ -21,7 +21,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     handleProcessFilterChange, 
     handleCreateTask 
 }) => {
-    const { isCommunicationsManager } = useHooks();
+    const { isCommunicationsManager, isValleyManager } = useHooks();
 
     const renderProcessDropdown = () => {
         if (userRole === "encargado cumplimiento" || isCommunicationsManager) {
@@ -42,18 +42,20 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             return null;
         }
     };
-
+    
     return (
         <div className="flex justify-between items-center mb-2">
             <div>
                 {renderProcessDropdown()}
             </div>
-            <Button 
-                onClick={handleCreateTask}
-                className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
-            >
-                <Plus size={16} /> Añadir
-            </Button>
+            { (isValleyManager || isCommunicationsManager) && (
+                <Button 
+                    onClick={handleCreateTask}
+                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
+                >
+                    <Plus size={16} /> Añadir
+                </Button>
+                )}
         </div>
     );
 };

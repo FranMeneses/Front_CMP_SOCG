@@ -2,7 +2,6 @@
 import React from "react";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../../hooks/usePlanification";
-
 import { useHooks } from "../../../hooks/useHooks";
 import { ITaskDetails } from "@/app/models/ITasks";
 import TaskRow from "./TaskRow";
@@ -11,7 +10,6 @@ import TaskFilters from "./TaskFilters";
 import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
 import { useTaskFilters } from "../../hooks/useTaskFilters";
-import { IProcess } from "@/app/models/IProcess";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -45,6 +43,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCancelSubtask,
         handleSaveTask,
         setIsCommunicationModalOpen,
+        setIsComplianceModalOpen,
         handleFilterClick: hookHandleFilterClick,
 
         isPopupOpen, 
@@ -52,8 +51,10 @@ const TasksTable: React.FC<TasksTableProps> = ({
         isPopupSubtaskOpen,
         selectedInfoTask,
         selectedTask,
+        selectedCompliance,
         selectedSubtask,
         isCommunicationModalOpen,
+        isComplianceModalOpen,
         expandedRow,
         taskState,
         isDeleteTaskModalOpen,
@@ -72,6 +73,10 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
+
+        handleSaveCompliance,
+        handleUpdateCompliance,
+        handleCancelCompliance,
     } = usePlanification();
 
     const { currentValleyName, userRole } = useHooks();
@@ -129,12 +134,13 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                     getRemainingDays={getRemainingDays}
                                     handleOnTaskClick={handleOnTaskClick}
                                     handleSeeInformation={handleSeeInformation}
+                                    handleSaveCompliance={handleSaveCompliance}
                                     setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
                                     setItemToDeleteId={setItemToDeleteId}
                                     userRole={userRole}
                                 />
                                 
-                                {expandedRow === task.id && (
+                                {expandedRow === task.id && userRole.toLowerCase() !== "encargado cumplimiento" && (
                                     <tr>
                                         <SubtasksTable 
                                             subtasks={subtasks}
@@ -177,6 +183,12 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 handleSaveCommunication={handleSaveCommunication}
                 handleUpdateCommunication={handleUpdateCommunication}
                 handleCancelCommunication={handleCancelCommunication}
+
+                isComplianceModalOpen={isComplianceModalOpen}
+                selectedCompliance={selectedCompliance}
+                setIsComplianceModalOpen={setIsComplianceModalOpen}
+                handleUpdateCompliance={handleUpdateCompliance}
+                handleCancelCompliance={handleCancelCompliance}
                 
                 isDeleteTaskModalOpen={isDeleteTaskModalOpen}
                 isDeleteSubtaskModalOpen={isDeleteSubtaskModalOpen}

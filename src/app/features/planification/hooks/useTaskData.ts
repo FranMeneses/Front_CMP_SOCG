@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { 
-  GET_ALL_PROCESSES,
+    GET_ALL_PROCESSES,
     GET_TASKS,
     GET_TASKS_BY_PROCESS,
     GET_TASKS_BY_PROCESS_AND_STATUS,
@@ -23,8 +23,40 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
+  // Nueva variable para identificar los roles de comunicación
+  const isCommunicationsRole = userRole.toLowerCase() === "encargado comunicaciones" || 
+                               userRole.toLowerCase() === "encargado asuntos públicos";
+  
+  // Nueva variable para controlar si se están cargando tareas de comunicación
+  const [loadingCommunicationTasks, setLoadingCommunicationTasks] = useState(isCommunicationsRole);
 
   const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos públicos"];
+
+  // Nueva función para cargar tareas de múltiples procesos de comunicación
+  const loadCommunicationProcessesTasks = async () => {
+    const communicationProcessIds = [4, 5, 6, 7]; // IDs de los procesos de comunicación
+    const allTasks: ITask[] = [];
+    
+    setIsLoadingTaskDetails(true);
+    
+    try {
+      // Cargar tareas para cada proceso en serie
+      for (const processId of communicationProcessIds) {
+        const { data } = await getTasksByProcess({
+          variables: { processId },
+        });
+        const processTasks = data?.tasksByProcess || [];
+        allTasks.push(...processTasks);
+      }
+      
+      return allTasks;
+    } catch (error) {
+      console.error("Error loading communication processes tasks:", error);
+      return [];
+    } finally {
+      setIsLoadingTaskDetails(false);
+    }
+  };
 
   /**
    * Función para obtener el ID del proceso actual según el rol del usuario
@@ -65,7 +97,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     refetch: refetchValleyTasks 
   } = useQuery(GET_TASKS_BY_PROCESS, { 
     variables: { processId: getCurrentProcessId(userRole) },
-    skip: !shouldUseProcessQuery,
+    skip: !shouldUseProcessQuery || isCommunicationsRole, // Omitir para roles de comunicación
   });
 
   const { 
@@ -74,7 +106,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     error: allTasksQueryError,
     refetch: refetchAllTasks 
   } = useQuery(GET_TASKS, {
-    skip: shouldUseProcessQuery,
+    skip: shouldUseProcessQuery || isCommunicationsRole, // También omitir para roles de comunicación
   });
 
   const {
@@ -89,33 +121,93 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS);
   const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
   
-  const tasks = shouldUseProcessQuery 
-    ? (processData?.tasksByProcess || []) 
-    : (allTasksData?.tasks || []);
+  // Modificar cómo se determinan las tareas
+  const tasks = isCommunicationsRole 
+    ? tasksData 
+    : (shouldUseProcessQuery 
+        ? (processData?.tasksByProcess || []) 
+        : (allTasksData?.tasks || []));
   
   const allProcesses = allProcessData?.processes || [];
 
   const error = shouldUseProcessQuery ? valleyQueryError : allTasksQueryError;
   const mainQueryLoading = shouldUseProcessQuery ? valleyQueryLoading : allTasksQueryLoading;
   
+  // Modificar refetch para considerar los roles de comunicación
   const refetch = async () => {
-    return shouldUseProcessQuery ? refetchValleyTasks() : refetchAllTasks();
+    if (isCommunicationsRole) {
+      try {
+        const communicationTasks = await loadCommunicationProcessesTasks();
+        setTasksData(communicationTasks);
+        return { data: { tasksByProcess: communicationTasks } };
+      } catch (error) {
+        console.error("Error refetching communication tasks:", error);
+        return { data: { tasksByProcess: [] } };
+      }
+    } else {
+      return shouldUseProcessQuery ? refetchValleyTasks() : refetchAllTasks();
+    }
   };
   
   const states = taskStateData?.taskStatuses || [];
   const taskState = states.map((s: ITaskStatus) => s.name);
 
-  const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || isInitialLoad || allProcessQueryLoading;
+  const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || 
+                  isInitialLoad || allProcessQueryLoading || loadingCommunicationTasks;
 
+  // Cargar tareas de comunicación al inicio para roles específicos
+  useEffect(() => {
+    const loadInitialCommunicationTasks = async () => {
+      if (isCommunicationsRole) {
+        try {
+          setLoadingCommunicationTasks(true);
+          const communicationTasks = await loadCommunicationProcessesTasks();
+          setTasksData(communicationTasks);
+          
+          // Cargar subtareas para estas tareas para que estén disponibles
+          if (communicationTasks.length > 0) {
+            setIsLoadingSubtasks(true);
+            try {
+              const allSubtasks = await Promise.all(
+                communicationTasks.map(async (task: ITask) => {
+                  const { data: subtaskData } = await getSubtasks({
+                    variables: { id: task.id },
+                  });
+                  return subtaskData?.taskSubtasks || [];
+                })
+              );
+              const flattenedSubtasks = allSubtasks.flat();
+              setSubtasks(flattenedSubtasks);
+            } catch (error) {
+              console.error("Error fetching subtasks for communication tasks:", error);
+            } finally {
+              setIsLoadingSubtasks(false);
+            }
+          }
+        } catch (error) {
+          console.error("Error loading initial communication tasks:", error);
+        } finally {
+          setLoadingCommunicationTasks(false);
+        }
+      }
+    };
+
+    loadInitialCommunicationTasks();
+  }, [isCommunicationsRole]);
 
   /**
    * Hook para manejar el estado de las tareas
    * @description Inicializa el estado de las tareas y subtareas, y configura los efectos secundarios para cargar los datos
    */
   useEffect(() => {
-    setTasksData(tasks);
-  }, [processData, allTasksData, shouldUseProcessQuery]);
-
+    if (!isCommunicationsRole) {
+      const newTasks = shouldUseProcessQuery 
+        ? (processData?.tasksByProcess || []) 
+        : (allTasksData?.tasks || []);
+      
+      setTasksData(newTasks);
+    }
+  }, [processData, allTasksData, shouldUseProcessQuery, isCommunicationsRole]);
 
   /**
    * Función para obtener las tareas filtradas por estado
@@ -127,7 +219,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     try {
       setIsLoadingTaskDetails(true);
       
-      if (shouldUseProcessQuery) {
+      if (isCommunicationsRole) {
+        // Para roles de comunicación, filtrar el estado de las tareas ya cargadas
+        return tasksData.filter(task => task.status?.id === statusId);
+      } else if (shouldUseProcessQuery) {
         const { data } = await getTasksByStatus({
           variables: { processId: getCurrentProcessId(userRole), statusId },
         });
@@ -144,7 +239,6 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       setIsLoadingTaskDetails(false);
     }
   };
-
 
   /**
    * Función para manejar el clic en un filtro
@@ -346,7 +440,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
    */
   useEffect(() => {
     const fetchSubtasks = async () => {
-      if (tasks && tasks.length > 0) {
+      if (tasks && tasks.length > 0 && !isCommunicationsRole) {
         setIsLoadingSubtasks(true);
         try {
           const allSubtasks = await Promise.all(
@@ -368,10 +462,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       }
     };
 
-    if (!mainQueryLoading && tasks && tasks.length > 0) {
+    if (!mainQueryLoading && tasks && tasks.length > 0 && !isCommunicationsRole) {
       fetchSubtasks();
     }
-  }, [tasks, mainQueryLoading, getSubtasks]);
+  }, [tasks, mainQueryLoading, getSubtasks, isCommunicationsRole]);
 
   /**
    * Hook para cargar los detalles de las tareas al inicio
@@ -379,7 +473,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
    */
   useEffect(() => {
     const fetchTaskDetails = async () => {
-      if (!mainQueryLoading && !isLoadingSubtasks) {
+      if (!mainQueryLoading && !isLoadingSubtasks && !loadingCommunicationTasks) {
         try {
           if (tasks && tasks.length > 0) {
             const processedTasks = await loadTasksWithDetails();
@@ -394,7 +488,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     };
     
     fetchTaskDetails();
-  }, [tasks, mainQueryLoading, isLoadingSubtasks]);
+  }, [tasks, mainQueryLoading, isLoadingSubtasks, loadingCommunicationTasks]);
 
   /**
   * Función para filtrar tareas por proceso
@@ -405,7 +499,28 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     try {
       setIsLoadingTaskDetails(true);
       
-      if (processId) {
+      if (isCommunicationsRole) {
+        if (!processId) {
+          // "Todos los procesos" para roles de comunicación
+          const communicationTasks = await loadCommunicationProcessesTasks();
+          setTasksData(communicationTasks);
+          const detailedTasks = await processTasksWithDetails(communicationTasks);
+          setDetailedTasks(detailedTasks);
+          return detailedTasks;
+        } else {
+          // Proceso específico para roles de comunicación
+          const { data } = await getTasksByProcess({
+            variables: { processId },
+          });
+          
+          const filteredTasks = data?.tasksByProcess || [];
+          const detailedFilteredTasks = await processTasksWithDetails(filteredTasks);
+          setDetailedTasks(detailedFilteredTasks);
+          setTasksData(filteredTasks);
+          return detailedFilteredTasks;
+        }
+      } else if (processId) {
+        // Proceso específico para otros roles
         const { data } = await getTasksByProcess({
           variables: { processId },
         });
@@ -415,6 +530,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         setDetailedTasks(detailedFilteredTasks); 
         return detailedFilteredTasks; 
       } else {
+        // "Todos los procesos" para otros roles
         const processedTasks = await loadTasksWithDetails();
         setDetailedTasks(processedTasks);
         return processedTasks;
@@ -448,5 +564,6 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     formatDate,
     handleFilterClick,
     setActiveFilter,
+    isCommunicationsRole
   };
 };

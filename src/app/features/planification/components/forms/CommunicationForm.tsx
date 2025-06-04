@@ -3,7 +3,6 @@ import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { useCommunicationTaskForm } from "../../hooks/useCommunicationTaskForm";
 import { ITask } from "@/app/models/ITasks";
-import { IProcess } from "@/app/models/IProcess";
 
 interface CommunicationFormProps {
     onSave: any;
@@ -21,7 +20,7 @@ export default function CommunicationForm({
     userRole
 }: CommunicationFormProps) {
 
-    const { formState, dropdownItems, processes, handleSave, handleInputChange } = useCommunicationTaskForm(
+    const { formState, dropdownItems, handleSave, handleInputChange } = useCommunicationTaskForm(
         onSave, 
         isEditing, 
         selectedTask,

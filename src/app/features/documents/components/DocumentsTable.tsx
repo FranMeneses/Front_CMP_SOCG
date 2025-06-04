@@ -66,7 +66,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
             ))
           ) : (
             <tr>
-              <td colSpan={5} className="px-4 py-2 text-center border-b border-gray-300">
+              <td colSpan={7} className="px-4 py-2 text-center border-b border-gray-300">
                 No hay documentos disponibles
               </td>
             </tr>

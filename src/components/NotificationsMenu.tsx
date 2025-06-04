@@ -1,5 +1,7 @@
 'use client'
 
+import { Button } from "./ui/button";
+
 export function NotificationsMenu() {
 
     return (
@@ -10,25 +12,25 @@ export function NotificationsMenu() {
                     <div>
                         <div className="font-medium">Notification 1</div>
                     </div>
-                    <button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
+                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
                         Dismiss
-                    </button>
+                    </Button>
                 </div>
                 <div className="p-3 border-b border-gray-100 hover:bg-gray-50 flex justify-between items-center">
                     <div>
                         <div className="font-medium">Notification 2</div>
                     </div>
-                    <button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
+                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
                         Dismiss
-                    </button>
+                    </Button>
                 </div>
                 <div className="p-3 border-b border-gray-100 hover:bg-gray-50 flex justify-between items-center">
                     <div>
                         <div className="font-medium">Notification 3</div>
                     </div>
-                    <button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
+                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
                         Dismiss
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

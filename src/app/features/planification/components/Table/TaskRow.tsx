@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { use } from 'react';
 import { ITaskDetails } from "@/app/models/ITasks";
-import { ZoomIn, Trash } from "lucide-react";
+import { ZoomIn, Trash, Plus } from "lucide-react";
+import { Button } from '@/components/ui/button';
 
 interface TaskRowProps {
   task: ITaskDetails;
@@ -8,6 +9,7 @@ interface TaskRowProps {
   getRemainingDays: (task: ITaskDetails) => string | number;
   handleOnTaskClick: (id: string) => void;
   handleSeeInformation: (id: string, userRole: string) => void;
+  handleSaveCompliance: (id: string) => void;
   setIsDeleteTaskModalOpen: (value: boolean) => void;
   setItemToDeleteId: (id: string) => void;
   userRole: string;
@@ -19,6 +21,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
   getRemainingDays,
   handleOnTaskClick,
   handleSeeInformation,
+  handleSaveCompliance,
   setIsDeleteTaskModalOpen,
   setItemToDeleteId,
   userRole
@@ -32,7 +35,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
   return (
     <tr>
       <td
-        className="px-4 py-2 text-left cursor-pointer text-black font-semibold"
+        className={`px-4 py-2 text-left text-black font-semibold ${userRole.toLowerCase() === "encargado cumplimiento" ? "" : "curor-pointer"}`}
         onClick={() => handleOnTaskClick(task.id ?? '')}
       >
         {task.name.toUpperCase()}
@@ -66,6 +69,20 @@ const TaskRow: React.FC<TaskRowProps> = ({
             className="cursor-pointer"
             onClick={handleDelete}
         />
+        {userRole.toLowerCase() === "encargado cumplimiento" && (
+          <Button 
+            variant="outline"
+            className="ml-4 bg-[#0d4384] hover:bg-[#112339] hover:text-white text-white cursor-pointer"
+            onClick={() => handleSaveCompliance(task.id ?? '', )}
+            >
+            Añadir Compliance
+            <Plus
+              size={20}
+              color="white"
+              className="cursor-pointer ml-4"
+            />
+          </Button>
+          )}
       </td>
     </tr>
   );

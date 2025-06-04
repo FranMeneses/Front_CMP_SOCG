@@ -8,6 +8,8 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
 import { useHooks } from '../../hooks/useHooks';
+import ComplianceForm from './forms/ComplianceForm';
+import { ICompliance } from '@/app/models/ICompliance';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
@@ -31,6 +33,11 @@ interface TaskModalsProps {
     handleUpdateCommunication: (task: ITask) => void;
     handleCancelCommunication: () => void;
     
+    isComplianceModalOpen: boolean;
+    setIsComplianceModalOpen: (isOpen: boolean) => void;
+    handleUpdateCompliance: (compliance: ICompliance) => void;
+    handleCancelCompliance: () => void;
+
     isDeleteTaskModalOpen: boolean;
     isDeleteSubtaskModalOpen: boolean;
     setIsDeleteTaskModalOpen: (isOpen: boolean) => void;
@@ -43,7 +50,8 @@ interface TaskModalsProps {
     userRole: string;
 
     selectedTask?: ITask | undefined; 
-    isEditingCommunication?: boolean;
+    selectedCompliance?: ICompliance | undefined;
+    isEditingCommunication?: boolean; // TODO: VER SI SE USA
 }
 
 const TaskModals: React.FC<TaskModalsProps> = ({
@@ -65,6 +73,10 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     handleSaveCommunication,
     handleUpdateCommunication,
     handleCancelCommunication,
+    isComplianceModalOpen,
+    setIsComplianceModalOpen,
+    handleUpdateCompliance,
+    handleCancelCompliance,
     isDeleteTaskModalOpen,
     isDeleteSubtaskModalOpen,
     setIsDeleteTaskModalOpen,
@@ -74,11 +86,14 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     currentValleyName,
     userRole,
     selectedTask,
+    selectedCompliance,
 }) => {
 
     const { isValleyManager, isCommunicationsManager } = useHooks();
 
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;
+
+    const isEditingCompliance = selectedCompliance !== undefined && selectedCompliance !== null;
 
     return (
     <>
@@ -140,8 +155,21 @@ const TaskModals: React.FC<TaskModalsProps> = ({
             />
             </Modal>
         )}
+
+        {/* Compliance Modal */}
+        {userRole === "encargado cumplimiento" && (
+            <Modal isOpen={isComplianceModalOpen} onClose={() => setIsComplianceModalOpen(false)}>
+            <ComplianceForm
+                onCancel={handleCancelCompliance}
+                onSave={handleUpdateCompliance}
+                isEditing={isEditingCompliance} 
+                selectedCompliance={selectedCompliance}
+                userRole={userRole}
+            />
+            </Modal>
+        )}
             
-            {/* Delete Confirmation Modals */}
+        {/* Delete Confirmation Modals */}
         <DeleteConfirmationModal 
             isOpen={isDeleteTaskModalOpen}
             onClose={() => setIsDeleteTaskModalOpen(false)}
