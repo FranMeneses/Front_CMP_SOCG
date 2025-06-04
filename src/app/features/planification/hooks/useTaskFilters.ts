@@ -10,6 +10,8 @@ export const useTaskFilters = (
     const [selectedProcess, setSelectedProcess] = useState<{id: number, name: string} | null>(null);
     const [filteredTasks, setFilteredTasks] = useState(tasks);
     const [activeStatusFilter, setActiveStatusFilter] = useState<string | null>(null);
+    const [isLateFilterActive, setIsLateFilterActive] = useState<boolean>(false);
+
     
     useEffect(() => {
         setFilteredTasks(tasks);
@@ -48,6 +50,34 @@ export const useTaskFilters = (
         }
     };
 
+        const handleLateFilterClick = () => {
+        setIsLateFilterActive(!isLateFilterActive);
+        
+        if (!isLateFilterActive) {
+            const currentDate = new Date();
+            
+            const delayedTasks = tasks.filter(task => {
+                if (!task.endDate) return false;
+                
+                const endDate = new Date(task.endDate);
+                return endDate < currentDate && 
+                       task.status?.name !== "Completada" && 
+                       task.status?.name !== "Cancelada";
+            });
+            
+            setFilteredTasks(delayedTasks);
+            setActiveStatusFilter(null); 
+        } else {
+            if (selectedProcess) {
+                handleFilterByProcess(selectedProcess.id).then(processTasks => {
+                    setFilteredTasks(processTasks || []);
+                });
+            } else {
+                setFilteredTasks(tasks);
+            }
+        }
+    };
+
     const handleStatusFilterChange = (statusName: string) => {
         if (activeStatusFilter === statusName) {
             setActiveStatusFilter(null);
@@ -77,7 +107,9 @@ export const useTaskFilters = (
         filteredTasks,
         selectedProcess,
         activeStatusFilter,
+        isLateFilterActive, 
         handleProcessFilterChange,
-        handleStatusFilterChange
+        handleStatusFilterChange,
+        handleLateFilterClick 
     };
 };

@@ -63,7 +63,7 @@ export default function ComplianceForm({
                             <h3 className="text-sm font-medium mb-2">Carta Aporte</h3>
                             <div className="mb-2">
                                 <span className="text-xs font-medium">Documento cargado:</span>
-                                <span className="text-xs ml-1 text-blue-600">carta_aporte.pdf</span>
+                                <span className="text-xs ml-1 text-blue-600">carta_aporte.pdf</span> {/*TODO: CAMBIAR A OBTENER DOCUMENTO POR TAREA Y TIPO*/}
                             </div>
                         </div>
                         

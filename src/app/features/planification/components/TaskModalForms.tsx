@@ -9,7 +9,7 @@ import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
 import { useHooks } from '../../hooks/useHooks';
 import ComplianceForm from './forms/ComplianceForm';
-import { ICompliance } from '@/app/models/ICompliance';
+import { ICompliance, IComplianceForm } from '@/app/models/ICompliance';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
@@ -35,7 +35,7 @@ interface TaskModalsProps {
     
     isComplianceModalOpen: boolean;
     setIsComplianceModalOpen: (isOpen: boolean) => void;
-    handleUpdateCompliance: (compliance: ICompliance) => void;
+    handleUpdateCompliance: (compliance: IComplianceForm) => void;
     handleCancelCompliance: () => void;
 
     isDeleteTaskModalOpen: boolean;
@@ -50,7 +50,7 @@ interface TaskModalsProps {
     userRole: string;
 
     selectedTask?: ITask | undefined; 
-    selectedCompliance?: ICompliance | undefined;
+    selectedCompliance?: IComplianceForm | undefined;
     isEditingCommunication?: boolean; // TODO: VER SI SE USA
 }
 

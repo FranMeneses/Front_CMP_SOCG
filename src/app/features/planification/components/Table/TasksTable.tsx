@@ -85,8 +85,10 @@ const TasksTable: React.FC<TasksTableProps> = ({
         filteredTasks, 
         selectedProcess,
         activeStatusFilter,
+        isLateFilterActive,
         handleProcessFilterChange,
         handleStatusFilterChange,
+        handleLateFilterClick
     } = useTaskFilters(tasks, allProcesses, handleFilterByProcess);
 
     const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
@@ -94,6 +96,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const handleLocalFilterClick = (filter: string) => {
         handleStatusFilterChange(filter);
     };
+    
 
     return (
         <div>
@@ -109,6 +112,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 taskStates={actualTaskState}
                 activeFilter={activeStatusFilter} 
                 handleFilterClick={handleLocalFilterClick} 
+                isLateFilterActive={isLateFilterActive}
+                handleLateFilterClick={handleLateFilterClick} 
             />
             
             <div className="overflow-x-auto rounded-lg shadow">

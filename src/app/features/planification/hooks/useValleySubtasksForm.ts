@@ -238,10 +238,12 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      * @description Utiliza useEffect para establecer los valores iniciales del formulario de subtareas cuando se cargan los beneficiarios
      */
     useEffect(() => {
-        if (Object.keys(beneficiariesIdToNameMap).length > 0) {
+        // Verificar que se tenga la información de prioridad y estado, sin depender de si hay beneficiarios
+        if (priority.length > 0 && state.length > 0 && subtask) {
+            console.log("Cargando datos iniciales de subtarea");
             fetchSubtaskInitialValues();
         }
-    }, [subtask, beneficiariesIdToNameMap]);
+    }, [subtask, beneficiariesIdToNameMap, priority, state]);
 
     /**
      * Hook para manejar los cambios en los campos del formulario de subtareas
