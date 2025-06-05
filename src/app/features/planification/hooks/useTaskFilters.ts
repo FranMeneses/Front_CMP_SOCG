@@ -17,18 +17,18 @@ export const useTaskFilters = (
         setFilteredTasks(tasks);
     }, [tasks]);
     
+    /**
+     * Función para manejar el cambio de filtro de procesos.
+     * @param item Proceso seleccionado.
+     * @returns {Promise<void>}
+     */
     const handleProcessFilterChange = async (item: string) => {
+        setActiveStatusFilter(null);
+        setIsLateFilterActive(false);
+        
         if (item === "Todos los procesos") {
             setSelectedProcess(null);
-            
-            if (activeStatusFilter) {
-                const filteredByStatus = tasks.filter(task => 
-                    task.status?.name === activeStatusFilter
-                );
-                setFilteredTasks(filteredByStatus);
-            } else {
-                setFilteredTasks(tasks);
-            }
+            setFilteredTasks(tasks);
             return;
         }
         
@@ -38,18 +38,15 @@ export const useTaskFilters = (
             setSelectedProcess({id: Number(process.id), name: process.name});
             
             const processTasks = await handleFilterByProcess(Number(process.id)) || [];
-            
-            if (activeStatusFilter) {
-                const filteredByStatus = processTasks.filter(task => 
-                    task.status?.name === activeStatusFilter
-                );
-                setFilteredTasks(filteredByStatus);
-            } else {
-                setFilteredTasks(processTasks);
-            }
+            setFilteredTasks(processTasks);
         }
     };
 
+    /**
+     * Función para manejar el clic en el filtro de tareas atrasadas.
+     * @description Filtra las tareas que están atrasadas (fecha de finalización pasada y no completadas).
+     * @returns {void}
+     */
     const handleLateFilterClick = () => {
         setIsLateFilterActive(!isLateFilterActive);
         
@@ -95,6 +92,11 @@ export const useTaskFilters = (
         }
     };
 
+    /**
+     * Función para manejar el cambio de filtro por estado.
+     * @description Filtra las tareas por el estado seleccionado.
+     * @param statusName Nombre del estado por el que se desea filtrar las tareas.
+     */
     const handleStatusFilterChange = (statusName: string) => {
         if (activeStatusFilter === statusName) {
             setActiveStatusFilter(null);

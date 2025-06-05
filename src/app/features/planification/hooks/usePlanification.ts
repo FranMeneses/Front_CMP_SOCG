@@ -12,9 +12,7 @@ import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task, TaskDetails } from "@/app/models/ITaskForm";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 import { ITaskForm } from "@/app/models/ICommunicationsForm";
-import { useComplianceForm } from "./useComplianceForm";
-import { ICompliance, IComplianceForm } from "@/app/models/ICompliance";
-import { CREATE_COMPLIANCE, CREATE_REGISTRY, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { CREATE_COMPLIANCE, CREATE_REGISTRY } from "@/app/api/compliance";
 
 export const usePlanification = () => {
     const { currentValleyId, isValleyManager, isCommunicationsManager, userRole } = useHooks();
@@ -22,10 +20,8 @@ export const usePlanification = () => {
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
     const [isCommunicationModalOpen, setIsCommunicationModalOpen] = useState<boolean>(false);
-    const [isComplianceModalOpen, setIsComplianceModalOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [selectedTask, setSelectedTask] = useState<ITask | undefined>(undefined);
-    const [selectedCompliance, setSelectedCompliance] = useState<IComplianceForm | undefined>(undefined);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [selectedInfoTask, setSelectedInfoTask] = useState<IInfoTask | null>(null);
     const [selectedSubtask, setSelectedSubtask] = useState<ISubtask | null>(null);
@@ -42,7 +38,6 @@ export const usePlanification = () => {
     const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
     const valleySubtaskForm = useValleySubtasksForm(dummySubtask);
     const communicationTaskForm = useCommunicationTaskForm(dummyTask);
-    const complianceForm = useComplianceForm(dummyTask);
    
     const {
         data,
@@ -64,9 +59,7 @@ export const usePlanification = () => {
     const [updateTask] = useMutation(UPDATE_TASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
-    const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
     const [createRegistry] = useMutation(CREATE_REGISTRY);
-    const [updateRegistry] = useMutation(UPDATE_REGISTRY);
 
     /**
      * Función para manejar la creación de una nueva tarea
@@ -79,9 +72,6 @@ export const usePlanification = () => {
         }
         else if (isCommunicationsManager){
             setIsCommunicationModalOpen(true);
-        }
-        else {
-            setIsComplianceModalOpen(true);
         }
     };
 
@@ -138,94 +128,12 @@ export const usePlanification = () => {
     };
 
     /**
-     * Función para guardar el cumplimiento de una tarea
-     * @description Guarda el cumplimiento de una tarea en la base de datos
-     * @param compliance Cumplimiento de la tarea a guardar
-     */
-    const handleSaveCompliance = async (idTask: string) => {
-        try {
-            const { data } = await createCompliance({
-                variables: {
-                    input: {
-                        taskId: idTask,
-                        statusId: 1,
-                        applies: true,
-                    }
-                }
-            })
-            try {
-                const { data: registryData } = await createRegistry({
-                    variables: {
-                        input: {
-                            complianceId: data.create.id
-                        }
-                    }
-                })
-            }
-            catch (error) {
-                console.error("Error saving registry task:", error);
-            }
-        }catch (error) {
-            console.error("Error saving compliance task:", error);
-        }
-        
-    }
-
-    /**
-     * Función para actualizar el cumplimiento de una tarea
-     * @description Actualiza el cumplimiento de una tarea existente
-     * @param compliance Cumplimiento de la tarea a actualizar
-     */
-    const handleUpdateCompliance = async (compliance: IComplianceForm) => {
-        try {
-            const { data } = await updateCompliance({
-                variables: {
-                    id: selectedCompliance?.id,
-                    input: {
-                        taskId: selectedTaskId,
-                        statusId: compliance.statusId,
-                        applies: compliance.applies,
-                    }
-                }
-            })
-            try {
-                const { data: registryData } = await updateRegistry({
-                    variables: {
-                        id: data.update.id,
-                        input: {
-                            cartaAporte: compliance.cartaAporte,
-                            minuta: compliance.minuta,
-                            hasMemo: compliance.hasMemo,
-                            hasSolped: compliance.hasSolped,
-                            hasHem: compliance.hasHem,
-                            hasHes: compliance.hasHes,
-                            provider: compliance.provider,
-                        }
-                    }
-                })
-            }
-            catch (error) {
-                console.error("Error updating registry task:", error);
-            }
-        } catch (error) {
-            console.error("Error updating compliance task:", error);
-        }
-        refetch();
-        setIsComplianceModalOpen(false);
-    }
-
-    /**
      * Función para cancelar la creación de una tarea asociada a comunicación
      * @description Cierra el modal de comunicación sin guardar cambios
      */
     const handleCancelCommunication = () => {
         setSelectedTask(undefined);
         setIsCommunicationModalOpen(false);
-    };
-
-    const handleCancelCompliance = () => {
-        setSelectedTask(undefined);
-        setIsComplianceModalOpen(false);
     };
 
     /**
@@ -305,6 +213,7 @@ export const usePlanification = () => {
                         faenaId: task.faena,
                         statusId: 1,
                         processId: task.process,
+                        applies: task.compliance
                     },
                 },
             });
@@ -323,6 +232,23 @@ export const usePlanification = () => {
                         scopeId: task.scope,
                         interactionId: task.interaction,
                         riskId: task.risk,
+                    },
+                },
+            });
+            console.log("Task ID after creation:", data.createTask.id);
+            const { data: complianceData } = await createCompliance({
+                variables: {
+                    input: {
+                        taskId: data.createTask.id,
+                        statusId: 1,
+                    },
+                },
+            });
+            const { data: registryData } = await createRegistry({
+                variables: {
+                    input: {
+                        complianceId: complianceData.create.id,
+                        startDate: new Date(),
                     },
                 },
             });
@@ -375,34 +301,6 @@ export const usePlanification = () => {
                 if (taskInfo) {
                     setSelectedTask(taskInfo);
                     setIsCommunicationModalOpen(true);
-                }
-            }
-            catch (error) {
-                console.error("Error fetching task information:", error);
-            }
-        }
-        else {
-            try {
-                const taskInfo = await complianceForm.handleGetCompliance(taskId);
-                try {
-                    const taskRegistry = await complianceForm.handleGetRegistry(taskInfo.id);
-                    if (taskRegistry) {
-                        const complianceWithRegistry: IComplianceForm = {
-                            ...taskInfo,
-                            cartaAporteObs: taskRegistry.cartaAporteObs || "",
-                            minutaObs: taskRegistry.minutaObs || "",
-                            hasMemo: taskRegistry.hasMemo || false,
-                            hasSolped: taskRegistry.hasSolped || false,
-                            hasHem: taskRegistry.hasHem || false,
-                            hasHes: taskRegistry.hasHes || false,
-                            provider: taskRegistry.provider || "",
-                        };
-                        setSelectedCompliance(complianceWithRegistry);
-                        setIsComplianceModalOpen(true);
-                    }
-                }
-                catch (error) {
-                    console.error("Error fetching compliance registry:", error);
                 }
             }
             catch (error) {
@@ -482,10 +380,8 @@ export const usePlanification = () => {
         setIsPopupOpen,
         setIsPopupSubtaskOpen,
         setIsCommunicationModalOpen,
-        setIsComplianceModalOpen,
         setSelectedTaskId,
         setSelectedTask,
-        setSelectedCompliance,
         setIsSidebarOpen,
         setIsDeleteSubtaskModalOpen,
         setIsDeleteTaskModalOpen,
@@ -512,17 +408,12 @@ export const usePlanification = () => {
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
-        handleSaveCompliance,
-        handleUpdateCompliance,
-        handleCancelCompliance,
         handleFilterByProcess,
         selectedTask,
-        selectedCompliance,
         isPopupOpen,
         isDeleteSubtaskModalOpen,
         isDeleteTaskModalOpen,
         isCommunicationModalOpen,
-        isComplianceModalOpen,
         itemToDeleteId,
         isPopupSubtaskOpen,
         selectedTaskId,

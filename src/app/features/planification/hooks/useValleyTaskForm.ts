@@ -210,7 +210,21 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      * Estado del formulario
      * @description Maneja el estado del formulario con los valores iniciales proporcionados o vacíos
      */
-    const [formState, setFormState] = useState({
+    const [formState, setFormState] = useState<{
+        name: string;
+        description: string;
+        origin: string | number;
+        investment: string | number;
+        type: string | number;
+        scope: string | number;
+        interaction: string | number;
+        state: string | number;
+        budget: string | number;
+        expenses: string | number;
+        risk: string | number;
+        faena: string | number;
+        compliance?: boolean;
+    }>({
         name: initialValues?.name || "",
         description: initialValues?.description || "",
         origin: initialValues?.origin || "",
@@ -223,7 +237,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         expenses: initialValues?.expenses || "",
         risk: initialValues?.risk || "",
         faena: initialValues?.faena || "",
-        compliance: initialValues?.compliance || false,
+        compliance: initialValues?.compliance ?? undefined,
     });
 
     /**
@@ -250,45 +264,47 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
               budget: budget || "",
               expenses: expenses || "",
               faena: faena || "",
+              compliance: infoTask.task.applies ?? undefined, // TODO: PEDIR QUE AGREGUE APPLIES A INFOTASKS (QUE LA TAREA LO TENGA)
+            });
+            console.log("Initial values set:", {
+            initialValues: {
+                ...initialValues,
+                compliance: infoTask.task.applies || false
+            },
+            taskApplies: infoTask.task.applies
             });
           }
           catch (error) {
             console.error("Error fetching initial values:", error);
           }
         }
-    };
+    }
 
-    /**
-     * Hook para obtener los valores iniciales del formulario
-     * @description Utiliza useEffect para llamar a fetchInitialValues cuando la tarea o subtarea cambian
-     */
     useEffect(() => {
-        fetchInitialValues();
-      }, [infoTask,subtask]);
-
-    /**
-    * Hook para establecer los valores del formulario inicial
-    * @description Utiliza useEffect para establecer los valores del formulario cuando initialValues cambian
-    */
-    useEffect(() => {
-        if (initialValues) {
-            setFormState({
-                name: initialValues.name || "",
-                description: initialValues.description || "",
-                origin: initialValues.origin || "",
-                investment: initialValues.investment || "",
-                type: initialValues.type || "",
-                scope: initialValues.scope || "",
-                interaction: initialValues.interaction || "",
-                state: initialValues.state || "",
-                budget: initialValues.budget || "",
-                expenses: initialValues.expenses || "",
-                risk: initialValues.risk || "",
-                faena: initialValues.faena || "",
-                compliance: initialValues.compliance || false,
-            });
+        if (isEditing && infoTask) {
+            fetchInitialValues();
         }
-    }, [initialValues]);
+    }, [isEditing, infoTask]);
+
+    useEffect(() => {
+    if (initialValues) {
+        setFormState({
+        name: initialValues.name || "",
+        description: initialValues.description || "",
+        origin: initialValues.origin || "",
+        investment: initialValues.investment || "",
+        type: initialValues.type || "",
+        scope: initialValues.scope || "",
+        interaction: initialValues.interaction || "",
+        state: initialValues.state || "",
+        budget: initialValues.budget || "",
+        expenses: initialValues.expenses || "",
+        risk: initialValues.risk || "",
+        faena: initialValues.faena || "",
+        compliance: initialValues.compliance ?? undefined,
+        });
+    }
+    }, [initialValues]); // Keep this dependency array simple
     
     const [faenas, setFaenas] = useState<string[]>([]);
     const [faenaMap, setFaenaMap] = useState<{ [key: string]: string }>({});
@@ -359,6 +375,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
             };
         }
+        console.log("Task Details:", taskDetails);
         onSave(taskDetails);
         setFormState({
             name: "",
@@ -373,7 +390,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             expenses: "",
             risk: "",
             faena: "",
-            compliance: false,
+            compliance: undefined,
         });
         setFaenas([]);
     }, [formState, onSave, faenaMap]);

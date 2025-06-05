@@ -1,5 +1,5 @@
 'use client';
-import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound  } from 'lucide-react';
+import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard  } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,14 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       icon: FileText,
       isActive: pathname === "/features/documents",
       admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+    },
+    {
+      title: "Compliance",
+      href: "/features/compliance",
+      displayHref: "/compliance",
+      icon: Clipboard,
+      isActive: pathname === "/features/compliance",
+      admitedRoles: ["encargado cumplimiento"]
     },
     {
       title: "Planificación",

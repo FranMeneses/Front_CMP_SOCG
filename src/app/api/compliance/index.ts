@@ -6,7 +6,6 @@ export const GET_ALL_COMPLIANCES = gql`
       id
       taskId
       statusId
-      applies
       status {
         id
         name
@@ -33,7 +32,6 @@ export const GET_COMPLIANCE = gql`
       id
       taskId
       statusId
-      applies
       status {
         id
         name
@@ -62,7 +60,6 @@ export const GET_TASK_COMPLIANCE = gql`
       id
       taskId
       statusId
-      applies
       task {
         id
         name
@@ -102,9 +99,10 @@ export const CREATE_COMPLIANCE = gql`
       id
       taskId
       statusId
-      applies
       status {
+        id
         name
+        days
       }
     }
   }
@@ -116,7 +114,6 @@ export const UPDATE_COMPLIANCE = gql`
       id
       taskId
       statusId
-      applies
       status {
         name
       }
@@ -139,13 +136,14 @@ export const GET_ALL_REGISTRIES = gql`
       complianceId
       hes
       hem
+      carta
+      minuta
       provider
       startDate
       endDate
       compliance {
         id
         taskId
-        applies
       }
       memos {
         id
@@ -168,6 +166,8 @@ export const GET_REGISTRY_BY_ID = gql`
       complianceId
       hes
       hem
+      carta
+      minuta
       provider
       startDate
       endDate
@@ -184,7 +184,6 @@ export const GET_REGISTRY_BY_ID = gql`
       compliance {
         id
         taskId
-        applies
         task {
           id
           name
@@ -202,6 +201,8 @@ export const GET_COMPLIANCE_REGISTRIES = gql`
       complianceId
       hes
       hem
+      carta
+      minuta
       provider
       startDate
       endDate
@@ -226,6 +227,8 @@ export const CREATE_REGISTRY = gql`
       complianceId
       hes
       hem
+      carta
+      minuta
       provider
       startDate
       endDate
@@ -240,6 +243,8 @@ export const UPDATE_REGISTRY = gql`
       complianceId
       hes
       hem
+      carta
+      minuta
       provider
       startDate
       endDate
@@ -251,6 +256,39 @@ export const REMOVE_REGISTRY = gql`
   mutation RemoveRegistry($id: ID!) {
     removeRegistry(id: $id) {
       id
+    }
+  }
+`;
+
+// Query para obtener los compliances
+export const GET_APPLIED_COMPLIANCES = gql`
+  query GetAppliedCompliances {
+    getAppliedCompliances {
+      id
+      taskId
+      statusId
+      task {
+        id
+        name
+        description
+        process {
+          id
+          name
+        }
+      }
+      status {
+        id
+        name
+        days
+      }
+      registries {
+        id
+        provider
+        hes
+        hem
+        startDate
+        endDate
+      }
     }
   }
 `;

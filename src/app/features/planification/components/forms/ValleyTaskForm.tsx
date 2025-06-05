@@ -108,13 +108,14 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
       </div>
       <div className="mb-4 ">
         <label className="block text-sm font-medium mb-1">¿Compliance?</label>
-        <input
-            type="checkbox"
-            checked={formState.compliance}
-            onChange={(e) => handleComplianceChange(e.target.checked)}
-            className="cursor-pointer"
-            data-test-id="task-compliance-checkbox"
-          />
+        <DropdownMenu
+          buttonText="Seleccione Compliance"
+          items={["Si", "No"]}
+          onSelect={(value) => handleComplianceChange(value === "Si" ? true : false)}
+          isInModal={true}
+          selectedValue={infoTask ? (infoTask.task?.applies ? "Si" : "No") : undefined}
+          data-test-id="task-compliance-dropdown"
+        />
       </div>
       {isEditing && (
         <div className="mb-4 ">

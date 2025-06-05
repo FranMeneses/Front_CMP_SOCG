@@ -5,7 +5,7 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado cumplimiento"); // Valor por defecto
+    const [userRole, setUserRole] = useState<string>("encargado copiapó"); // Valor por defecto
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys, faenas } = useData();
 

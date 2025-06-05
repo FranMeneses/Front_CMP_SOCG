@@ -43,6 +43,7 @@ export interface Task {
     name?: string;
     description?: string;
     origin?: number;
+    compliance?: boolean;
     investment?: number;
     type?: number;
     scope?: number;

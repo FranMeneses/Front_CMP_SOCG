@@ -1,9 +1,10 @@
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
-import { useComplianceForm } from "@/app/features/planification/hooks/useComplianceForm";
+import { useComplianceForm } from "../../hooks/useComplianceForm";
 import { IComplianceForm, IComplianceStatus,  } from "@/app/models/ICompliance";
 import { FileUploadButton } from "@/app/features/documents/components/FileUploadButton";
-import { useDocumentForms } from "@/app/features/documents/hooks/useDocumentForms";
+import { useState, useEffect } from "react";
+import { IDocumentList } from "@/app/models/IDocuments";
 
 interface ComplianceFormProps {
     onSave: any;
@@ -40,6 +41,22 @@ export default function ComplianceForm({
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
 
+    const [cartaData, setCartaData] = useState<IDocumentList>();
+    const [minutaData, setMinutaData] = useState<IDocumentList>();
+
+    useEffect(() => {
+    const fetchData = async () => {
+        if (selectedCompliance?.task.id) {
+            const cartaResult = await handleGetCarta();
+            const minutaResult = await handleGetMinuta();
+            setCartaData(cartaResult);
+            setMinutaData(minutaResult);
+        }
+    };
+  
+  fetchData();
+}, [selectedCompliance?.task.id]);
+
     const renderAdditionalFields = () => {
         if (!formState.statusId) return null;
 
@@ -73,7 +90,7 @@ export default function ComplianceForm({
                             <h3 className="text-sm font-medium mb-2">Carta Aporte</h3>
                             <div className="mb-2">
                                 <span className="text-xs font-medium">Documento cargado:</span>
-                                <span className="text-xs ml-1 text-blue-600">{handleGetCarta()}</span>
+                                <span className="text-xs ml-1 text-blue-600">{cartaData?.nombre_archivo}</span>
                             </div>
                         </div>
                         
@@ -101,11 +118,11 @@ export default function ComplianceForm({
                             <div className="mb-2">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-medium">Carta Aporte:</span>
-                                    <span className="text-xs text-blue-600">{handleGetCarta()}</span> 
+                                    <span className="text-xs text-blue-600">{cartaData?.nombre_archivo}</span> 
                                 </div>
                                 <div className="flex items-center justify-between mt-1">
                                     <span className="text-xs font-medium">Minuta:</span>
-                                    <span className="text-xs text-blue-600">{handleGetMinuta()}</span> 
+                                    <span className="text-xs text-blue-600">{minutaData?.nombre_archivo}</span> 
                                 </div>
                             </div>
                         </div>
@@ -156,11 +173,11 @@ export default function ComplianceForm({
                             <div className="text-xs">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-medium">Carta Aporte:</span>
-                                    <span className="text-xs text-blue-600">{handleGetCarta()}</span> 
+                                    <span className="text-xs text-blue-600">{cartaData?.nombre_archivo}</span> 
                                 </div>
                                 <div className="flex items-center justify-between mt-1">
                                     <span className="text-xs font-medium">Minuta:</span>
-                                    <span className="text-xs text-blue-600">{handleGetMinuta()}</span> 
+                                    <span className="text-xs text-blue-600">{minutaData?.nombre_archivo}</span> 
                                 </div>
                                 {formState.hasMemo && <p>• MEMORANDUM registrado</p>}
                                 {formState.hasSolped && <p>• SOLPED registrada</p>}
@@ -223,9 +240,9 @@ export default function ComplianceForm({
                             <h4 className="font-medium mb-1">Resumen:</h4>
                             <ul className="list-disc pl-5 space-y-1">
                                 <span className="text-xs font-medium">Carta Aporte:</span>
-                                <span className="text-xs text-blue-600">{handleGetCarta()}</span> 
+                                <span className="text-xs text-blue-600">{cartaData?.nombre_archivo}</span> 
                                 <span className="text-xs font-medium">Minuta:</span>
-                                <span className="text-xs text-blue-600">{handleGetMinuta()}</span> 
+                                <span className="text-xs text-blue-600">{minutaData?.nombre_archivo}</span> 
                                 {formState.hasMemo && <li>MEMORANDUM registrado</li>}
                                 {formState.hasSolped && <li>SOLPED registrada</li>}
                                 {formState.hasHem && <li>HEM registrada</li>}

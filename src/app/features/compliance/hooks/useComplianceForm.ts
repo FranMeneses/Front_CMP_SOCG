@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { GET_COMPLIANCE_REGISTRIES, GET_COMPLIANCE_STATUSES, GET_TASK_COMPLIANCE } from "@/app/api/compliance";
+import { GET_COMPLIANCE, GET_COMPLIANCE_REGISTRIES, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
 import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
 import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
-import { IDocument } from "@/app/models/IDocuments";
+import { ITipoDocumento } from "@/app/models/IDocuments";
 import { useDocumentsPage } from "../../documents/hooks/useDocumentsPage";
 import { FormData } from "../../documents/hooks/useDocumentForms";
 
@@ -52,10 +52,10 @@ export const useComplianceForm = (
     const {data: documentsTypeData } = useQuery(GET_ALL_DOCUMENT_TYPES);
 
     const complianceStatuses = complianceStatusData?.getAllComplianceStatuses || [];
-    const documentsType = documentsTypeData?.getAllDocumentTypes || [];
+    const documentsType: ITipoDocumento[] = documentsTypeData?.getAllDocumentTypes || [];
     const complianceStatusNames = complianceStatuses.map((status: IComplianceStatus) => status.name);
 
-    const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
+    const [getCompliance] = useLazyQuery(GET_COMPLIANCE);
     const [getRegistry] = useLazyQuery(GET_COMPLIANCE_REGISTRIES);
     const [getDocument] = useLazyQuery(GET_DOCUMENT_BY_TASK_AND_TYPE);
 
@@ -69,12 +69,15 @@ export const useComplianceForm = (
      */
     const handleGetCarta = async () => {
         try {
+            const tipo = documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "";
             const { data } = await getDocument({
                 variables: {
                     taskId: selectedCompliance?.task.id || "",
-                    type: documentsType.findIndex((d:IDocument) => d.tipo_doc.tipo_documento === "Carta Aporte") 
+                    documentType: tipo
                 }
             });
+            console.log("Carta Aporte data:", data.documentByTaskAndType);
+            return data.documentByTaskAndType;
         }
         catch (error) {
             console.error("Error fetching document:", error);
@@ -89,12 +92,14 @@ export const useComplianceForm = (
      */
     const handleGetMinuta = async () => {
         try {
+            const tipo = documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "";
             const { data } = await getDocument({
                 variables: {
                     taskId: selectedCompliance?.task.id || "",
-                    type:  documentsType.findIndex((d:IDocument) => d.tipo_doc.tipo_documento === "Minuta")
+                    documentType: tipo
                 }
             });
+            return data.documentByTaskAndType;
         }
         catch (error) {
             console.error("Error fetching document:", error);
@@ -111,9 +116,9 @@ export const useComplianceForm = (
     const handleGetCompliance = async (id: string) => {
         try{
             const { data } = await getCompliance({
-                variables: { taskId: id }
+                variables: { id }
             });
-            return data.getTaskCompliance;
+            return data.findOne;
         }
         catch (error) {
             console.error("Error fetching compliance data:", error);
@@ -239,18 +244,19 @@ export const useComplianceForm = (
         if (formState.statusId === 2 && formState.cartaAporteFile) {
             document = {
                 file: formState.cartaAporteFile,
-                documentType: "Carta Aporte",
-                option: "Tarea",
+                documentType: documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
+                option: 'Tarea',
                 task: selectedCompliance?.task.id || "",
                 subtask: "",
             };
+            console.log("Uploading Carta Aporte:", document);
             handleUploadFile(document);   
         }
         
         if (formState.statusId === 3 && formState.minutaFile) {
             document = {
                 file: formState.minutaFile,
-                documentType: "Minuta",
+                documentType: documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
                 option: "Tarea",
                 task: selectedCompliance?.task.id || "",
                 subtask: "",

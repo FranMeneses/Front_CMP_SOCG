@@ -8,7 +8,6 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
 import { useHooks } from '../../hooks/useHooks';
-import ComplianceForm from './forms/ComplianceForm';
 import { ICompliance, IComplianceForm } from '@/app/models/ICompliance';
 
 interface TaskModalsProps {
@@ -32,11 +31,6 @@ interface TaskModalsProps {
     handleSaveCommunication: (task: ITask) => void;
     handleUpdateCommunication: (task: ITask) => void;
     handleCancelCommunication: () => void;
-    
-    isComplianceModalOpen: boolean;
-    setIsComplianceModalOpen: (isOpen: boolean) => void;
-    handleUpdateCompliance: (compliance: IComplianceForm) => void;
-    handleCancelCompliance: () => void;
 
     isDeleteTaskModalOpen: boolean;
     isDeleteSubtaskModalOpen: boolean;
@@ -73,10 +67,6 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     handleSaveCommunication,
     handleUpdateCommunication,
     handleCancelCommunication,
-    isComplianceModalOpen,
-    setIsComplianceModalOpen,
-    handleUpdateCompliance,
-    handleCancelCompliance,
     isDeleteTaskModalOpen,
     isDeleteSubtaskModalOpen,
     setIsDeleteTaskModalOpen,
@@ -151,19 +141,6 @@ const TaskModals: React.FC<TaskModalsProps> = ({
                 onSave={isEditingCommunication ? handleUpdateCommunication : handleSaveCommunication}
                 isEditing={isEditingCommunication} 
                 selectedTask={selectedTask}
-                userRole={userRole}
-            />
-            </Modal>
-        )}
-
-        {/* Compliance Modal */}
-        {userRole === "encargado cumplimiento" && (
-            <Modal isOpen={isComplianceModalOpen} onClose={() => setIsComplianceModalOpen(false)}>
-            <ComplianceForm
-                onCancel={handleCancelCompliance}
-                onSave={handleUpdateCompliance}
-                isEditing={isEditingCompliance} 
-                selectedCompliance={selectedCompliance}
                 userRole={userRole}
             />
             </Modal>

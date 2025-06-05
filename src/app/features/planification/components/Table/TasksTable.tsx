@@ -43,7 +43,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCancelSubtask,
         handleSaveTask,
         setIsCommunicationModalOpen,
-        setIsComplianceModalOpen,
         handleFilterClick: hookHandleFilterClick,
 
         isPopupOpen, 
@@ -51,10 +50,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
         isPopupSubtaskOpen,
         selectedInfoTask,
         selectedTask,
-        selectedCompliance,
         selectedSubtask,
         isCommunicationModalOpen,
-        isComplianceModalOpen,
         expandedRow,
         taskState,
         isDeleteTaskModalOpen,
@@ -73,10 +70,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
-
-        handleSaveCompliance,
-        handleUpdateCompliance,
-        handleCancelCompliance,
     } = usePlanification();
 
     const { currentValleyName, userRole } = useHooks();
@@ -139,7 +132,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                     getRemainingDays={getRemainingDays}
                                     handleOnTaskClick={handleOnTaskClick}
                                     handleSeeInformation={handleSeeInformation}
-                                    handleSaveCompliance={handleSaveCompliance}
                                     setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
                                     setItemToDeleteId={setItemToDeleteId}
                                     userRole={userRole}
@@ -188,12 +180,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 handleSaveCommunication={handleSaveCommunication}
                 handleUpdateCommunication={handleUpdateCommunication}
                 handleCancelCommunication={handleCancelCommunication}
-
-                isComplianceModalOpen={isComplianceModalOpen}
-                selectedCompliance={selectedCompliance}
-                setIsComplianceModalOpen={setIsComplianceModalOpen}
-                handleUpdateCompliance={handleUpdateCompliance}
-                handleCancelCompliance={handleCancelCompliance}
                 
                 isDeleteTaskModalOpen={isDeleteTaskModalOpen}
                 isDeleteSubtaskModalOpen={isDeleteSubtaskModalOpen}
