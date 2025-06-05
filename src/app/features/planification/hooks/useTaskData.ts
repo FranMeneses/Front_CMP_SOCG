@@ -226,7 +226,6 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         const { data } = await getTasksByStatus({
           variables: { processId: getCurrentProcessId(userRole), statusId },
         });
-        console.log("Tasks by status data:", data);
         return data?.tasksByProcessAndStatus || [];
       } else {
         return tasksData.filter(task => task.status?.id === statusId);
@@ -235,7 +234,6 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       console.error("Error fetching tasks by status:", error);
       return [];
     } finally {
-      console.log("Tasks by status fetched successfully", getCurrentProcessId(userRole));
       setIsLoadingTaskDetails(false);
     }
   };

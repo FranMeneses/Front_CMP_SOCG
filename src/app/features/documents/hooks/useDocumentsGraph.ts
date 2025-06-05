@@ -116,7 +116,6 @@ export function useDocumentsGraph() {
             await deleteDocument({
                 variables: { id_documento: idDocumento },
             });
-            console.log("Document deleted successfully");
         } catch (error) {
             console.error("Error deleting document:", error);
         } 

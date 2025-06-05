@@ -2,7 +2,11 @@ import { useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_COMPLIANCE_REGISTRIES, GET_COMPLIANCE_STATUSES, GET_TASK_COMPLIANCE } from "@/app/api/compliance";
-import { ICompliance, IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
+import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
+import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
+import { IDocument } from "@/app/models/IDocuments";
+import { useDocumentsPage } from "../../documents/hooks/useDocumentsPage";
+import { FormData } from "../../documents/hooks/useDocumentForms";
 
 export const useComplianceForm = (
     onSave: any,
@@ -45,15 +49,65 @@ export const useComplianceForm = (
     });
 
     const {data: complianceStatusData } = useQuery(GET_COMPLIANCE_STATUSES);
+    const {data: documentsTypeData } = useQuery(GET_ALL_DOCUMENT_TYPES);
 
     const complianceStatuses = complianceStatusData?.getAllComplianceStatuses || [];
+    const documentsType = documentsTypeData?.getAllDocumentTypes || [];
     const complianceStatusNames = complianceStatuses.map((status: IComplianceStatus) => status.name);
 
     const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
     const [getRegistry] = useLazyQuery(GET_COMPLIANCE_REGISTRIES);
+    const [getDocument] = useLazyQuery(GET_DOCUMENT_BY_TASK_AND_TYPE);
 
+    const { handleUploadFile } = useDocumentsPage();
     const { valleysName, faenasName, valleys } = useHooks();
 
+    /**
+     * Función que obtiene la carta aporte asociada a la tarea de cumplimiento.
+     * @description Esta función realiza una consulta para obtener el documento de tipo "Carta Aporte" asociado a la tarea de cumplimiento seleccionada.
+     * @returns Documento asociado
+     */
+    const handleGetCarta = async () => {
+        try {
+            const { data } = await getDocument({
+                variables: {
+                    taskId: selectedCompliance?.task.id || "",
+                    type: documentsType.findIndex((d:IDocument) => d.tipo_doc.tipo_documento === "Carta Aporte") 
+                }
+            });
+        }
+        catch (error) {
+            console.error("Error fetching document:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene la minuta asociada a la tarea de cumplimiento.
+     * @description Esta función realiza una consulta para obtener el documento de tipo "Minuta" asociado a la tarea de cumplimiento seleccionada.
+     * @returns Documento asociado
+     */
+    const handleGetMinuta = async () => {
+        try {
+            const { data } = await getDocument({
+                variables: {
+                    taskId: selectedCompliance?.task.id || "",
+                    type:  documentsType.findIndex((d:IDocument) => d.tipo_doc.tipo_documento === "Minuta")
+                }
+            });
+        }
+        catch (error) {
+            console.error("Error fetching document:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene los datos de cumplimiento de una tarea específica.
+     * @param {string} id - ID de la tarea para la cual se desea obtener los datos de cumplimiento.
+     * @returns {Promise<IComplianceForm | null>}
+     * 
+    */
     const handleGetCompliance = async (id: string) => {
         try{
             const { data } = await getCompliance({
@@ -67,20 +121,35 @@ export const useComplianceForm = (
         }
     };
 
+    /**
+     * Función que maneja el cambio del archivo de carta aporte.
+     * @param {File} file - Archivo de carta aporte seleccionado.
+     */
     const handleCartaAporteChange = (file: File) => {
         setFormState({
             ...formState,
-            cartaAporteFile: file
+            cartaAporteFile: file,
+            cartaAporte: true
         });
     };
 
+    /**
+     * Función que maneja el cambio del archivo de minuta.
+     * @param {File} file - Archivo de minuta seleccionado.
+     */
     const handleMinutaChange = (file: File) => {
         setFormState({
             ...formState,
-            minutaFile: file
+            minutaFile: file,
+            minuta: true
         });
     };
 
+    /**
+     * Función que obtiene los registros de cumplimiento asociados a una tarea específica.
+     * @param {string} id - ID de la tarea para la cual se desean obtener los registros de cumplimiento.
+     * @returns {Promise<Array>} - Lista de registros de cumplimiento.
+     */
     const handleGetRegistry = async (id: string) => {
         try {
             const { data } = await getRegistry({
@@ -93,6 +162,9 @@ export const useComplianceForm = (
         }
     }
 
+    /**
+     * Hook que se ejecuta al iniciar el componente para cargar los datos de cumplimiento si se está editando.
+     */
     useEffect(() => {
         if (isEditing && selectedCompliance) {
             setFormState({
@@ -102,9 +174,9 @@ export const useComplianceForm = (
                 faenaId: selectedCompliance.task.faenaId !== undefined && selectedCompliance.task.faenaId !== null ? String(selectedCompliance.task.faenaId) : "",
                 processId: selectedCompliance.task.processId !== undefined && selectedCompliance.task.processId !== null ? String(selectedCompliance.task.processId) : "",
                 statusId: selectedCompliance.statusId || 0,
-                cartaAporte: selectedCompliance.cartaAporteObs || false,
+                cartaAporte: selectedCompliance.cartaAporte || false,
                 cartaAporteFile: null,
-                minuta: selectedCompliance.minutaObs || false,
+                minuta: selectedCompliance.minuta || false,
                 minutaFile: null,
                 hasMemo: selectedCompliance.hasMemo || false,
                 hasSolped: selectedCompliance.hasSolped || false,
@@ -115,12 +187,36 @@ export const useComplianceForm = (
         }
     }, [isEditing, selectedCompliance]);
 
+    /**
+     * Función que maneja el cambio de los campos del formulario.
+     * @param {string} field - Nombre del campo que se está modificando.
+     * @param {any} value - Nuevo valor para el campo.
+     */
     const handleInputChange = (field: string, value: any) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     };
 
+    /**
+     * Función que maneja el guardado de los datos del formulario.
+     * @description Esta función valida los campos requeridos y prepara los datos para ser enviados al servidor.
+     */
     const handleSave = () => {
-        let compliance = {}
+        let compliance = {};
+        let document: FormData;
+        
+        let nextStatusId = formState.statusId;
+        
+        if (formState.statusId >= 2 && formState.statusId < 6) {
+            if (
+                (formState.statusId === 2 && formState.cartaAporteFile) ||
+                (formState.statusId === 3 && formState.minutaFile) ||
+                (formState.statusId === 4 && (formState.hasMemo || formState.hasSolped)) ||
+                (formState.statusId === 5 && (formState.hasHem || formState.hasHes) && formState.provider)
+            ) {
+                nextStatusId = formState.statusId + 1;
+            }
+        }
+        
         compliance = {
             task: {
                 name: formState.name,
@@ -129,17 +225,39 @@ export const useComplianceForm = (
                 faenaId: formState.faenaId ? parseInt(formState.faenaId) : null,
                 processId: formState.processId ? parseInt(formState.processId) : null,
             },
-            statusId: complianceStatuses.find((status:IComplianceStatus) => status.name === String(formState.statusId))?.id || 0,
+            statusId: nextStatusId,
             applies: true, 
-            cartaAporteObs: formState.cartaAporte || false,
-            minutaObs: formState.minuta || false,
+            cartaAporte: formState.cartaAporte || false,
+            minuta: formState.minuta || false,
             hasMemo: formState.hasMemo || false,
             hasSolped: formState.hasSolped || false,
             hasHem: formState.hasHem || false,
             hasHes: formState.hasHes || false,
             provider: formState.provider || "",
         };
-        console.log(formState);
+
+        if (formState.statusId === 2 && formState.cartaAporteFile) {
+            document = {
+                file: formState.cartaAporteFile,
+                documentType: "Carta Aporte",
+                option: "Tarea",
+                task: selectedCompliance?.task.id || "",
+                subtask: "",
+            };
+            handleUploadFile(document);   
+        }
+        
+        if (formState.statusId === 3 && formState.minutaFile) {
+            document = {
+                file: formState.minutaFile,
+                documentType: "Minuta",
+                option: "Tarea",
+                task: selectedCompliance?.task.id || "",
+                subtask: "",
+            };
+            handleUploadFile(document);
+        }
+        
         onSave(compliance);
     };
 
@@ -148,13 +266,15 @@ export const useComplianceForm = (
     }), [complianceStatuses]);
 
     return {
-        formState,
         handleInputChange,
         handleSave,
         handleGetCompliance,
         handleGetRegistry,
         handleCartaAporteChange,
         handleMinutaChange,
+        handleGetCarta,
+        handleGetMinuta,
+        formState,
         valleysName,
         faenasName,
         valleys,

@@ -6,7 +6,6 @@ export const GET_SUBTASKS = gql`
     subtasks {
       id
       taskId
-      number
       name
       description
       budget
@@ -37,7 +36,6 @@ export const GET_SUBTASK = gql`
       id
       taskId
       name
-      number
       description
       budget
       expense
@@ -125,7 +123,6 @@ export const UPDATE_SUBTASK = gql`
       startDate
       endDate
       finalDate
-      number
       priorityId
       priority {
         id
@@ -184,7 +181,6 @@ export const GET_SUBTASKS_BY_MONTH_YEAR_AND_VALLEY = gql`
     subtasksByMonthYearAndValley(monthName: $monthName, year: $year, valleyId: $valleyId) {
       id
       taskId
-      number
       name
       description
       budget
@@ -220,7 +216,6 @@ export const SUBTASKS_BY_PROCESS = gql`
       taskId
       name
       description
-      number
       budget
       expense
       startDate

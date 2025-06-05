@@ -72,7 +72,7 @@ export default function TaskResume({
     }, [loadSubtasks]);
 
     return (
-        <div className="mt-4 border-t pt-4">
+        <div className="mt-4 border-t pt-4 font-[Helvetica]">
             <h3 className="text-lg font-medium mb-3">Resumen de tareas</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="rounded shadow-sm border p-3">
@@ -113,12 +113,13 @@ export default function TaskResume({
                     <div className="text-sm mt-1">
                         {valleys.map((valley) => {
                             const valleyEvents = valleySubtasks[valley.id] ?? 0;
+                            console.log(`Proceso: ${valley.name}, Events: ${valleyEvents}, ID: ${valley.id}`);
                             return (
                                 <div key={valley.id} className="flex justify-between items-center mt-1">
                                     <span className="flex items-center">
                                         <span 
                                             className="inline-block w-3 h-3 rounded-full mr-2" 
-                                            style={{backgroundColor: ValleyColors[valley.id - 1] || '#888'}}
+                                            style={{backgroundColor: ValleyColors[valleyNames.indexOf(valley.name)] || '#888'}}
                                         ></span>
                                         {valley.name}:
                                     </span>
@@ -132,3 +133,5 @@ export default function TaskResume({
         </div>
     );
 }
+
+// TODO: MODIFICAR FUNCION PARA QUE UTILICE PROCESO EN VEZ DE VALLE

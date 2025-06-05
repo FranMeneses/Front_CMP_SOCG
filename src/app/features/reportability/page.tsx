@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import './styles/index.css';
 import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { ValleyColors, CommunicationsColors } from "@/constants/colors";
+import { ValleyColors, CommunicationsColors, AllColors } from "@/constants/colors";
 import Calendar from "@/components/Calendar/Calendar";
 import { Legend } from "./components/Legend";
 import { useReportability } from "./hooks/useReportability";
@@ -24,7 +24,10 @@ export default function Reportability() {
     calendarEvents,
     selectedItem,
     filteredProcessesNames,
-    processes,
+    ProcessesNames,
+    ValleysProcesses,
+    filteredProcesses,
+    filteredProcessesCommunications
   } = useReportability();
 
   const { userRole, valleysName, isCommunicationsManager } = useHooks();
@@ -71,13 +74,13 @@ export default function Reportability() {
               <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
           )}
-          <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
+          <main className="flex-1 p-6 overflow-y-auto bg-gray-50 font-[Helvetica]">
             <div className="flex flex-col bg-white rounded-lg shadow overflow-y-auto">
               <div className="p-4 pb-4 border-b">
-                <h1 className="text-2xl font-bold mb-4">Programación y reportabilidad</h1>
+                <h1 className="text-2xl font-bold mb-4">{isCommunicationsManager ? "Programación de actividades" : "Programación y reportabilidad"}</h1>
                 <DropdownMenu
-                  buttonText={isCommunicationsManager? "Transversales":"Transversal"}
-                  items={isCommunicationsManager? filteredProcessesNames : valleysName} 
+                  buttonText={"Transversales"}
+                  items={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? ProcessesNames : ValleysProcesses} 
                   onSelect={(item) => handleDropdownSelect(item)}
                   data-test-id="dropdown-menu"
                 />
@@ -92,21 +95,21 @@ export default function Reportability() {
                       onMonthChange={handleMonthChange}
                     />
                     <div className="w-full mt-4"> 
-                      {isCommunicationsManager ? (
+                      {isCommunicationsManager && userRole != "superintendente de comunicaciones" ? (
                         <></>
-                        ) : (
-                          <>
-                            <TaskResume 
-                              calendarEvents={calendarEvents}
-                              valleys={valleys} 
-                              selectedValley={selectedItem}
-                              valleyNames={valleysName}
-                              ValleyColors={ValleyColors}
-                              month={month || ""}
-                              year={year || 0}
-                            />
-                          </>
-                        )}
+                      ) : (
+                        <>
+                          <TaskResume 
+                            calendarEvents={calendarEvents}
+                            valleys={userRole === "encargado cumplimiento" ? filteredProcesses : isCommunicationsManager ? filteredProcessesCommunications : valleys} 
+                            selectedValley={selectedItem}
+                            valleyNames={userRole === "encargado cumplimiento" ? ProcessesNames : isCommunicationsManager ? filteredProcessesNames : valleysName}
+                            ValleyColors={userRole === "encargado cumplimiento" ? AllColors : isCommunicationsManager ? CommunicationsColors : ValleyColors}
+                            month={month || ""}
+                            year={year || 0}
+                          />
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -115,7 +118,10 @@ export default function Reportability() {
                     <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
                       {isCommunicationsManager ? 'Procesos' : 'Valles'}
                     </h2>
-                    <Legend valley={isCommunicationsManager ? filteredProcessesNames : valleysName} valleyColors={isCommunicationsManager ? CommunicationsColors : ValleyColors} />
+                    <Legend 
+                      valley={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? ProcessesNames : ValleysProcesses} 
+                      valleyColors={isCommunicationsManager ? CommunicationsColors : userRole === "encargado cumplimiento" ? AllColors: ValleyColors} 
+                    />
                   </div>
                 </div>
               </div>

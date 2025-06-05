@@ -20,19 +20,8 @@ export function useReportability() {
   const [Subtasks, setSubtasks] = useState<ISubtask[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<IEvent[]>([]); 
 
-  const validRoles = ['encargado comunicaciones', 'encargado asuntos públicos'];
 
-  const { isCommunicationsManager } = useHooks();
-
-  const shouldUseProcessQuery = validRoles.includes(useHooks().userRole.toLowerCase());
-
-  const { 
-    data: subtasksData, 
-    loading: subtasksLoading, 
-    error: subtasksError,
-  } = useQuery(GET_SUBTASKS, {
-    skip: shouldUseProcessQuery,
-  });
+  const { isValleyManager, isCommunicationsManager, userRole } = useHooks();
 
   const [ GetProcessesSubtask, { loading: processSubtasksLoading }] = useLazyQuery(SUBTASKS_BY_PROCESS);
   const [ getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK);
@@ -48,17 +37,18 @@ export function useReportability() {
       .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name))
       .map((p: IProcess) => p.name);
 
-  /**
-   * Hook para manejar la carga de subtareas y eventos del calendario.
-   * @description Este hook se encarga de cargar las subtareas y los eventos del calendario, así como de manejar el estado del sidebar y la vista del calendario.
-   */
-  useEffect(() => {
-    if (subtasksData?.subtasks) {
-      setSubtasks(subtasksData.subtasks);
-    } else if (subtasksError) {
-      console.error("Error fetching subtasks:", subtasksError);
-    }
-  }, [subtasksData, subtasksError]);
+  const filteredProcessesCommunications = processes
+    .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name));
+
+  const ProcessesNames = processes
+      .filter((p: IProcess) => p.name !== "Otro")
+      .map((p: IProcess) => p.name);
+
+  const ValleysProcesses = processes
+    .filter((p: IProcess) => p.name !== "Otro" && !['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas'].includes(p.name))
+    .map((p: IProcess) => p.name);
+  
+    const filteredProcesses = processes.filter((p: IProcess) => p.name !== "Otro");
 
   /**
    * Hook para manejar el cambio de vista del calendario según el tamaño de la ventana.
@@ -102,6 +92,28 @@ export function useReportability() {
           return CommunicationsColors[3]; // Transversales
         default:
           return "#000000";
+      }
+    }
+    else if (userRole === "encargado cumplimiento") {
+      switch (id) {
+        case 1:
+          return ValleyColors[0]; // Valle Copiapó
+        case 2:
+          return ValleyColors[1]; // Valle Huasco
+        case 3:
+          return ValleyColors[2]; // Valle Elqui
+        case 4:
+          return  CommunicationsColors[0] // Comunicaciones Internas
+        case 5:
+          return CommunicationsColors[1]; // Comunicaciones Internas
+        case 6:
+          return CommunicationsColors[2]; // Comunicaciones Externas
+        case 7:
+          return CommunicationsColors[3]; // Comunicaciones Asuntos Públicos
+        case 8:
+          return CommunicationsColors[4]; // Transversales
+        default:
+          return "#000000"; // Color por defecto
       }
     }
     else{
@@ -158,7 +170,6 @@ export function useReportability() {
               variables: { id: subtask.taskId },
             });
             const task: ITask = data?.task;
-            console.log("Subtask data:", subtask);
             return {
               title: subtask.name,
               start: subtask.endDate,
@@ -169,7 +180,7 @@ export function useReportability() {
               status: subtask.status.name,
               valley: handleGetValley(task?.valleyId ?? 5),
               faena: handleGetFaena(task?.faenaId ?? 11),
-              color: handleGetColor(isCommunicationsManager ? (task?.processId ?? 8) : (task?.valleyId ?? 5)),
+              color: handleGetColor(isCommunicationsManager ? (task?.processId ?? 8) : userRole === "encargado cumplimiento" ? (task.processId ?? 8) : (task?.valleyId ?? 5)),
               allDay: true,
             };
           } catch (err) {
@@ -204,7 +215,7 @@ export function useReportability() {
    * @returns Lista de todas las subtareas obtenidas de los procesos de comunicación.
    */
   const fetchAllProcessesSubtasks = async () => {
-    const targetProcessIds = [4, 5, 6, 7]; 
+    const targetProcessIds = isCommunicationsManager ? [4, 5, 6, 7] : isValleyManager ? [1, 2, 3] : [1, 2, 3, 4, 5, 6, 7]; 
     const allSubtasks: ISubtask[] = [];
     
     const filteredProcesses = processes.filter((p: IProcess) => targetProcessIds.includes(Number(p.id)));
@@ -212,14 +223,12 @@ export function useReportability() {
     for (const process of filteredProcesses) {
       try {
         const { data } = await GetProcessesSubtask({ variables: { processId: process.id } });
-        console.log(data);
         const subtasks = data?.subtasksByProcess || [];
         allSubtasks.push(...subtasks);
       } catch (error) {
         console.error(`Error fetching subtasks for process ID ${process.id}:`, error);
       }
     }
-    
     return allSubtasks;
   };
 
@@ -231,21 +240,18 @@ export function useReportability() {
   const handleDropdownSelect = async (item: string) => {
     setSelectedItem(item);
 
-    if (shouldUseProcessQuery) {
+    if ((userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos")) {
       if (item === "Transversales") {
         const allSubtasks = await fetchAllProcessesSubtasks();
         setSubtasks(allSubtasks);
-        console.log(`Fetched ${allSubtasks.length} subtasks for all communication processes`);
         await fetchCalendarEvents(allSubtasks);
       } else {
         const process = processes.find((p: IProcess) => p.name === item);
         if (process) {
           try {
-            console.log("Process selected:", process);
             const { data: processData } = await GetProcessesSubtask({ 
               variables: { processId: process.id } 
             });
-            console.log(`Fetched subtasks for process ${process.name}:`, processData);
             const processSubtasks = processData?.subtasksByProcess || [];
             setSubtasks(processSubtasks);
             await fetchCalendarEvents(processSubtasks); 
@@ -255,17 +261,19 @@ export function useReportability() {
         }
       }
     } else {
-      if (item === "Transversal") {
-        setSubtasks(subtasksData?.subtasks || []);
-        await fetchCalendarEvents(subtasksData?.subtasks || []); 
+      if (item === "Transversales") {
+          const allSubtasks = await fetchAllProcessesSubtasks();
+          setSubtasks(allSubtasks);
+          await fetchCalendarEvents(allSubtasks);
       } else {
-        const valley = valleys.find((v: IValley) => v.name === item);
-        const valleyId = valley ? valley.id : 0;
+        const process = processes.find((p: IProcess) => p.name === item);
         try {
-          const { data: valleyData } = await GetValleySubtasks({ variables: { valleyId } });
-          const valleySubtasks = valleyData?.valleySubtasks || [];
-          setSubtasks(valleySubtasks);
-          await fetchCalendarEvents(valleySubtasks); 
+            const { data: processData } = await GetProcessesSubtask({ 
+              variables: { processId: process.id } 
+            });
+          const processSubtasks = processData?.subtasksByProcess || [];
+          setSubtasks(processSubtasks);
+          await fetchCalendarEvents(processSubtasks); 
         } catch (error) {
           console.error("Error fetching valley subtasks:", error);
         }
@@ -279,13 +287,11 @@ export function useReportability() {
    */
   useEffect(() => {
   const loadInitialData = async () => {
-    if (shouldUseProcessQuery && processes.length > 0) {
+    if (processes.length > 0) {
       try {
-        console.log("Loading subtasks for communication processes...");
         const allSubtasks = await fetchAllProcessesSubtasks();
         setSubtasks(allSubtasks);
         await fetchCalendarEvents(allSubtasks);
-        console.log(`Loaded ${allSubtasks.length} subtasks for communication processes`);
       } catch (error) {
         console.error("Error loading initial communication processes data:", error);
       }
@@ -293,24 +299,27 @@ export function useReportability() {
   };
 
   loadInitialData();
-}, [processes, shouldUseProcessQuery]);
+}, [processes]);
 
   /**
    * Hook para manejar la carga de subtareas del valle seleccionado.
    * @description Este efecto se ejecuta cada vez que el valle seleccionado cambia, obteniendo las subtareas correspondientes y actualizando los eventos del calendario.
    */
-  const loading = subtasksLoading || taskLoading || valleySubtasksLoading || eventsLoading;
+  const loading =  taskLoading || valleySubtasksLoading || eventsLoading;
 
   return {
     toggleSidebar,
     handleDropdownSelect,
-    subtasksData,
+
     loading,
     isSidebarOpen,
     selectedItem,
     calendarView,
     calendarEvents,
     filteredProcessesNames,
-    processes,
+    ProcessesNames,
+    filteredProcesses,
+    filteredProcessesCommunications,
+    ValleysProcesses,
   };
 }

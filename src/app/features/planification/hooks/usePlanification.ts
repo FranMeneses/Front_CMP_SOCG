@@ -109,6 +109,7 @@ export const usePlanification = () => {
         }
         setIsCommunicationModalOpen(false);
         refetch();
+        window.location.reload();
     };
       
     /**
@@ -124,10 +125,7 @@ export const usePlanification = () => {
                     input: {
                         name: task.name,
                         description: task.description,
-                        valleyId: task.valleyId,
-                        faenaId: task.faenaId,
                         statusId: task.statusId,
-                        processId: task.processId,
                     }
                 }
             })
@@ -135,6 +133,7 @@ export const usePlanification = () => {
             console.error("Error updating communication task:", error);
         }
         refetch();
+        window.location.reload();
         setIsCommunicationModalOpen(false);
     };
 
@@ -179,7 +178,6 @@ export const usePlanification = () => {
      */
     const handleUpdateCompliance = async (compliance: IComplianceForm) => {
         try {
-            console.log("Updating compliance with ID:", compliance);
             const { data } = await updateCompliance({
                 variables: {
                     id: selectedCompliance?.id,
@@ -190,6 +188,25 @@ export const usePlanification = () => {
                     }
                 }
             })
+            try {
+                const { data: registryData } = await updateRegistry({
+                    variables: {
+                        id: data.update.id,
+                        input: {
+                            cartaAporte: compliance.cartaAporte,
+                            minuta: compliance.minuta,
+                            hasMemo: compliance.hasMemo,
+                            hasSolped: compliance.hasSolped,
+                            hasHem: compliance.hasHem,
+                            hasHes: compliance.hasHes,
+                            provider: compliance.provider,
+                        }
+                    }
+                })
+            }
+            catch (error) {
+                console.error("Error updating registry task:", error);
+            }
         } catch (error) {
             console.error("Error updating compliance task:", error);
         }

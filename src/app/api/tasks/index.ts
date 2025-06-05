@@ -106,7 +106,6 @@ export const GET_TASK_SUBTASKS = gql`
     taskSubtasks(id: $id) {
       id
       taskId
-      number
       name
       description
       budget

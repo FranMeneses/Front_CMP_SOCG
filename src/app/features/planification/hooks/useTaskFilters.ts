@@ -50,30 +50,47 @@ export const useTaskFilters = (
         }
     };
 
-        const handleLateFilterClick = () => {
+    const handleLateFilterClick = () => {
         setIsLateFilterActive(!isLateFilterActive);
         
         if (!isLateFilterActive) {
             const currentDate = new Date();
             
-            const delayedTasks = tasks.filter(task => {
+            const tasksToFilter = selectedProcess 
+                ? filteredTasks 
+                : tasks;       
+            
+            const delayedTasks = tasksToFilter.filter(task => {
                 if (!task.endDate) return false;
                 
                 const endDate = new Date(task.endDate);
                 return endDate < currentDate && 
-                       task.status?.name !== "Completada" && 
-                       task.status?.name !== "Cancelada";
+                    task.status?.name !== "Completada" && 
+                    task.status?.name !== "Cancelada";
             });
             
             setFilteredTasks(delayedTasks);
-            setActiveStatusFilter(null); 
         } else {
             if (selectedProcess) {
                 handleFilterByProcess(selectedProcess.id).then(processTasks => {
-                    setFilteredTasks(processTasks || []);
+                    if (activeStatusFilter) {
+                        const filteredByStatus = (processTasks || []).filter(task => 
+                            task.status?.name === activeStatusFilter
+                        );
+                        setFilteredTasks(filteredByStatus);
+                    } else {
+                        setFilteredTasks(processTasks || []);
+                    }
                 });
             } else {
-                setFilteredTasks(tasks);
+                if (activeStatusFilter) {
+                    const filteredByStatus = tasks.filter(task => 
+                        task.status?.name === activeStatusFilter
+                    );
+                    setFilteredTasks(filteredByStatus);
+                } else {
+                    setFilteredTasks(tasks);
+                }
             }
         }
     };

@@ -101,3 +101,22 @@ export const GET_ALL_DOCUMENT_TYPES = gql`
         }
     }
 `;
+
+// QUERY TO GET DOCUMENT BY TASK AND TYPE
+export const GET_DOCUMENT_BY_TASK_AND_TYPE = gql`
+  query GetDocumentByTaskAndType($taskId: String!, $documentType: Int!) {
+    documentByTaskAndType(taskId: $taskId, documentType: $documentType) {
+      id_documento
+      id_tarea
+      id_subtarea
+      tipo_documento
+      ruta
+      fecha_carga
+      nombre_archivo
+      tipo_doc {
+        id_tipo_documento
+        tipo_documento
+      }
+    }
+  }
+`;

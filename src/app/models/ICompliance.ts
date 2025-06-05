@@ -51,8 +51,8 @@ export interface IComplianceForm {
     statusId: number;
     applies: boolean;
     status: IComplianceStatus;
-    cartaAporteObs: boolean;
-    minutaObs: boolean;
+    cartaAporte: boolean;
+    minuta: boolean;
     hasMemo: boolean;
     hasSolped: boolean;
     hasHem: boolean;

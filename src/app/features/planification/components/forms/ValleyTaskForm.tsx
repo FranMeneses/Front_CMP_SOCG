@@ -20,6 +20,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
     faenas,
     dropdownItems,
     handleInputChange,
+    handleComplianceChange,
     handleSave,
     getFaenaNameById,
   } = useValleyTaskForm(onSave, valley, isEditing, infoTask);
@@ -104,6 +105,16 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           selectedValue={infoTask?.interactionId !== undefined ? dropdownItems.interaction[infoTask.interactionId - 1] : undefined}
           data-test-id="task-interaction-dropdown"
         />
+      </div>
+      <div className="mb-4 ">
+        <label className="block text-sm font-medium mb-1">¿Compliance?</label>
+        <input
+            type="checkbox"
+            checked={formState.compliance}
+            onChange={(e) => handleComplianceChange(e.target.checked)}
+            className="cursor-pointer"
+            data-test-id="task-compliance-checkbox"
+          />
       </div>
       {isEditing && (
         <div className="mb-4 ">

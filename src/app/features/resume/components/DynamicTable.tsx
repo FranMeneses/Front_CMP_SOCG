@@ -86,7 +86,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               </tr>
 
               {selectedTaskId === task.id &&
-                subtasks.map((subtask) => (
+                subtasks.filter(subtask => subtask.taskId === task.id).map((subtask) => (
                   <tr
                     key={subtask.id}
                     className="bg-gray-100 text-sm text-gray-700 font-medium"

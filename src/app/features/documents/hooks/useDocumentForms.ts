@@ -161,9 +161,23 @@ export function useDocumentForms() {
      * Opciones para los dropdowns
      */
     const dropdownOptions = {
-        documentTypes: Array.isArray(documentTypes) ? documentTypes.map((type: ITipoDocumento) => ({ id: type.id_tipo_documento, label: type.tipo_documento })) : [],
-        tasks: Array.isArray(tasks) ? tasks.map((task: ITask) => ({ id: task.id, label: task.name })) : [],
-        subtasks: Array.isArray(subtasks) ? subtasks.map((subtask: ISubtask) => ({ id: subtask.id, label: subtask.name })) : []
+        documentTypes: Array.isArray(documentTypes) 
+            ? documentTypes
+                .filter((type: ITipoDocumento) => 
+                    type.tipo_documento !== "Carta de Aporte" && 
+                    type.tipo_documento !== "Minuta"
+                )
+                .map((type: ITipoDocumento) => ({ 
+                    id: type.id_tipo_documento, 
+                    label: type.tipo_documento 
+                })) 
+            : [],
+        tasks: Array.isArray(tasks) 
+            ? tasks.map((task: ITask) => ({ id: task.id, label: task.name })) 
+            : [],
+        subtasks: Array.isArray(subtasks) 
+            ? subtasks.map((subtask: ISubtask) => ({ id: subtask.id, label: subtask.name })) 
+            : []
     };
 
     return {

@@ -32,16 +32,6 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                 />
             </div>
             <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Número</label>
-                <input
-                    type="number"
-                    value={subtaskFormState.number}
-                    onChange={(e) => handleSubtaskInputChange("number", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                    data-test-id="subtask-number-input"
-                />
-            </div>
-            <div className="mb-4 truncate">
                 <label className="block text-sm font-medium mb-1">Descripción</label>
                 <input
                     type="text"

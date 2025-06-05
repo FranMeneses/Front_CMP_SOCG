@@ -5,7 +5,6 @@ export interface Beneficiary {
 
 export interface SubtasksInitialValues {
     name?: string;
-    number?: string;
     description?: string;
     budget?: string;
     expense?: string;

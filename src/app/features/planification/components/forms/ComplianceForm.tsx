@@ -21,7 +21,17 @@ export default function ComplianceForm({
     userRole
 }: ComplianceFormProps) {
 
-    const { dropdownItems, formState, handleSave, handleInputChange, complianceStatuses, handleCartaAporteChange, handleMinutaChange } = useComplianceForm(
+    const { 
+        dropdownItems, 
+        formState, 
+        complianceStatuses, 
+        handleSave, 
+        handleInputChange, 
+        handleCartaAporteChange, 
+        handleMinutaChange, 
+        handleGetCarta, 
+        handleGetMinuta 
+    } = useComplianceForm(
         onSave, 
         isEditing, 
         selectedCompliance,
@@ -63,7 +73,7 @@ export default function ComplianceForm({
                             <h3 className="text-sm font-medium mb-2">Carta Aporte</h3>
                             <div className="mb-2">
                                 <span className="text-xs font-medium">Documento cargado:</span>
-                                <span className="text-xs ml-1 text-blue-600">carta_aporte.pdf</span> {/*TODO: CAMBIAR A OBTENER DOCUMENTO POR TAREA Y TIPO*/}
+                                <span className="text-xs ml-1 text-blue-600">{handleGetCarta()}</span>
                             </div>
                         </div>
                         
@@ -91,11 +101,11 @@ export default function ComplianceForm({
                             <div className="mb-2">
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-medium">Carta Aporte:</span>
-                                    <span className="text-xs text-blue-600">carta_aporte.pdf</span> {/*TODO: CAMBIAR A OBTENER DOCUMENTO POR TAREA Y TIPO*/}
+                                    <span className="text-xs text-blue-600">{handleGetCarta()}</span> 
                                 </div>
                                 <div className="flex items-center justify-between mt-1">
                                     <span className="text-xs font-medium">Minuta:</span>
-                                    <span className="text-xs text-blue-600">minuta_reunion.pdf</span> {/*TODO: CAMBIAR A OBTENER DOCUMENTO POR TAREA Y TIPO*/}
+                                    <span className="text-xs text-blue-600">{handleGetMinuta()}</span> 
                                 </div>
                             </div>
                         </div>
@@ -144,7 +154,14 @@ export default function ComplianceForm({
                         <div className="mb-4 p-3 bg-gray-50 rounded-md">
                             <h3 className="text-sm font-medium mb-2">Documentos previos</h3>
                             <div className="text-xs">
-                                <p>• Carta Aporte, Minuta y documentación correspondiente cargados</p>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-medium">Carta Aporte:</span>
+                                    <span className="text-xs text-blue-600">{handleGetCarta()}</span> 
+                                </div>
+                                <div className="flex items-center justify-between mt-1">
+                                    <span className="text-xs font-medium">Minuta:</span>
+                                    <span className="text-xs text-blue-600">{handleGetMinuta()}</span> 
+                                </div>
                                 {formState.hasMemo && <p>• MEMORANDUM registrado</p>}
                                 {formState.hasSolped && <p>• SOLPED registrada</p>}
                             </div>
@@ -205,8 +222,10 @@ export default function ComplianceForm({
                         <div className="mt-3 text-xs">
                             <h4 className="font-medium mb-1">Resumen:</h4>
                             <ul className="list-disc pl-5 space-y-1">
-                                <li>Carta Aporte registrada</li>
-                                <li>Minuta registrada</li>
+                                <span className="text-xs font-medium">Carta Aporte:</span>
+                                <span className="text-xs text-blue-600">{handleGetCarta()}</span> 
+                                <span className="text-xs font-medium">Minuta:</span>
+                                <span className="text-xs text-blue-600">{handleGetMinuta()}</span> 
                                 {formState.hasMemo && <li>MEMORANDUM registrado</li>}
                                 {formState.hasSolped && <li>SOLPED registrada</li>}
                                 {formState.hasHem && <li>HEM registrada</li>}
@@ -225,7 +244,7 @@ export default function ComplianceForm({
     return (
         <div data-test-id="compliance-form" className="max-h-[70vh] overflow-y-auto">
             <h2 className="text-lg font-semibold mb-4">
-                {isEditing ? "Editar Compliance" : "Agregar Compliance"}
+                Compliance
             </h2>
             
             <div className="mb-4 truncate">
@@ -260,6 +279,7 @@ export default function ComplianceForm({
                     onSelect={(value) => handleInputChange('statusId', value)}
                     isInModal={true}
                     selectedValue={selectedCompliance?.status ? dropdownItems.statuses.find((status:string) => status === selectedCompliance.status.name) : ""}
+                    disabled={formState.statusId > 1}
                     data-test-id="compliance-status-dropdown" 
                 />
             </div>
@@ -278,12 +298,24 @@ export default function ComplianceForm({
                 <Button
                     variant="default"
                     onClick={handleSave}
-                    disabled={!formState.name || !formState.description || !formState.statusId }
+                    disabled={!formState.name || !formState.description || !formState.statusId || 
+                            (formState.statusId === 2 && !formState.cartaAporteFile) ||
+                            (formState.statusId === 3 && !formState.minutaFile) ||
+                            (formState.statusId === 4 && !(formState.hasMemo || formState.hasSolped)) ||
+                            (formState.statusId === 5 && (!(formState.hasHem || formState.hasHes) || !formState.provider))
+                            }
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
-                    {saveButtonText}
+                    {formState.statusId >= 2 && formState.statusId < 6 ? 
+                        "Guardar y Avanzar" : saveButtonText}
                 </Button>
+
+                {formState.statusId >= 2 && formState.statusId < 6 && (
+                    <div className="text-xs text-blue-600 mt-1">
+                        Al guardar, avanzará automáticamente al siguiente estado.
+                    </div>
+                )}
             </div>
         </div>
     );

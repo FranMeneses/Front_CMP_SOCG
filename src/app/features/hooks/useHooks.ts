@@ -5,7 +5,7 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado valle elqui"); 
+    const [userRole, setUserRole] = useState<string>("encargado cumplimiento"); // Valor por defecto
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys, faenas } = useData();
 
@@ -110,7 +110,10 @@ export function useHooks() {
             case "admin":
                 router.push("/features/resume");
                 break;
-            case "superintendente":
+            case "superintendente de relacionamiento":
+                router.push("/features/resume");
+                break;
+            case "superintendente de comunicaciones":
                 router.push("/features/resume");
                 break;
             case "encargado cumplimiento":
@@ -142,9 +145,9 @@ export function useHooks() {
      * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
      * @returns 
      */
-    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
+    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "superintendente de relacionamiento";
     
-    const isCommunicationsManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos";
+    const isCommunicationsManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos" || userRole === "superintendente de comunicaciones";
 
     return {
         handleLoginRedirect,
