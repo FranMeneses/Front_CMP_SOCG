@@ -24,7 +24,7 @@ export default function CalendarForm(event: any) {
     }, [event.selectedEvent.taskId, handleGetTaskName]);
 
     return (
-        <div className="items-center justify-center p-4">
+        <div className="items-center justify-center p-4 font-[Helvetica]">
             <h2 className="text-2xl font-semibold text-center justify-center">{event.selectedEvent.title}</h2>
             <p className="mb-2"><strong>Valle:</strong> {event.selectedEvent.valley}</p>
             <p className="mb-2"><strong>Fecha de inicio:</strong> {event.selectedEvent.startDate}</p>

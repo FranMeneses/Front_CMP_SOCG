@@ -1,12 +1,14 @@
 import { useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_COMPLIANCE, GET_COMPLIANCE_REGISTRIES, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
 import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
 import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
 import { ITipoDocumento } from "@/app/models/IDocuments";
 import { useDocumentsPage } from "../../documents/hooks/useDocumentsPage";
 import { FormData } from "../../documents/hooks/useDocumentForms";
+import { CREATE_SOLPED } from "@/app/api/solped";
+import { CREATE_MEMO } from "@/app/api/memo";
 
 export const useComplianceForm = (
     onSave: any,
@@ -30,6 +32,10 @@ export const useComplianceForm = (
         hasHem: boolean;
         hasHes: boolean;
         provider: string;
+        memoAmount?: number;
+        solpedCECO?: number;
+        solpedAccount?: number;
+        solpedAmount?: number;
     }>({
         name: "",
         description: "",
@@ -46,6 +52,10 @@ export const useComplianceForm = (
         hasHem: false,
         hasHes: false,
         provider: "",
+        memoAmount: undefined,
+        solpedAccount: undefined,
+        solpedCECO: undefined,
+        solpedAmount: undefined,
     });
 
     const {data: complianceStatusData } = useQuery(GET_COMPLIANCE_STATUSES);
@@ -58,6 +68,9 @@ export const useComplianceForm = (
     const [getCompliance] = useLazyQuery(GET_COMPLIANCE);
     const [getRegistry] = useLazyQuery(GET_COMPLIANCE_REGISTRIES);
     const [getDocument] = useLazyQuery(GET_DOCUMENT_BY_TASK_AND_TYPE);
+
+    const [createSolped] = useMutation(CREATE_SOLPED);
+    const [createMemo] = useMutation(CREATE_MEMO);
 
     const { handleUploadFile } = useDocumentsPage();
     const { valleysName, faenasName, valleys } = useHooks();
@@ -104,6 +117,53 @@ export const useComplianceForm = (
         catch (error) {
             console.error("Error fetching document:", error);
             return null;
+        }
+    };
+
+    /**
+     * Función para crear una Solped.
+     * @description Esta función utiliza la mutación `createSolped` para crear una nueva Solped asociada a la tarea de cumplimiento seleccionada.
+     * @param solpedData Datos necesarios para crear una Solped.
+     * @returns 
+     */
+    const handleCreateSolped = async (solpedData: any) => {
+        try {
+            const { data } = await createSolped({
+                variables: {
+                    solpedData: {
+                        ...solpedData,
+                        taskId: selectedCompliance?.task.id || "",
+                    }
+                }
+            });
+            return data.createSolped;
+        }
+        catch (error) {
+            console.error("Error creating Solped:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función para crear un Memo.
+     * @description Esta función utiliza la mutación `createMemo` para crear un nuevo Memo asociado a la tarea de cumplimiento seleccionada.
+     * @param memoData Datos necesarios para crear un Memo.
+     * @returns 
+     */
+    const handleCreateMemo = async (memoData: any) => {
+        try {
+            const { data } = await createMemo({
+                variables: {
+                    memoData: {
+                        ...memoData,
+                        taskId: selectedCompliance?.task.id || "",
+                    }
+                }
+            });
+            return data.createMemo;
+        }
+        catch (error) {
+            console.error("Error creating Memo:", error);
         }
     };
 
@@ -188,7 +248,7 @@ export const useComplianceForm = (
                 hasHem: selectedCompliance.hasHem || false,
                 hasHes: selectedCompliance.hasHes || false,
                 provider: selectedCompliance.provider || "",
-            });
+            }); // TODO: Agegar Memo / Solped al formulario y crear mutaciones de SOLPED Y MEMO 
         }
     }, [isEditing, selectedCompliance]);
 

@@ -1,16 +1,16 @@
 'use client';
 import React from "react";
-import { usePlanification } from "../../hooks/useCompliance";
+import { useCompliance } from "../../hooks/useCompliance";
 import { useHooks } from "../../../hooks/useHooks";
-import TaskRow from "./TaskRow";
-import TaskModals from "../TaskModalForms";
+import ComplianceRow from "./ComplianceRow";
+import ComplianceModals from "../ComplianceModalForms";
 import { ICompliance } from "@/app/models/ICompliance";
 
-interface TasksTableProps {
+interface ComplianceTableProps {
     compliance: ICompliance[];
 }
 
-const TasksTable: React.FC<TasksTableProps> = ({ 
+const ComplianceTable: React.FC<ComplianceTableProps> = ({ 
     compliance, 
 }) => {
     const { 
@@ -21,10 +21,9 @@ const TasksTable: React.FC<TasksTableProps> = ({
         activeFilter: hookActiveFilter,
         selectedCompliance,
         isComplianceModalOpen,
-
         handleUpdateCompliance,
         handleCancelCompliance,
-    } = usePlanification();
+    } = useCompliance();
 
     const { currentValleyName, userRole } = useHooks();
 
@@ -32,7 +31,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         <div>
 
             
-            <div className="overflow-x-auto rounded-lg shadow">
+            <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
                 <table className="w-full">
                     <thead className="bg-gray-100">
                         <tr className="text-sm text-gray-700">
@@ -40,7 +39,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Inicio</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Finalización</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Días Restantes</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha de Termino</th>
                             <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Estado</th>
                             <th colSpan={3}/>
                         </tr>
@@ -48,7 +46,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
                         {compliance.map((compliance) => (
                             <React.Fragment key={compliance.id}>
-                                <TaskRow 
+                                <ComplianceRow 
                                     compliance={compliance}
                                     handleOnTaskClick={handleOnTaskClick}
                                     handleSeeInformation={handleSeeInformation}
@@ -61,7 +59,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 </table>
             </div>
             
-            <TaskModals
+            <ComplianceModals
 
                 isComplianceModalOpen={isComplianceModalOpen}
                 selectedCompliance={selectedCompliance}
@@ -76,4 +74,4 @@ const TasksTable: React.FC<TasksTableProps> = ({
     );
 };
 
-export default TasksTable;
+export default ComplianceTable;

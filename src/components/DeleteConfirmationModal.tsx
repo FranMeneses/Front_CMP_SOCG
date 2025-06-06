@@ -18,7 +18,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto font-[Helvetica]">
         <div className="flex items-center justify-center mb-4">
           <AlertCircle className="h-12 w-12 text-red-500" />
         </div>

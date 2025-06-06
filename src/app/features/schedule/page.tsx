@@ -38,7 +38,7 @@ export default function Schedule() {
               <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
           )}
-          <main className="flex-1 p-4 overflow-y-auto bg-gray-50">
+          <main className="flex-1 p-4 overflow-y-auto bg-gray-50 font-[Helvetica]">
             <div className="p-4 pb-2">
               <h1 className="text-2xl font-bold">Plan de trabajo</h1>
             </div>

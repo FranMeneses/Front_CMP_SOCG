@@ -48,7 +48,7 @@ export default function Planification() {
                                 <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                             </aside>
                         )}
-                        <main className="p-4 h-full overflow-y-auto bg-gray-50">
+                        <main className="p-4 h-full overflow-y-auto bg-gray-50 font-[Helvetica]">
                             <div className="flex flex-col gap-4">
                                 <h1 className="text-2xl font-bold">Planificación</h1>
                                 <div className="">

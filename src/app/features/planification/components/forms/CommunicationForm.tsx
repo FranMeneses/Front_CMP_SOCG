@@ -32,7 +32,7 @@ export default function CommunicationForm({
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
 
     return (
-        <div data-test-id="communication-form">
+        <div className='font-[Helvetica]' data-test-id="communication-form">
             <h2 className="text-lg font-semibold mb-4">
                 {isEditing ? "Editar Tarea" : "Nueva Tarea"}
             </h2>
@@ -96,6 +96,7 @@ export default function CommunicationForm({
                         <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
                         <input
                             type="number"
+                            min={0}
                             value={formState.budget}
                             disabled={true}
                             className="w-full border rounded px-3 py-2"
@@ -106,6 +107,7 @@ export default function CommunicationForm({
                         <label className="block text-sm font-medium mb-1">Gastos (USD)</label>
                         <input
                             type="number"
+                            min={0}
                             value={formState.expense}
                             disabled={true}
                             className="w-full border rounded px-3 py-2"

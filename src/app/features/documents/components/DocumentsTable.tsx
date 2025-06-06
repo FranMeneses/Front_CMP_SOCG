@@ -13,7 +13,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
   const { handleDownload } = useDocumentsRest();
   const { handleDeleteDocument } = useDocumentsGraph();
   return (
-    <div className="overflow-x-auto rounded-lg">
+    <div className="overflow-x-auto rounded-lg font-[Helvetica]">
       <table className="min-w-full">
         <thead>
           <tr className="text-black uppercase text-sm leading-normal">

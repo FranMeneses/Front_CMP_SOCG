@@ -31,7 +31,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
   };
   
   return (
-    <tr>
+    <tr className='font-[Helvetica]'>
       <td
         className={`px-4 py-2 text-left text-black font-semibold ${userRole.toLowerCase() === "encargado cumplimiento" ? "" : "curor-pointer"}`}
         onClick={() => handleOnTaskClick(task.id ?? '')}

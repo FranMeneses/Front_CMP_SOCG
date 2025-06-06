@@ -2,19 +2,18 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import TasksTable from "./components/Table/TasksTable";
-import { usePlanification } from "./hooks/useCompliance";
+import ComplianceTable from "./components/Table/ComplianceTable";
+import { useCompliance } from "./hooks/useCompliance";
 import { useHooks } from "../hooks/useHooks";
 
 
-export default function Planification() {
+export default function Compliance() {
     const {
         toggleSidebar,
         loading,
-        isSidebarOpen,
-        activeFilter,      
+        isSidebarOpen,    
         data
-    } = usePlanification();
+    } = useCompliance();
 
     const { userRole } = useHooks();
 
@@ -45,13 +44,13 @@ export default function Planification() {
                                 <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                             </aside>
                         )}
-                        <main className="p-4 h-full overflow-y-auto bg-gray-50">
+                        <main className="p-4 h-full overflow-y-auto bg-gray-50 font-[Helvetica]">
                             <div className="flex flex-col gap-4">
                                 <h1 className="text-2xl font-bold">Compliance</h1>
                                 <div className="">
                                     <div className="flex-1">
                                         <div className="bg-white rounded-lg shadow-md p-4">
-                                            <TasksTable
+                                            <ComplianceTable
                                                 compliance={data}
                                                 data-test-id="tasks-table"
                                             />

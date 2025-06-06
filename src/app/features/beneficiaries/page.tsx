@@ -47,9 +47,9 @@ export default function Beneficiaries() {
                     <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                     </aside>
                 )}
-                    <main className="flex-1 p-4 overflow-y-auto">
+                    <main className="flex-1 p-4 overflow-y-auto font-[Helvetica]">
                         <div className="flex flex-col gap-4">
-                            <h1 className="text-2xl font-bold">Beneficiarios</h1>
+                            <h1 className="text-2xl font-[Helvetica] font-bold">Beneficiarios</h1>
                         </div>
                         <Button
                             className="mt-4 cursor-pointer bg-[#4f67b8e0] text-white "

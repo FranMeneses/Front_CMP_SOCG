@@ -72,7 +72,7 @@ export default function Resume() {
                 <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
               </aside>
             )}
-            <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
+            <main className="flex-1 p-6 overflow-y-auto bg-gray-50 font-[Helvetica]">
               <div className="flex flex-col gap-6 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="bg-[#e3affbe0] p-4 rounded-lg shadow">

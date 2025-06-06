@@ -1,10 +1,17 @@
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { useComplianceForm } from "../../hooks/useComplianceForm";
-import { IComplianceForm, IComplianceStatus,  } from "@/app/models/ICompliance";
+import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
 import { FileUploadButton } from "@/app/features/documents/components/FileUploadButton";
 import { useState, useEffect } from "react";
 import { IDocumentList } from "@/app/models/IDocuments";
+
+// Componentes para estados específicos
+import CartaAporteFields from "./status-fields/CartaAporteFields";
+import MinutaFields from "./status-fields/MinutaFields";
+import MemorandumFields from "./status-fields/MemorandumFields";
+import HemHesFields from "./status-fields/HEMHESFields";
+import ComplianceSummary from "./status-fields/ComplianceSummary";
 
 interface ComplianceFormProps {
     onSave: any;
@@ -21,7 +28,6 @@ export default function ComplianceForm({
     selectedCompliance,
     userRole
 }: ComplianceFormProps) {
-
     const { 
         dropdownItems, 
         formState, 
@@ -39,24 +45,30 @@ export default function ComplianceForm({
         userRole
     );
 
-    const saveButtonText = isEditing ? "Actualizar" : "Guardar";
-
-    const [cartaData, setCartaData] = useState<IDocumentList>();
-    const [minutaData, setMinutaData] = useState<IDocumentList>();
+    const [documents, setDocuments] = useState({
+        carta: undefined as IDocumentList | undefined,
+        minuta: undefined as IDocumentList | undefined
+    });
 
     useEffect(() => {
-    const fetchData = async () => {
-        if (selectedCompliance?.task.id) {
-            const cartaResult = await handleGetCarta();
-            const minutaResult = await handleGetMinuta();
-            setCartaData(cartaResult);
-            setMinutaData(minutaResult);
-        }
-    };
-  
-  fetchData();
-}, [selectedCompliance?.task.id]);
+        const fetchDocuments = async () => {
+            if (selectedCompliance?.task.id) {
+                const [cartaResult, minutaResult] = await Promise.all([
+                    handleGetCarta(),
+                    handleGetMinuta()
+                ]);
+                setDocuments({
+                    carta: cartaResult,
+                    minuta: minutaResult
+                });
+            }
+        };
+        
+        fetchDocuments();
+    }, [selectedCompliance?.task.id]);
 
+    const saveButtonText = isEditing ? "Actualizar" : "Guardar";
+    
     const renderAdditionalFields = () => {
         if (!formState.statusId) return null;
 
@@ -68,237 +80,102 @@ export default function ComplianceForm({
 
         switch(currentStatus.id) {
             case 2: // Carta Aporte
-                return (
-                <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1">Subir Carta Aporte</label>
-                    <div className="flex items-center">
-                        <FileUploadButton onFileChange={handleCartaAporteChange} />
-                        {formState.cartaAporteFile && (
-                            <span className="ml-2 text-sm text-gray-600">
-                                {formState.cartaAporteFile.name}
-                            </span>
-                        )}
-                    </div>
-                </div>
-                );
+                return <CartaAporteFields 
+                    formState={formState} 
+                    handleCartaAporteChange={handleCartaAporteChange} 
+                />;
             
             case 3: // Minuta
-                return (
-                    <>
-                        {/* Mostrar siempre la información de la carta de aporte */}
-                        <div className="mb-4 p-3 bg-gray-50 rounded-md">
-                            <h3 className="text-sm font-medium mb-2">Carta Aporte</h3>
-                            <div className="mb-2">
-                                <span className="text-xs font-medium">Documento cargado:</span>
-                                <span className="text-xs ml-1 text-blue-600">{cartaData?.nombre_archivo}</span>
-                            </div>
-                        </div>
-                        
-                        {/* Nueva sección para Minuta */}
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium mb-1">Subir Minuta</label>
-                            <div className="flex items-center">
-                                <FileUploadButton onFileChange={handleMinutaChange} />
-                                {formState.minutaFile && (
-                                    <span className="ml-2 text-sm text-gray-600">
-                                        {formState.minutaFile.name}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                    </>
-                );
+                return <MinutaFields 
+                    formState={formState}
+                    cartaData={documents.carta}
+                    handleMinutaChange={handleMinutaChange}
+                />;
             
             case 4: // MEMORANDUM y/o SOLPED
-                return (
-                    <>
-                        {/* Información de estados anteriores */}
-                        <div className="mb-4 p-3 bg-gray-50 rounded-md">
-                            <h3 className="text-sm font-medium mb-2">Documentos previos</h3>
-                            <div className="mb-2">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs font-medium">Carta Aporte:</span>
-                                    <span className="text-xs text-blue-600">{cartaData?.nombre_archivo}</span> 
-                                </div>
-                                <div className="flex items-center justify-between mt-1">
-                                    <span className="text-xs font-medium">Minuta:</span>
-                                    <span className="text-xs text-blue-600">{minutaData?.nombre_archivo}</span> 
-                                </div>
-                            </div>
-                        </div>
-                        
-                        {/* Nueva sección para MEMORANDUM/SOLPED */}
-                        <div className="mb-4 p-3 bg-gray-50 rounded-md">
-                            <h3 className="text-sm font-medium mb-2">MEMORANDUM y/o SOLPED</h3>
-                            
-                            <div className="mb-3">
-                                <label className="block text-xs font-medium mb-1">Tipo de documento</label>
-                                <div className="flex space-x-4">
-                                    <label className="inline-flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={formState.hasMemo}
-                                            onChange={() => {
-                                                handleInputChange('hasMemo', true);
-                                                handleInputChange('hasSolped', false);
-                                            }}
-                                            className="form-checkbox h-4 w-4"
-                                        />
-                                        <span className="ml-2 text-xs">MEMORANDUM</span>
-                                    </label>
-                                    <label className="inline-flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={formState.hasSolped}
-                                            onChange={() => {
-                                                handleInputChange('hasSolped', true);
-                                                handleInputChange('hasMemo', false);
-                                            }}
-                                            className="form-checkbox h-4 w-4"
-                                        />
-                                        <span className="ml-2 text-xs">SOLPED</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>   
-                    </>
-                );
+                return <MemorandumFields 
+                    formState={formState}
+                    cartaData={documents.carta}
+                    minutaData={documents.minuta}
+                    handleInputChange={handleInputChange}
+                />;
                 
             case 5: // HEM/HES
-                return (
-                    <>
-                        {/* Información de documentos previos en forma compacta */}
-                        <div className="mb-4 p-3 bg-gray-50 rounded-md">
-                            <h3 className="text-sm font-medium mb-2">Documentos previos</h3>
-                            <div className="text-xs">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs font-medium">Carta Aporte:</span>
-                                    <span className="text-xs text-blue-600">{cartaData?.nombre_archivo}</span> 
-                                </div>
-                                <div className="flex items-center justify-between mt-1">
-                                    <span className="text-xs font-medium">Minuta:</span>
-                                    <span className="text-xs text-blue-600">{minutaData?.nombre_archivo}</span> 
-                                </div>
-                                {formState.hasMemo && <p>• MEMORANDUM registrado</p>}
-                                {formState.hasSolped && <p>• SOLPED registrada</p>}
-                            </div>
-                        </div>
-                        
-                        {/* Nueva sección para HEM/HES */}
-                        <div className="mb-4 p-3 bg-gray-50 rounded-md">
-                            <h3 className="text-sm font-medium mb-2">HEM/HES Registradas</h3>
-                            <div className="mb-3">
-                                <label className="block text-xs font-medium mb-1">Registros</label>
-                                <div className="flex space-x-4">
-                                    <label className="inline-flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={formState.hasHem}
-                                            onChange={() => {
-                                                handleInputChange('hasHem', true);
-                                                handleInputChange('hasHes', false);
-                                            }}
-                                            className="form-checkbox h-4 w-4"
-                                        />
-                                        <span className="ml-2 text-xs">HEM</span>
-                                    </label>
-                                    <label className="inline-flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={formState.hasHes}
-                                            onChange={() => {
-                                                handleInputChange('hasHes', true);
-                                                handleInputChange('hasHem', false);
-                                            }}
-                                            className="form-checkbox h-4 w-4"
-                                        />
-                                        <span className="ml-2 text-xs">HES</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="mb-3">
-                                <label className="block text-xs font-medium mb-1">Proveedor</label>
-                                <input
-                                    type="text"
-                                    value={formState.provider || ''}
-                                    onChange={(e) => handleInputChange('provider', e.target.value)}
-                                    className="w-full border rounded px-3 py-2 text-xs"
-                                    placeholder="Nombre del proveedor"
-                                />
-                            </div>
-                        </div>
-                    </>
-                );
+                return <HemHesFields 
+                    formState={formState}
+                    cartaData={documents.carta}
+                    minutaData={documents.minuta}
+                    handleInputChange={handleInputChange}
+                />;
                 
             case 6: // Resumen
-                return (
-                    <div className="mb-4 p-3 bg-green-50 rounded-md border border-green-200">
-                        <h3 className="text-sm font-medium mb-2 text-green-700">Compliance Completado</h3>
-                        <p className="text-xs text-green-600">Todos los documentos y registros han sido procesados correctamente.</p>
-                        
-                        <div className="mt-3 text-xs">
-                            <h4 className="font-medium mb-1">Resumen:</h4>
-                            <ul className="list-disc pl-5 space-y-1">
-                                <span className="text-xs font-medium">Carta Aporte:</span>
-                                <span className="text-xs text-blue-600">{cartaData?.nombre_archivo}</span> 
-                                <span className="text-xs font-medium">Minuta:</span>
-                                <span className="text-xs text-blue-600">{minutaData?.nombre_archivo}</span> 
-                                {formState.hasMemo && <li>MEMORANDUM registrado</li>}
-                                {formState.hasSolped && <li>SOLPED registrada</li>}
-                                {formState.hasHem && <li>HEM registrada</li>}
-                                {formState.hasHes && <li>HES registrada</li>}
-                                {formState.provider && <li>Proveedor: {formState.provider}</li>}
-                            </ul>
-                        </div>
-                    </div>
-                );
+                return <ComplianceSummary 
+                    formState={formState}
+                    cartaData={documents.carta}
+                    minutaData={documents.minuta}
+                />;
                 
             default:
                 return null;
         }
     };
 
+    // Función para validar el formulario según su estado
+    const isFormValid = () => {
+        const baseValidation = formState.name && formState.description && formState.statusId;
+        
+        if (!baseValidation) return false;
+        
+        switch(formState.statusId) {
+            case 2: return !!formState.cartaAporteFile;
+            case 3: return !!formState.minutaFile;
+            case 4: return !!(formState.hasMemo || formState.hasSolped);
+            case 5: return !!(formState.hasHem || formState.hasHes) && !!formState.provider;
+            default: return true;
+        }
+    };
+
     return (
-        <div data-test-id="compliance-form" className="max-h-[70vh] overflow-y-auto">
-            <h2 className="text-lg font-semibold mb-4">
-                Compliance
-            </h2>
+        <div data-test-id="compliance-form" className="max-h-[70vh] overflow-y-auto font-[Helvetica]">
+            <h2 className="text-lg font-semibold mb-4">Compliance</h2>
             
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Iniciativa</label>
-                <input
-                    type="text"
-                    value={formState.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                    data-test-id="compliance-name-input"
-                    disabled={formState.statusId > 1} 
-                />
-            </div>
+            <div className="space-y-4 mb-6">
+                <div className="truncate">
+                    <label className="block text-sm font-medium mb-1">Iniciativa</label>
+                    <input
+                        type="text"
+                        value={formState.name}
+                        onChange={(e) => handleInputChange('name', e.target.value)}
+                        className="w-full border rounded px-3 py-2"
+                        data-test-id="compliance-name-input"
+                        disabled={formState.statusId > 1} 
+                    />
+                </div>
 
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Descripción</label>
-                <input
-                    type="text"
-                    value={formState.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                    data-test-id="compliance-description-input"
-                    disabled={formState.statusId > 1} 
-                />
-            </div>
+                <div className="truncate">
+                    <label className="block text-sm font-medium mb-1">Descripción</label>
+                    <input
+                        type="text"
+                        value={formState.description}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
+                        className="w-full border rounded px-3 py-2"
+                        data-test-id="compliance-description-input"
+                        disabled={formState.statusId > 1} 
+                    />
+                </div>
 
-            <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Estado</label>
-                <DropdownMenu
-                    buttonText="Seleccionar Estado"
-                    items={dropdownItems.statuses}
-                    onSelect={(value) => handleInputChange('statusId', value)}
-                    isInModal={true}
-                    selectedValue={selectedCompliance?.status ? dropdownItems.statuses.find((status:string) => status === selectedCompliance.status.name) : ""}
-                    disabled={formState.statusId > 1}
-                    data-test-id="compliance-status-dropdown" 
-                />
+                <div>
+                    <label className="block text-sm font-medium mb-1">Estado</label>
+                    <DropdownMenu
+                        buttonText="Seleccionar Estado"
+                        items={dropdownItems.statuses}
+                        onSelect={(value) => handleInputChange('statusId', value)}
+                        isInModal={true}
+                        selectedValue={selectedCompliance?.status ? dropdownItems.statuses.find((status:string) => status === selectedCompliance.status.name) : ""}
+                        disabled={formState.statusId > 1}
+                        data-test-id="compliance-status-dropdown" 
+                    />
+                </div>
             </div>
             
             {renderAdditionalFields()}
@@ -315,25 +192,20 @@ export default function ComplianceForm({
                 <Button
                     variant="default"
                     onClick={handleSave}
-                    disabled={!formState.name || !formState.description || !formState.statusId || 
-                            (formState.statusId === 2 && !formState.cartaAporteFile) ||
-                            (formState.statusId === 3 && !formState.minutaFile) ||
-                            (formState.statusId === 4 && !(formState.hasMemo || formState.hasSolped)) ||
-                            (formState.statusId === 5 && (!(formState.hasHem || formState.hasHes) || !formState.provider))
-                            }
+                    disabled={!isFormValid()}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
                     {formState.statusId >= 2 && formState.statusId < 6 ? 
                         "Guardar y Avanzar" : saveButtonText}
                 </Button>
-
-                {formState.statusId >= 2 && formState.statusId < 6 && (
-                    <div className="text-xs text-blue-600 mt-1">
-                        Al guardar, avanzará automáticamente al siguiente estado.
-                    </div>
-                )}
             </div>
+
+            {formState.statusId >= 2 && formState.statusId < 6 && (
+                <div className="text-xs text-blue-600 mt-1">
+                    Al guardar, avanzará automáticamente al siguiente estado.
+                </div>
+            )}
         </div>
     );
 }

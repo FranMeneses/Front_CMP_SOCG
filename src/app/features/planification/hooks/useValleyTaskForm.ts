@@ -9,6 +9,7 @@ import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
+import client from "@/lib/apolloClient";
 
 export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
@@ -123,6 +124,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         try {
             const { data: infoData } = await getInfoTask({
                 variables: { id: taskId },
+                fetchPolicy: 'network-only', 
             });
             if (infoData) {
                 return infoData.taskInfo;
@@ -264,14 +266,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
               budget: budget || "",
               expenses: expenses || "",
               faena: faena || "",
-              compliance: infoTask.task.applies ?? undefined, // TODO: PEDIR QUE AGREGUE APPLIES A INFOTASKS (QUE LA TAREA LO TENGA)
-            });
-            console.log("Initial values set:", {
-            initialValues: {
-                ...initialValues,
-                compliance: infoTask.task.applies || false
-            },
-            taskApplies: infoTask.task.applies
+              compliance: infoTask.task.applies ?? undefined, 
             });
           }
           catch (error) {
@@ -375,7 +370,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
             };
         }
-        console.log("Task Details:", taskDetails);
         onSave(taskDetails);
         setFormState({
             name: "",

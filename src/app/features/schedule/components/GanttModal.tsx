@@ -30,7 +30,7 @@ export default function TaskDetailsModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       {selectedSubtask && (
-        <div>
+        <div className="font-[Helvetica]">
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-2">{selectedSubtask.name}</h2>
             <div className="bg-gray-100 p-3 rounded">

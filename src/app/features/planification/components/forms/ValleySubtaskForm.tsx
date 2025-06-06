@@ -20,7 +20,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
     } = useValleySubtasksForm(onSave, subtask);
 
     return (
-        <div data-test-id="subtask-form">
+        <div className='font-[Helvetica]' data-test-id="subtask-form">
             <div className="mb-4 truncate">
                 <label className="block text-sm font-medium mb-1">Nombre</label>
                 <input
@@ -45,6 +45,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                 <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
                 <input
                     type="number"
+                    min={0}
                     value={subtaskFormState.budget}
                     onChange={(e) => handleSubtaskInputChange("budget", e.target.value)}
                     className="w-full border rounded px-3 py-2"
@@ -98,6 +99,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                 <label className="block text-sm font-medium mb-1">Gastos (USD) </label>
                 <input
                     type="number"
+                    min={0}
                     value={subtaskFormState.expense}
                     onChange={(e) => handleSubtaskInputChange("expense", e.target.value)}
                     className="w-full border rounded px-3 py-2"

@@ -121,7 +121,7 @@ const ComboChart = ({
   };
 
   return (
-    <div className="w-full h-full p-4 bg-white">
+    <div className="w-full h-full p-4 bg-white font-[Helvetica]">
       <div className="flex justify-end mb-2">
         <DropdownMenu
           buttonText={currency}

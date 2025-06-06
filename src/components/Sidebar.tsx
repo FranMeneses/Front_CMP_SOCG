@@ -81,7 +81,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
   const filteredNavItems = navItems.filter(item => item.admitedRoles.includes(userRole));
 
   return (
-    <div className="flex flex-col gap-2 p-4 h-full min-h-screen">
+    <div className="flex flex-col gap-2 p-4 h-full min-h-screen font-[Helvetica] bg-white border-r">
       <div className="flex flex-1 flex-col items gap-5 relative">
         {filteredNavItems.map((item) => (
           <Button

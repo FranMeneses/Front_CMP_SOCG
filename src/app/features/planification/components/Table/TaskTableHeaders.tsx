@@ -26,7 +26,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     const renderProcessDropdown = () => {
         if (userRole === "encargado cumplimiento" || isCommunicationsManager) {
             return (
-            <div className="mb-4">
+            <div className="mb-4 font-[Helvetica]">
                 <DropdownMenu
                     buttonText="Seleccione proceso"
                     isInModal={false}
@@ -44,7 +44,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     };
     
     return (
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center mb-2 font-[Helvetica]">
             <div>
                 {renderProcessDropdown()}
             </div>

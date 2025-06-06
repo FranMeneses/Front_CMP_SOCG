@@ -32,7 +32,7 @@ const BarChart = ({
   };
   
     return (
-      <div className="w-full h-full p-4 bg-white">
+      <div className="w-full h-full p-4 bg-white font-[Helvetica]">
         <Bar
           ref={(instance) => {
             if (instance) {

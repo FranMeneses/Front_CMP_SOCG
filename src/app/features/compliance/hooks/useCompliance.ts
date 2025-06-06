@@ -8,7 +8,7 @@ import { useComplianceForm } from "./useComplianceForm";
 import { IComplianceForm } from "@/app/models/ICompliance";
 import { CREATE_COMPLIANCE, CREATE_REGISTRY, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
-export const usePlanification = () => {
+export const useCompliance = () => {
     const { currentValleyId, userRole } = useHooks();
     
     const [isComplianceModalOpen, setIsComplianceModalOpen] = useState<boolean>(false);

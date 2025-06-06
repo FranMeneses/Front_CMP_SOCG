@@ -28,7 +28,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
   const selectedFaenaName = isEditing ? getFaenaNameById(formState.faena) : "";
 
   return (
-    <div data-test-id="task-form">
+    <div className='font-[Helvetica]' data-test-id="task-form">
       <h2 className="text-lg font-semibold mb-4">
         {isEditing ? "Editar Tarea" : "Nueva Tarea"}
       </h2>
@@ -115,6 +115,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask ? (infoTask.task?.applies ? "Si" : "No") : undefined}
           data-test-id="task-compliance-dropdown"
+          disabled={isEditing ? true : false}
         />
       </div>
       {isEditing && (
@@ -136,6 +137,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
             <input
               type="number"
+              min={0}
               value={formState.budget}
               onChange={(e) => handleInputChange("budget", e.target.value)}
               className="w-full border rounded px-3 py-2"
@@ -147,6 +149,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             <label className="block text-sm font-medium mb-1">Gasto (USD)</label>
             <input
               type="number"
+              min={0}
               value={formState.expenses}
               onChange={(e) => handleInputChange("expenses", e.target.value)}
               className="w-full border rounded px-3 py-2"

@@ -29,7 +29,7 @@ export default function BeneficiariesForm({ onSave, onCancel, initialValues }: B
     };
 
     return (
-        <div className="p-4" data-test-id="beneficiary-form">
+        <div className="p-4 font-[Helvetica]" data-test-id="beneficiary-form">
             <div className="mb-4">
                 <label className="text-sm font-medium mb-1">Nombre Legal</label>
                 <input

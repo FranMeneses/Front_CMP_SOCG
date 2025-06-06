@@ -34,10 +34,10 @@ export default function Home() {
         </video>
       </div>
 
-      <div className="hidden md:flex bg-[#153C6C] items-center justify-center flex-col relative">
+      <div className="hidden md:flex bg-[#153C6C] items-center justify-center flex-col relative font-[Helvetica]">
         <div className="flex flex-col w-3/5 h-3/4 items-center bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-4 text-zinc-900 text-center">
-            Bienvenido al sistema Planificados
+            Bienvenido al sistema de Gestión y Control Gerencia de Gestión de Riesgos y Sostenibilidad
           </h1>
           <h2 className="text-xl text-zinc-600 font-medium">Ingrese sus datos</h2>
           <form className="flex flex-col w-full h-3/4 gap-4 font-sans justify-center"

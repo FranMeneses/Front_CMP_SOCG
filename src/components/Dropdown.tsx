@@ -62,7 +62,7 @@ export default function DropdownMenu({
         ref={dropdownRef}
         className={`relative ${isInModal ? 'w-full' : 'w-auto'}`} 
       >
-      <div className={`${isInModal ? 'z-[1050]' : 'z-[50]'}`}>
+      <div className={`${isInModal ? 'z-[1050]' : 'z-[50]'} font-[Helvetica]`}> 
         <Button
           variant="outline"
           onClick={toggleDropdown}
@@ -81,7 +81,7 @@ export default function DropdownMenu({
         </Button>
       </div>
       {isOpen && (
-        <div className={`absolute bg-white border rounded shadow-lg w-full text-sm md:text-base ${isInModal ? 'z-[1051]' : 'z-[1050]'} max-h-60 overflow-y-auto`}>
+        <div className={`absolute bg-white border rounded shadow-lg w-full text-sm md:text-base ${isInModal ? 'z-[1051]' : 'z-[1050]'} max-h-60 overflow-y-auto font-[Helvetica]`}>
           <ul>
             {items.map((item, index) => (
               <li

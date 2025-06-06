@@ -19,7 +19,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
     handleLateFilterClick
 }) => {
     return (
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 font-[Helvetica]">
             {taskStates.map((filter: string) => (
                 <Button
                     key={filter}

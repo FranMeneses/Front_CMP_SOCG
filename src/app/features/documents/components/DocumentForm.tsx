@@ -43,7 +43,7 @@ export default function CommunicationForm({
     }
 
     return (
-        <div data-test-id="communication-form">
+        <div className="font-[Helvetica]" data-test-id="communication-form">
             <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">Seleccione tipo de documento</label>
                 <DropdownMenu

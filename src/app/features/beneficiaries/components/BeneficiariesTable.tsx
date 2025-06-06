@@ -32,7 +32,7 @@ const BeneficiariesTable: React.FC = () => {
     } = useBeneficiaries();
 
     return (
-    <div className="overflow-x-auto rounded-lg shadow">
+    <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
         <table className="w-full">
             <thead className="bg-gray-100">
                 <tr className="text-sm text-gray-700">

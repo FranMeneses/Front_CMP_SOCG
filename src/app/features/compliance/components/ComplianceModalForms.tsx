@@ -4,9 +4,7 @@ import { ITask } from '@/app/models/ITasks';
 import ComplianceForm from './forms/ComplianceForm';
 import { IComplianceForm } from '@/app/models/ICompliance';
 
-interface TaskModalsProps {
-
-    
+interface ComplianceModalsProps {     
     isComplianceModalOpen: boolean;
     setIsComplianceModalOpen: (isOpen: boolean) => void;
     handleUpdateCompliance: (compliance: IComplianceForm) => void;
@@ -17,12 +15,11 @@ interface TaskModalsProps {
     selectedCompliance?: IComplianceForm | undefined;
 }
 
-const TaskModals: React.FC<TaskModalsProps> = ({
+const ComplianceModals: React.FC<ComplianceModalsProps> = ({
     isComplianceModalOpen,
     setIsComplianceModalOpen,
     handleUpdateCompliance,
     handleCancelCompliance,
-
     userRole,
     selectedCompliance,
 }) => {
@@ -46,4 +43,4 @@ const TaskModals: React.FC<TaskModalsProps> = ({
   );
 };
 
-export default TaskModals;
+export default ComplianceModals;

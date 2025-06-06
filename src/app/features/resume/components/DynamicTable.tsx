@@ -24,7 +24,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { getColor, formatDate, calculateRemainingDays, getWidth, taskProgressMap } = useDynamicTable(tasks);
 
   return (
-    <div className="overflow-y-scroll md:h-82 2xl:h-170">
+    <div className="overflow-y-scroll md:h-82 2xl:h-170 font-[Helvetica]">
       <table className="table-auto w-full">
         <thead className="bg-white">
           <tr className="text-sm">

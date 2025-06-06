@@ -72,7 +72,7 @@ export default function Documents() {
                     <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                     </aside>
                 )}
-                <main className="flex-1 p-4 overflow-y-auto">
+                <main className="flex-1 p-4 overflow-y-auto font-[Helvetica]">
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl font-bold">Centro Documental</h1>
                         <div className="flex flex-row">

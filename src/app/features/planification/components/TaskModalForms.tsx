@@ -8,7 +8,7 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
 import { useHooks } from '../../hooks/useHooks';
-import { ICompliance, IComplianceForm } from '@/app/models/ICompliance';
+import { IComplianceForm } from '@/app/models/ICompliance';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
