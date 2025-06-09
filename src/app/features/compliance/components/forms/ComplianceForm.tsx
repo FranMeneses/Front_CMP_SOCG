@@ -1,7 +1,7 @@
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { useComplianceForm } from "../../hooks/useComplianceForm";
-import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
+import { IComplianceForm, IComplianceMemo, IComplianceSolped, IComplianceStatus } from "@/app/models/ICompliance";
 import { useState, useEffect } from "react";
 import { IDocumentList } from "@/app/models/IDocuments";
 
@@ -35,7 +35,9 @@ export default function ComplianceForm({
         handleCartaAporteChange, 
         handleMinutaChange, 
         handleGetCarta, 
-        handleGetMinuta 
+        handleGetMinuta,
+        handleGetSolped,
+        handleGetMemo
     } = useComplianceForm(
         onSave, 
         isEditing, 
@@ -47,6 +49,9 @@ export default function ComplianceForm({
         carta: undefined as IDocumentList | undefined,
         minuta: undefined as IDocumentList | undefined
     });
+
+    const [solped, setSolped] = useState<IComplianceSolped>();
+    const [memo, setMemo] = useState<IComplianceMemo>();
 
     useEffect(() => {
         const fetchDocuments = async () => {
@@ -61,9 +66,19 @@ export default function ComplianceForm({
                 });
             }
         };
-        
+        const fetchSolpedMemo = async () => {
+            if (selectedCompliance?.hasSolped && selectedCompliance?.registries?.[0]?.id) {
+                const solpedMemo = await handleGetSolped(selectedCompliance?.registries?.[0]?.id);
+                setSolped(solpedMemo);
+            }
+            else if (selectedCompliance?.hasMemo && selectedCompliance?.registries?.[0]?.id){
+                const memo = await handleGetMemo(selectedCompliance?.registries?.[0]?.id);
+                setMemo(memo);
+            }
+        }
+        fetchSolpedMemo();
         fetchDocuments();
-    }, [selectedCompliance?.task.id]);
+    }, [selectedCompliance]);
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
     
@@ -103,6 +118,8 @@ export default function ComplianceForm({
                     formState={formState}
                     cartaData={documents.carta}
                     minutaData={documents.minuta}
+                    solpedData={solped}
+                    memoData={memo}
                     handleInputChange={handleInputChange}
                 />;
                 
@@ -111,6 +128,8 @@ export default function ComplianceForm({
                     formState={formState}
                     cartaData={documents.carta}
                     minutaData={documents.minuta}
+                    solpedData={solped}
+                    memoData={memo}
                 />;
                 
             default:

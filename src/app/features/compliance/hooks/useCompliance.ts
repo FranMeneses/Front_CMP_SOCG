@@ -142,14 +142,15 @@ export const useCompliance = () => {
                     if (taskRegistry) {
                         const complianceWithRegistry: IComplianceForm = {
                             ...taskInfo,
-                            cartaAporteObs: taskRegistry.cartaAporteObs || "",
-                            minutaObs: taskRegistry.minutaObs || "",
-                            hasMemo: taskRegistry.hasMemo || false,
-                            hasSolped: taskRegistry.hasSolped || false,
-                            hasHem: taskRegistry.hasHem || false,
-                            hasHes: taskRegistry.hasHes || false,
-                            provider: taskRegistry.provider || "",
+                            cartaAporte: taskRegistry[0].cartaAporte || "",
+                            minuta: taskRegistry[0].minuta || "",
+                            hasMemo: taskRegistry[0].es_memo || false,
+                            hasSolped: taskRegistry[0].es_solped || false,
+                            hasHem: taskRegistry[0].hem || false,
+                            hasHes: taskRegistry[0].hes || false,
+                            provider: taskRegistry[0].provider || "",
                         };
+                        console.log("Compliance with registry:", complianceWithRegistry);
                         setSelectedCompliance(complianceWithRegistry);
                         setIsComplianceModalOpen(true);
                     }

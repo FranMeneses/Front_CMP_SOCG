@@ -1,10 +1,13 @@
 import { IDocumentList } from "@/app/models/IDocuments";
 import DocumentPreview from "./DocumentsPreview";
+import { IComplianceMemo, IComplianceSolped } from "@/app/models/ICompliance";
 
 interface HemHesFieldsProps {
     formState: any;
     cartaData?: IDocumentList;
     minutaData?: IDocumentList;
+    memoData?: IComplianceMemo;
+    solpedData?: IComplianceSolped; 
     handleInputChange: (field: string, value: any) => void;
 }
 
@@ -12,14 +15,14 @@ export default function HemHesFields({
     formState, 
     cartaData, 
     minutaData, 
+    memoData,
+    solpedData,
     handleInputChange 
 }: HemHesFieldsProps) {
     return (
         <>
-            {/* Información de documentos previos en forma compacta */}
-            <DocumentPreview cartaData={cartaData} minutaData={minutaData} formState={formState}/>
+            <DocumentPreview cartaData={cartaData} minutaData={minutaData} formState={formState} memoData={memoData} solpedData={solpedData}/>
             
-            {/* Nueva sección para HEM/HES */}
             <div className="mb-4 p-3 bg-gray-50 rounded-md">
                 <h3 className="text-sm font-medium mb-2">HEM / HES</h3>
                 <div className="mb-3">
