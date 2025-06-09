@@ -30,7 +30,7 @@ export const FileUploadButton = ({ onFileChange }: FileUploadButtonProps) => {
         onClick={handleUpload}
       >
         <ArrowUpFromLine className="text-black" size={24} />
-        <span className="ml-2">Seleccione archivo</span>
+        <span className="ml-2 font-[Helvetica]">Seleccione archivo</span>
       </Button>
       <input
         type="file"

@@ -7,6 +7,8 @@ import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
+import { useHooks } from '../../hooks/useHooks';
+import { IComplianceForm } from '@/app/models/ICompliance';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
@@ -29,7 +31,7 @@ interface TaskModalsProps {
     handleSaveCommunication: (task: ITask) => void;
     handleUpdateCommunication: (task: ITask) => void;
     handleCancelCommunication: () => void;
-    
+
     isDeleteTaskModalOpen: boolean;
     isDeleteSubtaskModalOpen: boolean;
     setIsDeleteTaskModalOpen: (isOpen: boolean) => void;
@@ -42,7 +44,8 @@ interface TaskModalsProps {
     userRole: string;
 
     selectedTask?: ITask | undefined; 
-    isEditingCommunication?: boolean;
+    selectedCompliance?: IComplianceForm | undefined;
+    isEditingCommunication?: boolean; // TODO: VER SI SE USA
 }
 
 const TaskModals: React.FC<TaskModalsProps> = ({
@@ -73,12 +76,14 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     currentValleyName,
     userRole,
     selectedTask,
+    selectedCompliance,
 }) => {
 
-    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
-    const isCommunicationManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos";
+    const { isValleyManager, isCommunicationsManager } = useHooks();
 
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;
+
+    const isEditingCompliance = selectedCompliance !== undefined && selectedCompliance !== null;
 
     return (
     <>
@@ -129,7 +134,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         </Modal>
             
         {/* Communication Modal */}
-        {isCommunicationManager && (
+        {isCommunicationsManager && (
             <Modal isOpen={isCommunicationModalOpen} onClose={() => setIsCommunicationModalOpen(false)}>
             <CommunicationForm
                 onCancel={handleCancelCommunication}
@@ -141,7 +146,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
             </Modal>
         )}
             
-            {/* Delete Confirmation Modals */}
+        {/* Delete Confirmation Modals */}
         <DeleteConfirmationModal 
             isOpen={isDeleteTaskModalOpen}
             onClose={() => setIsDeleteTaskModalOpen(false)}

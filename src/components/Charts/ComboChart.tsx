@@ -71,34 +71,36 @@ const ComboChart = ({
       
       const baseColor = matchingDataset?.borderColor || dataset.borderColor;
       
-      if (isExpense) {
-        return {
-          ...dataset,
-          data: processedData,
-          type: 'line' as const,
-          borderColor: baseColor, 
-          backgroundColor: 'transparent', 
-          borderWidth: 3, 
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          fill: false,
-          order: 0, 
-          tension: 0.4,
-        };
-      } else {
-        return {
-          ...dataset,
-          data: processedData,
-          type: 'bar' as const, 
-          backgroundColor: `${baseColor}80`, 
-          hoverBackgroundColor: baseColor,
-          borderColor: baseColor,
-          borderWidth: 1,
-          barPercentage: 0.7,
-          categoryPercentage: 0.8,
-          order: 1,
-        };
-      }
+    if (isExpense) {
+      return {
+        ...dataset,
+        data: processedData,
+        type: 'line' as const,
+        borderColor: baseColor, 
+        backgroundColor: 'transparent', 
+        borderWidth: 3, 
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        fill: false,
+        order: 0, 
+        tension: 0.3,
+        yAxisID: 'y',
+        spanGaps: true,
+      };
+    } else {
+      return {
+        ...dataset,
+        data: processedData,
+        type: 'bar' as const, 
+        backgroundColor: `${baseColor}80`, 
+        hoverBackgroundColor: baseColor,
+        borderColor: baseColor,
+        borderWidth: 1,
+        categoryPercentage: 0.7,
+        order: 1,
+        yAxisID: 'y',
+      };
+    }
     })
   };
   
@@ -119,7 +121,7 @@ const ComboChart = ({
   };
 
   return (
-    <div className="w-full h-full p-4 bg-white">
+    <div className="w-full h-full p-4 bg-white font-[Helvetica]">
       <div className="flex justify-end mb-2">
         <DropdownMenu
           buttonText={currency}

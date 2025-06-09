@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { 
+    GET_ALL_PROCESSES,
     GET_TASKS,
     GET_TASKS_BY_PROCESS,
     GET_TASKS_BY_PROCESS_AND_STATUS,
@@ -22,8 +23,74 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
+  const isCommunicationsRole = userRole.toLowerCase() === "encargado comunicaciones" ||
+                               userRole.toLowerCase() === "superintendente de comunicaciones" || 
+                               userRole.toLowerCase() === "encargado asuntos públicos";
+
+  const isRelationshipSuperintendent = userRole.toLowerCase() === "superintendente de relacionamiento";
+  
+  const [loadingCommunicationTasks, setLoadingCommunicationTasks] = useState(isCommunicationsRole);
+  const [loadingRelationshipTasks, setLoadingRelationshipTasks] = useState(isRelationshipSuperintendent);
 
   const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos públicos"];
+
+  /**
+   * Función para cargar las tareas de los procesos de comunicación
+   * @description Carga las tareas de los procesos de comunicación específicos y maneja el estado de carga
+   * @returns 
+   */
+  const loadCommunicationProcessesTasks = async () => {
+    const communicationProcessIds = [4, 5, 6, 7]; 
+    const allTasks: ITask[] = [];
+    
+    setIsLoadingTaskDetails(true);
+    
+    try {
+      for (const processId of communicationProcessIds) {
+        const { data } = await getTasksByProcess({
+          variables: { processId },
+        });
+        const processTasks = data?.tasksByProcess || [];
+        allTasks.push(...processTasks);
+      }
+      
+      return allTasks;
+    } catch (error) {
+      console.error("Error loading communication processes tasks:", error);
+      return [];
+    } finally {
+      setIsLoadingTaskDetails(false);
+    }
+  };
+
+  /**
+   * Función para cargar las tareas de los procesos de relación
+   * @description Carga las tareas de los procesos de relación específicos y maneja el estado de carga
+   * @returns 
+   */
+  const loadRelationshipProcessesTasks = async () => {
+    const relationshipProcessIds = [1, 2, 3]; 
+    const allTasks: ITask[] = [];
+    
+    setIsLoadingTaskDetails(true);
+    
+    try {
+      for (const processId of relationshipProcessIds) {
+        const { data } = await getTasksByProcess({
+          variables: { processId },
+        });
+        const processTasks = data?.tasksByProcess || [];
+        allTasks.push(...processTasks);
+      }
+      
+      return allTasks;
+    } catch (error) {
+      console.error("Error loading relationship processes tasks:", error);
+      return [];
+    } finally {
+      setIsLoadingTaskDetails(false);
+    }
+  };
 
   /**
    * Función para obtener el ID del proceso actual según el rol del usuario
@@ -64,7 +131,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     refetch: refetchValleyTasks 
   } = useQuery(GET_TASKS_BY_PROCESS, { 
     variables: { processId: getCurrentProcessId(userRole) },
-    skip: !shouldUseProcessQuery,
+    skip: !shouldUseProcessQuery || isCommunicationsRole || isRelationshipSuperintendent,
   });
 
   const { 
@@ -73,39 +140,151 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     error: allTasksQueryError,
     refetch: refetchAllTasks 
   } = useQuery(GET_TASKS, {
-    skip: shouldUseProcessQuery,
+    skip: shouldUseProcessQuery || isCommunicationsRole || isRelationshipSuperintendent,
   });
+
+  const {
+    data: allProcessData,
+    loading: allProcessQueryLoading,
+    error: allProcessQueryError,
+  } = useQuery(GET_ALL_PROCESSES);
 
   const { data: taskStateData } = useQuery(GET_TASK_STATUSES);
   
   const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
   const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS);
+  const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
   
-  const tasks = shouldUseProcessQuery 
-    ? (processData?.tasksByProcess || []) 
-    : (allTasksData?.tasks || []);
+  const tasks = isCommunicationsRole 
+    ? tasksData 
+    : (isRelationshipSuperintendent 
+        ? tasksData
+        : (shouldUseProcessQuery 
+            ? (processData?.tasksByProcess || []) 
+            : (allTasksData?.tasks || [])));
   
+  const allProcesses = allProcessData?.processes || [];
+
   const error = shouldUseProcessQuery ? valleyQueryError : allTasksQueryError;
   const mainQueryLoading = shouldUseProcessQuery ? valleyQueryLoading : allTasksQueryLoading;
   
   const refetch = async () => {
-    return shouldUseProcessQuery ? refetchValleyTasks() : refetchAllTasks();
+    if (isCommunicationsRole) {
+      try {
+        const communicationTasks = await loadCommunicationProcessesTasks();
+        setTasksData(communicationTasks);
+        return { data: { tasksByProcess: communicationTasks } };
+      } catch (error) {
+        console.error("Error refetching communication tasks:", error);
+        return { data: { tasksByProcess: [] } };
+      }
+    } else if (isRelationshipSuperintendent) {
+      try {
+        const relationshipTasks = await loadRelationshipProcessesTasks();
+        setTasksData(relationshipTasks);
+        return { data: { tasksByProcess: relationshipTasks } };
+      } catch (error) {
+        console.error("Error refetching relationship tasks:", error);
+        return { data: { tasksByProcess: [] } };
+      }
+    } else {
+      return shouldUseProcessQuery ? refetchValleyTasks() : refetchAllTasks();
+    }
   };
   
   const states = taskStateData?.taskStatuses || [];
   const taskState = states.map((s: ITaskStatus) => s.name);
 
-  const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || isInitialLoad;
+  const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || 
+                  isInitialLoad || allProcessQueryLoading || loadingCommunicationTasks ||
+                  loadingRelationshipTasks;
 
+
+  useEffect(() => {
+    const loadInitialCommunicationTasks = async () => {
+      if (isCommunicationsRole) {
+        try {
+          setLoadingCommunicationTasks(true);
+          const communicationTasks = await loadCommunicationProcessesTasks();
+          setTasksData(communicationTasks);
+          
+          if (communicationTasks.length > 0) {
+            setIsLoadingSubtasks(true);
+            try {
+              const allSubtasks = await Promise.all(
+                communicationTasks.map(async (task: ITask) => {
+                  const { data: subtaskData } = await getSubtasks({
+                    variables: { id: task.id },
+                  });
+                  return subtaskData?.taskSubtasks || [];
+                })
+              );
+              const flattenedSubtasks = allSubtasks.flat();
+              setSubtasks(flattenedSubtasks);
+            } catch (error) {
+              console.error("Error fetching subtasks for communication tasks:", error);
+            } finally {
+              setIsLoadingSubtasks(false);
+            }
+          }
+        } catch (error) {
+          console.error("Error loading initial communication tasks:", error);
+        } finally {
+          setLoadingCommunicationTasks(false);
+        }
+      }
+    };
+const loadInitialRelationshipTasks = async () => {
+      if (isRelationshipSuperintendent) {
+        try {
+          setLoadingRelationshipTasks(true);
+          const relationshipTasks = await loadRelationshipProcessesTasks();
+          setTasksData(relationshipTasks);
+          
+          if (relationshipTasks.length > 0) {
+            setIsLoadingSubtasks(true);
+            try {
+              const allSubtasks = await Promise.all(
+                relationshipTasks.map(async (task: ITask) => {
+                  const { data: subtaskData } = await getSubtasks({
+                    variables: { id: task.id },
+                  });
+                  return subtaskData?.taskSubtasks || [];
+                })
+              );
+              const flattenedSubtasks = allSubtasks.flat();
+              setSubtasks(flattenedSubtasks);
+            } catch (error) {
+              console.error("Error fetching subtasks for relationship tasks:", error);
+            } finally {
+              setIsLoadingSubtasks(false);
+            }
+          }
+        } catch (error) {
+          console.error("Error loading initial relationship tasks:", error);
+        } finally {
+          setLoadingRelationshipTasks(false);
+        }
+      }
+    };
+
+    loadInitialCommunicationTasks();
+    loadInitialRelationshipTasks();
+  }, [isCommunicationsRole, isRelationshipSuperintendent]);
 
   /**
    * Hook para manejar el estado de las tareas
    * @description Inicializa el estado de las tareas y subtareas, y configura los efectos secundarios para cargar los datos
    */
   useEffect(() => {
-    setTasksData(tasks);
-  }, [processData, allTasksData, shouldUseProcessQuery]);
-
+    if (!isCommunicationsRole) {
+      const newTasks = shouldUseProcessQuery 
+        ? (processData?.tasksByProcess || []) 
+        : (allTasksData?.tasks || []);
+      
+      setTasksData(newTasks);
+    }
+  }, [processData, allTasksData, shouldUseProcessQuery, isCommunicationsRole]);
 
   /**
    * Función para obtener las tareas filtradas por estado
@@ -117,11 +296,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     try {
       setIsLoadingTaskDetails(true);
       
-      if (shouldUseProcessQuery) {
+      if (isCommunicationsRole || isRelationshipSuperintendent) {
+        return tasksData.filter(task => task.status?.id === statusId);
+      } else if (shouldUseProcessQuery) {
         const { data } = await getTasksByStatus({
           variables: { processId: getCurrentProcessId(userRole), statusId },
         });
-        console.log("Tasks by status data:", data);
         return data?.tasksByProcessAndStatus || [];
       } else {
         return tasksData.filter(task => task.status?.id === statusId);
@@ -130,11 +310,9 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       console.error("Error fetching tasks by status:", error);
       return [];
     } finally {
-      console.log("Tasks by status fetched successfully", getCurrentProcessId(userRole));
       setIsLoadingTaskDetails(false);
     }
   };
-
 
   /**
    * Función para manejar el clic en un filtro
@@ -336,7 +514,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
    */
   useEffect(() => {
     const fetchSubtasks = async () => {
-      if (tasks && tasks.length > 0) {
+      if (tasks && tasks.length > 0 && !isCommunicationsRole) {
         setIsLoadingSubtasks(true);
         try {
           const allSubtasks = await Promise.all(
@@ -358,10 +536,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       }
     };
 
-    if (!mainQueryLoading && tasks && tasks.length > 0) {
+    if (!mainQueryLoading && tasks && tasks.length > 0 && !isCommunicationsRole) {
       fetchSubtasks();
     }
-  }, [tasks, mainQueryLoading, getSubtasks]);
+  }, [tasks, mainQueryLoading, getSubtasks, isCommunicationsRole]);
 
   /**
    * Hook para cargar los detalles de las tareas al inicio
@@ -369,7 +547,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
    */
   useEffect(() => {
     const fetchTaskDetails = async () => {
-      if (!mainQueryLoading && !isLoadingSubtasks) {
+      if (!mainQueryLoading && !isLoadingSubtasks && !loadingCommunicationTasks) {
         try {
           if (tasks && tasks.length > 0) {
             const processedTasks = await loadTasksWithDetails();
@@ -384,7 +562,56 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     };
     
     fetchTaskDetails();
-  }, [tasks, mainQueryLoading, isLoadingSubtasks]);
+  }, [tasks, mainQueryLoading, isLoadingSubtasks, loadingCommunicationTasks]);
+
+  /**
+  * Función para filtrar tareas por proceso
+  * @description Filtra las tareas según el ID del proceso seleccionado
+  * @param processId ID del proceso para filtrar
+  */
+  const handleFilterByProcess = async (processId: number) => {
+    try {
+      setIsLoadingTaskDetails(true);
+      
+      if (isCommunicationsRole) {
+        if (!processId) {
+          const communicationTasks = await loadCommunicationProcessesTasks();
+          setTasksData(communicationTasks);
+          const detailedTasks = await processTasksWithDetails(communicationTasks);
+          setDetailedTasks(detailedTasks);
+          return detailedTasks;
+        } else {
+          const { data } = await getTasksByProcess({
+            variables: { processId },
+          });
+          
+          const filteredTasks = data?.tasksByProcess || [];
+          const detailedFilteredTasks = await processTasksWithDetails(filteredTasks);
+          setDetailedTasks(detailedFilteredTasks);
+          setTasksData(filteredTasks);
+          return detailedFilteredTasks;
+        }
+      } else if (processId) {
+        const { data } = await getTasksByProcess({
+          variables: { processId },
+        });
+        
+        const filteredTasks = data?.tasksByProcess || [];
+        const detailedFilteredTasks = await processTasksWithDetails(filteredTasks);
+        setDetailedTasks(detailedFilteredTasks); 
+        return detailedFilteredTasks; 
+      } else {
+        const processedTasks = await loadTasksWithDetails();
+        setDetailedTasks(processedTasks);
+        return processedTasks;
+      }
+    } catch (error) {
+      console.error("Error filtering tasks by process:", error);
+      return []; 
+    } finally {
+      setIsLoadingTaskDetails(false);
+    }
+  };
 
   const unifiedData = shouldUseProcessQuery
     ? processData
@@ -394,16 +621,19 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     data: unifiedData,
     loading,
     error,
-    refetch,
     subTasks,
     detailedTasks,
     states,
     taskState,
     activeFilter,
+    allProcesses,
+    refetch,
+    handleFilterByProcess,
     getRemainingDays,
     getRemainingSubtaskDays,
     formatDate,
     handleFilterClick,
     setActiveFilter,
+    isCommunicationsRole
   };
 };

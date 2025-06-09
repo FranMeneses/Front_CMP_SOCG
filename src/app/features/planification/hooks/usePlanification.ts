@@ -12,9 +12,10 @@ import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task, TaskDetails } from "@/app/models/ITaskForm";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 import { ITaskForm } from "@/app/models/ICommunicationsForm";
+import { CREATE_COMPLIANCE, CREATE_REGISTRY } from "@/app/api/compliance";
 
 export const usePlanification = () => {
-    const { currentValleyId, isValleyManager, userRole } = useHooks();
+    const { currentValleyId, isValleyManager, isCommunicationsManager, userRole } = useHooks();
     
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
@@ -37,8 +38,7 @@ export const usePlanification = () => {
     const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
     const valleySubtaskForm = useValleySubtasksForm(dummySubtask);
     const communicationTaskForm = useCommunicationTaskForm(dummyTask);
-    
-    
+   
     const {
         data,
         loading,
@@ -52,11 +52,14 @@ export const usePlanification = () => {
         getRemainingSubtaskDays,
         formatDate,
         handleFilterClick,
+        handleFilterByProcess,
     } = useTasksData(currentValleyId ?? undefined, userRole);
     
     const [createTask] = useMutation(CREATE_TASK);
     const [updateTask] = useMutation(UPDATE_TASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
+    const [createCompliance] = useMutation(CREATE_COMPLIANCE);
+    const [createRegistry] = useMutation(CREATE_REGISTRY);
 
     /**
      * Función para manejar la creación de una nueva tarea
@@ -67,7 +70,7 @@ export const usePlanification = () => {
         if (isValleyManager) {
             setIsPopupOpen(true);
         }
-        else {
+        else if (isCommunicationsManager){
             setIsCommunicationModalOpen(true);
         }
     };
@@ -96,6 +99,7 @@ export const usePlanification = () => {
         }
         setIsCommunicationModalOpen(false);
         refetch();
+        window.location.reload();
     };
       
     /**
@@ -111,10 +115,7 @@ export const usePlanification = () => {
                     input: {
                         name: task.name,
                         description: task.description,
-                        valleyId: task.valleyId,
-                        faenaId: task.faenaId,
                         statusId: task.statusId,
-                        processId: task.processId,
                     }
                 }
             })
@@ -122,6 +123,7 @@ export const usePlanification = () => {
             console.error("Error updating communication task:", error);
         }
         refetch();
+        window.location.reload();
         setIsCommunicationModalOpen(false);
     };
 
@@ -211,6 +213,7 @@ export const usePlanification = () => {
                         faenaId: task.faena,
                         statusId: 1,
                         processId: task.process,
+                        applies: task.compliance
                     },
                 },
             });
@@ -229,6 +232,23 @@ export const usePlanification = () => {
                         scopeId: task.scope,
                         interactionId: task.interaction,
                         riskId: task.risk,
+                    },
+                },
+            });
+            console.log("Task ID after creation:", data.createTask.id);
+            const { data: complianceData } = await createCompliance({
+                variables: {
+                    input: {
+                        taskId: data.createTask.id,
+                        statusId: 1,
+                    },
+                },
+            });
+            const { data: registryData } = await createRegistry({
+                variables: {
+                    input: {
+                        complianceId: complianceData.create.id,
+                        startDate: new Date(),
                     },
                 },
             });
@@ -275,7 +295,7 @@ export const usePlanification = () => {
                 console.error("Error handling task information:", error);
             }
         }
-        else  {
+        else if (isCommunicationsManager) {
             try {
                 const taskInfo = await communicationTaskForm.handleGetTask(taskId);
                 if (taskInfo) {
@@ -388,6 +408,7 @@ export const usePlanification = () => {
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
+        handleFilterByProcess,
         selectedTask,
         isPopupOpen,
         isDeleteSubtaskModalOpen,
@@ -407,5 +428,6 @@ export const usePlanification = () => {
         expandedRow,
         taskState,
         activeFilter,
+        allProcesses: useTasksData(currentValleyId ?? undefined, userRole).allProcesses,
     };
 };

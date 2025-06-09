@@ -6,7 +6,6 @@ export const GET_SUBTASKS = gql`
     subtasks {
       id
       taskId
-      number
       name
       description
       budget
@@ -37,7 +36,6 @@ export const GET_SUBTASK = gql`
       id
       taskId
       name
-      number
       description
       budget
       expense
@@ -125,7 +123,6 @@ export const UPDATE_SUBTASK = gql`
       startDate
       endDate
       finalDate
-      number
       priorityId
       priority {
         id
@@ -175,6 +172,66 @@ export const GET_PRIORITIES = gql`
     priorities {
       id
       name
+    }
+  }
+`;
+
+export const GET_SUBTASKS_BY_MONTH_YEAR_AND_VALLEY = gql`
+  query GetSubtasksByMonthYearAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
+    subtasksByMonthYearAndValley(monthName: $monthName, year: $year, valleyId: $valleyId) {
+      id
+      taskId
+      name
+      description
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      beneficiaryId
+      statusId
+      priorityId
+      status {
+        id
+        name
+        percentage
+      }
+      priority {
+        id
+        name
+      }
+      beneficiary {
+        id
+        legalName
+        rut
+      }
+    }
+  }
+`;
+
+export const SUBTASKS_BY_PROCESS = gql`
+  query GetSubtasksByProcess($processId: Int!) {
+    subtasksByProcess(processId: $processId) {
+      id
+      taskId
+      name
+      description
+      budget
+      expense
+      startDate
+      endDate
+      finalDate
+      status {
+        name
+        percentage
+      }
+      priority {
+        name
+      }
+      beneficiary {
+        legalName
+        rut
+      }
     }
   }
 `;

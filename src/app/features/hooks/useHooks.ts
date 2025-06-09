@@ -5,13 +5,13 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado copiapó");	
+    const [userRole, setUserRole] = useState<string>("encargado cumplimiento"); 
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys, faenas } = useData();
 
     /**
-     * Manejo de los IDs de los valles según el rol del usuario
-     */
+    * Manejo de los IDs de los valles según el rol del usuario
+    */
     const valleyIdByRole = useMemo(() => {
         return {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
@@ -25,8 +25,8 @@ export function useHooks() {
     }, [valleys]);
 
     /**
-     * Manejo de los nombres de los valles según el rol del usuario
-     */
+    * Manejo de los nombres de los valles según el rol del usuario
+    */
     const valleyNamesByRole = useMemo(() => {
         return {
             "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.name || "Valle del Elqui",
@@ -41,8 +41,8 @@ export function useHooks() {
     }, [valleys]);
 
     /**
-     * Manejo del valle actual según el rol del usuario
-     */
+    * Manejo del valle actual según el rol del usuario
+    */
     useEffect(() => {
         if (valleys && valleys.length > 0 && !currentValley) {
             const roleBasedId = valleyIdByRole[userRole as keyof typeof valleyIdByRole];
@@ -52,8 +52,8 @@ export function useHooks() {
     }, [valleys, userRole, valleyIdByRole, currentValley]);
 
     /**
-     * Manejo del nombre del valle actual según el rol del usuario
-     */
+    * Manejo del nombre del valle actual según el rol del usuario
+    */
     const currentValleyName = useMemo(() => {
         if (currentValley) {
             return currentValley.name;
@@ -62,8 +62,8 @@ export function useHooks() {
     }, [currentValley, valleyNamesByRole, userRole]);
 
     /**
-     * Manejo del ID del valle actual según el rol del usuario
-     */
+    * Manejo del ID del valle actual según el rol del usuario
+    */
     const currentValleyId = useMemo(() => {
         if (currentValley) {
             return currentValley.id;
@@ -110,7 +110,10 @@ export function useHooks() {
             case "admin":
                 router.push("/features/resume");
                 break;
-            case "superintendente":
+            case "superintendente de relacionamiento":
+                router.push("/features/resume");
+                break;
+            case "superintendente de comunicaciones":
                 router.push("/features/resume");
                 break;
             case "encargado cumplimiento":
@@ -142,8 +145,12 @@ export function useHooks() {
      * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
      * @returns 
      */
-    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco";
+    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "superintendente de relacionamiento";
+    
+    const isCommunicationsManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos" || userRole === "superintendente de comunicaciones";
 
+    const isManager = userRole === 'gerente' || userRole === 'superintendente de relacionamiento' || userRole === 'superintendente de comunicaciones' || userRole === 'encargado cumplimiento';
+    
     return {
         handleLoginRedirect,
         userRole,
@@ -154,6 +161,8 @@ export function useHooks() {
         valleysName,
         faenasName,
         isValleyManager,
+        isCommunicationsManager,
+        isManager,
         faenas,
         valleys,
         setCurrentValley: handleSetCurrentValley,

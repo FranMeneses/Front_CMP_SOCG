@@ -9,6 +9,7 @@ import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
+import client from "@/lib/apolloClient";
 
 export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
@@ -123,6 +124,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         try {
             const { data: infoData } = await getInfoTask({
                 variables: { id: taskId },
+                fetchPolicy: 'network-only', 
             });
             if (infoData) {
                 return infoData.taskInfo;
@@ -210,7 +212,21 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      * Estado del formulario
      * @description Maneja el estado del formulario con los valores iniciales proporcionados o vacíos
      */
-    const [formState, setFormState] = useState({
+    const [formState, setFormState] = useState<{
+        name: string;
+        description: string;
+        origin: string | number;
+        investment: string | number;
+        type: string | number;
+        scope: string | number;
+        interaction: string | number;
+        state: string | number;
+        budget: string | number;
+        expenses: string | number;
+        risk: string | number;
+        faena: string | number;
+        compliance?: boolean;
+    }>({
         name: initialValues?.name || "",
         description: initialValues?.description || "",
         origin: initialValues?.origin || "",
@@ -223,6 +239,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         expenses: initialValues?.expenses || "",
         risk: initialValues?.risk || "",
         faena: initialValues?.faena || "",
+        compliance: initialValues?.compliance ?? undefined,
     });
 
     /**
@@ -249,44 +266,40 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
               budget: budget || "",
               expenses: expenses || "",
               faena: faena || "",
+              compliance: infoTask.task.applies ?? undefined, 
             });
           }
           catch (error) {
             console.error("Error fetching initial values:", error);
           }
         }
-    };
+    }
 
-    /**
-     * Hook para obtener los valores iniciales del formulario
-     * @description Utiliza useEffect para llamar a fetchInitialValues cuando la tarea o subtarea cambian
-     */
     useEffect(() => {
-        fetchInitialValues();
-      }, [infoTask,subtask]);
-
-    /**
-    * Hook para establecer los valores del formulario inicial
-    * @description Utiliza useEffect para establecer los valores del formulario cuando initialValues cambian
-    */
-    useEffect(() => {
-        if (initialValues) {
-            setFormState({
-                name: initialValues.name || "",
-                description: initialValues.description || "",
-                origin: initialValues.origin || "",
-                investment: initialValues.investment || "",
-                type: initialValues.type || "",
-                scope: initialValues.scope || "",
-                interaction: initialValues.interaction || "",
-                state: initialValues.state || "",
-                budget: initialValues.budget || "",
-                expenses: initialValues.expenses || "",
-                risk: initialValues.risk || "",
-                faena: initialValues.faena || "",
-            });
+        if (isEditing && infoTask) {
+            fetchInitialValues();
         }
-    }, [initialValues]);
+    }, [isEditing, infoTask]);
+
+    useEffect(() => {
+    if (initialValues) {
+        setFormState({
+        name: initialValues.name || "",
+        description: initialValues.description || "",
+        origin: initialValues.origin || "",
+        investment: initialValues.investment || "",
+        type: initialValues.type || "",
+        scope: initialValues.scope || "",
+        interaction: initialValues.interaction || "",
+        state: initialValues.state || "",
+        budget: initialValues.budget || "",
+        expenses: initialValues.expenses || "",
+        risk: initialValues.risk || "",
+        faena: initialValues.faena || "",
+        compliance: initialValues.compliance ?? undefined,
+        });
+    }
+    }, [initialValues]); // Keep this dependency array simple
     
     const [faenas, setFaenas] = useState<string[]>([]);
     const [faenaMap, setFaenaMap] = useState<{ [key: string]: string }>({});
@@ -316,6 +329,15 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     }, []);
 
     /**
+     * Hook para manejar el estado del compliance
+     * @description Utiliza useCallback para actualizar el estado del compliance cuando cambia
+     * @param value Nuevo valor del compliance
+     */
+    const handleComplianceChange = useCallback((value: boolean) => {
+        setFormState((prev) => ({ ...prev, compliance: value }));
+    }, []);
+
+    /**
      * Función para manejar el guardado del formulario
      * @description Prepara los datos de la tarea y llama a la función onSave con los detalles de la tarea
      */
@@ -333,7 +355,8 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
-                process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null
+                process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null,
+                compliance: formState.compliance || false,
             };
         } else {
             taskDetails = {
@@ -361,6 +384,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             expenses: "",
             risk: "",
             faena: "",
+            compliance: undefined,
         });
         setFaenas([]);
     }, [formState, onSave, faenaMap]);
@@ -448,6 +472,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         faenas,
         dropdownItems,
         handleInputChange,
+        handleComplianceChange,
         handleSave,
         getFaenaNameById,
         handleGetTaskBudget,

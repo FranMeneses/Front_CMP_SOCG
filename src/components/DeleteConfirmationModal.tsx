@@ -7,7 +7,7 @@ interface DeleteConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  itemType: 'tarea' | 'subtarea';
+  itemType: 'tarea' | 'subtarea' | 'documento';
 }
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
@@ -18,13 +18,13 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto font-[Helvetica]">
         <div className="flex items-center justify-center mb-4">
           <AlertCircle className="h-12 w-12 text-red-500" />
         </div>
         <h2 className="text-xl font-bold mb-4 text-center">Confirmar eliminación</h2>
         <p className="text-sm text-gray-600 mb-6 text-center">
-          ¿Estás seguro de que quieres eliminar esta {itemType}? Esta acción no se puede deshacer. {/*TODO: AGREGAR CONFIRMACIÓN DE ADMINISTRADOR*/}
+          ¿Estás seguro de que quieres eliminar esta/este {itemType}? Esta acción no se puede deshacer.
         </p>
         <div className="flex justify-center space-x-4">
           <Button 

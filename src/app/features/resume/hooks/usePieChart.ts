@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { GET_VALLEY_TASKS_COUNT } from "@/app/api/tasks";
-import { ValleyColors, ValleyColorsHover } from "@/constants/valleys";
+import { ValleyColors, ValleyColorsHover } from "@/constants/colors";
 import { useData } from "@/context/DataContext";
 
 export function usePieChart() {

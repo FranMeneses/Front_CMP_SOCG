@@ -88,7 +88,7 @@ const PieChart = ({
   };
 
   return (
-    <div className="w-full h-full p-4 bg-white mx-auto">
+    <div className="w-full h-full p-4 bg-white mx-auto font-[Helvetica]">
       <Doughnut
         ref={(instance) => {
           if (instance) {

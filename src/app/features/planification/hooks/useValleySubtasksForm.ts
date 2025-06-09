@@ -162,7 +162,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      */
     const [subtaskFormState, setSubtaskFormState] = useState({
         name: subtasksInitialValues?.name || "",
-        number: subtasksInitialValues?.number || "",
         description: subtasksInitialValues?.description || "",
         budget: subtasksInitialValues?.budget || "",
         expense: subtasksInitialValues?.expense || "",
@@ -215,7 +214,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
 
                 setSubtasksInitialValues({
                     name: subtask.name || "",
-                    number: subtask.number !== undefined && subtask.number !== null ? String(subtask.number) : "",
                     description: subtask.description || "",
                     budget: subtask.budget !== undefined && subtask.budget !== null ? String(subtask.budget) : "",
                     expense: subtask.expense !== undefined && subtask.expense !== null ? String(subtask.expense) : "",
@@ -238,10 +236,10 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      * @description Utiliza useEffect para establecer los valores iniciales del formulario de subtareas cuando se cargan los beneficiarios
      */
     useEffect(() => {
-        if (Object.keys(beneficiariesIdToNameMap).length > 0) {
+        if (priority.length > 0 && state.length > 0 && subtask) {
             fetchSubtaskInitialValues();
         }
-    }, [subtask, beneficiariesIdToNameMap]);
+    }, [subtask, beneficiariesIdToNameMap, priority, state]);
 
     /**
      * Hook para manejar los cambios en los campos del formulario de subtareas
@@ -251,7 +249,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         if (subtasksInitialValues) {
             setSubtaskFormState({
                 name: subtasksInitialValues.name || "",
-                number: subtasksInitialValues.number || "",
                 description: subtasksInitialValues.description || "",
                 budget: subtasksInitialValues.budget || "",
                 expense: subtasksInitialValues.expense || "",
@@ -284,7 +281,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         
         const subtaskDetails = {
             ...subtaskFormState,
-            number: parseInt(subtaskFormState.number) || 1,
             budget: parseInt(subtaskFormState.budget) || 0,
             expense: parseInt(subtaskFormState.expense) || 0,
             priority: Number(subtaskFormState.priority) ? Number(subtaskFormState.priority) : subtaskPriority.findIndex((p: string | number) => p === subtaskFormState.priority) + 1,
@@ -295,7 +291,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         onSave(subtaskDetails);
         setSubtaskFormState({
             name: "",
-            number: "",
             description: "",
             budget: "",
             expense: "",

@@ -34,7 +34,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
     };
 
     return (
-        <div className="p-4" data-test-id="contact-form">
+        <div className="p-4 font-[Helvetica]" data-test-id="contact-form">
             <div className="mb-4">
                 <label className="text-sm font-medium mb-1">Nombre</label>
                 <input
@@ -60,7 +60,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                 <input
                     type="email"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value);  // Optional: Add email validation here
+                    onChange={(e) => { setEmail(e.target.value); 
                     }}
                     className="border border-gray-300 rounded-md p-2 w-full"
                     data-test-id="contact-email"

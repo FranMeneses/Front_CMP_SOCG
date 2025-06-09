@@ -1,5 +1,5 @@
 'use client';
-import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound  } from 'lucide-react';
+import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard  } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,15 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["gerente", "superintendente", "encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+    },
+    {
+      title: "Compliance",
+      href: "/features/compliance",
+      displayHref: "/compliance",
+      icon: Clipboard,
+      isActive: pathname === "/features/compliance",
+      admitedRoles: ["encargado cumplimiento"]
     },
     {
       title: "Planificación",
@@ -34,7 +42,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","encargado comunicaciones", "superintendente de relacionamiento", "superintendente de comunicaciones", "Admin"]
     },
     {
       title: "Beneficiarios",
@@ -42,7 +50,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento", "Admin", "encargado comunicaciones"]
     },
     {
       title: "Programación",
@@ -50,7 +58,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
-      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento","Admin"]
+      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento","Admin", "encargado comunicaciones"]
     },
     {
       title: "Plan de trabajo",
@@ -58,7 +66,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco"]
     },
     {
       title: "Resumen",
@@ -66,14 +74,14 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/resume",
       icon: ChartPie,
       isActive: pathname === "/features/resume",
-      admitedRoles: ["gerente", "superintendente", "encargado cumplimiento","Admin"]
+      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento","Admin"]
     },
   ];
 
   const filteredNavItems = navItems.filter(item => item.admitedRoles.includes(userRole));
 
   return (
-    <div className="flex flex-col gap-2 p-4 h-full min-h-screen">
+    <div className="flex flex-col gap-2 p-4 h-full min-h-screen font-[Helvetica] bg-white border-r">
       <div className="flex flex-1 flex-col items gap-5 relative">
         {filteredNavItems.map((item) => (
           <Button

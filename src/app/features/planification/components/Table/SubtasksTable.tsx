@@ -35,7 +35,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
   };
   
   return (
-    <td colSpan={10} className="bg-[#f8f8f8]">
+    <td colSpan={10} className="bg-[#f8f8f8] font-[Helvetica]">
       <div className="flex flex-row justify-between items-center px-4 py-2">
         <h2 className="font-medium text-sm ml-4 text-black">Subtareas:</h2>
         <Button

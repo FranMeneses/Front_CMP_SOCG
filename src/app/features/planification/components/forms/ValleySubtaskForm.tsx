@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useValleySubtasksForm } from "../../hooks/useValleySubtasksForm";
 import DropdownMenu from "@/components/Dropdown";
 import { ISubtask } from "@/app/models/ISubtasks";
+import { useHooks } from "@/app/features/hooks/useHooks";
 
 interface ValleySubtaskFormProps {
     onSave: any;
@@ -19,8 +20,10 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
         handleSaveSubtask,
     } = useValleySubtasksForm(onSave, subtask);
 
+    const { isManager } = useHooks();
+
     return (
-        <div data-test-id="subtask-form">
+        <div className='font-[Helvetica]' data-test-id="subtask-form">
             <div className="mb-4 truncate">
                 <label className="block text-sm font-medium mb-1">Nombre</label>
                 <input
@@ -29,16 +32,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("name", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-title-input"
-                />
-            </div>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Número</label>
-                <input
-                    type="number"
-                    value={subtaskFormState.number}
-                    onChange={(e) => handleSubtaskInputChange("number", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                    data-test-id="subtask-number-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4 truncate">
@@ -49,16 +43,19 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("description", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-description-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4 truncate">
                 <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
                 <input
                     type="number"
+                    min={0}
                     value={subtaskFormState.budget}
                     onChange={(e) => handleSubtaskInputChange("budget", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-budget-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4">                                                                 
@@ -70,6 +67,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     isInModal={true}
                     selectedValue={subtaskFormState.beneficiary}
                     data-test-id="subtask-beneficiary-dropdown"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4 truncate">
@@ -80,6 +78,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("startDate", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-start-date-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4 truncate">
@@ -90,6 +89,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("endDate", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-end-date-input"
+                    disabled={isManager}
                 />
             </div>
             {isEditing && (
@@ -102,16 +102,19 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("finishDate", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-finish-date-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4 truncate">
                 <label className="block text-sm font-medium mb-1">Gastos (USD) </label>
                 <input
                     type="number"
+                    min={0}
                     value={subtaskFormState.expense}
                     onChange={(e) => handleSubtaskInputChange("expense", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-expense-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4">                                                 
@@ -123,6 +126,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     isInModal={true}
                     selectedValue={dropdownItems.subtaskState[(subtask?.status?.id ?? 1) - 1]}
                     data-test-id="subtask-state-dropdown"
+                    disabled={isManager}
                 />
             </div>
             </>
@@ -136,6 +140,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     isInModal={true}
                     selectedValue={subtask?.priorityId !== undefined ? dropdownItems.subtaskPriority[subtask.priorityId - 1] : undefined}
                     data-test-id="subtask-priority-dropdown"
+                    disabled={isManager}
                 />
             </div>
             <div className="flex justify-end space-x-2">

@@ -1,4 +1,5 @@
 'use client';
+import { useHooks } from "@/app/features/hooks/useHooks";
 import { useValleyTaskForm } from "@/app/features/planification/hooks/useValleyTaskForm";
 import { IInfoTask } from "@/app/models/ITasks";
 import DropdownMenu from "@/components/Dropdown";
@@ -20,14 +21,19 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
     faenas,
     dropdownItems,
     handleInputChange,
+    handleComplianceChange,
     handleSave,
     getFaenaNameById,
   } = useValleyTaskForm(onSave, valley, isEditing, infoTask);
 
   const selectedFaenaName = isEditing ? getFaenaNameById(formState.faena) : "";
+  const { isManager } = useHooks();
 
   return (
-    <div data-test-id="task-form">
+    <div className='font-[Helvetica]' data-test-id="task-form">
+      <h2 className="text-lg font-semibold mb-4">
+        {isEditing ? "Editar Tarea" : "Nueva Tarea"}
+      </h2>
       <div className="mb-4 truncate">
         <label className="block text-sm font-medium mb-1">Nombre</label>
         <input
@@ -36,6 +42,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           onChange={(e) => handleInputChange("name", e.target.value)}
           className="w-full border rounded px-3 py-2"
           data-test-id="task-title-input"
+          disabled={isManager}
         />
       </div>
       <div className="mb-4 truncate">
@@ -46,6 +53,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           onChange={(e) => handleInputChange("description", e.target.value)}
           className="w-full border rounded px-3 py-2"
           data-test-id="task-title-input"
+          disabled={isManager}
         />
       </div>
       <div className="mb-4 ">
@@ -56,6 +64,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           buttonText="Seleccione Origen"
           selectedValue={infoTask?.originId ? dropdownItems.origin[infoTask.originId - 1] : undefined}
           isInModal={true}
+          disabled={isManager}
         />
       </div>
       <div className="mb-4 ">
@@ -67,6 +76,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.investmentId !== undefined ? dropdownItems.investment[infoTask.investmentId - 1] : undefined}
           data-test-id="task-investment-dropdown"
+          disabled={isManager}
         />
       </div>
       <div className="mb-4">
@@ -78,6 +88,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.typeId ? dropdownItems.type[infoTask.typeId - 1] : undefined}
           data-test-id="task-type-dropdown"
+          disabled={isManager}
         />
       </div>
       <div className="mb-4 ">
@@ -89,6 +100,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.scopeId !== undefined ? dropdownItems.scope[infoTask.scopeId - 1] : undefined}
           data-test-id="task-scope-dropdown"
+          disabled={isManager}
         />
       </div>
       <div className="mb-4 ">
@@ -100,6 +112,19 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.interactionId !== undefined ? dropdownItems.interaction[infoTask.interactionId - 1] : undefined}
           data-test-id="task-interaction-dropdown"
+          disabled={isManager}
+        />
+      </div>
+      <div className="mb-4 ">
+        <label className="block text-sm font-medium mb-1">¿Compliance?</label>
+        <DropdownMenu
+          buttonText="Seleccione Compliance"
+          items={["Si", "No"]}
+          onSelect={(value) => handleComplianceChange(value === "Si" ? true : false)}
+          isInModal={true}
+          selectedValue={infoTask ? (infoTask.task?.applies ? "Si" : "No") : undefined}
+          data-test-id="task-compliance-dropdown"
+          disabled={isEditing ? true : false}
         />
       </div>
       {isEditing && (
@@ -112,6 +137,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             isInModal={true}
             selectedValue={infoTask?.task?.statusId ? dropdownItems.state[infoTask.task.statusId - 1] : undefined}
             data-test-id="task-state-dropdown"
+            disabled={isManager}
           />
         </div>
       )}
@@ -121,6 +147,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
             <input
               type="number"
+              min={0}
               value={formState.budget}
               onChange={(e) => handleInputChange("budget", e.target.value)}
               className="w-full border rounded px-3 py-2"
@@ -132,6 +159,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             <label className="block text-sm font-medium mb-1">Gasto (USD)</label>
             <input
               type="number"
+              min={0}
               value={formState.expenses}
               onChange={(e) => handleInputChange("expenses", e.target.value)}
               className="w-full border rounded px-3 py-2"
@@ -150,6 +178,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.riskId !== undefined ? dropdownItems.risk[infoTask.riskId - 1] : undefined}
           data-test-id="task-risk-dropdown"
+          disabled={isManager}
         />
       </div>
       <div className="mb-4">

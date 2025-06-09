@@ -5,6 +5,7 @@ export interface IEvent {
     startDate: string;
     status: string;
     progress: string;
+    taskId: string;
     faena: string;
 }
 

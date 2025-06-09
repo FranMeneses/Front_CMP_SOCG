@@ -15,6 +15,7 @@ export interface TaskInitialValues {
     risk?: number;
     finishDate?: string;
     faena?: number;
+    compliance?: boolean; // Uncomment if compliance is needed
 }
 
 export interface TaskDetails {
@@ -42,6 +43,7 @@ export interface Task {
     name?: string;
     description?: string;
     origin?: number;
+    compliance?: boolean;
     investment?: number;
     type?: number;
     scope?: number;

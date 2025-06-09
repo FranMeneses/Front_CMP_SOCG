@@ -24,7 +24,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const { getColor, formatDate, calculateRemainingDays, getWidth, taskProgressMap } = useDynamicTable(tasks);
 
   return (
-    <div className="overflow-y-scroll md:h-82 2xl:h-170">
+    <div className="overflow-y-scroll md:h-82 2xl:h-170 font-[Helvetica]">
       <table className="table-auto w-full">
         <thead className="bg-white">
           <tr className="text-sm">
@@ -86,7 +86,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
               </tr>
 
               {selectedTaskId === task.id &&
-                subtasks.map((subtask) => (
+                subtasks.filter(subtask => subtask.taskId === task.id).map((subtask) => (
                   <tr
                     key={subtask.id}
                     className="bg-gray-100 text-sm text-gray-700 font-medium"

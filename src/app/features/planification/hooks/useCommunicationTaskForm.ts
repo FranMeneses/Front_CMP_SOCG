@@ -1,8 +1,9 @@
 import { useCallback, useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { ITask, ITaskStatus } from "@/app/models/ITasks";
-import { GET_TASK, GET_TASK_STATUSES, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE } from "@/app/api/tasks";
+import { GET_ALL_PROCESSES, GET_TASK, GET_TASK_STATUSES, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE } from "@/app/api/tasks";
 import { useLazyQuery, useQuery } from "@apollo/client";
+import { IProcess } from "@/app/models/IProcess";
 
 export const useCommunicationTaskForm = (
     onSave: any, 
@@ -15,14 +16,19 @@ export const useCommunicationTaskForm = (
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
     const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
+    const {data: processesData} = useQuery(GET_ALL_PROCESSES);
 
     const status = taskStateData?.taskStatuses || [];
+    const processes = processesData?.processes || [];
 
     const taskStatuses = status.map((s: ITaskStatus) => s.name);
+    const filteredProcessesNames = processes
+    .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name))
+    .map((p: IProcess) => p.name);
 
     const isPublicAffair = userRole === "encargado asuntos públicos" 
 
-    const { valleysName, faenasName } = useHooks();
+    const { valleysName, faenasName, valleys } = useHooks();
 
     /**
      * Estado del formulario
@@ -33,6 +39,7 @@ export const useCommunicationTaskForm = (
         description: "",
         valleyId: "",
         faenaId: "",
+        processId: "",
         statusId: 0,
         budget: 0,
         expense: 0,
@@ -98,7 +105,6 @@ export const useCommunicationTaskForm = (
      * @description Maneja la obtención de los valores iniciales del formulario para una tarea específica
      */
     const fetchInitialValues = async () => {
-        
         const budget = await handleGetTaskBudget(selectedTask?.id ? selectedTask.id : "");
         const expenses = await handleGetTaskExpenses(selectedTask?.id ? selectedTask.id : "");
 
@@ -111,12 +117,17 @@ export const useCommunicationTaskForm = (
                 ? faenasName[selectedTask.faenaId - 1] 
                 : "";
 
+            const processName = typeof selectedTask.processId === "number" && selectedTask.processId > 0 && selectedTask.processId <= processes.length
+                ? processes[selectedTask.processId - 1].name
+                : "";
+                
             setFormState({
                 name: selectedTask.name || "",
                 description: selectedTask.description || "",
                 valleyId: valleyName,
                 faenaId: faenaName,
                 statusId: selectedTask.statusId || 0,
+                processId: processName,
                 budget: budget,
                 expense: expenses
             });
@@ -136,6 +147,7 @@ export const useCommunicationTaskForm = (
                 description: "",
                 valleyId: "",
                 faenaId: "",
+                processId: "",
                 statusId: 0,
                 budget: 0,
                 expense: 0,
@@ -166,9 +178,9 @@ export const useCommunicationTaskForm = (
             newTask = {
                 ...formState,
                 statusId: 1,
-                valleyId: valleysName.findIndex((v) => v === "Transversal") + 1,
+                valleyId: valleys.findIndex((v) => v.name === formState.valleyId) + 1,
+                processId: processes.findIndex((p:IProcess) => p.name === formState.processId) + 1,
                 faenaId: faenasName.findIndex((f) => f === "Transversal") + 1,
-                processId: isPublicAffair ? 5 : 4,
             };
         }else {
             newTask = {
@@ -184,6 +196,7 @@ export const useCommunicationTaskForm = (
             description: "",
             valleyId: "",
             faenaId: "",
+            processId: "",
             statusId: 0,
             budget: 0,
             expense: 0,
@@ -194,11 +207,13 @@ export const useCommunicationTaskForm = (
 
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
+        processes: filteredProcessesNames || [],
     }), [taskStatuses]);
 
     return {
         formState,
         dropdownItems,
+        processes,
         handleInputChange,
         handleSave,
         handleGetTask,

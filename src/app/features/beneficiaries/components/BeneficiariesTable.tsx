@@ -32,7 +32,7 @@ const BeneficiariesTable: React.FC = () => {
     } = useBeneficiaries();
 
     return (
-    <div className="overflow-x-auto rounded-lg shadow">
+    <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
         <table className="w-full">
             <thead className="bg-gray-100">
                 <tr className="text-sm text-gray-700">
@@ -114,6 +114,7 @@ const BeneficiariesTable: React.FC = () => {
                 onClose={() => setIsPopupOpen(false)}
                 data-test-id="add-contact-modal"
             >
+                <h2 className="text-lg font-bold mb-4">Añadir Contacto</h2>
                 <ContactForm
                     onSave={handleAddContact} 
                     selectedBeneficiaryId={selectedBeneficiaryId}
@@ -130,8 +131,9 @@ const BeneficiariesTable: React.FC = () => {
                 }}
                 data-test-id="edit-contact-modal"
             >
+                <h2 className="text-lg font-bold mb-4">Editar Contacto</h2>
                 {selectedContact && (
-                    <ContactForm
+                <ContactForm
                         initialValues={selectedContact}
                         selectedBeneficiaryId={selectedBeneficiaryId}
                         onSave={handleUpdateContact} 

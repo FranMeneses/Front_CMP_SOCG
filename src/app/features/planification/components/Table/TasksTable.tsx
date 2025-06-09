@@ -2,14 +2,14 @@
 import React from "react";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "../../hooks/usePlanification";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useHooks } from "../../../hooks/useHooks";
 import { ITaskDetails } from "@/app/models/ITasks";
 import TaskRow from "./TaskRow";
 import SubtasksTable from "./SubtasksTable";
-import DropdownMenu from "@/components/Dropdown";
+import TaskFilters from "./TaskFilters";
+import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
+import { useTaskFilters } from "../../hooks/useTaskFilters";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -23,14 +23,14 @@ const TasksTable: React.FC<TasksTableProps> = ({
     tasks, 
     subtasks,
     taskStates,
-    onFilterClick,
     activeFilter: propActiveFilter
 }) => {
-    
     const { 
+
         getRemainingDays,
         getRemainingSubtaskDays,
         formatDate,
+
         handleSeeInformation, 
         handleGetSubtask,
         setIsPopupOpen, 
@@ -44,6 +44,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleSaveTask,
         setIsCommunicationModalOpen,
         handleFilterClick: hookHandleFilterClick,
+
         isPopupOpen, 
         activeFilter: hookActiveFilter,
         isPopupSubtaskOpen,
@@ -55,95 +56,75 @@ const TasksTable: React.FC<TasksTableProps> = ({
         taskState,
         isDeleteTaskModalOpen,
         isDeleteSubtaskModalOpen,
+        allProcesses,
+
+        handleFilterByProcess,
         setIsDeleteTaskModalOpen,
         setIsDeleteSubtaskModalOpen,
         setItemToDeleteId,
         handleDeleteTask,
         handleDeleteSubtask,
+
         handleCreateTask,
+
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
     } = usePlanification();
 
+    const { currentValleyName, userRole } = useHooks();
+    
+    const { 
+        filteredTasks, 
+        selectedProcess,
+        activeStatusFilter,
+        isLateFilterActive,
+        handleProcessFilterChange,
+        handleStatusFilterChange,
+        handleLateFilterClick
+    } = useTaskFilters(tasks, allProcesses, handleFilterByProcess);
+
     const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
-    const actualHandleFilterClick = onFilterClick || hookHandleFilterClick;
     const actualTaskState = taskStates || taskState;
-
-    const { currentValleyName, userRole, valleysName } = useHooks();
-
-    const dropdownValley = () => {
-        return (
-            <div className="mb-4">
-                <DropdownMenu
-                    buttonText="Seleccione valle"
-                    isInModal={true}
-                    items={valleysName}
-                    onSelect={(item) => console.log(item)}  //TODO: AGREGAR FUNCIONALIDAD PEDIR A FRANCISCO MODIFICAR LA FUNCIÓN DE PROCESS AND VALLEY 
-                    selectedValue={currentValleyName ?? ""}
-                    data-test-id="task-valley-dropdown"
-                />
-            </div>
-        )
+    const handleLocalFilterClick = (filter: string) => {
+        handleStatusFilterChange(filter);
     };
-
-    const renderFilterButtons = () => (
-        <div className="flex gap-2 mb-4">
-            {actualTaskState.map((filter: string) => (
-                <Button
-                    key={filter}
-                    variant="outline"
-                    className={`px-4 py-2 text-sm rounded-md hover:cursor-pointer ${
-                        actualActiveFilter === filter
-                            ? filter === "Completada" ? "bg-green-100 text-green-800 font-medium" : 
-                            filter === "En Proceso" ? "bg-blue-100 text-blue-800 font-medium" :
-                            filter === "En Espera" ? "bg-yellow-100 text-yellow-800 font-medium" :
-                            filter === "Cancelada" ? "bg-red-100 text-red-800 font-medium" :
-                            "bg-gray-200 text-gray-800 font-medium"
-                            : "bg-white hover:bg-gray-100"
-                    }`}
-                    onClick={() => actualHandleFilterClick(filter)}
-                >
-                    {filter}
-                </Button>
-            ))}
-        </div>
-    );
+    
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-2">
-                <div>
-                    {userRole != "encargado copiapó" && userRole != "encargado huasco" && userRole != "encargado valle elqui" && dropdownValley()}
-                </div>
-                <Button 
-                    onClick={() => handleCreateTask()}
-                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
-                >
-                    <Plus size={16} /> Añadir
-                </Button>
-            </div>
+            <TaskTableHeader 
+                userRole={userRole}
+                allProcesses={allProcesses}
+                selectedProcess={selectedProcess}
+                handleProcessFilterChange={handleProcessFilterChange}
+                handleCreateTask={handleCreateTask}
+            />
 
-            {renderFilterButtons()}
+            <TaskFilters 
+                taskStates={actualTaskState}
+                activeFilter={activeStatusFilter} 
+                handleFilterClick={handleLocalFilterClick} 
+                isLateFilterActive={isLateFilterActive}
+                handleLateFilterClick={handleLateFilterClick} 
+            />
             
-            <div className="overflow-x-auto rounded-lg shadow">
+            <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
                 <table className="w-full">
                     <thead className="bg-gray-100">
                         <tr className="text-sm text-gray-700">
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Nombre</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Descripción</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Faena</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Presupuesto</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Fecha Inicio</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Fecha Finalización</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Días Restantes</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Fecha de Termino</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500">Estado</th>
-                            <th colSpan={1}/>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Nombre</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Presupuesto</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Inicio</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Finalización</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Días Restantes</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha de Termino</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Estado</th>
+                            <th colSpan={3}/>
                         </tr>
                     </thead>
                     <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
-                        {tasks.map((task) => (
+                        {filteredTasks.map((task) => (
                             <React.Fragment key={task.id}>
                                 <TaskRow 
                                     task={task}
@@ -156,7 +137,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                     userRole={userRole}
                                 />
                                 
-                                {expandedRow === task.id && (
+                                {expandedRow === task.id && userRole.toLowerCase() !== "encargado cumplimiento" && (
                                     <tr>
                                         <SubtasksTable 
                                             subtasks={subtasks}
@@ -208,7 +189,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 handleDeleteSubtask={handleDeleteSubtask}
                 
                 currentValleyName={currentValleyName}
-
                 userRole={userRole}
             />
         </div>

@@ -13,6 +13,7 @@ export interface ITask {
     faena?: IFaena;
     status?: ITaskStatus;
     process?: ITaskProcess;
+    applies? : boolean;
 }
 
 export interface CreateTaskInput {

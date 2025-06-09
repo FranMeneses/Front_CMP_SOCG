@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import './styles/index.css';
 import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { ValleyColors } from "@/constants/valleys";
+import { ValleyColors, CommunicationsColors, AllColors } from "@/constants/colors";
 import Calendar from "@/components/Calendar/Calendar";
 import { Legend } from "./components/Legend";
 import { useReportability } from "./hooks/useReportability";
@@ -12,6 +12,7 @@ import { useHooks } from "../hooks/useHooks";
 import { useData } from "@/context/DataContext";
 import { useEffect, useState } from "react";
 import TaskResume from "./components/TaskResume";
+import { Months } from "@/constants/months";
 
 export default function Reportability() {
   const {
@@ -21,13 +22,20 @@ export default function Reportability() {
     isSidebarOpen,
     calendarView,
     calendarEvents,
+    selectedItem,
+    filteredProcessesNames,
+    ProcessesNames,
+    ValleysProcesses,
+    filteredProcesses,
+    filteredProcessesCommunications
   } = useReportability();
 
-  const { userRole } = useHooks();
+  const { userRole, valleysName, isCommunicationsManager } = useHooks();
   const { valleys } = useData();
   
   const [isLoading, setIsLoading] = useState(true);
-  const valleyNames = valleys ? valleys.map(valley => valley.name) : [];
+  const [month, setMonth] = useState<string>();
+  const [year, setYear] = useState<number>();
 
   useEffect(() => {
     if (!reportabilityLoading) {
@@ -36,7 +44,9 @@ export default function Reportability() {
   }, [reportabilityLoading]);
 
   const handleMonthChange = (year: number, month: number) => {
-};
+    setMonth(Months[month-1]);
+    setYear(year);
+  };
 
   return (
     <div className="overflow-x-hidden">
@@ -64,35 +74,54 @@ export default function Reportability() {
               <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
             </aside>
           )}
-          <main className="flex-1 p-6 overflow-y-auto bg-gray-50">
-            <div className="flex flex-col h-full bg-white rounded-lg shadow">
+          <main className="flex-1 p-6 overflow-y-auto bg-gray-50 font-[Helvetica]">
+            <div className="flex flex-col bg-white rounded-lg shadow overflow-y-auto">
               <div className="p-4 pb-4 border-b">
-                <h1 className="text-2xl font-bold mb-4">Reportabilidad</h1>
+                <h1 className="text-2xl font-bold mb-4">{isCommunicationsManager ? "Programación de actividades" : "Programación y reportabilidad"}</h1>
                 <DropdownMenu
-                  buttonText="Transversal"
-                  items={valleyNames} 
+                  buttonText={"Transversales"}
+                  items={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? ProcessesNames : ValleysProcesses} 
                   onSelect={(item) => handleDropdownSelect(item)}
                   data-test-id="dropdown-menu"
                 />
               </div>
-              <div className="flex flex-col md:flex-row h-full">
-                <div className="flex-1 p-4 border-r">
-                  <div className="overflow-x-auto">
+              <div className="flex flex-col md:flex-row">
+                <div className="flex-1 p-4 border-r overflow-y-auto">
+                  <div className="flex flex-col w-full">
                     <Calendar 
                       calendarView={calendarView} 
                       events={calendarEvents} 
                       data-test-id="calendar"
                       onMonthChange={handleMonthChange}
                     />
-                    {TaskResume(calendarEvents, valleys, valleyNames, ValleyColors)}
+                    <div className="w-full mt-4"> 
+                      {isCommunicationsManager && userRole != "superintendente de comunicaciones" ? (
+                        <></>
+                      ) : (
+                        <>
+                          <TaskResume 
+                            calendarEvents={calendarEvents}
+                            valleys={userRole === "encargado cumplimiento" ? filteredProcesses : isCommunicationsManager ? filteredProcessesCommunications : valleys} 
+                            selectedValley={selectedItem}
+                            valleyNames={userRole === "encargado cumplimiento" ? ProcessesNames : isCommunicationsManager ? filteredProcessesNames : valleysName}
+                            ValleyColors={userRole === "encargado cumplimiento" ? AllColors : isCommunicationsManager ? CommunicationsColors : ValleyColors}
+                            month={month || ""}
+                            year={year || 0}
+                          />
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
                 <div className="w-full md:w-72 p-4 border-t md:border-t-0 md:border-l">
                   <div>
                     <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
-                      Valles
+                      {isCommunicationsManager ? 'Procesos' : 'Valles'}
                     </h2>
-                    <Legend valley={valleyNames} valleyColors={ValleyColors} />
+                    <Legend 
+                      valley={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? ProcessesNames : ValleysProcesses} 
+                      valleyColors={isCommunicationsManager ? CommunicationsColors : userRole === "encargado cumplimiento" ? AllColors: ValleyColors} 
+                    />
                   </div>
                 </div>
               </div>

@@ -87,9 +87,9 @@ export const UPDATE_DOCUMENT = gql`
 
 // MUTATION TO DELETE DOCUMENT
 export const DELETE_DOCUMENT = gql`
-    mutation DeleteDocument($idDocumento: String!) {
-        deleteDocument(id_documento: $idDocumento)
-    }
+  mutation DeleteDocument($id_documento: String!) {
+    deleteDocument(id_documento: $id_documento)
+  }
 `;
 
 // QUERY TO GET DOCUMENT TYPES
@@ -100,4 +100,17 @@ export const GET_ALL_DOCUMENT_TYPES = gql`
             tipo_documento
         }
     }
+`;
+
+// QUERY TO GET DOCUMENT BY TASK AND TYPE
+export const GET_DOCUMENT_BY_TASK_AND_TYPE = gql`
+  query GetDocumentByTaskAndType($taskId: String!, $documentType: Int!) {
+    documentByTaskAndType(taskId: $taskId, documentType: $documentType) {
+      id_documento
+      tipo_documento
+      ruta
+      fecha_carga
+      nombre_archivo
+    }
+  }
 `;

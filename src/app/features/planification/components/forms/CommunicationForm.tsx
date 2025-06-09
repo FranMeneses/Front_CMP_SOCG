@@ -27,12 +27,12 @@ export default function CommunicationForm({
         userRole
     );
 
-    const { valleysName, faenasName } = useHooks();
+    const { valleys, isManager } = useHooks();
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
 
     return (
-        <div data-test-id="communication-form">
+        <div className='font-[Helvetica]' data-test-id="communication-form">
             <h2 className="text-lg font-semibold mb-4">
                 {isEditing ? "Editar Tarea" : "Nueva Tarea"}
             </h2>
@@ -45,6 +45,7 @@ export default function CommunicationForm({
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="communication-title-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4 truncate">
@@ -55,8 +56,33 @@ export default function CommunicationForm({
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="communication-description-input"
+                    disabled={isManager}
                 />
             </div>
+            <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Valle</label>
+                <DropdownMenu
+                    buttonText={"Seleccione el valle asociado"}
+                    isInModal={true}
+                    items={valleys.map(valley => valley.name)} 
+                    onSelect={(value) => handleInputChange('valleyId', value)}
+                    selectedValue={valleys.find(valley => valley.id === selectedTask?.valleyId)?.name }
+                    data-test-id="communication-faena-dropdown"
+                    disabled={isManager}
+                />
+            </div>
+            <div className="mb-4">
+                <label className="block text-sm font-medium mb-1">Proceso</label>
+                <DropdownMenu
+                    buttonText={"Seleccione el proceso asociado"}
+                    isInModal={true}
+                    items={dropdownItems.processes} 
+                    onSelect={(value) => handleInputChange('processId', value)}
+                    selectedValue={isEditing && selectedTask ? formState.processId : ""}
+                    data-test-id="communication-faena-dropdown"
+                    disabled={isManager}
+                />
+            </div>  
             {isEditing && (
                 <>
                     <div className="mb-4">
@@ -68,12 +94,14 @@ export default function CommunicationForm({
                             onSelect={(value) => handleInputChange('statusId', value)}
                             selectedValue={dropdownItems.statuses[selectedTask?.statusId ? selectedTask.statusId - 1 : 0]}
                             data-test-id="communication-faena-dropdown"
+                            disabled={isManager}
                         />
                     </div>  
                     <div className="mb-4 truncate">
                         <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
                         <input
                             type="number"
+                            min={0}
                             value={formState.budget}
                             disabled={true}
                             className="w-full border rounded px-3 py-2"
@@ -84,6 +112,7 @@ export default function CommunicationForm({
                         <label className="block text-sm font-medium mb-1">Gastos (USD)</label>
                         <input
                             type="number"
+                            min={0}
                             value={formState.expense}
                             disabled={true}
                             className="w-full border rounded px-3 py-2"

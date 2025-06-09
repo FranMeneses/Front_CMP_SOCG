@@ -1,7 +1,7 @@
 import { GET_VALLEY_MONTHLY_BUDGETS, GET_VALLEY_MONTHLY_EXPENSES } from "@/app/api/tasks";
 import { ITaskBudget, ITaskExpense } from "@/app/models/ITasks";
 import { Months } from "@/constants/months";
-import { ValleyColors } from "@/constants/valleys";
+import { ValleyColors } from "@/constants/colors";
 import { useData } from "@/context/DataContext";
 import { useLazyQuery } from "@apollo/client/react";
 import { useState, useEffect, useRef } from "react";

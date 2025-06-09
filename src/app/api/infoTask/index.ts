@@ -15,6 +15,7 @@ export const CREATE_INFO_TASK = gql`
       task {
         id
         name
+        applies
         description
         valleyId
         faenaId
@@ -47,6 +48,7 @@ export const GET_INFO_TASKS = gql`
       task {
         id
         name
+        applies
         description
         valleyId
         faenaId
@@ -79,6 +81,7 @@ export const GET_INFO_TASK = gql`
       task {
         id
         name
+        applies
         description
         valleyId
         faenaId
@@ -147,6 +150,7 @@ export const GET_TASK_INFO = gql`
       task {
         id
         name
+        applies
         description
         statusId
       }

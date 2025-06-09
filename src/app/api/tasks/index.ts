@@ -11,6 +11,7 @@ export const GET_TASKS = gql`
       faenaId
       statusId
       processId
+      applies
       valley {
         id
         name
@@ -40,6 +41,7 @@ export const GET_TASK = gql`
       description
       valleyId
       faenaId
+      applies
       statusId
       processId
       valley {
@@ -71,6 +73,7 @@ export const GET_TASKS_BY_VALLEY = gql`
       description
       statusId
       processId
+      applies
       status {
         id
         name
@@ -106,7 +109,6 @@ export const GET_TASK_SUBTASKS = gql`
     taskSubtasks(id: $id) {
       id
       taskId
-      number
       name
       description
       budget
@@ -223,6 +225,7 @@ export const GET_TASKS_BY_VALLEY_AND_STATUS = gql`
       name
       description
       statusId
+      applies
       status {
         id
         name
@@ -248,6 +251,7 @@ mutation CreateTask($input: CreateTaskDto!) {
     id
     name
     description
+    applies
     faena {
       id
       name
@@ -276,6 +280,7 @@ export const UPDATE_TASK = gql`
       name
       description
       faenaId
+      applies
       status {
         id
         name
@@ -325,6 +330,7 @@ export const GET_TASKS_BY_PROCESS = gql`
       name
       description
       statusId
+      applies
       status {
         id
         name
@@ -358,6 +364,7 @@ export const GET_TASKS_BY_PROCESS_AND_VALLEY = gql`
       valleyId
       faenaId
       processId
+      applies
       statusId
       valley {
         id
@@ -389,6 +396,7 @@ export const GET_TASKS_BY_PROCESS_AND_STATUS = gql`
       valleyId
       faenaId
       processId
+      applies
       statusId
       valley {
         id

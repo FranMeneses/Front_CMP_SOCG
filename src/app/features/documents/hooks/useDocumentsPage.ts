@@ -4,7 +4,6 @@ import { FormData as DocumentFormData } from './useDocumentForms';
 import { IDocumentList } from "@/app/models/IDocuments";
 import { useDocumentsGraph } from "./useDocumentsGraph";
 
-// Interfaz para manejar los tipos de documentos con ID y nombre
 interface DocumentTypeOption {
   id: string;
   name: string;
