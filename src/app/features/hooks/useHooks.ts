@@ -5,7 +5,7 @@ import { IValley } from "@/app/models/IValleys";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado copiapó"); // Valor por defecto
+    const [userRole, setUserRole] = useState<string>("superintendente de relacionamiento"); 
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const { valleys, faenas } = useData();
 
@@ -149,6 +149,8 @@ export function useHooks() {
     
     const isCommunicationsManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos" || userRole === "superintendente de comunicaciones";
 
+    const isManager = userRole === 'gerente' || userRole === 'superintendente de relacionamiento' || userRole === 'superintendente de comunicaciones' || userRole === 'encargado cumplimiento';
+    
     return {
         handleLoginRedirect,
         userRole,
@@ -160,6 +162,7 @@ export function useHooks() {
         faenasName,
         isValleyManager,
         isCommunicationsManager,
+        isManager,
         faenas,
         valleys,
         setCurrentValley: handleSetCurrentValley,

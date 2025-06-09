@@ -27,7 +27,7 @@ export default function CommunicationForm({
         userRole
     );
 
-    const { valleys } = useHooks();
+    const { valleys, isManager } = useHooks();
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
 
@@ -45,6 +45,7 @@ export default function CommunicationForm({
                     onChange={(e) => handleInputChange('name', e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="communication-title-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4 truncate">
@@ -55,6 +56,7 @@ export default function CommunicationForm({
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="communication-description-input"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4">
@@ -66,6 +68,7 @@ export default function CommunicationForm({
                     onSelect={(value) => handleInputChange('valleyId', value)}
                     selectedValue={valleys.find(valley => valley.id === selectedTask?.valleyId)?.name }
                     data-test-id="communication-faena-dropdown"
+                    disabled={isManager}
                 />
             </div>
             <div className="mb-4">
@@ -77,6 +80,7 @@ export default function CommunicationForm({
                     onSelect={(value) => handleInputChange('processId', value)}
                     selectedValue={isEditing && selectedTask ? formState.processId : ""}
                     data-test-id="communication-faena-dropdown"
+                    disabled={isManager}
                 />
             </div>  
             {isEditing && (
@@ -90,6 +94,7 @@ export default function CommunicationForm({
                             onSelect={(value) => handleInputChange('statusId', value)}
                             selectedValue={dropdownItems.statuses[selectedTask?.statusId ? selectedTask.statusId - 1 : 0]}
                             data-test-id="communication-faena-dropdown"
+                            disabled={isManager}
                         />
                     </div>  
                     <div className="mb-4 truncate">
