@@ -136,15 +136,13 @@ export const GET_ALL_REGISTRIES = gql`
       complianceId
       hes
       hem
-      carta
-      minuta
       provider
       startDate
       endDate
-      compliance {
-        id
-        taskId
-      }
+      carta
+      minuta
+      es_solped
+      es_memo
       memos {
         id
         value
@@ -160,17 +158,19 @@ export const GET_ALL_REGISTRIES = gql`
 `;
 
 export const GET_REGISTRY_BY_ID = gql`
-  query GetRegistryById($id: ID!) {
+  query GetRegistry($id: ID!) {
     findOneRegistry(id: $id) {
       id
       complianceId
       hes
       hem
-      carta
-      minuta
       provider
       startDate
       endDate
+      carta
+      minuta
+      es_solped
+      es_memo
       memos {
         id
         value
@@ -180,15 +180,6 @@ export const GET_REGISTRY_BY_ID = gql`
         ceco
         account
         value
-      }
-      compliance {
-        id
-        taskId
-        task {
-          id
-          name
-          description
-        }
       }
     }
   }
@@ -201,11 +192,13 @@ export const GET_COMPLIANCE_REGISTRIES = gql`
       complianceId
       hes
       hem
-      carta
-      minuta
       provider
       startDate
       endDate
+      carta
+      minuta
+      es_solped
+      es_memo
       memos {
         id
         value
@@ -227,11 +220,13 @@ export const CREATE_REGISTRY = gql`
       complianceId
       hes
       hem
-      carta
-      minuta
       provider
       startDate
       endDate
+      carta
+      minuta
+      es_solped
+      es_memo
     }
   }
 `;
@@ -243,11 +238,13 @@ export const UPDATE_REGISTRY = gql`
       complianceId
       hes
       hem
-      carta
-      minuta
       provider
       startDate
       endDate
+      carta
+      minuta
+      es_solped
+      es_memo
     }
   }
 `;

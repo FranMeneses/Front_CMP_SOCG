@@ -2,11 +2,9 @@ import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { useComplianceForm } from "../../hooks/useComplianceForm";
 import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
-import { FileUploadButton } from "@/app/features/documents/components/FileUploadButton";
 import { useState, useEffect } from "react";
 import { IDocumentList } from "@/app/models/IDocuments";
 
-// Componentes para estados específicos
 import CartaAporteFields from "./status-fields/CartaAporteFields";
 import MinutaFields from "./status-fields/MinutaFields";
 import MemorandumFields from "./status-fields/MemorandumFields";

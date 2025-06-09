@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_COMPLIANCE, GET_COMPLIANCE_REGISTRIES, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
-import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
+import { IComplianceForm, IComplianceRegistry, IComplianceStatus, IMemo, ISolped } from "@/app/models/ICompliance";
 import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
 import { ITipoDocumento } from "@/app/models/IDocuments";
 import { useDocumentsPage } from "../../documents/hooks/useDocumentsPage";
@@ -89,7 +89,6 @@ export const useComplianceForm = (
                     documentType: tipo
                 }
             });
-            console.log("Carta Aporte data:", data.documentByTaskAndType);
             return data.documentByTaskAndType;
         }
         catch (error) {
@@ -126,13 +125,15 @@ export const useComplianceForm = (
      * @param solpedData Datos necesarios para crear una Solped.
      * @returns 
      */
-    const handleCreateSolped = async (solpedData: any) => {
+    const handleCreateSolped = async (solpedData: ISolped) => {
         try {
             const { data } = await createSolped({
                 variables: {
-                    solpedData: {
-                        ...solpedData,
-                        taskId: selectedCompliance?.task.id || "",
+                    input : {
+                        registryId: solpedData.registryId,
+                        ceco: solpedData.ceco,
+                        account: solpedData.account,
+                        value: solpedData.value,
                     }
                 }
             });
@@ -150,13 +151,13 @@ export const useComplianceForm = (
      * @param memoData Datos necesarios para crear un Memo.
      * @returns 
      */
-    const handleCreateMemo = async (memoData: any) => {
+    const handleCreateMemo = async (memoData: IMemo) => {
         try {
             const { data } = await createMemo({
                 variables: {
-                    memoData: {
-                        ...memoData,
-                        taskId: selectedCompliance?.task.id || "",
+                    input: {
+                        registryId: memoData.registryId,
+                        value: memoData.value,
                     }
                 }
             });
@@ -211,7 +212,7 @@ export const useComplianceForm = (
     };
 
     /**
-     * Función que obtiene los registros de cumplimiento asociados a una tarea específica.
+     * Función que obtiene los registros de cumplimiento asociados a un compliance específico.
      * @param {string} id - ID de la tarea para la cual se desean obtener los registros de cumplimiento.
      * @returns {Promise<Array>} - Lista de registros de cumplimiento.
      */
@@ -248,7 +249,7 @@ export const useComplianceForm = (
                 hasHem: selectedCompliance.hasHem || false,
                 hasHes: selectedCompliance.hasHes || false,
                 provider: selectedCompliance.provider || "",
-            }); // TODO: Agegar Memo / Solped al formulario y crear mutaciones de SOLPED Y MEMO 
+            }); 
         }
     }, [isEditing, selectedCompliance]);
 
@@ -265,10 +266,15 @@ export const useComplianceForm = (
      * Función que maneja el guardado de los datos del formulario.
      * @description Esta función valida los campos requeridos y prepara los datos para ser enviados al servidor.
      */
-    const handleSave = () => {
+    const handleSave = async () => {
+        const registry = await handleGetRegistry(selectedCompliance?.id || "");
         let compliance = {};
         let document: FormData;
         
+        if (typeof formState.statusId === "string") {
+            formState.statusId = complianceStatuses.find((status: IComplianceStatus) => status.name === String(formState.statusId))?.id || 0;
+        }
+
         let nextStatusId = formState.statusId;
         
         if (formState.statusId >= 2 && formState.statusId < 6) {
@@ -299,6 +305,7 @@ export const useComplianceForm = (
             hasHem: formState.hasHem || false,
             hasHes: formState.hasHes || false,
             provider: formState.provider || "",
+            registryId: registry[0]?.id || "",
         };
 
         if (formState.statusId === 2 && formState.cartaAporteFile) {
@@ -309,7 +316,6 @@ export const useComplianceForm = (
                 task: selectedCompliance?.task.id || "",
                 subtask: "",
             };
-            console.log("Uploading Carta Aporte:", document);
             handleUploadFile(document);   
         }
         
@@ -323,7 +329,32 @@ export const useComplianceForm = (
             };
             handleUploadFile(document);
         }
-        
+        if (formState.hasMemo) {
+            let value = Number(formState.memoAmount);
+            const memoData = {
+                registryId: registry[0]?.id || "",
+                value: value,
+            };
+            handleCreateMemo(memoData);
+        }
+        if (formState.hasSolped ) {
+            let value = Number(formState.solpedAmount);
+            let ceco = Number(formState.solpedCECO);
+            let account = Number(formState.solpedAccount);
+            const solpedData = {
+                registryId: registry[0]?.id || "",
+                ceco: ceco,
+                account: account,
+                value: value,
+            };
+            handleCreateSolped(solpedData);
+        }
+        if (formState.statusId === 5) {
+            compliance = {
+                ...compliance,
+                endDate: new Date().toISOString(),
+            };
+        }
         onSave(compliance);
     };
 

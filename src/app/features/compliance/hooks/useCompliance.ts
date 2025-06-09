@@ -34,9 +34,7 @@ export const useCompliance = () => {
         refetch,
     } = useComplianceData(currentValleyId ?? undefined, userRole);
     
-    const [createCompliance] = useMutation(CREATE_COMPLIANCE);
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
-    const [createRegistry] = useMutation(CREATE_REGISTRY);
     const [updateRegistry] = useMutation(UPDATE_REGISTRY);
 
     /**
@@ -53,35 +51,56 @@ export const useCompliance = () => {
      * @param compliance Cumplimiento de la tarea a actualizar
      */
     const handleUpdateCompliance = async (compliance: IComplianceForm) => {
-        try {
-            const { data } = await updateCompliance({
-                variables: {
-                    id: selectedCompliance?.id,
-                    input: {
-                        taskId: selectedCompliance?.task.id,
-                        statusId: compliance.statusId,
-                    }
-                }
-            })
+        if (compliance.statusId === 2 && compliance.cartaAporte === undefined) {
             try {
-                const { data: registryData } = await updateRegistry({
+                const { data } = await updateCompliance({
                     variables: {
-                        id: data.update.id,
+                        id: selectedCompliance?.id,
                         input: {
-                            carta: compliance.cartaAporte,
-                            minuta: compliance.minuta,
-                            hasHem: compliance.hasHem,
-                            hasHes: compliance.hasHes,
-                            provider: compliance.provider,
+                            taskId: selectedCompliance?.task.id,
+                            statusId: compliance.statusId,
                         }
                     }
                 })
             }
             catch (error) {
+                console.error("Error updating compliance task:", error);
+            }
+        }
+        else {
+            try {
+                const { data: registryData } = await updateRegistry({
+                    variables: {
+                        id: compliance.registryId,
+                        input: {
+                            carta: (compliance.cartaAporte) ? compliance.cartaAporte : undefined,
+                            minuta: (compliance.minuta) ? compliance.minuta : undefined,
+                            hem: (compliance.hasHem || compliance.hasHes) ? compliance.hasHem : undefined,
+                            hes: (compliance.hasHem || compliance.hasHes) ? compliance.hasHes : undefined,
+                            provider: (compliance.provider) ? compliance.provider : undefined,
+                            es_solped: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasSolped : undefined,
+                            es_memo: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasMemo : undefined,
+                            endDate: (compliance.endDate) ? compliance.endDate : undefined,
+                        }
+                    }
+                })
+                try {
+                    const { data } = await updateCompliance({
+                        variables: {
+                            id: selectedCompliance?.id,
+                            input: {
+                                taskId: selectedCompliance?.task.id,
+                                statusId: compliance.statusId,
+                            }
+                        }
+                    })
+                }catch (error) {
+                    console.error("Error updating compliance", error);
+                }
+            }
+            catch (error) {
                 console.error("Error updating registry task:", error);
             }
-        } catch (error) {
-            console.error("Error updating compliance task:", error);
         }
         refetch();
         setIsComplianceModalOpen(false);

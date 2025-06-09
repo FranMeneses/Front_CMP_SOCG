@@ -21,7 +21,7 @@ export default function HemHesFields({
             
             {/* Nueva sección para HEM/HES */}
             <div className="mb-4 p-3 bg-gray-50 rounded-md">
-                <h3 className="text-sm font-medium mb-2">HEM/HES Registradas</h3>
+                <h3 className="text-sm font-medium mb-2">HEM / HES</h3>
                 <div className="mb-3">
                     <label className="block text-xs font-medium mb-1">Registros</label>
                     <div className="flex space-x-4">

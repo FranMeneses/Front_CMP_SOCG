@@ -1,9 +1,10 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { IDocumentList } from '@/app/models/IDocuments';
 import { useDocumentsRest } from '../hooks/useDocumentsRest';
 import { Trash } from 'lucide-react';
 import { useDocumentsGraph } from '../hooks/useDocumentsGraph';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 
 interface DocumentTableProps {
   documents: IDocumentList[];
@@ -12,7 +13,29 @@ interface DocumentTableProps {
 export const DocumentTable = ({ documents }: DocumentTableProps) => {
   const { handleDownload } = useDocumentsRest();
   const { handleDeleteDocument } = useDocumentsGraph();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
+
+  const handleDeleteClick = (documentId: string) => {
+    setDocumentToDelete(documentId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (documentToDelete) {
+      handleDeleteDocument(documentToDelete);
+      setIsDeleteModalOpen(false);
+      setDocumentToDelete(null);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalOpen(false);
+    setDocumentToDelete(null);
+  };
+
   return (
+    <>
     <div className="overflow-x-auto rounded-lg font-[Helvetica]">
       <table className="min-w-full">
         <thead>
@@ -59,7 +82,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                   <Trash
                     className="w-5 h-5 cursor-pointer"
                     color='#041e3e'
-                    onClick={() => handleDeleteDocument(doc.id_documento)}
+                    onClick={() => handleDeleteClick(doc.id_documento)}
                   />
                 </td>
               </tr>
@@ -74,5 +97,12 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
         </tbody>
       </table>
     </div>
+    <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        itemType="documento"
+      />
+    </>
   );
 };

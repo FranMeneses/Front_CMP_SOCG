@@ -28,9 +28,7 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
     const { currentValleyName, userRole } = useHooks();
 
     return (
-        <div>
-
-            
+        <div>          
             <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
                 <table className="w-full">
                     <thead className="bg-gray-100">

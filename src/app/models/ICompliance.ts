@@ -58,4 +58,18 @@ export interface IComplianceForm {
     hasHem: boolean;
     hasHes: boolean;
     provider: string;
+    registryId?: string;
+    endDate?: string;
 };
+
+export interface ISolped {
+    registryId: string;
+    ceco: number;
+    account: number;
+    value: number;
+}
+
+export interface IMemo {
+    registryId: string;
+    value: number;
+}

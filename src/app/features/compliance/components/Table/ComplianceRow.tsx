@@ -1,6 +1,5 @@
 import React from 'react';
 import { ZoomIn, Plus } from "lucide-react";
-import { Button } from '@/components/ui/button';
 import { ICompliance } from '@/app/models/ICompliance';
 import { useComplianceTable } from '../../hooks/useComplianceTable';
 
@@ -47,11 +46,11 @@ const ComplianceRow: React.FC<ComplianceRowProps> = ({
       </td>
       <td className="py-2 text-center">
         <span className={`px-2 py-1 rounded-full text-xs ${
-          compliance.status?.name === "Completada" ? "bg-green-100 text-green-800" : 
-          compliance.status?.name === "Gestionando Carta Aporte" ? "bg-[#90c2c9] text-[#1fa8ba] " :
+          compliance.status?.name === "Completado" ? "bg-green-100 text-green-800" : 
+          compliance.status?.name === "Gestionando Carta Aporte" ? "bg-[#90c2c9] text-[#0c3f46] " :
           compliance.status?.name === "Gestionando Minuta" ? "bg-blue-100 text-blue-800" :
           compliance.status?.name === "Gestionando MEMORANDUM y/o SOLPED" ? " bg-purple-100 text-purple-800" :
-          compliance.status?.name === "HEM/HES registradas" ? "bg-[#c590c9] text-[#b308c3]" :
+          compliance.status?.name === "HEM/HES registradas" ? "bg-[#c590c9] text-[#6f0779]" :
           "bg-gray-100 text-gray-800"
         }`}>
           {compliance.status?.name || "NO iniciado"}
