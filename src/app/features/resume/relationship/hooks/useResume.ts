@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { GET_TASKS, GET_TOTAL_BUDGET_BY_MONTH, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
+import { useLazyQuery } from "@apollo/client";
+import { GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
 import { GET_TASK_SUBTASKS } from "@/app/api/tasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { Months } from "@/constants/months";
+import { ITask } from "@/app/models/ITasks";
 
 export function useResume() {
+    
+    const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+    const [tasksData, setTasksData] = useState<ITask[]>([]);  
     const [yearlyBudgetTotal, setYearlyBudgetTotal] = useState(0);
     const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState(0);
     const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
@@ -16,15 +20,25 @@ export function useResume() {
     const [formattedBudget, setFormattedBudget] = useState("");
     const [formattedExpenses, setFormattedExpenses] = useState("");
     
-    const { data, loading: tasksLoading, error } = useQuery(GET_TASKS);
     const [getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
+    const [ getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH)
     const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH)
 
+    /**
+     * Función para manejar el clic en una leyenda del gráfico.
+     * @description Cambia la leyenda seleccionada o la deselecciona si ya estaba seleccionada.
+     * @param legend Leyenda que se ha hecho clic.
+     */
     const handleLegendClick = (legend: string) => {
         setSelectedLegend((prev) => (prev === legend ? null : legend));
     };
 
+    /**
+     * Función para manejar el clic en una tarea.
+     * @description Si la tarea ya está seleccionada, la deselecciona y limpia las subtareas. Si no, selecciona la tarea y obtiene sus subtareas.
+     * @param taskId ID de la tarea que se ha hecho clic.
+     */
     const handleTaskClick = async (taskId: string) => {
         if (selectedTaskId === taskId) {
             setSelectedTaskId(null);
@@ -35,8 +49,32 @@ export function useResume() {
         }
     };
 
-    const toggleSidebar = () => {
-        setIsSidebarOpen((prev) => !prev);
+    /**
+     * Función para cargar las tareas de los procesos de relacionamiento.
+     * @description Realiza una consulta para obtener las tareas de los procesos de relacionamiento y las almacena en el estado.
+     * @returns 
+     */
+    const loadRelationshipProcessesTask = async () => {
+      const communicationProcessIds = [1, 2, 3]; 
+      const allTasks: ITask[] = [];
+            
+      setIsLoadingTaskDetails(true);
+            
+      try {
+        for (const processId of communicationProcessIds) {
+          const { data } = await getTasksByProcess({
+            variables: { processId },
+          });
+          const processTasks = data?.tasksByProcess || [];
+          allTasks.push(...processTasks);
+        }
+        return allTasks;
+      } catch (error) {
+        console.error("Error loading communication processes tasks:", error);
+        return [];
+      } finally {
+        setIsLoadingTaskDetails(false);
+      }
     };
 
     /**
@@ -148,13 +186,31 @@ export function useResume() {
         loadBudgetData();
     }, []); 
     
-    const loading = tasksLoading || budgetLoading;
+    const loading = isLoadingTaskDetails || budgetLoading;
+
+    /**
+     * Hook para cargar las tareas de los procesos de relacionamiento al montar el componente.
+     * @description Este efecto se ejecuta una vez al montar el componente, cargando las tareas de los procesos de relacionamiento.
+     */
+    useEffect(() => {
+      const loadInitialCommunicationTasks = async () => {
+        try {
+          setIsLoadingTaskDetails(true);
+          const communicationTasks = await loadRelationshipProcessesTask();
+          setTasksData(communicationTasks);
+        } catch (error) {
+          console.error("Error loading initial communication tasks:", error);
+        } finally {
+          setIsLoadingTaskDetails(false);
+        }
+      };
+      loadInitialCommunicationTasks();
+    }, []);
 
     return {
         loading,
-        tasksLoading,
         budgetLoading,
-        data,
+        tasksData,
         isSidebarOpen,
         selectedLegend,
         selectedTaskId,
@@ -164,6 +220,5 @@ export function useResume() {
         formattedExpenses,
         handleLegendClick,
         handleTaskClick,
-        toggleSidebar,
     };
 }

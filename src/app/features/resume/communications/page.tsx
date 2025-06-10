@@ -5,32 +5,31 @@ import DynamicTable from "@/app/features/resume/relationship/components/DynamicT
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useResume } from "../relationship/hooks/useResume";
 import { useHooks } from "../../hooks/useHooks";
-import { usePieChart } from "../relationship/hooks/usePieChart";
 import { useBarChart } from "../relationship/hooks/useBarChart";
 import { useComboChart } from "../relationship/hooks/useComboChart";
 import { useEffect, useState } from "react";
 import ComboChart from "@/components/Charts/ComboChart";
 import { useCommunicationResume } from "./hooks/useCommunicationResume";
+import { usePieChartCommunications } from "./hooks/usePieChartCommunications";
 
 export default function ResumeCommunications() {
   const {
     loading: resumeLoading,
-    data,
-    selectedLegend,
-    selectedTaskId,
-    subtasks,
     formattedBudget,
     formattedExpenses,
-    handleLegendClick,
-    handleTaskClick,
   } = useResume();
 
   const {
     isLoadingTaskDetails,
+    selectedLegend,
+    selectedTaskId,
     tasksData,
+    subtasks,
+    handleLegendClick,
+    handleTaskClick,
   } = useCommunicationResume();
 
-  const {pieChartData} = usePieChart();
+  const {pieChartData} = usePieChartCommunications();
   const {barChartData, loading: barChartLoading} = useBarChart();
   const {comboChartData, loading: comboChartLoading} = useComboChart();
   const {userRole} = useHooks();
@@ -105,7 +104,7 @@ export default function ResumeCommunications() {
       <div className="bg-white p-4 rounded-lg shadow">
         <h2 className="text-lg font-semibold mb-4">Detalle de Tareas</h2>
         <DynamicTable
-          tasks={data?.tasks || []}
+          tasks={tasksData || []}
           subtasks={subtasks}
           selectedTaskId={selectedTaskId}
           onTaskClick={handleTaskClick}

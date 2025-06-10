@@ -16,7 +16,7 @@ import ComboChart from "@/components/Charts/ComboChart";
 export default function ResumeRelationship() {
   const {
     loading: resumeLoading,
-    data,
+    tasksData,
     selectedLegend,
     selectedTaskId,
     subtasks,
@@ -51,7 +51,7 @@ export default function ResumeRelationship() {
     <div className="flex flex-col gap-6 max-w-7xl mx-auto font-[Helvetica]">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#e3affbe0] p-4 rounded-lg shadow">
-          <p className="text-4xl font-semibold ">{data?.tasks?.length || 0}</p>
+          <p className="text-4xl font-semibold ">{tasksData.length || 0}</p>
           <h3 className="text-[#070707] font-light text-sm mb-1">Iniciativas en desarrollo</h3> 
         </div>
         <div className="bg-[#b5f1a8e0] p-4 rounded-lg shadow">
@@ -101,7 +101,7 @@ export default function ResumeRelationship() {
       <div className="bg-white p-4 rounded-lg shadow">
         <h2 className="text-lg font-semibold mb-4">Detalle de Tareas</h2>
         <DynamicTable
-          tasks={data?.tasks || []}
+          tasks={tasksData || []}
           subtasks={subtasks}
           selectedTaskId={selectedTaskId}
           onTaskClick={handleTaskClick}

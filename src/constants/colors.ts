@@ -20,6 +20,13 @@ export const CommunicationsColors = [
     "#F2C94C", // TRANSVERSAL  
 ]
 
+export const CommunicationsColorsHover = [
+    "#2D5F7A", // INTERNA
+    "#7A2D7A", // EXTERNA
+    "#7A2D3C", // ASUNTOS PÚBLICOS
+    "#EFD689", // TRANSVERSAL
+]
+
 export const AllColors = [
     ...ValleyColors.filter(color => color !== "#F2C94C"), // Exclude TRANSVERSAL from ValleyColors
     ...CommunicationsColors,
