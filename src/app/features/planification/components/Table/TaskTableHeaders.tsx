@@ -48,7 +48,6 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             return [...defaultProcesses, ...relationshipProcesses];
         }
         
-        // For other managers, show all processes
         return [
             ...defaultProcesses, 
             ...allProcesses.map((process: IProcess) => process.name)
@@ -81,7 +80,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             <div>
                 {renderProcessDropdown()}
             </div>
-            { ((isValleyManager || isCommunicationsManager) && !isManager) && (
+            { ((isValleyManager || isCommunicationsManager || userRole === "encargado cumplimiento") && !isManager) && (
                 <Button 
                     onClick={handleCreateTask}
                     className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"

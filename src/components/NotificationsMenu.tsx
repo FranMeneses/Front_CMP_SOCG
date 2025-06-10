@@ -12,7 +12,7 @@ export function NotificationsMenu() {
                     <div>
                         <div className="font-medium">Notification 1</div>
                     </div>
-                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
+                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded cursor-pointer" type="button" variant={"ghost"}>
                         Dismiss
                     </Button>
                 </div>
@@ -20,7 +20,7 @@ export function NotificationsMenu() {
                     <div>
                         <div className="font-medium">Notification 2</div>
                     </div>
-                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
+                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded cursor-pointer" type="button" variant={"ghost"}>
                         Dismiss
                     </Button>
                 </div>
@@ -28,7 +28,7 @@ export function NotificationsMenu() {
                     <div>
                         <div className="font-medium">Notification 3</div>
                     </div>
-                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded">
+                    <Button className="text-red-500 text-xs px-2 py-1 hover:bg-red-50 rounded cursor-pointer" type="button" variant={"ghost"}>
                         Dismiss
                     </Button>
                 </div>

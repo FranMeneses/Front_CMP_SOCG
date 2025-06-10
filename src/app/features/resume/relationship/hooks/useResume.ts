@@ -84,7 +84,7 @@ export function useResume() {
         try {
             for (const month of Months) {
                 const { data: BudgetData } = await getMonthBudget({
-                    variables: { monthName: month, year: new Date().getFullYear() },
+                    variables: { monthName: month, year: new Date().getFullYear() }, //TODO: PEDIR AGREGAR PROCESO AL BACKEND
                 });
                 
                 if (BudgetData && BudgetData.totalBudgetByMonth) {
@@ -109,7 +109,7 @@ export function useResume() {
         try {
             for (const month of Months) {
                 const { data: ExpensesData } = await getMonthExpenses({
-                    variables: { monthName: month, year: new Date().getFullYear()},
+                    variables: { monthName: month, year: new Date().getFullYear()}, //TODO: PEDIR AGREGAR PROCESO AL BACKEND
                 });
                 
                 if (ExpensesData && ExpensesData.totalExpenseByMonth) {

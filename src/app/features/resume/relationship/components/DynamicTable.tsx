@@ -101,24 +101,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       {formatDate(subtask.endDate)}
                     </td>
                     <td className="px-4 py-2 border-b border-gray-300 pl-8">
-                      {userRole === "gerente" || userRole === "superintendente" ? (
-                        <div className="flex items-center text-end relative">
-                          <div
-                            className={`h-4 ${getColor(subtask.status.percentage)} rounded ${getWidth(subtask.status.percentage)}`}
-                          ></div>
-                          <h3
-                            className={`absolute text-sm font-medium ${
-                              subtask.status.percentage == 0 ? "text-black" : "text-white"
-                            } ml-2`}
-                          >
-                            {subtask.status.percentage}%
-                          </h3>
-                        </div>
-                      ) : (
-                        <h3 className="text-sm font-medium text-gray-700 text-center">
-                          {subtask.statusId} {/*TODO: CAMBIAR POR COMPLIANCE STATUS*/}
+                      <div className="flex items-center text-end relative">
+                        <div
+                          className={`h-4 ${getColor(subtask.status.percentage)} rounded ${getWidth(subtask.status.percentage)}`}
+                        ></div>
+                        <h3
+                          className={`absolute text-sm font-medium ${ subtask.status.percentage == 0 ? "text-black" : "text-white"} ml-2`}>{subtask.status.percentage}%
                         </h3>
-                      )}
+                        </div>
                     </td>
                   </tr>
                 ))}

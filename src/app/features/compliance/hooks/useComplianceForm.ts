@@ -155,7 +155,6 @@ export const useComplianceForm = (
                     registryId
                 }
             });
-            console.log("Memo data:", data);
             return data.getRegistryMemo;
         }
         catch (error) {

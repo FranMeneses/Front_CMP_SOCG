@@ -235,7 +235,6 @@ export const usePlanification = () => {
                     },
                 },
             });
-            console.log("Task ID after creation:", data.createTask.id);
             const { data: complianceData } = await createCompliance({
                 variables: {
                     input: {

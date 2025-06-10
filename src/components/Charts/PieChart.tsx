@@ -12,12 +12,10 @@ const PieChart = ({
   data,
   selectedLegend,
   onLegendClick = () => {}, 
-  userRole,
 }: {
   data: PieChartProps;
   selectedLegend: string | null;
   onLegendClick?: (legend: string) => void;
-  userRole: string;
 }) => {
   
   const chartRef = useRef<ChartJS | null>(null);
@@ -29,32 +27,18 @@ const PieChart = ({
     ...data,
     datasets: data.datasets.map((dataset) => ({
       ...dataset,
-      data:
-        (userRole === "gerente" || userRole === "superintendente")
-          ? (selectedLegend || visibleLegend)
-            ? dataset.data.map((value, index) =>
-                data.labels[index] === (selectedLegend || visibleLegend) ? value : 0
-              )
-            : dataset.data
-          : visibleLegend
-          ? dataset.data.map((value, index) =>
-              data.labels[index] === visibleLegend ? value : 0
-            )
-          : dataset.data, 
-      backgroundColor:
-        (userRole === "gerente" || userRole === "superintendente")
-          ? (selectedLegend || visibleLegend)
-            ? dataset.backgroundColor.map((color, index) =>
-                data.labels[index] === (selectedLegend || visibleLegend)
-                  ? color
-                  : `${color}80`
-              )
-            : dataset.backgroundColor
-          : dataset.backgroundColor.map((color, index) =>
-              visibleLegend === null || data.labels[index] === visibleLegend
-                ? color
-                : `${color}80`
-            ), 
+      data: (selectedLegend || visibleLegend)
+        ? dataset.data.map((value, index) =>
+            data.labels[index] === (selectedLegend || visibleLegend) ? value : 0
+          )
+        : dataset.data,
+      backgroundColor: (selectedLegend || visibleLegend)
+        ? dataset.backgroundColor.map((color, index) =>
+            data.labels[index] === (selectedLegend || visibleLegend)
+              ? color
+              : `${color}80`
+          )
+        : dataset.backgroundColor,
     })),
   };
   
@@ -84,7 +68,7 @@ const PieChart = ({
         chart.update();
       }
     }
-      onLegendClick(legend);
+    onLegendClick(legend);
   };
 
   return (
@@ -111,7 +95,7 @@ const PieChart = ({
             title: {
               ...PieChartOptions.plugins?.title,
               display: true,
-              text: userRole === "encargado cumplimiento" ? "Compliance" : "Iniciativas por valle",
+              text: "Iniciativas por valle",
             },
           },
         }}

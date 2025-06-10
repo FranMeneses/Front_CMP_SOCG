@@ -45,7 +45,7 @@ interface TaskModalsProps {
 
     selectedTask?: ITask | undefined; 
     selectedCompliance?: IComplianceForm | undefined;
-    isEditingCommunication?: boolean; // TODO: VER SI SE USA
+    isEditingCommunication?: boolean; 
 }
 
 const TaskModals: React.FC<TaskModalsProps> = ({

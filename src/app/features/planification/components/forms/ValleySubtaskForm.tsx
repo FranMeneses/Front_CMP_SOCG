@@ -55,7 +55,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("budget", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-budget-input"
-                    disabled={isManager}
+                    disabled={isManager || isEditing}
                 />
             </div>
             <div className="mb-4">                                                                 
@@ -78,7 +78,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("startDate", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-start-date-input"
-                    disabled={isManager}
+                    disabled={isManager || isEditing}
                 />
             </div>
             <div className="mb-4 truncate">
@@ -89,7 +89,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     onChange={(e) => handleSubtaskInputChange("endDate", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-end-date-input"
-                    disabled={isManager}
+                    disabled={isManager || isEditing}
                 />
             </div>
             {isEditing && (

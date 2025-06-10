@@ -80,7 +80,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
                     className="cursor-pointer mr-4"
                     onClick={() => handleGetSubtask(subtask.id)}
                   />
-                  {userRole === "Admin" && (
+                  {userRole === "encargado cumplimiento" && (
                     <Trash
                       size={20}
                       color="#041e3e"

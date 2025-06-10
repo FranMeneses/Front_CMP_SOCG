@@ -150,7 +150,6 @@ export const useCompliance = () => {
                             hasHes: taskRegistry[0].hes || false,
                             provider: taskRegistry[0].provider || "",
                         };
-                        console.log("Compliance with registry:", complianceWithRegistry);
                         setSelectedCompliance(complianceWithRegistry);
                         setIsComplianceModalOpen(true);
                     }
