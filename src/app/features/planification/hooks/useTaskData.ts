@@ -132,6 +132,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   } = useQuery(GET_TASKS_BY_PROCESS, { 
     variables: { processId: getCurrentProcessId(userRole) },
     skip: !shouldUseProcessQuery || isCommunicationsRole || isRelationshipSuperintendent,
+    fetchPolicy: "network-only",
   });
 
   const { 
@@ -141,19 +142,30 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     refetch: refetchAllTasks 
   } = useQuery(GET_TASKS, {
     skip: shouldUseProcessQuery || isCommunicationsRole || isRelationshipSuperintendent,
+    fetchPolicy: "network-only",
   });
 
   const {
     data: allProcessData,
     loading: allProcessQueryLoading,
     error: allProcessQueryError,
-  } = useQuery(GET_ALL_PROCESSES);
+  } = useQuery(GET_ALL_PROCESSES, {
+    fetchPolicy: "network-only",
+  });
 
-  const { data: taskStateData } = useQuery(GET_TASK_STATUSES);
+  const { data: taskStateData } = useQuery(GET_TASK_STATUSES,{
+        fetchPolicy: "network-only",
+  });
   
-  const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
-  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS);
-  const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
+  const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS,{
+        fetchPolicy: "network-only",
+  });
+  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS,{
+        fetchPolicy: "network-only",
+  });
+  const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS, {
+        fetchPolicy: "network-only",
+  });
   
   const tasks = isCommunicationsRole 
     ? tasksData 

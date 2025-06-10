@@ -20,7 +20,7 @@ export default function CommunicationForm({
     userRole
 }: CommunicationFormProps) {
 
-    const { formState, dropdownItems, handleSave, handleInputChange } = useCommunicationTaskForm(
+    const { formState, dropdownItems, handleSave, handleInputChange,handleComplianceChange } = useCommunicationTaskForm(
         onSave, 
         isEditing, 
         selectedTask,
@@ -31,6 +31,7 @@ export default function CommunicationForm({
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
 
+    console.log(selectedTask);
     return (
         <div className='font-[Helvetica]' data-test-id="communication-form">
             <h2 className="text-lg font-semibold mb-4">
@@ -82,7 +83,19 @@ export default function CommunicationForm({
                     data-test-id="communication-faena-dropdown"
                     disabled={isManager}
                 />
-            </div>  
+            </div>
+            <div className="mb-4 ">
+                <label className="block text-sm font-medium mb-1">¿Compliance?</label>
+                <DropdownMenu
+                buttonText="Seleccione Compliance"
+                items={["Si", "No"]}
+                onSelect={(value) => handleComplianceChange(value === "Si" ? true : false)}
+                isInModal={true}
+                selectedValue={selectedTask ? (selectedTask.applies ? "Si" : "No") : undefined}
+                data-test-id="communication-compliance-dropdown"
+                disabled={isEditing ? true : false}
+                />
+            </div>
             {isEditing && (
                 <>
                     <div className="mb-4">

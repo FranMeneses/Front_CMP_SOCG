@@ -1,7 +1,6 @@
-import React, { use } from 'react';
+import React from 'react';
 import { ITaskDetails } from "@/app/models/ITasks";
-import { ZoomIn, Trash, Plus } from "lucide-react";
-import { Button } from '@/components/ui/button';
+import { ZoomIn, Trash  } from "lucide-react";
 
 interface TaskRowProps {
   task: ITaskDetails;

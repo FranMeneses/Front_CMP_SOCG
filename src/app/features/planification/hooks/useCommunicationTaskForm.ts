@@ -168,6 +168,14 @@ export const useCommunicationTaskForm = (
 
 
     /**
+     * Función para manejar el cambio en el campo de cumplimiento
+     * @param value Nuevo valor para el campo de cumplimiento
+     */
+    const handleComplianceChange = useCallback((value: boolean) => {
+        setFormState((prev) => ({ ...prev, compliance: value }));
+    }, []);
+
+    /**
      * Función para manejar el guardado del formulario
      * @description Maneja el guardado de los datos del formulario, ya sea creando una nueva tarea o actualizando una existente
      */
@@ -181,6 +189,7 @@ export const useCommunicationTaskForm = (
                 valleyId: valleys.findIndex((v) => v.name === formState.valleyId) + 1,
                 processId: processes.findIndex((p:IProcess) => p.name === formState.processId) + 1,
                 faenaId: faenasName.findIndex((f) => f === "Transversal") + 1,
+                
             };
         }else {
             newTask = {
@@ -217,5 +226,6 @@ export const useCommunicationTaskForm = (
         handleInputChange,
         handleSave,
         handleGetTask,
+        handleComplianceChange,
     };
 };

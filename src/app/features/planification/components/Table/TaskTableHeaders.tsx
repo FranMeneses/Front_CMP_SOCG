@@ -55,7 +55,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     };
 
     const renderProcessDropdown = () => {
-        if (isManager || isCommunicationsManager) {
+        if (isManager || isCommunicationsManager || userRole === "encargado cumplimiento") {
             const filteredProcesses = getFilteredProcesses();
 
             return (

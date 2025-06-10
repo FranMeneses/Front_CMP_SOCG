@@ -167,9 +167,9 @@ export const usePlanification = () => {
      * @description Abre el modal de confirmación para eliminar una tarea
      * @param taskId ID de la tarea a eliminar
      */
-    const handleDeleteTask = () => {
+    const handleDeleteTask = async () => {
         try {
-            valleyTaskForm.handleDeleteTask(itemToDeleteId!);
+            await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
             refetch();
             window.location.reload();
@@ -184,9 +184,9 @@ export const usePlanification = () => {
      * @description Abre el modal de confirmación para eliminar una sub-tarea
      * @param subtaskId ID de la sub-tarea a eliminar
      */
-    const handleDeleteSubtask = () => {
+    const handleDeleteSubtask = async () => {
         try {
-            valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
+            await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
             setIsDeleteSubtaskModalOpen(false);
             refetch();
             window.location.reload();
@@ -299,9 +299,7 @@ export const usePlanification = () => {
                 const taskInfo = await communicationTaskForm.handleGetTask(taskId);
                 if (taskInfo) {
                     setSelectedTask(taskInfo);
-                    console.log("Task information:", taskInfo);
                     setIsCommunicationModalOpen(true);
-                    console.log(isCommunicationModalOpen);
                 }
             }
             catch (error) {

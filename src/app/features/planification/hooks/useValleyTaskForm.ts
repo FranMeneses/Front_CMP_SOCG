@@ -47,7 +47,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const taskInteraction = interactions.map((i: IInteraction) => i.operation);
     const taskScope = scopes.map((s: IScope) => s.name);
     const taskType = types.map((t: IType) => t.name);
-    const taskState = states.map((s: ITaskStatus) => s.name);
+    const taskState = initialValues?.compliance? states.map((s: ITaskStatus) => s.name) : states.filter((s: ITaskStatus) => s.name !== "En Cumplimiento").map((s: ITaskStatus) => s.name);
 
     /**
      * Función para eliminar una tarea
@@ -56,6 +56,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      */
     const handleDeleteTask = async (taskId: string) => {
         try {
+            console.log("Deleting task with ID:", taskId);
             const { data } = await deleteTask({
                 variables: { id: taskId },
             });
@@ -101,6 +102,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         try {
             const { data: expensesData } = await getTaskExpenses({
                 variables: { id: taskId },
+                fetchPolicy: 'network-only', 
             });
             if (expensesData) {
                 return expensesData.taskTotalExpense;
@@ -148,6 +150,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         try {
             const { data: taskData } = await getTask({
                 variables: { id: taskId },
+                fetchPolicy: 'network-only',
             });
             if (taskData) {
                 return taskData.task.faenaId;
@@ -296,7 +299,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         expenses: initialValues.expenses || "",
         risk: initialValues.risk || "",
         faena: initialValues.faena || "",
-        compliance: initialValues.compliance ?? undefined,
+        compliance: initialValues.compliance ?? false,
         });
     }
     }, [initialValues]); // Keep this dependency array simple
@@ -356,13 +359,13 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
                 process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null,
-                compliance: formState.compliance || false,
+                compliance: formState.compliance ?? false,
             };
         } else {
             taskDetails = {
                 ...formState,
                 risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
-                state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s: string | number) => s === formState.state) + 1,
+                state: states.find((s: ITaskStatus) => s.name === formState.state)?.id || 0,
                 interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
                 scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s: string | number) => s === formState.scope) + 1,
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,

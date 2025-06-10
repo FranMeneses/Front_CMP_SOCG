@@ -89,7 +89,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     <>
         {/* Task Modal */}
         {isValleyManager && (
-            <Modal isOpen={isPopupOpen} onClose={() => setIsPopupOpen(false)}>
+            <Modal isOpen={isPopupOpen} onClose={handleCancel}>
             {selectedInfoTask ? (
                 <ValleyTaskForm
                 onCancel={handleCancel}
@@ -112,7 +112,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         )}
             
         {/* Subtask Modal */}
-        <Modal isOpen={isPopupSubtaskOpen} onClose={() => setIsPopupSubtaskOpen(false)}>
+        <Modal isOpen={isPopupSubtaskOpen} onClose={handleCancelSubtask}>
             {selectedSubtask ? (
                 <ValleySubtaskForm
                     onCancel={handleCancelSubtask}
@@ -135,7 +135,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
             
         {/* Communication Modal */}
         {isCommunicationsManager || userRole === 'encargado cumplimiento'&& (
-            <Modal isOpen={isCommunicationModalOpen} onClose={() => setIsCommunicationModalOpen(false)}>
+            <Modal isOpen={isCommunicationModalOpen} onClose={handleCancelCommunication}>
             <CommunicationForm
                 onCancel={handleCancelCommunication}
                 onSave={isEditingCommunication ? handleUpdateCommunication : handleSaveCommunication}
