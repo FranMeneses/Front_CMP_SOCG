@@ -25,7 +25,7 @@ export const useCommunicationTaskForm = (
     const filteredProcessesNames = processes
     .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name))
     .map((p: IProcess) => p.name);
-
+    const processName = processes.map((p: IProcess) => p.name);
     const isPublicAffair = userRole === "encargado asuntos públicos" 
 
     const { valleysName, faenasName, valleys } = useHooks();
@@ -207,7 +207,7 @@ export const useCommunicationTaskForm = (
 
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
-        processes: filteredProcessesNames || [],
+        processes: userRole === 'encargado cumplimiento' ? processName : filteredProcessesNames || [],
     }), [taskStatuses]);
 
     return {

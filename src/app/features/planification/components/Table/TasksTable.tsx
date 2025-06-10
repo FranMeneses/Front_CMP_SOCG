@@ -137,7 +137,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                     userRole={userRole}
                                 />
                                 
-                                {expandedRow === task.id && userRole.toLowerCase() !== "encargado cumplimiento" && (
+                                {expandedRow === task.id && (
                                     <tr>
                                         <SubtasksTable 
                                             subtasks={subtasks}

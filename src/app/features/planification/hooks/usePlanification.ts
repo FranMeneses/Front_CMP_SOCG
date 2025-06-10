@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
@@ -294,12 +294,14 @@ export const usePlanification = () => {
                 console.error("Error handling task information:", error);
             }
         }
-        else if (isCommunicationsManager) {
+        else if (isCommunicationsManager || userRole === "encargado cumplimiento") {
             try {
                 const taskInfo = await communicationTaskForm.handleGetTask(taskId);
                 if (taskInfo) {
                     setSelectedTask(taskInfo);
+                    console.log("Task information:", taskInfo);
                     setIsCommunicationModalOpen(true);
+                    console.log(isCommunicationModalOpen);
                 }
             }
             catch (error) {

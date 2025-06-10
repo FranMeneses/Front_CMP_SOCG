@@ -33,7 +33,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
   return (
     <tr className='font-[Helvetica]'>
       <td
-        className={`px-4 py-2 text-left text-black font-semibold ${userRole.toLowerCase() === "encargado cumplimiento" ? "" : "curor-pointer"}`}
+        className={`px-4 py-2 text-left text-black font-semibold cursor-pointer`}
         onClick={() => handleOnTaskClick(task.id ?? '')}
       >
         {task.name.toUpperCase()}
@@ -62,12 +62,14 @@ const TaskRow: React.FC<TaskRowProps> = ({
           className="cursor-pointer mr-4"
           onClick={() => handleSeeInformation(task.id ?? '', userRole)}
         />
-        <Trash
-            size={20}
-            color="#041e3e"
-            className="cursor-pointer"
-            onClick={handleDelete}
-        />
+        {userRole === 'encargado cumplimiento' && (
+          <Trash
+              size={20}
+              color="#041e3e"
+              className="cursor-pointer"
+              onClick={handleDelete}
+          />
+        )}
       </td>
     </tr>
   );

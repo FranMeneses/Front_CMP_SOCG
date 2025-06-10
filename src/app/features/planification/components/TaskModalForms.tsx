@@ -134,7 +134,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
         </Modal>
             
         {/* Communication Modal */}
-        {isCommunicationsManager && (
+        {isCommunicationsManager || userRole === 'encargado cumplimiento'&& (
             <Modal isOpen={isCommunicationModalOpen} onClose={() => setIsCommunicationModalOpen(false)}>
             <CommunicationForm
                 onCancel={handleCancelCommunication}
