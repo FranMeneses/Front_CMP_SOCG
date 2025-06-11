@@ -98,8 +98,8 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                 <label className="block text-sm font-medium mb-1">Fecha de Finalización</label>
                 <input
                     type="date"
-                    value={subtaskFormState.finishDate}
-                    onChange={(e) => handleSubtaskInputChange("finishDate", e.target.value)}
+                    value={subtaskFormState.finalDate}
+                    onChange={(e) => handleSubtaskInputChange("finalDate", e.target.value)}
                     className="w-full border rounded px-3 py-2"
                     data-test-id="subtask-finish-date-input"
                     disabled={isManager}

@@ -15,7 +15,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
 
     const [createSubtask] = useMutation(CREATE_SUBTASK);
     const [updateSubtask] = useMutation(UPDATE_SUBTASK);
-    const [getSubtask] = useLazyQuery(GET_SUBTASK);
+    const [getSubtask] = useLazyQuery(GET_SUBTASK, {fetchPolicy: 'network-only'});
     const [deleteSubtask] = useMutation(DELETE_SUBTASK);
 
     const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);
@@ -46,8 +46,9 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                     name: subtaskData.subtask.name || "",
                     description: subtaskData.subtask.description || "",
                     budget: subtaskData.subtask.budget || 0,
-                    startDate: subtaskData.subtask.startDate || new Date().toISOString(),
-                    endDate: subtaskData.subtask.endDate || new Date().toISOString(),
+                    startDate: subtaskData.subtask.startDate,
+                    endDate: subtaskData.subtask.endDate,
+                    finalDate: subtaskData.subtask.finalDate,
                 };
                 return subtaskWithDefaults;
             } else {
@@ -142,7 +143,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                         endDate: subtask.endDate,
                         statusId: subtask.status,
                         priorityId: subtask.priority,
-                        finalDate: subtask.finishDate,
+                        finalDate: subtask.finalDate ? subtask.finalDate : null,
                     },
                 },
             });
@@ -168,7 +169,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         expense: subtasksInitialValues?.expense || "",
         startDate: subtasksInitialValues?.startDate || "",
         endDate: subtasksInitialValues?.endDate || "",
-        finishDate: subtasksInitialValues?.finishDate || "",
+        finalDate: subtasksInitialValues?.finalDate || "",
         beneficiary: subtasksInitialValues?.beneficiary || "",
         state: subtasksInitialValues?.state || "",
         priority: subtasksInitialValues?.priority || "",
@@ -199,6 +200,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      * @returns
      */
     const fetchSubtaskInitialValues = async () => {
+        console.log(subtask);
         if (subtask) {
             try {
                 const formatDateForInput = (dateString: string | null | undefined) => {
@@ -220,7 +222,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                     expense: subtask.expense !== undefined && subtask.expense !== null ? String(subtask.expense) : "",
                     startDate: formatDateForInput(subtask.startDate) || "",
                     endDate: formatDateForInput(subtask.endDate) || "",
-                    finishDate: formatDateForInput(subtask.finishDate) || "", 
+                    finalDate: formatDateForInput(subtask.finalDate) || "", 
                     beneficiary: beneficiaryName, 
                     state: subtask.statusId !== undefined && subtask.statusId !== null ? String(subtask.statusId) : "",
                     priority: subtask.priorityId !== undefined && subtask.priorityId !== null ? String(subtask.priorityId) : "",
@@ -255,7 +257,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                 expense: subtasksInitialValues.expense || "",
                 startDate: subtasksInitialValues.startDate || "",
                 endDate: subtasksInitialValues.endDate || "",
-                finishDate: subtasksInitialValues.finishDate || "",
+                finalDate: subtasksInitialValues.finalDate || "",
                 beneficiary: subtasksInitialValues.beneficiary || "",
                 state: subtasksInitialValues.state || "",
                 priority: subtasksInitialValues.priority || "",
@@ -297,7 +299,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             expense: "",
             startDate: "",
             endDate: "",
-            finishDate: "",
+            finalDate: "",
             beneficiary: "",
             state: "",
             priority: "",
