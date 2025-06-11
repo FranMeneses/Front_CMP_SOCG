@@ -407,7 +407,7 @@ const loadInitialRelationshipTasks = async () => {
     if (subtask.status.name === "Completada") {
       const finishDate = new Date(subtask.finalDate);
       const startDate = new Date(subtask.startDate);
-      const diffTime = finishDate.getTime() - startDate.getTime();
+      const diffTime = finishDate.getTime() - end.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       if (isNaN(diffDays)) {
         return "-";
