@@ -94,7 +94,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
           ) : (
             <tr>
               <td colSpan={9} className="px-4 py-2 text-center text-gray-500">
-                No hay subtareas disponibles
+                No hay subtareas creadas para esta tarea.
               </td>
             </tr>
           )}
