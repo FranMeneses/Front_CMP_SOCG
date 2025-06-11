@@ -9,6 +9,7 @@ import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
 import { useHooks } from '../../hooks/useHooks';
 import { IComplianceForm } from '@/app/models/ICompliance';
+import { UploadPlanificationForm } from './forms/UploadPlanificationForm';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
@@ -39,6 +40,9 @@ interface TaskModalsProps {
     handleDeleteTask: () => void;
     handleDeleteSubtask: () => void;
     
+    isPopupPlanificationOpen?: boolean;
+    setIsPopupPlanificationOpen?: (isOpen: boolean) => void;
+
     currentValleyName: string | null;
 
     userRole: string;
@@ -77,91 +81,109 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     userRole,
     selectedTask,
     selectedCompliance,
+    isPopupPlanificationOpen = false,
+    setIsPopupPlanificationOpen = () => {},
 }) => {
 
     const { isValleyManager, isCommunicationsManager } = useHooks();
 
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;
-
     const isEditingCompliance = selectedCompliance !== undefined && selectedCompliance !== null;
 
+    // Función para manejar el éxito de la carga
+    const handlePlanificationSuccess = () => {
+        console.log('Planificación cargada exitosamente');
+        // Aquí puedes agregar lógica adicional como:
+        // - Refrescar la lista de tareas
+        // - Mostrar una notificación de éxito
+        // - Actualizar el estado global
+    };
+
     return (
-    <>
-        {/* Task Modal */}
-        {isValleyManager && (
-            <Modal isOpen={isPopupOpen} onClose={handleCancel}>
-            {selectedInfoTask ? (
-                <ValleyTaskForm
-                onCancel={handleCancel}
-                onSave={handleUpdateTask}
-                valley={currentValleyName || ""}
-                data-test-id="task-form"
-                details={true}
-                isEditing={true}
-                infoTask={selectedInfoTask}
-                />
-            ) : (
-                <ValleyTaskForm
-                onCancel={handleCancel}
-                onSave={handleSaveTask}
-                valley={currentValleyName || ""}
-                data-test-id="task-form"
-                />
+        <>
+            {/* Task Modal */}
+            {isValleyManager && (
+                <Modal isOpen={isPopupOpen} onClose={handleCancel}>
+                    {selectedInfoTask ? (
+                        <ValleyTaskForm
+                            onCancel={handleCancel}
+                            onSave={handleUpdateTask}
+                            valley={currentValleyName || ""}
+                            data-test-id="task-form"
+                            details={true}
+                            isEditing={true}
+                            infoTask={selectedInfoTask}
+                        />
+                    ) : (
+                        <ValleyTaskForm
+                            onCancel={handleCancel}
+                            onSave={handleSaveTask}
+                            valley={currentValleyName || ""}
+                            data-test-id="task-form"
+                        />
+                    )}
+                </Modal>
             )}
-            </Modal>
-        )}
-            
-        {/* Subtask Modal */}
-        <Modal isOpen={isPopupSubtaskOpen} onClose={handleCancelSubtask}>
-            {selectedSubtask ? (
-                <ValleySubtaskForm
-                    onCancel={handleCancelSubtask}
-                    onSave={handleUpdateSubtask}
-                    valley={currentValleyName || ""}
-                    isEditing={true}
-                    data-test-id="subtask-form"
-                    subtask={selectedSubtask}
-                />
+                
+            {/* Subtask Modal */}
+            <Modal isOpen={isPopupSubtaskOpen} onClose={handleCancelSubtask}>
+                {selectedSubtask ? (
+                    <ValleySubtaskForm
+                        onCancel={handleCancelSubtask}
+                        onSave={handleUpdateSubtask}
+                        valley={currentValleyName || ""}
+                        isEditing={true}
+                        data-test-id="subtask-form"
+                        subtask={selectedSubtask}
+                    />
                 ) : (
-                <ValleySubtaskForm
-                    onCancel={handleCancelSubtask}
-                    onSave={handleCreateSubtask}
-                    valley={currentValleyName || ""}
-                    data-test-id="subtask-form"
-                    subtask={undefined}
-                />
+                    <ValleySubtaskForm
+                        onCancel={handleCancelSubtask}
+                        onSave={handleCreateSubtask}
+                        valley={currentValleyName || ""}
+                        data-test-id="subtask-form"
+                        subtask={undefined}
+                    />
                 )}
-        </Modal>
-            
-        {/* Communication Modal */}
-        {isCommunicationsManager || userRole === 'encargado cumplimiento'&& (
-            <Modal isOpen={isCommunicationModalOpen} onClose={handleCancelCommunication}>
-            <CommunicationForm
-                onCancel={handleCancelCommunication}
-                onSave={isEditingCommunication ? handleUpdateCommunication : handleSaveCommunication}
-                isEditing={isEditingCommunication} 
-                selectedTask={selectedTask}
-                userRole={userRole}
-            />
             </Modal>
-        )}
-            
-        {/* Delete Confirmation Modals */}
-        <DeleteConfirmationModal 
-            isOpen={isDeleteTaskModalOpen}
-            onClose={() => setIsDeleteTaskModalOpen(false)}
-            onConfirm={handleDeleteTask}
-            itemType="tarea"
-        />
-            
-        <DeleteConfirmationModal 
-            isOpen={isDeleteSubtaskModalOpen}
-            onClose={() => setIsDeleteSubtaskModalOpen(false)}
-            onConfirm={handleDeleteSubtask}
-            itemType="subtarea"
-        />
-    </>
-  );
+                
+            {/* Communication Modal */}
+            {(isCommunicationsManager || userRole === 'encargado cumplimiento') && (
+                <Modal isOpen={isCommunicationModalOpen} onClose={handleCancelCommunication}>
+                    <CommunicationForm
+                        onCancel={handleCancelCommunication}
+                        onSave={isEditingCommunication ? handleUpdateCommunication : handleSaveCommunication}
+                        isEditing={isEditingCommunication} 
+                        selectedTask={selectedTask}
+                        userRole={userRole}
+                    />
+                </Modal>
+            )}
+
+            {/* Upload Planification Modal */}
+            <Modal isOpen={isPopupPlanificationOpen} onClose={() => setIsPopupPlanificationOpen(false)}>
+                <UploadPlanificationForm 
+                    onClose={() => setIsPopupPlanificationOpen(false)}
+                    onSuccess={handlePlanificationSuccess}
+                />
+            </Modal>
+
+            {/* Delete Confirmation Modals */}
+            <DeleteConfirmationModal 
+                isOpen={isDeleteTaskModalOpen}
+                onClose={() => setIsDeleteTaskModalOpen(false)}
+                onConfirm={handleDeleteTask}
+                itemType="tarea"
+            />
+                
+            <DeleteConfirmationModal 
+                isOpen={isDeleteSubtaskModalOpen}
+                onClose={() => setIsDeleteSubtaskModalOpen(false)}
+                onConfirm={handleDeleteSubtask}
+                itemType="subtarea"
+            />
+        </>
+    );
 };
 
 export default TaskModals;

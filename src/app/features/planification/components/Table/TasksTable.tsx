@@ -10,6 +10,7 @@ import TaskFilters from "./TaskFilters";
 import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
 import { useTaskFilters } from "../../hooks/useTaskFilters";
+import { usePlanificationRest } from "../../hooks/usePlanificationRest";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];
@@ -43,9 +44,11 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCancelSubtask,
         handleSaveTask,
         setIsCommunicationModalOpen,
+        setIsPopupPlanificationOpen ,
         handleFilterClick: hookHandleFilterClick,
 
         isPopupOpen, 
+        isPopupPlanificationOpen,
         activeFilter: hookActiveFilter,
         isPopupSubtaskOpen,
         selectedInfoTask,
@@ -66,6 +69,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleDeleteSubtask,
 
         handleCreateTask,
+        handleUploadPlanification,
 
         handleSaveCommunication,
         handleUpdateCommunication,
@@ -99,6 +103,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 selectedProcess={selectedProcess}
                 handleProcessFilterChange={handleProcessFilterChange}
                 handleCreateTask={handleCreateTask}
+                handleUploadPlanification={handleUploadPlanification}
             />
 
             <TaskFilters 
@@ -187,6 +192,9 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
                 handleDeleteTask={handleDeleteTask}
                 handleDeleteSubtask={handleDeleteSubtask}
+
+                isPopupPlanificationOpen={isPopupPlanificationOpen}
+                setIsPopupPlanificationOpen={setIsPopupPlanificationOpen}
                 
                 currentValleyName={currentValleyName}
                 userRole={userRole}

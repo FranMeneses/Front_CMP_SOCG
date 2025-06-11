@@ -19,6 +19,7 @@ export const usePlanification = () => {
     
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
+    const [isPopupPlanificationOpen, setIsPopupPlanificationOpen] = useState<boolean>(false);
     const [isCommunicationModalOpen, setIsCommunicationModalOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [selectedTask, setSelectedTask] = useState<ITask | undefined>(undefined);
@@ -74,6 +75,14 @@ export const usePlanification = () => {
             setIsCommunicationModalOpen(true);
         }
     };
+
+    /**
+     * Función para manejar la subida de un plan de planificación
+     * @description Abre el modal para subir un plan de planificación
+     */
+    const handleUploadPlanification = () => {
+        setIsPopupPlanificationOpen(true);
+    }
 
     /**
      * Función para guardar una nueva tarea 
@@ -384,6 +393,7 @@ export const usePlanification = () => {
         setIsSidebarOpen,
         setIsDeleteSubtaskModalOpen,
         setIsDeleteTaskModalOpen,
+        setIsPopupPlanificationOpen,
         setItemToDeleteId,
         handleAddTask,
         handleSaveTask,
@@ -408,8 +418,10 @@ export const usePlanification = () => {
         handleUpdateCommunication,
         handleCancelCommunication,
         handleFilterByProcess,
+        handleUploadPlanification,
         selectedTask,
         isPopupOpen,
+        isPopupPlanificationOpen,
         isDeleteSubtaskModalOpen,
         isDeleteTaskModalOpen,
         isCommunicationModalOpen,

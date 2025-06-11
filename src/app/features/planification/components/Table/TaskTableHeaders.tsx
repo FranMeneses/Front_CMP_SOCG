@@ -12,6 +12,7 @@ interface TaskTableHeaderProps {
     selectedProcess: {id: number, name: string} | null;
     handleProcessFilterChange: (item: string) => void;
     handleCreateTask: () => void;
+    handleUploadPlanification?: () => void;
 }
 
 const PROCESS_FILTERS = {
@@ -25,7 +26,8 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     allProcesses, 
     selectedProcess, 
     handleProcessFilterChange, 
-    handleCreateTask 
+    handleCreateTask,
+    handleUploadPlanification
 }) => {
     const { isCommunicationsManager, isValleyManager, isManager } = useHooks();
 
@@ -80,7 +82,8 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             <div>
                 {renderProcessDropdown()}
             </div>
-            { ((isValleyManager || isCommunicationsManager || userRole === "encargado cumplimiento") && !isManager) && (
+            <div className=' flex flex-row gap-2'>
+                 { (( isCommunicationsManager || userRole === "encargado cumplimiento") && !isManager) && (
                 <Button 
                     onClick={handleCreateTask}
                     className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
@@ -88,6 +91,15 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                     <Plus size={16} /> Añadir
                 </Button>
             )}
+            { (( userRole === "encargado cumplimiento") && !isManager) && (
+                <Button 
+                    onClick={handleUploadPlanification}
+                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
+                >
+                    <Plus size={16} /> Cargar planificación
+                </Button>
+            )}
+            </div>
         </div>
     );
 };
