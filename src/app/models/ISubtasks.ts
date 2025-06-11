@@ -8,7 +8,7 @@ export interface ISubtask {
     expense: number;
     startDate: string;
     endDate: string;
-    finalDate: string;
+    finishDate: string;
     beneficiaryId: string;
     statusId: number;
     priorityId: number;

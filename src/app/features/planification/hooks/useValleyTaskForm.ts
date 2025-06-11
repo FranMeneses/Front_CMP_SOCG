@@ -9,12 +9,13 @@ import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
-import client from "@/lib/apolloClient";
+import { GET_TASK_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
 export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
     const [updateTask] = useMutation(UPDATE_TASK);
+    const [updateRegistry] = useMutation(UPDATE_REGISTRY);
     const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
     const [deleteTask] = useMutation(DELETE_TASK);
     
@@ -22,6 +23,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
     const [getTask] = useLazyQuery(GET_TASK);
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
+    const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
 
     const {valleysName: valleyNames, faenasName: faenaNames, faenas: Faenas} = useHooks();
 
@@ -187,7 +189,23 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
 
             if (!data?.updateTask?.id) {
                 throw new Error("Task update failed: ID is undefined.");
-            }
+            };
+            if (data?.updateTask.status.id === 3) {
+                const { data: complianceData } = await getCompliance({
+                    variables: { taskId: selectedTaskId },
+                });
+                console.log("Compliance data:", complianceData.getTaskCompliance);
+                const { data: complianceUpdateData } = await updateRegistry({
+                    variables: {
+                        id: complianceData?.getTaskCompliance.registries?.[0]?.id,
+                        input: {
+                            startDate: new Date(),
+                        },
+                    },
+                });
+                console.log("Compliance updated:", complianceUpdateData);
+            };
+
             const { data: infoData } = await updateInfoTask({
                 variables: {
                     id: selectedInfoTask?.id,

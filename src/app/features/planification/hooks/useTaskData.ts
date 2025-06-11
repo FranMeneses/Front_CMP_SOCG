@@ -405,7 +405,7 @@ const loadInitialRelationshipTasks = async () => {
   const getRemainingSubtaskDays = (subtask: ISubtask) => {
     const end = new Date(subtask.endDate);
     if (subtask.status.name === "Completada con Informe Final") {
-      const finishDate = new Date(subtask.finalDate);
+      const finishDate = new Date(subtask.finishDate);
       const startDate = new Date(subtask.startDate);
       const diffTime = finishDate.getTime() - startDate.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -476,12 +476,12 @@ const loadInitialRelationshipTasks = async () => {
           ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.endDate).getTime())))
           : null;
       
-        const validFinalDates = associatedSubtasks
-          .filter(subtask => subtask.finalDate && !isNaN(new Date(subtask.finalDate).getTime()))
-          .map(subtask => new Date(subtask.finalDate).getTime());
-        
-        const finishDate = validFinalDates.length > 0
-          ? new Date(Math.max(...validFinalDates))
+        const validFinishDates = associatedSubtasks
+          .filter(subtask => subtask.finishDate && !isNaN(new Date(subtask.finishDate).getTime()))
+          .map(subtask => new Date(subtask.finishDate).getTime());
+
+        const finishDate = validFinishDates.length > 0
+          ? new Date(Math.max(...validFinishDates))
           : null;
       
         return {

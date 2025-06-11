@@ -142,6 +142,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                         endDate: subtask.endDate,
                         statusId: subtask.status,
                         priorityId: subtask.priority,
+                        finalDate: subtask.finishDate,
                     },
                 },
             });
@@ -219,7 +220,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                     expense: subtask.expense !== undefined && subtask.expense !== null ? String(subtask.expense) : "",
                     startDate: formatDateForInput(subtask.startDate) || "",
                     endDate: formatDateForInput(subtask.endDate) || "",
-                    finishDate: formatDateForInput(subtask.finalDate) || "", 
+                    finishDate: formatDateForInput(subtask.finishDate) || "", 
                     beneficiary: beneficiaryName, 
                     state: subtask.statusId !== undefined && subtask.statusId !== null ? String(subtask.statusId) : "",
                     priority: subtask.priorityId !== undefined && subtask.priorityId !== null ? String(subtask.priorityId) : "",

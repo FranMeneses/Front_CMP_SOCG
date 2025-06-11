@@ -6,7 +6,7 @@ import { useComplianceData } from "./useComplianceData";
 import { ITaskForm } from "@/app/models/ICommunicationsForm";
 import { useComplianceForm } from "./useComplianceForm";
 import { IComplianceForm } from "@/app/models/ICompliance";
-import { CREATE_COMPLIANCE, CREATE_REGISTRY, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
 export const useCompliance = () => {
     const { currentValleyId, userRole } = useHooks();

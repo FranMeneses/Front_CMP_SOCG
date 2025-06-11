@@ -72,7 +72,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
                 <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
                 <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
                 <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>
-                <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
+                <td className="px-4 py-2">{formatDate(subtask.finishDate)}</td>
                 <td className="px-4 py-2 flex flex-row">
                   <Pen
                     size={18}

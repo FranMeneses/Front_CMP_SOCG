@@ -17,7 +17,7 @@ export function UploadPlanificationForm({ onClose, onSuccess }: UploadPlanificat
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             setFile(event.target.files[0]);
-            setLocalError(null); // Limpiar errores previos
+            setLocalError(null);
         }
     };
 
@@ -30,8 +30,8 @@ export function UploadPlanificationForm({ onClose, onSuccess }: UploadPlanificat
         try {
             await loadPlanificationData(file);
             console.log('Archivo cargado:', file.name);
-            onSuccess?.(); // Llamar callback de éxito
-            onClose?.(); // Cerrar modal
+            onSuccess?.(); 
+            onClose?.(); 
         } catch (err) {
             console.error('Error al cargar archivo:', err);
         }

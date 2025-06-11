@@ -256,7 +256,6 @@ export const usePlanification = () => {
                 variables: {
                     input: {
                         complianceId: complianceData.create.id,
-                        startDate: new Date(),
                     },
                 },
             });
@@ -378,7 +377,7 @@ export const usePlanification = () => {
             const updatedTaskId = await valleyTaskForm.handleUpdateTask(task, selectedTaskId!, selectedInfoTask);
             setIsPopupOpen(false);
             setSelectedTaskId(updatedTaskId);
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             console.error("Error in handleUpdateTask:", error);
         }
