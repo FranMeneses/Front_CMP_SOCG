@@ -154,11 +154,12 @@ export const GET_VALLEY_TASKS_COUNT = gql`
 `;
 
 // Query para obtener el total presupuesto por mes 
-export const GET_TOTAL_BUDGET_BY_MONTH = gql`
-  query GetTotalBudgetByMonth($monthName: String!, $year: Int!) {
-    totalBudgetByMonth(monthName: $monthName, year: $year)
+export const GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS = gql`
+  query GetTotalBudgetByMonthAndProcess($monthName: String!, $year: Int!, $processId: Int!) {
+    totalBudgetByMonthAndProcess(monthName: $monthName, year: $year, processId: $processId)
   }
 `;
+
 
 // Query para obtener el total gasto por mes
 export const GET_TOTAL_EXPENSE_BY_MONTH = gql`

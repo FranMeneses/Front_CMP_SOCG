@@ -23,7 +23,7 @@ export default function TaskResume({
     year 
 }: TaskResumeProps) {
     
-    const { handleGetSubtasksByMonthYearAndValley, handleGetTotalSubtasksByMonthYear } = useTaskResume();
+    const { handleGetSubtasksByMonthYearAndProcess, handleGetTotalSubtasksByMonthYear } = useTaskResume();
     const [valleySubtasks, setValleySubtasks] = useState<Record<string, number>>({});
     const [totalSubtasks, setTotalSubtasks] = useState<number>(0);
 
@@ -35,7 +35,7 @@ export default function TaskResume({
         if (selectedValley === "Transversal") {
             for (const valley of valleys) {
                 try {
-                    const count = await handleGetSubtasksByMonthYearAndValley(month, valley.id, year);
+                    const count = await handleGetSubtasksByMonthYearAndProcess(month, valley.id, year);
                     subtasksData[valley.id] = count || 0;
                 } catch (error) {
                     console.error(`Error loading subtasks for valley ${valley.id}:`, error);
@@ -55,7 +55,7 @@ export default function TaskResume({
         } else {
             const valley = valleys.find((v: IValley) => v.name === selectedValley);
             const count = valley?.id !== undefined 
-                ? await handleGetSubtasksByMonthYearAndValley(month, valley.id, year) 
+                ? await handleGetSubtasksByMonthYearAndProcess(month, valley.id, year) 
                 : 0;
             
             if (valley?.id !== undefined) {
@@ -65,7 +65,7 @@ export default function TaskResume({
             
             setTotalSubtasks(count);
         }
-    }, [month, year, valleys, selectedValley, handleGetSubtasksByMonthYearAndValley, handleGetTotalSubtasksByMonthYear]);
+    }, [month, year, valleys, selectedValley, handleGetSubtasksByMonthYearAndProcess, handleGetTotalSubtasksByMonthYear]);
 
     useEffect(() => {
         loadSubtasks();
@@ -113,7 +113,6 @@ export default function TaskResume({
                     <div className="text-sm mt-1">
                         {valleys.map((valley) => {
                             const valleyEvents = valleySubtasks[valley.id] ?? 0;
-                            console.log(`Proceso: ${valley.name}, Events: ${valleyEvents}, ID: ${valley.id}`);
                             return (
                                 <div key={valley.id} className="flex justify-between items-center mt-1">
                                     <span className="flex items-center">

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
+import { GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
 import { GET_TASK_SUBTASKS } from "@/app/api/tasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { Months } from "@/constants/months";
 import { ITask } from "@/app/models/ITasks";
+import { useHooks } from "@/app/features/hooks/useHooks";
 
 export function useResume() {
     
@@ -21,9 +22,9 @@ export function useResume() {
     const [formattedExpenses, setFormattedExpenses] = useState("");
     
     const [getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
-    const [ getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
-    const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH)
-    const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH)
+    const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
+    const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
+    const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH);
 
     /**
      * Función para manejar el clic en una leyenda del gráfico.
@@ -55,13 +56,13 @@ export function useResume() {
      * @returns 
      */
     const loadRelationshipProcessesTask = async () => {
-      const communicationProcessIds = [1, 2, 3]; 
+      const relationshipProcessIds = [1, 2, 3]; 
       const allTasks: ITask[] = [];
             
       setIsLoadingTaskDetails(true);
             
       try {
-        for (const processId of communicationProcessIds) {
+        for (const processId of relationshipProcessIds) {
           const { data } = await getTasksByProcess({
             variables: { processId },
           });
@@ -70,7 +71,7 @@ export function useResume() {
         }
         return allTasks;
       } catch (error) {
-        console.error("Error loading communication processes tasks:", error);
+        console.error("Error loading relationship processes tasks:", error);
         return [];
       } finally {
         setIsLoadingTaskDetails(false);
@@ -116,17 +117,17 @@ export function useResume() {
      * @description Recorre los meses del año y realiza una consulta para obtener el presupuesto total de cada mes, sumando los resultados.
      * @returns 
      */
-    const YearlyBudget = async () => {
+    const YearlyBudget = async (processId: number) => {
         let totalBudget = 0;
         
         try {
             for (const month of Months) {
                 const { data: BudgetData } = await getMonthBudget({
-                    variables: { monthName: month, year: new Date().getFullYear() }, //TODO: PEDIR AGREGAR PROCESO AL BACKEND
+                    variables: { monthName: month, year: new Date().getFullYear(), processId }, 
                 });
                 
-                if (BudgetData && BudgetData.totalBudgetByMonth) {
-                    totalBudget += BudgetData.totalBudgetByMonth || 0;
+                if (BudgetData && BudgetData.totalBudgetByMonthAndProcess) {
+                    totalBudget += BudgetData.totalBudgetByMonthAndProcess || 0;
                 }
             }
             return totalBudget;
@@ -141,17 +142,17 @@ export function useResume() {
      * @description Recorre los meses del año y realiza una consulta para obtener el total de gastos de cada mes, sumando los resultados.
      * @returns 
      */
-    const YearlyExpenses = async () => {
+    const YearlyExpenses = async (processId: number) => {
         let totalExpenses = 0;
         
         try {
             for (const month of Months) {
                 const { data: ExpensesData } = await getMonthExpenses({
-                    variables: { monthName: month, year: new Date().getFullYear()}, //TODO: PEDIR AGREGAR PROCESO AL BACKEND
+                    variables: { monthName: month, year: new Date().getFullYear(), processId },
                 });
-                
-                if (ExpensesData && ExpensesData.totalExpenseByMonth) {
-                    totalExpenses += ExpensesData.totalExpenseByMonth || 0;
+
+                if (ExpensesData && ExpensesData.totalExpenseByMonthAndProcess) {
+                    totalExpenses += ExpensesData.totalExpenseByMonthAndProcess || 0;
                 }
             }
             return totalExpenses;
@@ -166,24 +167,35 @@ export function useResume() {
      * @description Este efecto se ejecuta una vez al montar el componente, cargando los datos del presupuesto y gastos anuales.
      */
     useEffect(() => {
-        const loadBudgetData = async () => {
-            setBudgetLoading(true);
-            try {
-                const budgetTotal = await YearlyBudget();
-                setYearlyBudgetTotal(budgetTotal);
-                setFormattedBudget(formatCurrency(budgetTotal));
-                
-                const expensesTotal = await YearlyExpenses();
-                setYearlyExpensesTotal(expensesTotal);
-                setFormattedExpenses(formatCurrency(expensesTotal));
-            } catch (error) {
-                console.error("Error loading budget data:", error);
-            } finally {
-                setBudgetLoading(false);
+    const loadBudgetData = async () => {
+        setBudgetLoading(true);
+        try {
+            const relationshipProcessIds = [1, 2, 3];
+            let totalBudget = 0;
+            
+            for (const processId of relationshipProcessIds) {
+                const processBudget = await YearlyBudget(processId);
+                totalBudget += processBudget;
             }
-        };
-        
-        loadBudgetData();
+            
+            setYearlyBudgetTotal(totalBudget);
+            setFormattedBudget(formatCurrency(totalBudget));
+            
+            let totalExpenses = 0;
+            for (const processId of relationshipProcessIds) {
+                const processExpenses = await YearlyExpenses(processId);
+                totalExpenses += processExpenses;
+            }
+            setYearlyExpensesTotal(totalExpenses);
+            setFormattedExpenses(formatCurrency(totalExpenses));
+        } catch (error) {
+            console.error("Error loading budget data:", error);
+        } finally {
+            setBudgetLoading(false);
+        }
+    };
+    
+    loadBudgetData();
     }, []); 
     
     const loading = isLoadingTaskDetails || budgetLoading;
@@ -193,18 +205,18 @@ export function useResume() {
      * @description Este efecto se ejecuta una vez al montar el componente, cargando las tareas de los procesos de relacionamiento.
      */
     useEffect(() => {
-      const loadInitialCommunicationTasks = async () => {
+      const loadInitialRelationshipTasks = async () => {
         try {
           setIsLoadingTaskDetails(true);
-          const communicationTasks = await loadRelationshipProcessesTask();
-          setTasksData(communicationTasks);
+          const relationshipTasks = await loadRelationshipProcessesTask();
+          setTasksData(relationshipTasks);
         } catch (error) {
-          console.error("Error loading initial communication tasks:", error);
+          console.error("Error loading initial relationship tasks:", error);
         } finally {
           setIsLoadingTaskDetails(false);
         }
       };
-      loadInitialCommunicationTasks();
+      loadInitialRelationshipTasks();
     }, []);
 
     return {

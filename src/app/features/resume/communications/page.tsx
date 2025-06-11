@@ -3,7 +3,6 @@ import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
 import DynamicTable from "@/app/features/resume/relationship/components/DynamicTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { useResume } from "../relationship/hooks/useResume";
 import { useHooks } from "../../hooks/useHooks";
 import { useBarChart } from "../relationship/hooks/useBarChart";
 import { useComboChart } from "../relationship/hooks/useComboChart";
@@ -13,18 +12,15 @@ import { useCommunicationResume } from "./hooks/useCommunicationResume";
 import { usePieChartCommunications } from "./hooks/usePieChartCommunications";
 
 export default function ResumeCommunications() {
-  const {
-    loading: resumeLoading,
-    formattedBudget,
-    formattedExpenses,
-  } = useResume();
 
   const {
-    isLoadingTaskDetails,
+    loading: resumeLoading,
     selectedLegend,
     selectedTaskId,
     tasksData,
     subtasks,
+    formattedBudget,
+    formattedExpenses,
     handleLegendClick,
     handleTaskClick,
   } = useCommunicationResume();

@@ -1,6 +1,7 @@
-import { GET_TASK_SUBTASKS, GET_TASKS_BY_PROCESS } from "@/app/api/tasks";
+import { GET_TASK_SUBTASKS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { ITask } from "@/app/models/ITasks";
+import { Months } from "@/constants/months";
 import { useLazyQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 
@@ -11,10 +12,16 @@ export function useCommunicationResume() {
     const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
     const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+    const [formattedBudget, setFormattedBudget] = useState("");
+    const [formattedExpenses, setFormattedExpenses] = useState("");
+    const [yearlyBudgetTotal, setYearlyBudgetTotal] = useState(0);
+    const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState(0);
     
     
     const [ getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
     const [ getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
+    const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
+    const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH);
 
 
     /**
@@ -92,6 +99,67 @@ export function useCommunicationResume() {
     };
     
     /**
+     * Función para calcular los presupuestos anuales de un proceso específico.
+     * @description Recorre los meses del año y suma los gastos mensuales de un proceso específico.
+     * @param processId ID del proceso para el cual se calcularán los gastos anuales.
+     * @returns Total de gastos anuales del proceso.
+     */
+    const YearlyBudget = async (processId: number) => {
+      let totalBudget = 0;
+      try {
+        for (const month of Months) {
+          const { data: BudgetData } = await getMonthBudget({
+            variables: { monthName: month, year: new Date().getFullYear(), processId }, 
+          });
+            if (BudgetData && BudgetData.totalBudgetByMonthAndProcess) {
+                totalBudget += BudgetData.totalBudgetByMonthAndProcess || 0;
+            }
+        }
+        console.log("Total Budget for process", processId, ":", totalBudget);
+        return totalBudget;
+      } catch (error) {
+          console.error("Error calculating yearly budget:", error);
+          return 0;
+      }
+    };
+
+    /**
+    * Función para calcular los gastos anuales.
+    * @description Recorre los meses del año y realiza una consulta para obtener el total de gastos de cada mes, sumando los resultados.
+    * @returns 
+    */
+    const YearlyExpenses = async (processId: number) => {
+        let totalExpenses = 0;
+        
+        try {
+            for (const month of Months) {
+                const { data: ExpensesData } = await getMonthExpenses({
+                    variables: { monthName: month, year: new Date().getFullYear(), processId },
+                });
+                if (ExpensesData && ExpensesData.totalExpenseByMonthAndProcess) {
+                    totalExpenses += ExpensesData.totalExpenseByMonthAndProcess || 0;
+                }
+            }
+            return totalExpenses;
+        } catch (error) {
+            console.error("Error calculating yearly expenses:", error);
+            return 0;
+        }
+    };
+
+    /**
+     * Función para formatear un valor numérico como moneda.
+     * @description Utiliza Intl.NumberFormat para formatear el valor numérico a una cadena de texto con formato de moneda.
+     * @param value Valor numérico a formatear.
+     * @returns 
+     */
+    const formatCurrency = (value: number): string => {
+        return new Intl.NumberFormat('es-ES', {
+            maximumFractionDigits: 0
+        }).format(value);
+    };
+
+    /**
      * Hook para cargar las tareas de los procesos de comunicación al montar el componente.
      * @description Utiliza useEffect para cargar las tareas de los procesos de comunicación al montar el componente.
      */
@@ -109,7 +177,45 @@ export function useCommunicationResume() {
       };
       loadInitialCommunicationTasks();
     }, []);
+
+    /**
+     * Hook para cargar los datos del presupuesto y gastos anuales.
+     * @description Este efecto se ejecuta una vez al montar el componente, cargando los datos del presupuesto y gastos anuales.
+     */
+    useEffect(() => {
+    const loadBudgetData = async () => {
+        setBudgetLoading(true);
+        try {
+            const relationshipProcessIds = [4,5,6,7];
+            let totalBudget = 0;
+            
+            for (const processId of relationshipProcessIds) {
+                const processBudget = await YearlyBudget(processId);
+                totalBudget += processBudget;
+            }
+            
+            setYearlyBudgetTotal(totalBudget);
+            setFormattedBudget(formatCurrency(totalBudget));
+            
+            let totalExpenses = 0;
+            for (const processId of relationshipProcessIds) {
+                const processExpenses = await YearlyExpenses(processId);
+                totalExpenses += processExpenses;
+            }
+            setYearlyExpensesTotal(totalExpenses);
+            setFormattedExpenses(formatCurrency(totalExpenses));
+        } catch (error) {
+            console.error("Error loading budget data:", error);
+        } finally {
+            setBudgetLoading(false);
+        }
+    };
     
+    loadBudgetData();
+    }, []); 
+
+    const loading = isLoadingTaskDetails || budgetLoading;
+
   return {
     loadCommunicationProcessesTasks,
     handleLegendClick,
@@ -119,5 +225,8 @@ export function useCommunicationResume() {
     selectedTaskId,
     selectedLegend,
     subtasks,
+    formattedBudget,
+    formattedExpenses,
+    loading
   };
 };

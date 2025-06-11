@@ -1,38 +1,41 @@
-import { GET_SUBTASKS_BY_MONTH_YEAR_AND_VALLEY } from "@/app/api/subtasks";
+import { GET_SUBTASKS_BY_MONTH_YEAR_AND_PROCESS } from "@/app/api/subtasks";
 import { useLazyQuery } from "@apollo/client";
 import { useCallback } from "react";
 
 export function useTaskResume() {
-    const [GetSubtasksByMonthYearAndValley, 
-        {data: subtasksByMonthYearAndValleyData, 
-        loading: subtasksByMonthYearAndValleyLoading, 
-        error: subtasksByMonthYearAndValleyError}] = useLazyQuery(GET_SUBTASKS_BY_MONTH_YEAR_AND_VALLEY);
+    const [GetSubtasksByMonthYearAndProcess, 
+        {data: subtasksByMonthYearAndProcessData, 
+        loading: subtasksByMonthYearAndProcessLoading, 
+        error: subtasksByMonthYearAndProcessError}] = useLazyQuery(GET_SUBTASKS_BY_MONTH_YEAR_AND_PROCESS, {
+            fetchPolicy: "network-only"
+        })
 
-    const handleGetSubtasksByMonthYearAndValley = useCallback(async (month: string, valleyId: number, year: number) => { 
+    const handleGetSubtasksByMonthYearAndProcess = useCallback(async (month: string, processId: number, year: number) => { 
         try {
-            const { data } = await GetSubtasksByMonthYearAndValley({
+            const { data } = await GetSubtasksByMonthYearAndProcess({
                 variables: {
                     monthName: month,
                     year: year,
-                    valleyId: valleyId
+                    processId: processId
                 }
             });
             
-            return data.subtasksByMonthYearAndValley.length;
+            return data.subtasksByMonthYearAndProcess.length;
 
         }
         catch (error) {
             console.error("Error obtaining subtasks:", error);
             return 0; 
         }
-    }, [GetSubtasksByMonthYearAndValley]);
+    }, [GetSubtasksByMonthYearAndProcess]);
 
-    const handleGetTotalSubtasksByMonthYear = useCallback(async (month: string, year: number, valleys: any[]) => {
+    const handleGetTotalSubtasksByMonthYear = useCallback(async (month: string, year: number, processes: any[]) => {
         try {
             let totalTasks = 0;
-            
-            for (const valley of valleys) {
-                const count = await handleGetSubtasksByMonthYearAndValley(month, valley.id, year);
+
+            for (const process of processes) {
+                console.log("Process ID:", process);
+                const count = await handleGetSubtasksByMonthYearAndProcess(month, process.id, year);
                 totalTasks += count;
             }
             
@@ -41,13 +44,13 @@ export function useTaskResume() {
             console.error("Error obtaining total subtasks:", error);
             return 0;
         }
-    }, [handleGetSubtasksByMonthYearAndValley]);
+    }, [handleGetSubtasksByMonthYearAndProcess]);
 
     return {
-        handleGetSubtasksByMonthYearAndValley,
+        handleGetSubtasksByMonthYearAndProcess,
         handleGetTotalSubtasksByMonthYear, 
-        subtasksByMonthYearAndValleyData,
-        subtasksByMonthYearAndValleyLoading,
-        subtasksByMonthYearAndValleyError
+        subtasksByMonthYearAndProcessData,
+        subtasksByMonthYearAndProcessLoading,
+        subtasksByMonthYearAndProcessError
     }
 }
