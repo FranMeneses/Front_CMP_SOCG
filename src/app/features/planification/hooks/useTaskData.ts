@@ -475,13 +475,24 @@ const loadInitialRelationshipTasks = async () => {
           ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.endDate).getTime())))
           : null;
       
-        const validFinalDates = associatedSubtasks
-          .filter(subtask => subtask.finalDate && !isNaN(new Date(subtask.finalDate).getTime()))
-          .map(subtask => new Date(subtask.finalDate).getTime());
+        const allSubtasksHaveFinalDate = associatedSubtasks.length > 0 && 
+          associatedSubtasks.every(subtask => 
+            subtask.finalDate && 
+            subtask.finalDate !== null && 
+            subtask.finalDate !== undefined && 
+            !isNaN(new Date(subtask.finalDate).getTime())
+          );
         
-        const finishDate = validFinalDates.length > 0
-          ? new Date(Math.max(...validFinalDates))
-          : null;
+        let finishDate = null;
+        
+        if (allSubtasksHaveFinalDate) {
+          const validFinalDates = associatedSubtasks
+            .map(subtask => new Date(subtask.finalDate).getTime());
+          
+          finishDate = validFinalDates.length > 0
+            ? new Date(Math.max(...validFinalDates))
+            : null;
+        }
       
         return {
           ...task,
