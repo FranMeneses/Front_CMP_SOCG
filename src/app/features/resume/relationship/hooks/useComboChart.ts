@@ -1,4 +1,4 @@
-import { GET_VALLEY_MONTHLY_BUDGETS, GET_VALLEY_MONTHLY_EXPENSES } from "@/app/api/tasks";
+import { GET_PROCESS_MONTHLY_BUDGETS, GET_PROCESS_MONTHLY_EXPENSES } from "@/app/api/tasks";
 import { ITaskBudget, ITaskExpense } from "@/app/models/ITasks";
 import { Months } from "@/constants/months";
 import { ValleyColors } from "@/constants/colors";
@@ -7,8 +7,8 @@ import { useLazyQuery } from "@apollo/client/react";
 import { useState, useEffect, useRef } from "react";
 
 export function useComboChart() {
-  const [getMonthlyBudgets] = useLazyQuery(GET_VALLEY_MONTHLY_BUDGETS);
-  const [getMonthlyExpenses] = useLazyQuery(GET_VALLEY_MONTHLY_EXPENSES);
+  const [getMonthlyBudgets] = useLazyQuery(GET_PROCESS_MONTHLY_BUDGETS);
+  const [getMonthlyExpenses] = useLazyQuery(GET_PROCESS_MONTHLY_EXPENSES);
   const [loading, setLoading] = useState(true);
 
   const [copiapoBudget, setCopiapoBudget] = useState<number[]>([]);
@@ -49,49 +49,49 @@ export function useComboChart() {
       setLoading(true);
       try {
         const copiapoBudgetResponse = await getMonthlyBudgets({
-          variables: { valleyId: 1, year: new Date().getFullYear() },
+          variables: { processId: 1, year: new Date().getFullYear() },
         });
-        const copiapoBudgetData = copiapoBudgetResponse.data?.valleyMonthlyBudgets?.map(
+        const copiapoBudgetData = copiapoBudgetResponse.data?.processMonthlyBudgets?.map(
           (budget: ITaskBudget) => budget.budget
         ) || [];
         setCopiapoBudget(copiapoBudgetData);
         
         const huascoBudgetResponse = await getMonthlyBudgets({
-          variables: { valleyId: 2, year: new Date().getFullYear() },
+          variables: { processId: 2, year: new Date().getFullYear() },
         });
-        const huascoBudgetData = huascoBudgetResponse.data?.valleyMonthlyBudgets?.map(
+        const huascoBudgetData = huascoBudgetResponse.data?.processMonthlyBudgets?.map(
           (budget: ITaskBudget) => budget.budget
         ) || [];
         setHuascoBudget(huascoBudgetData);
         
         const elquiBudgetResponse = await getMonthlyBudgets({
-          variables: { valleyId: 3, year: new Date().getFullYear() },
+          variables: { processId: 3, year: new Date().getFullYear() },
         });
-        const elquiBudgetData = elquiBudgetResponse.data?.valleyMonthlyBudgets?.map(
+        const elquiBudgetData = elquiBudgetResponse.data?.processMonthlyBudgets?.map(
           (budget: ITaskBudget) => budget.budget
         ) || [];
         setElquiBudget(elquiBudgetData);
 
         const copiapoExpensesResponse = await getMonthlyExpenses({
-          variables: { valleyId: 1, year: new Date().getFullYear() },
+          variables: { processId: 1, year: new Date().getFullYear() },
         });
-        const copiapoExpensesData = copiapoExpensesResponse.data?.valleyMonthlyExpenses?.map(
+        const copiapoExpensesData = copiapoExpensesResponse.data?.processMonthlyExpenses?.map(
           (expense: ITaskExpense) => expense.expense
         ) || [];
         setCopiapoExpenses(copiapoExpensesData);
 
         const huascoExpensesResponse = await getMonthlyExpenses({
-          variables: { valleyId: 2, year: new Date().getFullYear() },
+          variables: { processId: 2, year: new Date().getFullYear() },
         });
-        const huascoExpensesData = huascoExpensesResponse.data?.valleyMonthlyExpenses?.map(
+        const huascoExpensesData = huascoExpensesResponse.data?.processMonthlyExpenses?.map(
           (expense: ITaskExpense) => expense.expense
         ) || [];
         setHuascoExpenses(huascoExpensesData);
 
         const elquiExpensesResponse = await getMonthlyExpenses({
-          variables: { valleyId: 3, year: new Date().getFullYear() },
+          variables: { processId: 3, year: new Date().getFullYear() },
         });
-        const elquiExpensesData = elquiExpensesResponse.data?.valleyMonthlyExpenses?.map(
+        const elquiExpensesData = elquiExpensesResponse.data?.processMonthlyExpenses?.map(
           (expense: ITaskExpense) => expense.expense
         ) || [];
         setElquiExpenses(elquiExpensesData);

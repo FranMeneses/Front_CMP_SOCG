@@ -168,10 +168,10 @@ export const GET_TOTAL_EXPENSE_BY_MONTH = gql`
   }
 `;
 
-// Query para obtener el gasto mensual de un valle
-export const GET_VALLEY_MONTHLY_EXPENSES = gql`
-  query GetValleyMonthlyExpenses($valleyId: Int!, $year: Int!) {
-    valleyMonthlyExpenses(valleyId: $valleyId, year: $year) {
+// Query para gastos mensuales
+export const GET_PROCESS_MONTHLY_EXPENSES = gql`
+  query GetProcessMonthlyExpenses($processId: Int!, $year: Int!) {
+    processMonthlyExpenses(processId: $processId, year: $year) {
       month
       expense
     }
@@ -179,9 +179,9 @@ export const GET_VALLEY_MONTHLY_EXPENSES = gql`
 `;
 
 // Query para obtener el presupuesto de un valle
-export const GET_VALLEY_MONTHLY_BUDGETS = gql`
-  query GetValleyMonthlyBudgets($valleyId: Int!, $year: Int!) {
-    valleyMonthlyBudgets(valleyId: $valleyId, year: $year) {
+export const GET_PROCESS_MONTHLY_BUDGETS = gql`
+  query GetProcessMonthlyBudgets($processId: Int!, $year: Int!) {
+    processMonthlyBudgets(processId: $processId, year: $year) {
       month
       budget
     }

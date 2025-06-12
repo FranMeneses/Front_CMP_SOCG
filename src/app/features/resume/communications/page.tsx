@@ -5,11 +5,11 @@ import DynamicTable from "@/app/features/resume/relationship/components/DynamicT
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useHooks } from "../../hooks/useHooks";
 import { useBarChart } from "../relationship/hooks/useBarChart";
-import { useComboChart } from "../relationship/hooks/useComboChart";
 import { useEffect, useState } from "react";
 import ComboChart from "@/components/Charts/ComboChart";
 import { useCommunicationResume } from "./hooks/useCommunicationResume";
 import { usePieChartCommunications } from "./hooks/usePieChartCommunications";
+import { useCommunicationComboChart } from "./hooks/useCommunicationComboChart";
 
 export default function ResumeCommunications() {
 
@@ -27,7 +27,7 @@ export default function ResumeCommunications() {
 
   const {pieChartData} = usePieChartCommunications();
   const {barChartData, loading: barChartLoading} = useBarChart();
-  const {comboChartData, loading: comboChartLoading} = useComboChart();
+  const {comboChartData, loading: comboChartLoading} = useCommunicationComboChart();
   const {userRole} = useHooks();
   
   const [isLoading, setIsLoading] = useState(true);
