@@ -28,17 +28,8 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       <table className="table-auto w-full">
         <thead className="bg-white">
           <tr className="text-sm">
-            {userRole === "gerente" || userRole === "superintendente" ? (
+            {(
               ManagementTableColumns.map((column, index) => (
-                <th
-                  key={index}
-                  className={`px-4 py-2 text-center font-bold text-[#7D7D7D] border-b border-gray-300 truncate`}
-                >
-                  {column}
-                </th>
-              ))
-            ) : (
-              specialistTableColums.map((column, index) => (
                 <th
                   key={index}
                   className={`px-4 py-2 text-center font-bold text-[#7D7D7D] border-b border-gray-300 truncate`}
@@ -66,7 +57,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {" "}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {userRole === "gerente" || userRole === "superintendente" ? (
                     <div className="flex items-center text-end relative">
                       <div
                         className={`h-4 ${getColor(taskProgressMap[task.id ?? ''] || 0)} rounded ${getWidth(taskProgressMap[task.id ?? ''] || 0)}`}
@@ -79,9 +69,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                         {taskProgressMap[task.id ?? '']?.toFixed() || 0}%
                       </h3>
                     </div>
-                  ) : (
-                    ""
-                  )}
                 </td>
               </tr>
 

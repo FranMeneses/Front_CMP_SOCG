@@ -11,6 +11,7 @@ export function useTaskResume() {
         })
 
     const handleGetSubtasksByMonthYearAndProcess = useCallback(async (month: string, processId: number, year: number) => { 
+        console.log("Fetching subtasks for month:", month, "processId:", processId, "year:", year);
         try {
             const { data } = await GetSubtasksByMonthYearAndProcess({
                 variables: {
@@ -34,7 +35,6 @@ export function useTaskResume() {
             let totalTasks = 0;
 
             for (const process of processes) {
-                console.log("Process ID:", process);
                 const count = await handleGetSubtasksByMonthYearAndProcess(month, process.id, year);
                 totalTasks += count;
             }

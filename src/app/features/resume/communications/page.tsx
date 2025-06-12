@@ -1,7 +1,7 @@
 'use client';
 import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
-import DynamicTable from "@/app/features/resume/relationship/components/DynamicTable";
+import DynamicTable from "../components/DynamicTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useHooks } from "../../hooks/useHooks";
 import { useBarChart } from "../relationship/hooks/useBarChart";
@@ -85,7 +85,7 @@ export default function ResumeCommunications() {
             />
           </div>
         </div>
-        <div className="bg-white p-4 rounded-lg shadow">
+        {/* <div className="bg-white p-4 rounded-lg shadow">
           <div className="w-full md:h-[300px] lg:h-[500px] mx-auto">
             <BarChart
               data={barChartData}
@@ -94,7 +94,7 @@ export default function ResumeCommunications() {
               data-test-id="bar-chart"
             />
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow">

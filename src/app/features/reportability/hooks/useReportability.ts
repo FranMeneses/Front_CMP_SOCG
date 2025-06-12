@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_ALL_PROCESSES, GET_TASK } from "@/app/api/tasks";
-import { GET_SUBTASKS, SUBTASKS_BY_PROCESS, GET_VALLEY_SUBTASKS } from "@/app/api/subtasks";
+import { SUBTASKS_BY_PROCESS } from "@/app/api/subtasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { CommunicationsColors, ValleyColors } from "@/constants/colors";
 import { useData } from "@/context/DataContext";
@@ -15,25 +15,24 @@ import { ITask } from "@/app/models/ITasks";
 export function useReportability() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<string>("Transversal");
+  const [selectedItem, setSelectedItem] = useState<string>("Transversales");
   const [calendarView, setCalendarView] = useState<string>("dayGridMonth");
   const [Subtasks, setSubtasks] = useState<ISubtask[]>([]);
   const [calendarEvents, setCalendarEvents] = useState<IEvent[]>([]); 
 
 
-  const { isValleyManager, isCommunicationsManager, userRole } = useHooks();
+  const { isValleyManager, isCommunicationsManager, userRole, currentProcess } = useHooks();
 
   const [ GetProcessesSubtask, { loading: processSubtasksLoading }] = useLazyQuery(SUBTASKS_BY_PROCESS);
   const [ getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK);
-  const { data: processesData, loading: processesLoading } = useQuery(GET_ALL_PROCESSES)
-  const [GetValleySubtasks, { loading: valleySubtasksLoading }] = useLazyQuery(GET_VALLEY_SUBTASKS);
+  const { data: processesData, loading: processesLoading } = useQuery(GET_ALL_PROCESSES);
   const [eventsLoading, setEventsLoading] = useState(true);
 
   const { valleys, faenas } = useData();
 
   const processes = processesData?.processes || []; 
 
-  const filteredProcessesNames = processes
+  const filteredCommunicationsProcessesNames = processes
       .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name))
       .map((p: IProcess) => p.name);
 
@@ -44,11 +43,17 @@ export function useReportability() {
       .filter((p: IProcess) => p.name !== "Otro")
       .map((p: IProcess) => p.name);
 
-  const ValleysProcesses = processes
+  const ValleysProcessesName = processes
     .filter((p: IProcess) => p.name !== "Otro" && !['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas'].includes(p.name))
     .map((p: IProcess) => p.name);
   
-    const filteredProcesses = processes.filter((p: IProcess) => p.name !== "Otro");
+  const filteredProcesses = processes.filter((p: IProcess) => p.name !== "Otro");
+
+  const filteredProcessesNames = processes
+    .filter((p: IProcess) => p.name !== "Otro").map((p: IProcess) => p.name);
+
+  const ValleysProcesses = processes
+    .filter((p: IProcess) => p.name !== "Otro" && !['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas'].includes(p.name));
 
   /**
    * Hook para manejar el cambio de vista del calendario según el tamaño de la ventana.
@@ -163,6 +168,7 @@ export function useReportability() {
   const fetchCalendarEvents = async (subtasks: ISubtask[]) => {
     setEventsLoading(true);
     try {
+      
       const events = await Promise.all(
         subtasks.map(async (subtask) => {
           try {
@@ -179,6 +185,7 @@ export function useReportability() {
               taskId: subtask.taskId,
               status: subtask.status.name,
               valley: handleGetValley(task?.valleyId ?? 5),
+              process: processes.find((p: IProcess) => Number(p.id) === task?.processId)?.name || "Proceso desconocido",
               faena: handleGetFaena(task?.faenaId ?? 11),
               color: handleGetColor(isCommunicationsManager ? (task?.processId ?? 8) : userRole === "encargado cumplimiento" ? (task.processId ?? 8) : (task?.valleyId ?? 5)),
               allDay: true,
@@ -215,7 +222,14 @@ export function useReportability() {
    * @returns Lista de todas las subtareas obtenidas de los procesos de comunicación.
    */
   const fetchAllProcessesSubtasks = async () => {
-    const targetProcessIds = isCommunicationsManager ? [4, 5, 6, 7] : isValleyManager ? [1, 2, 3] : [1, 2, 3, 4, 5, 6, 7]; 
+    const targetProcessIds: number[] = isCommunicationsManager
+      ? [4, 5, 6, 7]
+      : (isValleyManager && userRole === 'superintendente de relacionamiento')
+      ? [1, 2, 3]
+      : (isValleyManager && userRole !== 'superintendente de relacionamiento')
+      ? [Number(currentProcess?.id)]
+      : [1, 2, 3, 4, 5, 6, 7];
+
     const allSubtasks: ISubtask[] = [];
     
     const filteredProcesses = processes.filter((p: IProcess) => targetProcessIds.includes(Number(p.id)));
@@ -231,6 +245,8 @@ export function useReportability() {
     }
     return allSubtasks;
   };
+
+  
 
   /**
    * Función para manejar la selección de un valle o subtarea en el dropdown.
@@ -299,27 +315,28 @@ export function useReportability() {
   };
 
   loadInitialData();
-}, [processes]);
+}, [processes, currentProcess]);
 
   /**
    * Hook para manejar la carga de subtareas del valle seleccionado.
    * @description Este efecto se ejecuta cada vez que el valle seleccionado cambia, obteniendo las subtareas correspondientes y actualizando los eventos del calendario.
    */
-  const loading =  taskLoading || valleySubtasksLoading || eventsLoading;
+  const loading =  taskLoading || eventsLoading;
 
   return {
     toggleSidebar,
     handleDropdownSelect,
-
     loading,
     isSidebarOpen,
     selectedItem,
     calendarView,
     calendarEvents,
+    filteredCommunicationsProcessesNames,
     filteredProcessesNames,
     ProcessesNames,
     filteredProcesses,
     filteredProcessesCommunications,
-    ValleysProcesses,
+    ValleysProcessesName,
+    ValleysProcesses
   };
 }

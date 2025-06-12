@@ -26,7 +26,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento", "jefe huasco", "jefe copiapó", "jefe elqui"]
     },
     {
       title: "Compliance",
@@ -42,7 +42,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","encargado comunicaciones", "superintendente de relacionamiento", "superintendente de comunicaciones", "Admin"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","encargado comunicaciones", "superintendente de relacionamiento", "superintendente de comunicaciones", "jefe huasco", "jefe copiapó", "jefe elqui"]
     },
     {
       title: "Beneficiarios",
@@ -50,7 +50,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento", "Admin", "encargado comunicaciones"]
+      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","jefe huasco", "jefe copiapó", "jefe elqui", "encargado comunicaciones"]
     },
     {
       title: "Programación",
@@ -58,7 +58,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
-      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento","Admin", "encargado comunicaciones"]
+      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento","jefe huasco", "jefe copiapó", "jefe elqui", "encargado comunicaciones"]
     },
     {
       title: "Plan de trabajo",
@@ -74,7 +74,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/resume",
       icon: ChartPie,
       isActive: pathname === "/features/resume",
-      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento","Admin"]
+      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento"]
     },
   ];
 

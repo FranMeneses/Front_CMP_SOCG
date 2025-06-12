@@ -48,7 +48,7 @@ export function useDynamicTable(tasks: ITask[]) {
     const calculateRemainingDays = (subtask: ISubtask) => {
         const end = new Date(subtask.endDate);
         if (subtask.status.percentage === 100) {
-            const finishDate = new Date(subtask.finishDate);
+            const finishDate = new Date(subtask.finalDate);
             const startDate = new Date(subtask.startDate);
             const diffTime = finishDate.getTime() - startDate.getTime(); 
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));

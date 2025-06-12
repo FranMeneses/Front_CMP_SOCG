@@ -1,7 +1,7 @@
 'use client';
 import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
-import DynamicTable from "@/app/features/resume/relationship/components/DynamicTable";
+import DynamicTable from "../components/DynamicTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useResume } from "./hooks/useResume";
 import { useHooks } from "../../hooks/useHooks";

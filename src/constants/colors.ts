@@ -1,16 +1,16 @@
 
 export const ValleyColors = [
-    "#B0A3CC",
-    "#54B87E",
-    "#EFA585",
+    "#FF6F68",
+    "#47BF6F",
+    "#D89E1D",
     "#F2C94C",
 ]
 
 export const ValleyColorsHover = [
-    "#573B92",
-    "#2D7A4D",
-    "#E66C37",
-    "#EFD689",
+    "#FF6058",
+    "#10B747",
+    "#BA8100",
+    "#F3C435",
 ]
 
 export const CommunicationsColors = [
@@ -24,7 +24,7 @@ export const CommunicationsColorsHover = [
     "#2D5F7A", // INTERNA
     "#7A2D7A", // EXTERNA
     "#7A2D3C", // ASUNTOS PÚBLICOS
-    "#EFD689", // TRANSVERSAL
+    "#F3C435", // TRANSVERSAL
 ]
 
 export const AllColors = [
