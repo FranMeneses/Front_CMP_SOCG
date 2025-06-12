@@ -10,7 +10,6 @@ import TaskFilters from "./TaskFilters";
 import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
 import { useTaskFilters } from "../../hooks/useTaskFilters";
-import { usePlanificationRest } from "../../hooks/usePlanificationRest";
 
 interface TasksTableProps {
     tasks: ITaskDetails[];

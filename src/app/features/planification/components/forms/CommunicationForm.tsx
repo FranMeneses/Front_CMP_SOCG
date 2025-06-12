@@ -30,8 +30,7 @@ export default function CommunicationForm({
     const { valleys, isManager } = useHooks();
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
-
-    console.log(selectedTask);
+    
     return (
         <div className='font-[Helvetica]' data-test-id="communication-form">
             <h2 className="text-lg font-semibold mb-4">

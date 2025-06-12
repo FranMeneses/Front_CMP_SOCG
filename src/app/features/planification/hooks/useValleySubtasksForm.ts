@@ -141,7 +141,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                         beneficiaryId: subtask.beneficiaryId ? subtask.beneficiaryId : null,
                         startDate: subtask.startDate,
                         endDate: subtask.endDate,
-                        statusId: subtask.status,
+                        statusId: subtask.finalDate ? 4 : subtask.status,
                         priorityId: subtask.priority,
                         finalDate: subtask.finalDate ? subtask.finalDate : null,
                     },
@@ -200,7 +200,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      * @returns
      */
     const fetchSubtaskInitialValues = async () => {
-        console.log(subtask);
         if (subtask) {
             try {
                 const formatDateForInput = (dateString: string | null | undefined) => {

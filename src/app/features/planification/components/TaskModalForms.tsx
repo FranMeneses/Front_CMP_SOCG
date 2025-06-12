@@ -90,13 +90,9 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;
     const isEditingCompliance = selectedCompliance !== undefined && selectedCompliance !== null;
 
-    // Función para manejar el éxito de la carga
     const handlePlanificationSuccess = () => {
         console.log('Planificación cargada exitosamente');
-        // Aquí puedes agregar lógica adicional como:
-        // - Refrescar la lista de tareas
-        // - Mostrar una notificación de éxito
-        // - Actualizar el estado global
+
     };
 
     return (

@@ -29,7 +29,6 @@ export function UploadPlanificationForm({ onClose, onSuccess }: UploadPlanificat
 
         try {
             await loadPlanificationData(file);
-            console.log('Archivo cargado:', file.name);
             onSuccess?.(); 
             onClose?.(); 
         } catch (err) {
