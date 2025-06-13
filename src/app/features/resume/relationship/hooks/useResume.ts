@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { GET_TASK_PROGRESS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
-import { GET_TASK_SUBTASKS } from "@/app/api/tasks";
-import { ISubtask } from "@/app/models/ISubtasks";
+import { GET_TASK_PROGRESS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS } from "@/app/api/tasks";
 import { Months } from "@/constants/months";
 import { ITask } from "@/app/models/ITasks";
 
@@ -32,7 +30,7 @@ export function useResume() {
     const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
     const [getTaskPercentage] = useLazyQuery(GET_TASK_PROGRESS);
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
-    const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH);
+    const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS);
 
     /**
      * Función para manejar el clic en una leyenda del gráfico.

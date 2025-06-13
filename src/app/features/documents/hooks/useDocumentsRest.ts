@@ -37,33 +37,22 @@ export const useDocumentsRest = () => {
             });
             
             if (response.data.success) {
-                if (formData.option === 'Tarea') {
-                    const graphqlMetadata = {
-                        ruta: response.data.ruta,
-                        nombre_archivo: response.data.filename,
-                        tipo_documento: Number(formData.documentType), 
-                        id_tarea: formData.task,
+                const graphqlMetadata = {
+                    ruta: response.data.ruta,
+                    nombre_archivo: response.data.filename,
+                    tipo_documento: Number(formData.documentType), 
+                    id_tarea: formData.task,
                     };
 
                     await handleUploadDocument(graphqlMetadata);
-                }
-                if (formData.option === 'Subtarea') {
-                    const graphqlMetadata = {
-                        ruta: response.data.ruta,
-                        nombre_archivo: response.data.filename,
-                        tipo_documento: Number(formData.documentType), 
-                        id_subtarea: formData.subtask,
-                    };
-
-                    await handleUploadDocument(graphqlMetadata);
-                }
-                
+                    
                 return {
                     success: true,
                     ruta: response.data.ruta,
                     filename: response.data.filename,
                     contentType: response.data.contentType
                 };
+                
             } else {
                 throw new Error('Error al subir el archivo');
             }

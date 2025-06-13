@@ -162,9 +162,9 @@ export const GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS = gql`
 
 
 // Query para obtener el total gasto por mes
-export const GET_TOTAL_EXPENSE_BY_MONTH = gql`
-  query GetTotalExpenseByMonth($monthName: String!, $year: Int!) {
-    totalExpenseByMonth(monthName: $monthName, year: $year)
+export const GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS = gql`
+  query GetTotalExpenseByMonthAndProcess($monthName: String!, $year: Int!, $processId: Int!) {
+    totalExpenseByMonthAndProcess(monthName: $monthName, year: $year, processId: $processId)
   }
 `;
 
