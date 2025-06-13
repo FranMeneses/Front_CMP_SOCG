@@ -383,7 +383,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             taskDetails = {
                 ...formState,
                 risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
-                state: states.find((s: ITaskStatus) => s.name === formState.state)?.id || 0,
+                state: states.find((s: ITaskStatus) => s.name === formState.state || s.id === formState.state)?.id || null,
                 interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
                 scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s: string | number) => s === formState.scope) + 1,
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
