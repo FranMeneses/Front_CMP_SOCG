@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
+import { GET_TASK_PROGRESS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
 import { GET_TASK_SUBTASKS } from "@/app/api/tasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { Months } from "@/constants/months";
@@ -8,20 +8,29 @@ import { ITask } from "@/app/models/ITasks";
 
 export function useResume() {
     
-    const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState(false);
-    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+
     const [tasksData, setTasksData] = useState<ITask[]>([]);  
-    const [yearlyBudgetTotal, setYearlyBudgetTotal] = useState(0);
-    const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState(0);
-    const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
-    const [budgetLoading, setBudgetLoading] = useState(true);
-    const [formattedBudget, setFormattedBudget] = useState("");
-    const [formattedExpenses, setFormattedExpenses] = useState("");
+    const [copiapoTasks, setCopiapoTasks] = useState<ITask[]>([]);
+    const [huascoTasks, setHuascoTasks] = useState<ITask[]>([]);
+    const [elquiTasks, setElquiTasks] = useState<ITask[]>([]);
     
-    const [getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
+    const [copiapoPercentage, setCopiapoPercentage] = useState<number>(0);
+    const [huascoPercentage, setHuascoPercentage] = useState<number>(0);
+    const [elquiPercentage, setElquiPercentage] = useState<number>(0);
+    const [yearlyBudgetTotal, setYearlyBudgetTotal] = useState<number>(0);
+    const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState<number>(0);
+
+    const [budgetLoading, setBudgetLoading] = useState<boolean>(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+    const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
+
+    const [formattedBudget, setFormattedBudget] = useState<string>("");
+    const [formattedExpenses, setFormattedExpenses] = useState<string>("");
+
     const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
+    const [getTaskPercentage] = useLazyQuery(GET_TASK_PROGRESS);
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
     const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH);
 
@@ -35,27 +44,15 @@ export function useResume() {
     };
 
     /**
-     * Función para manejar el clic en una tarea.
-     * @description Si la tarea ya está seleccionada, la deselecciona y limpia las subtareas. Si no, selecciona la tarea y obtiene sus subtareas.
-     * @param taskId ID de la tarea que se ha hecho clic.
-     */
-    const handleTaskClick = async (taskId: string) => {
-        if (selectedTaskId === taskId) {
-            setSelectedTaskId(null);
-            setSubtasks([]);
-        } else {
-            setSelectedTaskId(taskId);
-            await handleGetSubtasks(taskId);
-        }
-    };
-
-    /**
      * Función para cargar las tareas de los procesos de relacionamiento.
      * @description Realiza una consulta para obtener las tareas de los procesos de relacionamiento y las almacena en el estado.
      * @returns 
      */
     const loadRelationshipProcessesTask = async () => {
       const relationshipProcessIds = [1, 2, 3]; 
+      const copiapoTask: ITask[] = [];
+      const huascoTask: ITask[] = [];
+      const elquiTask: ITask[] = [];
       const allTasks: ITask[] = [];
             
       setIsLoadingTaskDetails(true);
@@ -66,8 +63,18 @@ export function useResume() {
             variables: { processId },
           });
           const processTasks = data?.tasksByProcess || [];
+            if (processId === 1) {
+                copiapoTask.push(...processTasks);
+            } else if (processId === 2) {
+                huascoTask.push(...processTasks);
+            } else if (processId === 3) {
+                elquiTask.push(...processTasks);
+            }
           allTasks.push(...processTasks);
         }
+        setCopiapoTasks(copiapoTask);
+        setHuascoTasks(huascoTask);
+        setElquiTasks(elquiTask);
         return allTasks;
       } catch (error) {
         console.error("Error loading relationship processes tasks:", error);
@@ -87,28 +94,6 @@ export function useResume() {
         return new Intl.NumberFormat('es-ES', {
             maximumFractionDigits: 0
         }).format(value);
-    };
-
-    /**
-     * Función para obtener las subtareas de una tarea seleccionada.
-     * @description Realiza una consulta para obtener las subtareas de la tarea seleccionada por su ID.
-     * @param selectedTaskId ID de la tarea seleccionada para obtener sus subtareas.
-     */
-    const handleGetSubtasks = async (selectedTaskId: string) => {
-        try {
-            const { data } = await getSubtasks({
-                variables: { id: selectedTaskId }, 
-            });
-            if (data && data.taskSubtasks) {
-                setSubtasks(data.taskSubtasks);
-            } else {
-                console.warn("No subtasks found for task ID:", selectedTaskId);
-                setSubtasks([]);
-            }
-        } catch (error) {
-            setSubtasks([]);
-            console.error("Error fetching subtasks:", error);
-        }
     };
 
     /**
@@ -218,6 +203,74 @@ export function useResume() {
       loadInitialRelationshipTasks();
     }, []);
 
+    useEffect(() => {
+        const fetchAveragePercentages = async () => {
+            if (copiapoTasks.length > 0 || huascoTasks.length > 0 || elquiTasks.length > 0) {
+                const copiapoPercentage = await handleGetAveragePercentage(copiapoTasks);
+                const huascoPercentage = await handleGetAveragePercentage(huascoTasks);
+                const elquiPercentage = await handleGetAveragePercentage(elquiTasks);
+                setCopiapoPercentage(copiapoPercentage);
+                setHuascoPercentage(huascoPercentage);
+                setElquiPercentage(elquiPercentage);
+            }
+        };
+        fetchAveragePercentages();
+    }, [copiapoTasks, huascoTasks, elquiTasks]);
+
+    const handleGetAveragePercentage = async (tasks: ITask[]) => {
+        if (tasks.length === 0) return 0;
+        const promises = tasks.map(async (task: ITask) => {
+            try {
+                const { data } = await getTaskPercentage({
+                    variables: { id: task.id },
+                });
+                return data?.taskProgress || 0;
+            } catch (error) {
+                console.error("Error getting task progress:", error);
+                return 0;
+            }
+        });
+        const results = await Promise.all(promises);
+        const total = results.reduce((acc, curr) => acc + curr, 0);
+        const average = parseFloat((total / results.length).toFixed(2));
+        return average;
+    };
+
+    const ElquiData = {
+        labels: ["Completado", "Pendiente"],
+        datasets: [
+            {
+                data: [elquiPercentage, 100 - elquiPercentage],
+                id: [],
+                backgroundColor: ['#1964CB', '#E9E9E9'],
+                hoverBackgroundColor: ['#1964CB', '#E9E9E9'],
+            },
+        ],
+    };
+
+    const CopiapoData = {
+        labels: ["Completado", "Pendiente"],
+        datasets: [
+            {
+                data: [copiapoPercentage, 100 - copiapoPercentage],
+                id: [],
+                backgroundColor: ['#1964CB', '#E9E9E9'],
+                hoverBackgroundColor: ['#1964CB', '#E9E9E9'],
+            },
+        ],
+    };
+
+    const HuascoData = {
+        labels: ["Completado", "Pendiente"],
+        datasets: [
+            {
+                data: [huascoPercentage, 100 - huascoPercentage],
+                id: [],
+                backgroundColor: ['#1964CB', '#E9E9E9'],
+                hoverBackgroundColor: ['#1964CB', '#E9E9E9'],
+            },
+        ],
+    };
     return {
         loading,
         budgetLoading,
@@ -225,11 +278,11 @@ export function useResume() {
         isSidebarOpen,
         selectedLegend,
         selectedTaskId,
-        subtasks,
-        subtasksLoading,
         formattedBudget,
         formattedExpenses,
+        CopiapoData,
+        HuascoData,
+        ElquiData,
         handleLegendClick,
-        handleTaskClick,
     };
 }

@@ -18,12 +18,12 @@ export default function ResumeRelationship() {
     loading: resumeLoading,
     tasksData,
     selectedLegend,
-    selectedTaskId,
-    subtasks,
     formattedBudget,
     formattedExpenses,
+    CopiapoData,
+    HuascoData,
+    ElquiData,
     handleLegendClick,
-    handleTaskClick,
   } = useResume();
 
   const {pieChartData} = usePieChart();
@@ -102,15 +102,40 @@ export default function ResumeRelationship() {
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4">Detalle de Tareas</h2>
-        <DynamicTable
-          tasks={tasksData || []}
-          subtasks={subtasks}
-          selectedTaskId={selectedTaskId}
-          onTaskClick={handleTaskClick}
-          userRole={userRole}
-          data-test-id="dynamic-table"
-        />
+      <h2 className="font-[Helvetica] font-bold text-2xl">Avance plan de trabajo valles</h2>
+       <div className="pb-6 border-b border-gray-300 md:h-[300px] lg:h-[500px] mx-auto">
+          <PieChart
+            data={CopiapoData}
+            selectedLegend={""}
+            onLegendClick={handleLegendClick}
+            data-test-id="pie-chart-copiapo"
+            title="Plan de trabajo Copiapó"
+            titleSize={14}
+            font="Helvetica"
+          />
+        </div>
+        <div className="pb-6 border-b border-gray-300 md:h-[300px] lg:h-[500px] mx-auto">
+          <PieChart
+            data={HuascoData}
+            selectedLegend={""}
+            onLegendClick={handleLegendClick}
+            data-test-id="pie-chart-huasco"
+            title="Plan de trabajo Huasco"
+            titleSize={14}
+            font="Helvetica"
+          />
+        </div>
+        <div className="md:h-[300px] lg:h-[500px] mx-auto">
+          <PieChart
+            data={ElquiData}
+            selectedLegend={""}
+            onLegendClick={handleLegendClick}
+            data-test-id="pie-chart-elqui"
+            title="Plan de trabajo Elqui"
+            titleSize={14}
+            font="Helvetica"
+          />
+        </div>
       </div>
     </div>
   );
