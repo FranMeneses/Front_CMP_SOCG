@@ -1,4 +1,4 @@
-import { GET_TASK_SUBTASKS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH } from "@/app/api/tasks";
+import { GET_TASK_SUBTASKS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS } from "@/app/api/tasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { ITask } from "@/app/models/ITasks";
 import { Months } from "@/constants/months";
@@ -21,7 +21,7 @@ export function useCommunicationResume() {
     const [ getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
     const [ getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
-    const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH);
+    const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS);
 
 
     /**

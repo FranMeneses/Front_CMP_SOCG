@@ -47,7 +47,7 @@ export function Header({ toggleSidebar, isOpen }: HeaderProps) {
           alt="Logo"
           width={100}
           height={50}
-          className="object-contain cursor-pointer"
+          className="object-contain"
           priority
         />
       </div>

@@ -37,7 +37,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
   return (
     <td colSpan={10} className="bg-[#f8f8f8] font-[Helvetica]">
       <div className="flex flex-row justify-between items-center px-4 py-2">
-        <h2 className="font-medium text-sm ml-4 text-black">Subtareas:</h2>
+        <h2 className="font-medium text-sm ml-4 text-black">Subtareas: {filteredSubtasks.length}</h2>
         <Button
           onClick={() => setIsPopupSubtaskOpen(true)}
           variant="ghost"
@@ -52,6 +52,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
           <tr>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Nombre</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Presupuesto</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Gasto</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Inicio</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Finalización</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Días Restantes</th>
@@ -65,7 +66,8 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
             filteredSubtasks.map((subtask) => (
               <tr key={subtask.id}>
                 <td className="px-4 py-2">{subtask.name}</td>
-                <td className="px-4 py-2">{subtask.budget}</td>
+                <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.budget || 0) || "-"}</td>
+                <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.expense || 0) || "-"}</td>
                 <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
                 <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
                 <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>

@@ -1,14 +1,23 @@
 'use client';
 import { BeneficiariesTableColumns } from "@/constants/tableConstants";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/Modal";
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; // Agregar esta importación
 import ContactForm from "./ContactForm";
 import { useBeneficiaries } from "@/app/features/beneficiaries/hooks/useBeneficiaries";
-import React from "react";
+import React, { useState } from "react"; // Agregar useState
 import BeneficiariesForm from "./BeneficiariesForm";
+import { useHooks } from "@/app/features/hooks/useHooks";
 
 const BeneficiariesTable: React.FC = () => {
+    // Estados para el modal de confirmación
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteModalData, setDeleteModalData] = useState<{
+        id: string;
+        type: 'beneficiario' | 'contacto';
+    } | null>(null);
+
     const {
         beneficiaries,
         isPopupOpen,
@@ -29,7 +38,45 @@ const BeneficiariesTable: React.FC = () => {
         setIsEditContactModalOpen,
         selectedContact,
         setSelectedContact,
+        handleDeleteBeneficiary,
+        handleDeleteContact,
     } = useBeneficiaries();
+
+    const { userRole } = useHooks();
+
+    // Funciones para manejar la confirmación de eliminación
+    const handleDeleteBeneficiaryClick = (beneficiaryId: string) => {
+        setDeleteModalData({ id: beneficiaryId, type: 'beneficiario' });
+        setShowDeleteModal(true);
+    };
+
+    const handleDeleteContactClick = (contactId: string) => {
+        setDeleteModalData({ id: contactId, type: 'contacto' });
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (deleteModalData) {
+            try {
+                if (deleteModalData.type === 'beneficiario') {
+                    await handleDeleteBeneficiary(deleteModalData.id);
+                } else {
+                    await handleDeleteContact(deleteModalData.id);
+                }
+                
+                setShowDeleteModal(false);
+                setDeleteModalData(null);
+            } catch (error) {
+                console.error('Error al eliminar:', error);
+            }
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setShowDeleteModal(false);
+        setDeleteModalData(null);
+    };
+    
 
     return (
     <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
@@ -63,7 +110,7 @@ const BeneficiariesTable: React.FC = () => {
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {beneficiary.hasLegalPersonality ? "Si" : "No"}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap flex flex-row gap-2">
                                     <Pencil
                                         size={20}
                                         className="cursor-pointer"
@@ -71,6 +118,15 @@ const BeneficiariesTable: React.FC = () => {
                                         data-test-id="edit-beneficiary-button"
                                         color="gray"
                                     />
+                                    { userRole === "encargado cumplimiento" && (
+                                        <Trash
+                                            size={20}
+                                            color="gray"
+                                            className="cursor-pointer ml-2"
+                                            onClick={() => handleDeleteBeneficiaryClick(beneficiary.id)} 
+                                        />
+                                    )}
+
                                 </td>
                             </tr>
                             {expandedRow === beneficiary.id && (
@@ -86,6 +142,13 @@ const BeneficiariesTable: React.FC = () => {
                                                             className="ml-4 cursor-pointer" 
                                                             onClick={() => handleEditContact(contact)} data-test-id="edit-contact-button"
                                                         />
+                                                        { userRole === "encargado cumplimiento" && (
+                                                            <Trash
+                                                                size={20}
+                                                                className="cursor-pointer ml-2"
+                                                                onClick={() => handleDeleteContactClick(contact.id)} 
+                                                            />
+                                                        )}
                                                     </li>
                                                 ))}
                                             </ul>
@@ -178,6 +241,12 @@ const BeneficiariesTable: React.FC = () => {
                     </div>
                 )}
             </Modal>
+            <DeleteConfirmationModal
+                isOpen={showDeleteModal}
+                onClose={handleCancelDelete}
+                onConfirm={handleConfirmDelete}
+                itemType={deleteModalData?.type === 'beneficiario' ? 'beneficiario' : 'contacto'}
+            />
         </div>
     );
 };
