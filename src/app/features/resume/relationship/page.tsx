@@ -83,6 +83,9 @@ export default function ResumeRelationship() {
               selectedLegend={selectedLegend}
               onLegendClick={handleLegendClick}
               data-test-id="pie-chart"
+              title="Iniciativas por Departamento"
+              titleSize={12}
+              font="Helvetica"
             />
           </div>
         </div>

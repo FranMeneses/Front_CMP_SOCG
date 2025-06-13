@@ -82,19 +82,13 @@ export default function ResumeCommunications() {
               selectedLegend={selectedLegend}
               onLegendClick={handleLegendClick}
               data-test-id="pie-chart"
+              title="Iniciativas por Departamento"
+              titleSize={24}
+              font="Helvetica"
             />
           </div>
         </div>
-        {/* <div className="bg-white p-4 rounded-lg shadow">
-          <div className="w-full md:h-[300px] lg:h-[500px] mx-auto">
-            <BarChart
-              data={barChartData}
-              selectedLegend={selectedLegend}
-              onLegendClick={handleLegendClick}
-              data-test-id="bar-chart"
-            />
-          </div>
-        </div> */}
+
       </div>
 
       <div className="bg-white p-4 rounded-lg shadow">

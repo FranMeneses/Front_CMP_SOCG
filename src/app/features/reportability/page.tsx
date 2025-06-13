@@ -110,17 +110,19 @@ export default function Reportability() {
                     </div>
                   </div>
                 </div>
-                <div className="w-full md:w-72 p-4 border-t md:border-t-0 md:border-l">
-                  <div>
-                    <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
-                      {isCommunicationsManager ? 'Procesos' : 'Valles'}
-                    </h2>
-                    <Legend 
-                      valley={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? ProcessesNames : ValleysProcessesName.filter((process:string) => process !== "Transversales")} 
-                      valleyColors={isCommunicationsManager ? CommunicationsColors : userRole === "encargado cumplimiento" ? AllColors: ValleyColors} 
-                    />
+                {(isManager || userRole === "encargado cumplimiento" || isCommunicationsManager) && (
+                    <div className="w-full md:w-72 p-4 border-t md:border-t-0 md:border-l">
+                    <div>
+                      <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
+                        {isCommunicationsManager ? 'Procesos' : 'Valles'}
+                      </h2>
+                      <Legend 
+                        valley={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? ProcessesNames : ValleysProcessesName.filter((process:string) => process !== "Transversales")} 
+                        valleyColors={isCommunicationsManager ? CommunicationsColors : userRole === "encargado cumplimiento" ? AllColors: ValleyColors} 
+                      />
+                    </div>
                   </div>
-                </div>
+                  )}
               </div>
             </div>
           </main>

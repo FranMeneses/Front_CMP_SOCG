@@ -37,7 +37,6 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
         align: 'start',
         fullSize: false,
         font: {
-          size: 24,
           weight: 'bold',
           family: 'Roboto, sans-serif',
         },

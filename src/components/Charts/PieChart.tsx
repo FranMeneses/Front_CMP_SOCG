@@ -12,12 +12,18 @@ const PieChart = ({
   data,
   selectedLegend,
   onLegendClick = () => {}, 
+  title,
+  titleSize,
+  font,
 }: {
   data: PieChartProps;
   selectedLegend: string | null;
   onLegendClick?: (legend: string) => void;
+  title: string;
+  titleSize: number;
+  font: string;
 }) => {
-  
+
   const chartRef = useRef<ChartJS | null>(null);
   const [visibleLegend, setVisibleLegend] = useState<string | null>(null);
 
@@ -95,7 +101,11 @@ const PieChart = ({
             title: {
               ...PieChartOptions.plugins?.title,
               display: true,
-              text: "Iniciativas por valle",
+              text: title,
+              font: {
+                size: titleSize || 16,
+                family: font || 'Helvetica',
+              },
             },
           },
         }}

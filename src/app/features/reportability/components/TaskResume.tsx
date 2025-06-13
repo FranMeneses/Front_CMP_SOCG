@@ -3,6 +3,7 @@ import { useTaskResume } from "../hooks/useTaskResume";
 import { useEffect, useState, useCallback } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { IProcess } from "@/app/models/IProcess";
+import PieChart from "@/components/Charts/PieChart";
 
 interface TaskResumeProps {
     calendarEvents: IEvent[];
@@ -24,7 +25,7 @@ export default function TaskResume({
     year 
 }: TaskResumeProps) {
     
-    const { handleGetSubtasksByMonthYearAndProcess, handleGetTotalSubtasksByMonthYear } = useTaskResume();
+    const { handleGetSubtasksByMonthYearAndProcess, handleGetTotalSubtasksByMonthYear, pieChartData } = useTaskResume();
     const { userRole, currentProcess, isManager } = useHooks();
     const [valleySubtasks, setValleySubtasks] = useState<Record<string, number>>({});
     const [totalSubtasks, setTotalSubtasks] = useState<number>(0);
@@ -136,24 +137,32 @@ export default function TaskResume({
                     <p className="text-2xl font-bold">{totalSubtasks}</p>
                 </div>
                 <div className="border p-3 rounded shadow-sm">
-                    <p className="text-sm text-gray-500">Distribución por valle</p>
-                    <div className="text-sm mt-1">
-                        {valleys?.filter(valley => valley.name !== "Transversal").map((valley) => {
-                            const valleyEvents = valleySubtasks[valley.id] ?? 0;
-                            return (
-                                <div key={valley.id} className="flex justify-between items-center mt-1">
-                                    <span className="flex items-center">
-                                        <span 
-                                            className="inline-block w-3 h-3 rounded-full mr-2" 
-                                            style={{backgroundColor: ValleyColors?.[valleyNames?.indexOf(valley.name)] || '#888'}}
-                                        ></span>
-                                        {valley.name}:
-                                    </span>
-                                    <span className="font-medium">{valleyEvents}</span> 
-                                </div>
-                            );
-                        })}
-                    </div>
+                    {(userRole != "jefe huasco" && userRole != "jefe copiapó" && userRole != "jefe elqui") ? (
+                        <>
+                            <p className="text-sm text-gray-500">Distribución por valle</p>
+                            <div className="text-sm mt-1">
+                                {valleys?.filter(valley => valley.name !== "Transversal").map((valley) => {
+                                    const valleyEvents = valleySubtasks[valley.id] ?? 0;
+                                    return (
+                                        <div key={valley.id} className="flex justify-between items-center mt-1">
+                                            <span className="flex items-center">
+                                                <span
+                                                    className="inline-block w-3 h-3 rounded-full mr-2"
+                                                    style={{ backgroundColor: ValleyColors?.[valleyNames?.indexOf(valley.name)] || '#888' }}
+                                                ></span>
+                                                {valley.name}:
+                                            </span>
+                                            <span className="font-medium">{valleyEvents}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <PieChart data={pieChartData} selectedLegend={""} title="Avance Plan de Trabajo" titleSize={16} font="Helvetica" />
+                        </>
+                    )}
                 </div>
             </div>
         </div>
