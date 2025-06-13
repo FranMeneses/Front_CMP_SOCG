@@ -58,18 +58,6 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     disabled={isManager || isEditing}
                 />
             </div>
-            <div className="mb-4">                                                                 
-                <label className="block text-sm font-medium mb-1">Beneficiario</label>
-                <DropdownMenu 
-                    buttonText="Seleccione Beneficiario"
-                    items={dropdownItems.beneficiaries}
-                    onSelect={(value) => handleSubtaskInputChange("beneficiary", value)}
-                    isInModal={true}
-                    selectedValue={subtaskFormState.beneficiary}
-                    data-test-id="subtask-beneficiary-dropdown"
-                    disabled={isManager}
-                />
-            </div>
             <div className="mb-4 truncate">
                 <label className="block text-sm font-medium mb-1">Fecha de Inicio</label>
                 <input
