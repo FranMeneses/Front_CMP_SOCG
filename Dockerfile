@@ -24,6 +24,8 @@ WORKDIR /app
 # Configurar variables de entorno
 ENV NODE_ENV=production
 ENV PORT=8080
+# La URL del backend se pasará como variable de entorno en tiempo de ejecución
+ENV NEXT_PUBLIC_API_URL=""
 
 # Copiar archivos necesarios desde la etapa de construcción
 COPY --from=builder /app/next.config.ts ./
