@@ -6,7 +6,7 @@ import listPlugin from "@fullcalendar/list";
 import esLocale from "@fullcalendar/core/locales/es";
 import { useState } from "react";
 import Modal from "../Modal";
-import CalendarForm from "@/app/features/reportability/components/CalendarForm";
+import CalendarForm from "@/components/Reportability/CalendarForm";
 import { IEvent } from "@/app/models/ICalendar";
 
 interface CalendarComponentProps {
@@ -56,6 +56,7 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMo
       start: formattedStar,
       startDate: formattedStartDate,
       status: info.event.extendedProps.status,
+      process: info.event.extendedProps.process,
       progress: info.event.extendedProps.progress,
       faena: info.event.extendedProps.faena,
     });

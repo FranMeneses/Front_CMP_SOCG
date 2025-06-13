@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
-import { useCompliance } from "../../hooks/useCompliance";
-import { useHooks } from "../../../hooks/useHooks";
+import { useCompliance } from "../../../app/features/compliance/hooks/useCompliance";
+import { useHooks } from "../../../app/features/hooks/useHooks";
 import ComplianceRow from "./ComplianceRow";
 import ComplianceModals from "../ComplianceModalForms";
 import { ICompliance } from "@/app/models/ICompliance";

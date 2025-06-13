@@ -1,9 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { IDocumentList } from '@/app/models/IDocuments';
-import { useDocumentsRest } from '../hooks/useDocumentsRest';
+import { useDocumentsRest } from '@/app/features/documents/hooks/useDocumentsRest';
 import { Trash } from 'lucide-react';
-import { useDocumentsGraph } from '../hooks/useDocumentsGraph';
+import { useDocumentsGraph } from '@/app/features/documents/hooks/useDocumentsGraph';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
 
 interface DocumentTableProps {

@@ -4,7 +4,7 @@ import { Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/Modal";
 import ContactForm from "./ContactForm";
-import { useBeneficiaries } from "../hooks/useBeneficiaries";
+import { useBeneficiaries } from "@/app/features/beneficiaries/hooks/useBeneficiaries";
 import React from "react";
 import BeneficiariesForm from "./BeneficiariesForm";
 

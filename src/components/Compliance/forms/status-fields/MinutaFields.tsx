@@ -1,4 +1,4 @@
-import { FileUploadButton } from "@/app/features/documents/components/FileUploadButton";
+import { FileUploadButton } from "@/components/Documents/FileUploadButton";
 import { IDocumentList } from "@/app/models/IDocuments";
 import DocumentPreview from "./DocumentsPreview";
 

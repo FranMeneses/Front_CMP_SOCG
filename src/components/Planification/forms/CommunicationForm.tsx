@@ -1,7 +1,7 @@
 import { useHooks } from "@/app/features/hooks/useHooks";
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
-import { useCommunicationTaskForm } from "../../hooks/useCommunicationTaskForm";
+import { useCommunicationTaskForm } from "@/app/features/planification/hooks/useCommunicationTaskForm";
 import { ITask } from "@/app/models/ITasks";
 
 interface CommunicationFormProps {

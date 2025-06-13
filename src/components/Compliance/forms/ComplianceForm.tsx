@@ -1,6 +1,6 @@
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
-import { useComplianceForm } from "../../hooks/useComplianceForm";
+import { useComplianceForm } from "../../../app/features/compliance/hooks/useComplianceForm";
 import { IComplianceForm, IComplianceMemo, IComplianceSolped, IComplianceStatus } from "@/app/models/ICompliance";
 import { useState, useEffect } from "react";
 import { IDocumentList } from "@/app/models/IDocuments";

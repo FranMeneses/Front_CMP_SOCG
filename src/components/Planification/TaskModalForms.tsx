@@ -7,7 +7,7 @@ import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
-import { useHooks } from '../../hooks/useHooks';
+import { useHooks } from '@/app/features/hooks/useHooks';
 import { IComplianceForm } from '@/app/models/ICompliance';
 import { UploadPlanificationForm } from './forms/UploadPlanificationForm';
 

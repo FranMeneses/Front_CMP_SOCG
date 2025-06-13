@@ -6,11 +6,11 @@ import DropdownMenu from "@/components/Dropdown";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { ValleyColors, CommunicationsColors, AllColors } from "@/constants/colors";
 import Calendar from "@/components/Calendar/Calendar";
-import { Legend } from "./components/Legend";
+import { Legend } from "../../../components/Reportability/Legend";
 import { useReportability } from "./hooks/useReportability";
 import { useHooks } from "../hooks/useHooks";
 import { useEffect, useState } from "react";
-import TaskResume from "./components/TaskResume";
+import TaskResume from "../../../components/Reportability/TaskResume";
 import { Months } from "@/constants/months";
 import { IProcess } from "@/app/models/IProcess";
 

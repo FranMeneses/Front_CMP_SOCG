@@ -2,7 +2,7 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ComplianceTable from "./components/Table/ComplianceTable";
+import ComplianceTable from "../../../components/Compliance/Table/ComplianceTable";
 import { useCompliance } from "./hooks/useCompliance";
 import { useHooks } from "../hooks/useHooks";
 

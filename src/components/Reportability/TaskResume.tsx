@@ -1,7 +1,7 @@
 import { IEvent } from "@/app/models/ICalendar";
-import { useTaskResume } from "../hooks/useTaskResume";
+import { useTaskResume } from "../../app/features/reportability/hooks/useTaskResume";
 import { useEffect, useState, useCallback } from "react";
-import { useHooks } from "../../hooks/useHooks";
+import { useHooks } from "../../app/features/hooks/useHooks";
 import { IProcess } from "@/app/models/IProcess";
 import PieChart from "@/components/Charts/PieChart";
 

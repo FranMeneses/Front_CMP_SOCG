@@ -1,16 +1,15 @@
 'use client';
 import React from "react";
 import { ISubtask } from "@/app/models/ISubtasks";
-import { usePlanification } from "../../hooks/usePlanification";
-import { useHooks } from "../../../hooks/useHooks";
+import { usePlanification } from "@/app/features/planification/hooks/usePlanification";
+import { useHooks } from "@/app/features/hooks/useHooks";
 import { ITaskDetails } from "@/app/models/ITasks";
 import TaskRow from "./TaskRow";
 import SubtasksTable from "./SubtasksTable";
 import TaskFilters from "./TaskFilters";
 import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
-import { useTaskFilters } from "../../hooks/useTaskFilters";
-
+import { useTaskFilters } from "@/app/features/planification/hooks/useTaskFilters";
 interface TasksTableProps {
     tasks: ITaskDetails[];
     subtasks: ISubtask[];

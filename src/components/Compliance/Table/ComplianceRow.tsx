@@ -1,7 +1,7 @@
 import React from 'react';
 import { ZoomIn, Plus } from "lucide-react";
 import { ICompliance } from '@/app/models/ICompliance';
-import { useComplianceTable } from '../../hooks/useComplianceTable';
+import { useComplianceTable } from '../../../app/features/compliance/hooks/useComplianceTable';
 
 interface ComplianceRowProps {
   compliance: ICompliance;

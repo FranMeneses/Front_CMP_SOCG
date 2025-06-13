@@ -2,12 +2,12 @@
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Sidebar } from "@/components/Sidebar";
-import BeneficiariesTable from "./components/BeneficiariesTable";
+import BeneficiariesTable from "@/components/Beneficiaries/BeneficiariesTable";
 import { useBeneficiaries } from "./hooks/useBeneficiaries";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Modal from "@/components/Modal";
-import BeneficiariesForm from "./components/BeneficiariesForm";
+import BeneficiariesForm from "@/components/Beneficiaries/BeneficiariesForm";
 import { useHooks } from "../hooks/useHooks";
 
 export default function Beneficiaries() {

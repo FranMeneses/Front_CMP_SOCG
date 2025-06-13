@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usePlanificationRest } from "../../hooks/usePlanificationRest";
+import { usePlanificationRest } from "@/app/features/planification/hooks/usePlanificationRest";
 import { Button } from "@/components/ui/button";
 import { FileUploadButton } from "../FileUploadButton";
 

@@ -1,7 +1,7 @@
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { FileUploadButton } from "./FileUploadButton";
-import { useDocumentForms } from "../hooks/useDocumentForms";
+import { useDocumentForms } from "@/app/features/documents/hooks/useDocumentForms";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface CommunicationFormProps {

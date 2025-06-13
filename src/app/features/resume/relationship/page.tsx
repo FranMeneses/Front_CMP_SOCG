@@ -1,7 +1,7 @@
 'use client';
 import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
-import DynamicTable from "../components/DynamicTable";
+import DynamicTable from "../../../../components/Resume/DynamicTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useResume } from "./hooks/useResume";
 import { useHooks } from "../../hooks/useHooks";
@@ -84,7 +84,7 @@ export default function ResumeRelationship() {
               onLegendClick={handleLegendClick}
               data-test-id="pie-chart"
               title="Iniciativas por Departamento"
-              titleSize={12}
+              titleSize={24}
               font="Helvetica"
             />
           </div>

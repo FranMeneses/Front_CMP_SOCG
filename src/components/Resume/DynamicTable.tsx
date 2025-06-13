@@ -1,9 +1,9 @@
 'use client';
 import React from "react";
-import { ManagementTableColumns, specialistTableColums } from "@/constants/tableConstants";
+import { ManagementTableColumns } from "@/constants/tableConstants";
 import { ITask } from "@/app/models/ITasks";
 import { ISubtask } from "@/app/models/ISubtasks";
-import { useDynamicTable } from "../hooks/useDynamicTable";
+import { useDynamicTable } from "../../app/features/resume/hooks/useDynamicTable";
 
 interface DynamicTableProps {
   tasks: ITask[];
