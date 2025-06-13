@@ -139,7 +139,7 @@ export default function ComplianceForm({
 
     // Función para validar el formulario según su estado
     const isFormValid = () => {
-        const baseValidation = formState.name && formState.description && formState.statusId;
+        const baseValidation = formState.statusId;
         
         if (!baseValidation) return false;
         
@@ -165,7 +165,7 @@ export default function ComplianceForm({
                         onChange={(e) => handleInputChange('name', e.target.value)}
                         className="w-full border rounded px-3 py-2"
                         data-test-id="compliance-name-input"
-                        disabled={formState.statusId > 1} 
+                        disabled={true} 
                     />
                 </div>
 
@@ -177,7 +177,7 @@ export default function ComplianceForm({
                         onChange={(e) => handleInputChange('description', e.target.value)}
                         className="w-full border rounded px-3 py-2"
                         data-test-id="compliance-description-input"
-                        disabled={formState.statusId > 1} 
+                        disabled={true} 
                     />
                 </div>
 

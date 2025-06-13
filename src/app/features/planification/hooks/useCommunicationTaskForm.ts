@@ -43,6 +43,7 @@ export const useCommunicationTaskForm = (
         statusId: 0,
         budget: 0,
         expense: 0,
+        applies: false,
     });
 
     /**
@@ -129,7 +130,8 @@ export const useCommunicationTaskForm = (
                 statusId: selectedTask.statusId || 0,
                 processId: processName,
                 budget: budget,
-                expense: expenses
+                expense: expenses,
+                applies: selectedTask.applies || false,
             });
         }
     }
@@ -151,6 +153,7 @@ export const useCommunicationTaskForm = (
                 statusId: 0,
                 budget: 0,
                 expense: 0,
+                applies: false,
             });
         }
     }, [isEditing, selectedTask]);
@@ -172,7 +175,7 @@ export const useCommunicationTaskForm = (
      * @param value Nuevo valor para el campo de cumplimiento
      */
     const handleComplianceChange = useCallback((value: boolean) => {
-        setFormState((prev) => ({ ...prev, compliance: value }));
+        setFormState((prev) => ({ ...prev, applies: value }));
     }, []);
 
     /**
@@ -209,6 +212,7 @@ export const useCommunicationTaskForm = (
             statusId: 0,
             budget: 0,
             expense: 0,
+            applies: false,
         });
 
     }, [formState, valleysName, faenasName, onSave, isEditing]);

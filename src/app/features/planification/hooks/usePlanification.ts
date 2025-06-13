@@ -100,9 +100,26 @@ export const usePlanification = () => {
                         faenaId: task.faenaId,
                         statusId: task.statusId,
                         processId: task.processId,
+                        applies: task.applies,
                     }
                 }
-            })
+            });
+            const { data: complianceData } = await createCompliance({
+                variables: {
+                    input: {
+                        taskId: data.createTask.id,
+                        statusId: 1,
+                    },
+                },
+            });
+            const { data: registryData } = await createRegistry({
+                variables: {
+                    input: {
+                        complianceId: complianceData.create.id,
+                    },
+                },
+            });
+            await refetch();
         }catch (error) {
             console.error("Error saving communication task:", error);
         }

@@ -22,10 +22,8 @@ export default function CommunicationForm({
         handleOptionChange,
         handleDocumentTypeChange,
         handleTaskChange,
-        handleSubtaskChange,
         getDocumentTypeText,
         getTaskText,
-        getSubtaskText,
     } = useDocumentForms();
 
     const handleSubmit = () => {
@@ -56,55 +54,16 @@ export default function CommunicationForm({
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Seleccione asociación de documento</label>
+                <label className="block text-sm font-medium mb-1">Seleccione tarea asociada</label>
                 <DropdownMenu
-                    buttonText={formData.option || "Seleccione una opción"}
+                    buttonText={getTaskText()}
                     isInModal={true}
-                    items={["Tarea","Subtarea"]} 
-                    onSelect={(label) => handleOptionChange(label)}
-                    selectedValue={formData.option}
-                    data-test-id="document-option-dropdown"
+                    items={dropdownOptions.tasks.map((item) => item.label)} 
+                    onSelect={(label) => handleTaskChange(label)}
+                    selectedValue={getTaskText()}
+                    data-test-id="document-task-dropdown"
                 />
             </div>
-            {formData.option === "Tarea" && (
-                <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1">Seleccione tarea asociada</label>
-                    <DropdownMenu
-                        buttonText={getTaskText()}
-                        isInModal={true}
-                        items={dropdownOptions.tasks.map((item) => item.label)} 
-                        onSelect={(label) => handleTaskChange(label)}
-                        selectedValue={getTaskText()}
-                        data-test-id="document-task-dropdown"
-                    />
-                </div>
-            )}
-            {formData.option === "Subtarea" && (
-                <>
-                <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Seleccione tarea asociada</label>
-                    <DropdownMenu
-                        buttonText={getTaskText()}
-                        isInModal={true}
-                        items={dropdownOptions.tasks.map((item) => item.label)} 
-                        onSelect={(label) => handleTaskChange(label)}
-                        selectedValue={getTaskText()}
-                        data-test-id="document-task-dropdown"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-medium mb-1">Seleccione subtarea asociada</label>
-                    <DropdownMenu
-                        buttonText={getSubtaskText()}
-                        isInModal={true}
-                        items={dropdownOptions.subtasks.map((item) => item.label)} 
-                        onSelect={(label) => handleSubtaskChange(label)}
-                        selectedValue={getSubtaskText()}
-                        data-test-id="document-subtask-dropdown"
-                    />
-                </div>
-                </>
-            )}
             <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">Subir documento</label>
                 <div className="flex items-center">

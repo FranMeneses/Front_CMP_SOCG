@@ -45,7 +45,6 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
             <th className="py-3 px-6 text-center border-b border-gray-300">Fecha</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Tipo</th>
             <th className="py-3 px-6 text-center border-b border-gray-300">Iniciativa</th>
-            <th className="py-3 px-6 text-center border-b border-gray-300">Subtarea</th>
             <th className='py-3 px-6 text-center border-b border-gray-300'></th>
           </tr>
         </thead>
@@ -74,9 +73,6 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
                   {doc.tarea?.name || 'N/A'}
-                </td>
-                <td className='px-4 py-2 text-center border-b border-gray-300'>
-                  {doc.subtarea?.name || 'N/A'}
                 </td>
                 <td className='px-4 py-2 text-center border-b border-gray-300'>
                   <Trash

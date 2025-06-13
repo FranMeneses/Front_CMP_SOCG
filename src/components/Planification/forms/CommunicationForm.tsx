@@ -86,13 +86,13 @@ export default function CommunicationForm({
             <div className="mb-4 ">
                 <label className="block text-sm font-medium mb-1">¿Compliance?</label>
                 <DropdownMenu
-                buttonText="Seleccione Compliance"
-                items={["Si", "No"]}
-                onSelect={(value) => handleComplianceChange(value === "Si" ? true : false)}
-                isInModal={true}
-                selectedValue={selectedTask ? (selectedTask.applies ? "Si" : "No") : undefined}
-                data-test-id="communication-compliance-dropdown"
-                disabled={isEditing ? true : false}
+                    buttonText="Seleccione Compliance"
+                    items={["Si", "No"]}
+                    onSelect={(value) => handleComplianceChange(value === "Si" ? true : false)}
+                    isInModal={true}
+                    selectedValue={selectedTask ? (selectedTask.applies ? "Si" : "No") : undefined}
+                    data-test-id="communication-compliance-dropdown"
+                    disabled={isEditing ? true : false}
                 />
             </div>
             {isEditing && (
@@ -146,7 +146,7 @@ export default function CommunicationForm({
                 <Button
                     variant="default"
                     onClick={() => handleSave()}
-                    disabled={!formState.name || !formState.description}
+                    disabled={!formState.name || !formState.valleyId || !formState.processId}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
