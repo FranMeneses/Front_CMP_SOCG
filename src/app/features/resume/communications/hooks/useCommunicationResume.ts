@@ -154,7 +154,7 @@ export function useCommunicationResume() {
      * @returns 
      */
     const formatCurrency = (value: number): string => {
-        return new Intl.NumberFormat('es-ES', {
+        return new Intl.NumberFormat('es-CL', {
             maximumFractionDigits: 0
         }).format(value);
     };
