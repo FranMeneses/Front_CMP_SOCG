@@ -1,34 +1,35 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_TASK_SUBTASKS, GET_TASKS } from '@/app/api/tasks';
+import { GET_TASK_SUBTASKS, GET_TASKS, GET_TASKS_BY_PROCESS } from '@/app/api/tasks';
 import { ITask } from '@/app/models/ITasks';
-import { ISubtask } from '@/app/models/ISubtasks';
 import { GET_ALL_DOCUMENT_TYPES } from '@/app/api/documents';
 import { ITipoDocumento } from '@/app/models/IDocuments';
+import { useHooks } from '../../hooks/useHooks';
 
 export interface FormData {
     file: File | null;
     documentType: string;
-    option: string;
     task: string;
-    subtask: string;
 }
 
 export function useDocumentForms() {
     const [formData, setFormData] = useState<FormData>({
         file: null,
         documentType: "",
-        option: "",
         task: "",
-        subtask: ""
     });
     
-    const {data: subtasksData, loading: isLoadingSubtask, error: subtaskError} = useQuery(GET_TASK_SUBTASKS, {
-        variables: { id: formData.task },
-        skip: !formData.task,
+    const { isValleyManager, currentProcess } = useHooks();
+
+    const {data: tasksData, loading: isLoadingTask, error: taskError} = useQuery(GET_TASKS, {
+        skip: isValleyManager,
     });
-    const {data: tasksData, loading: isLoadingTask, error: taskError} = useQuery(GET_TASKS);
     const {data: documentTypesData, loading: isLoadingDocumentsTypes, error: documentsTypesError} = useQuery(GET_ALL_DOCUMENT_TYPES);
+
+    const {data: processTaskData, loading: isLoadingProcessTask, error: processTaskError} = useQuery(GET_TASKS_BY_PROCESS, {
+        variables: { processId: currentProcess?.id },
+        skip: !isValleyManager,
+    });
 
     /**
      * Retorna el texto del tipo de documento seleccionado
@@ -49,16 +50,7 @@ export function useDocumentForms() {
         const selectedTask = dropdownOptions.tasks.find(item => item.id === formData.task);
         return selectedTask ? selectedTask.label : "Seleccione tarea";
     };
-    
-    /**
-     * Retorna el nombre de la subtarea seleccionada
-     * @returns 
-     */
-    const getSubtaskText = () => {
-        if (!formData.subtask) return "Seleccione subtarea";
-        const selectedSubtask = dropdownOptions.subtasks.find(item => item.id === formData.subtask);
-        return selectedSubtask ? selectedSubtask.label : "Seleccione subtarea";
-    };
+
 
     /**
      * Maneja el cambio del archivo seleccionado
@@ -94,7 +86,7 @@ export function useDocumentForms() {
      * @description Actualiza el estado del formulario con la tarea seleccionada
      */
     const handleTaskChange = (selectedLabel: string) => {
-        const tasks = tasksData?.tasks || [];
+        const tasks = isValleyManager ? processTaskData?.tasksByProcess : tasksData?.tasks || [];
         const selectedTask = tasks.find((task: ITask) => task.name === selectedLabel);
         if (selectedTask) {
             setFormData({
@@ -105,45 +97,13 @@ export function useDocumentForms() {
     };
 
     /**
-     * Maneja el cambio de la subtarea seleccionada
-     * @param selectedLabel Subtarea seleccionada
-     * @description Actualiza el estado del formulario con la subtarea seleccionada
-     */
-    const handleSubtaskChange = (selectedLabel: string) => {
-        const subtasks = subtasksData?.taskSubtasks || [];
-        const selectedSubtask = subtasks.find((subtask: ISubtask) => subtask.name === selectedLabel);
-        if (selectedSubtask) {
-            setFormData({
-                ...formData,
-                subtask: selectedSubtask.id 
-            });
-        }
-    };
-
-    /**
-     * Maneja el cambio de la opción de asociación de documento (Tarea/Subtarea)
-     * @param selectedOption Opción seleccionada ("Tarea" o "Subtarea")
-     * @description Actualiza el estado del formulario con la opción seleccionada
-     */
-    const handleOptionChange = (selectedOption: string) => {
-        setFormData({
-            ...formData,
-            option: selectedOption,
-            subtask: selectedOption === "Tarea" ? "" : formData.subtask
-        });
-    };
-
-
-    /**
      * Resetea el formulario
      */
     const resetForm = () => {
         setFormData({
             file: null,
             documentType: "",
-            option: "",
             task: "",
-            subtask: ""
         });
     };
 
@@ -151,10 +111,9 @@ export function useDocumentForms() {
      * Verifica si el formulario es válido
      * @returns 
      */
-    const isFormValid = formData.file && formData.documentType && (formData.task || formData.subtask);
+    const isFormValid = formData.file && formData.documentType && formData.task;
 
-    const tasks = tasksData?.tasks || [];
-    const subtasks = subtasksData?.taskSubtasks || [];
+    const tasks = isValleyManager ? processTaskData?.tasksByProcess : tasksData?.tasks || [];
     const documentTypes = documentTypesData?.getAllDocumentTypes || [];
 
     /**
@@ -175,9 +134,6 @@ export function useDocumentForms() {
         tasks: Array.isArray(tasks) 
             ? tasks.map((task: ITask) => ({ id: task.id, label: task.name })) 
             : [],
-        subtasks: Array.isArray(subtasks) 
-            ? subtasks.map((subtask: ISubtask) => ({ id: subtask.id, label: subtask.name })) 
-            : []
     };
 
     return {
@@ -185,14 +141,11 @@ export function useDocumentForms() {
         isFormValid,
         dropdownOptions,
         handleFileChange,
-        handleOptionChange,
         handleDocumentTypeChange,
         handleTaskChange,
-        handleSubtaskChange,
         resetForm,
         getDocumentTypeText,
         getTaskText,
-        getSubtaskText,
-        isLoading: isLoadingSubtask || isLoadingTask || isLoadingDocumentsTypes,
+        isLoading: isLoadingTask || isLoadingDocumentsTypes || isLoadingProcessTask,
     };
 }
