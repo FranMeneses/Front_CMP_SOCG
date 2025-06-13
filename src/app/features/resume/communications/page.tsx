@@ -73,7 +73,6 @@ export default function ResumeCommunications() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white p-4 rounded-lg shadow">
           <div className="w-full md:h-[300px] lg:h-[500px] mx-auto">
             <PieChart
@@ -86,7 +85,7 @@ export default function ResumeCommunications() {
               font="Helvetica"
             />
           </div>
-        </div>
+
 
       </div>
 
