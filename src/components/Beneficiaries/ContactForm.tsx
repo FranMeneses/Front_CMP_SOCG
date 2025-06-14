@@ -1,7 +1,7 @@
 'use client';
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { IContact } from "@/app/models/IBeneficiary";
+import { useContactForm } from "@/app/features/beneficiaries/hooks/useContactForm";
 
 interface ContactFormProps {
     onSave: (contact: { id?:string, selectedBeneficiaryId: string; name: string; position: string; email: string; phone: string }) => void;
@@ -11,77 +11,111 @@ interface ContactFormProps {
 }
 
 export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, initialValues }: ContactFormProps) {
-    const [name, setName] = useState<string>(initialValues?.name || "");
-    const [position, setPosition] = useState<string>(initialValues?.position || "");
-    const [email, setEmail] = useState<string>(initialValues?.email || "");
-    const [phone, setPhone] = useState<string>(initialValues?.phone || "");
-
-    useEffect(() => {
-        if (initialValues) {
-            setName(initialValues.name);
-            setPosition(initialValues.position);
-            setEmail(initialValues.email);
-            setPhone(initialValues.phone);
-        }
-    }, [initialValues]);
-
-    const handleSave = () => {
-        onSave({ id :initialValues?.id ,selectedBeneficiaryId: selectedBeneficiaryId ?? "", name, position, email, phone });
-        setName("");
-        setPosition("");
-        setEmail("");
-        setPhone("");
-    };
+    const {
+        name,
+        position,
+        email,
+        phone,
+        emailConfirm,
+        phoneConfirm,
+        emailError,
+        phoneError,
+        emailConfirmError,
+        phoneConfirmError,
+        setName,
+        setPosition,
+        handleEmailChange,
+        handleEmailConfirmChange,
+        handlePhoneChange,
+        handlePhoneConfirmChange,
+        handleSave,
+        isFormValid
+    } = useContactForm({ initialValues, selectedBeneficiaryId, onSave });
 
     return (
         <div className="p-4 font-[Helvetica]" data-test-id="contact-form">
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Nombre</label>
+            <div className="form-field">
+                <label className="form-label required">Nombre</label>
                 <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    className="form-input"
                     data-test-id="contact-name"
+                    required
                 />
             </div>
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Cargo</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Cargo</label>
                 <input
                     type="text"
                     value={position}
                     onChange={(e) => setPosition(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    className="form-input"
                     data-test-id="contact-position"
+                    required
                 />
             </div>
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Email</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Email</label>
                 <input
                     type="email"
                     value={email}
-                    onChange={(e) => { setEmail(e.target.value); 
-                    }}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    onChange={handleEmailChange}
+                    className={`form-input ${emailError ? 'input-error' : ''}`}
                     data-test-id="contact-email"
+                    placeholder="ejemplo@correo.com"
+                    required
                 />
+                {emailError && <span className="error-message">{emailError}</span>}
             </div>
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Teléfono</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Confirmar Email</label>
+                <input
+                    type="email"
+                    value={emailConfirm}
+                    onChange={handleEmailConfirmChange}
+                    className={`form-input ${emailConfirmError ? 'input-error' : ''}`}
+                    data-test-id="contact-email-confirm"
+                    placeholder="Confirme su email"
+                    required
+                />
+                {emailConfirmError && <span className="error-message">{emailConfirmError}</span>}
+            </div>
+            
+            <div className="form-field">
+                <label className="form-label required">Teléfono</label>
                 <input
                     type="tel"
                     value={phone}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        const phoneRegex = /^[0-9\s\+]*$/;
-                        if (phoneRegex.test(value)) {
-                            setPhone(value);
-                        }
-                    }}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    onChange={handlePhoneChange}
+                    className={`form-input ${phoneError ? 'input-error' : ''}`}
                     data-test-id="contact-phone"
+                    placeholder="987654321"
+                    maxLength={9}
+                    required
                 />
+                {phoneError && <span className="error-message">{phoneError}</span>}
             </div>
+            
+            <div className="form-field">
+                <label className="form-label required">Confirmar Teléfono</label>
+                <input
+                    type="tel"
+                    value={phoneConfirm}
+                    onChange={handlePhoneConfirmChange}
+                    className={`form-input ${phoneConfirmError ? 'input-error' : ''}`}
+                    data-test-id="contact-phone-confirm"
+                    placeholder="Confirme su teléfono"
+                    maxLength={9}
+                    required
+                />
+                {phoneConfirmError && <span className="error-message">{phoneConfirmError}</span>}
+            </div>
+            
             <div className="flex justify-end space-x-2">
                 <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer" data-test-id="contact-cancel">
                     Cancelar
@@ -90,7 +124,7 @@ export default function ContactForm({ onSave, onCancel, selectedBeneficiaryId, i
                     variant="default"
                     onClick={handleSave}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-gray-600 cursor-pointer"
-                    disabled={!name || !position || !email || !phone}
+                    disabled={!isFormValid}
                     data-test-id="contact-save"
                 >
                     Guardar

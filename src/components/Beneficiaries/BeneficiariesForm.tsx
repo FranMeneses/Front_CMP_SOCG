@@ -1,8 +1,8 @@
 'use client';
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import DropdownMenu from "@/components/Dropdown";
 import { IBeneficiary } from "@/app/models/IBeneficiary";
+import { useBeneficiaryForm } from "@/app/features/beneficiaries/hooks/useBeneficiariyForm";
 
 interface BeneficiariesFormProps {
     initialValues?: IBeneficiary;
@@ -11,77 +11,91 @@ interface BeneficiariesFormProps {
 }
 
 export default function BeneficiariesForm({ onSave, onCancel, initialValues }: BeneficiariesFormProps) {
-    const [legalName, setLegalName] = useState<string>(initialValues?.legalName || "");
-    const [rut, setRut] = useState<string>(initialValues?.rut || "");
-    const [address, setAddress] = useState<string>(initialValues?.address || "");
-    const [entityType, setEntityType] = useState<string>(initialValues?.entityType || "");
-    const [representative, setRepresentative] = useState<string>(initialValues?.representative || "");
-    const [hasLegalPersonality, setHasLegalPersonality] = useState<boolean>(initialValues?.hasLegalPersonality || false);
-
-    const handleSave = () => {
-        onSave({ legalName, rut, address, entityType, representative, hasLegalPersonality});
-        setLegalName("");
-        setRut("");
-        setAddress("");
-        setEntityType("");
-        setRepresentative("");
-        setHasLegalPersonality(false);
-    };
+    const {
+        legalName,
+        rut,
+        address,
+        entityType,
+        representative,
+        hasLegalPersonality,
+        rutError,
+        setLegalName,
+        setAddress,
+        setEntityType,
+        setRepresentative,
+        setHasLegalPersonality,
+        handleRutChange,
+        handleSave,
+        isFormValid
+    } = useBeneficiaryForm({ initialValues, onSave });
 
     return (
         <div className="p-4 font-[Helvetica]" data-test-id="beneficiary-form">
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Nombre Legal</label>
+            <div className="form-field">
+                <label className="form-label required">Nombre Legal</label>
                 <input
                     type="text"
                     value={legalName}
                     onChange={(e) => setLegalName(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    className="form-input"
                     data-test-id="legal-name"
+                    required
                 />
             </div>
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">RUT</label>
+            
+            <div className="form-field">
+                <label className="form-label required">RUT</label>
                 <input
                     type="text"
                     value={rut}
-                    onChange={(e) => setRut(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    onChange={handleRutChange}
+                    className={`form-input ${rutError ? 'input-error' : ''}`}
                     data-test-id="rut"
+                    placeholder="12.345.678-9"
+                    maxLength={12}
+                    required
                 />
+                {rutError && <span className="error-message">{rutError}</span>}
             </div>
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Dirección</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Dirección</label>
                 <input
-                    type="address"
+                    type="text"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    className="form-input"
                     data-test-id="address"
+                    required
                 />
             </div>
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Tipo de Entidad</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Tipo de Entidad</label>
                 <input
                     type="text"
                     value={entityType}
                     onChange={(e) => setEntityType(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    className="form-input"
                     data-test-id="entity-type"
+                    required
                 />
             </div>
-            <div className="mb-4">
-                <label className="text-sm font-medium mb-1">Representante</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Representante</label>
                 <input
                     type="text"
                     value={representative}
                     onChange={(e) => setRepresentative(e.target.value)}
-                    className="border border-gray-300 rounded-md p-2 w-full"
+                    className="form-input"
                     data-test-id="representative"
+                    required
                 />
             </div>
-            <div className="mb-4">
-                <h4 className="text-sm font-medium mb-1">Persona Juridica</h4>
+            
+            <div className="form-field">
+                <label className="form-label required">Persona Juridica</label>
                 <DropdownMenu
                     items={["Si", "No"]}
                     onSelect={(item) => setHasLegalPersonality(item === "Si")}
@@ -90,12 +104,16 @@ export default function BeneficiariesForm({ onSave, onCancel, initialValues }: B
                     selectedValue={hasLegalPersonality ? "Si" : "No"}
                 />
             </div>
+            
             <div className="flex justify-end gap-2 mt-4">
                 <Button variant="secondary" onClick={onCancel} className="bg-gray-200 hover:bg-gray-300 cursor-pointer" data-test-id="cancel-button">
                     Cancelar
                 </Button>
-                <Button variant="default" onClick={handleSave} className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-gray-600 cursor-pointer"
-                    disabled={!legalName || !rut || !address || !entityType || !representative}
+                <Button 
+                    variant="default" 
+                    onClick={handleSave} 
+                    className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-gray-600 cursor-pointer"
+                    disabled={!isFormValid}
                     data-test-id="save-button"
                 >
                     Guardar

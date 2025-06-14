@@ -16,111 +16,126 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
     const {
         subtaskFormState,
         dropdownItems,
+        dateError,
         handleSubtaskInputChange,
         handleSaveSubtask,
+        isFormValid
     } = useValleySubtasksForm(onSave, subtask);
 
     const { isManager } = useHooks();
 
     return (
         <div className='font-[Helvetica]' data-test-id="subtask-form">
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Nombre</label>
+            <div className="form-field">
+                <label className="form-label required">Nombre</label>
                 <input
                     type="text"
                     value={subtaskFormState.name}
                     onChange={(e) => handleSubtaskInputChange("name", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                    className="form-input"
                     data-test-id="subtask-title-input"
                     disabled={isManager}
+                    required
                 />
             </div>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Descripción</label>
+            
+            <div className="form-field">
+                <label className="form-label">Descripción</label>
                 <input
                     type="text"
                     value={subtaskFormState.description}
                     onChange={(e) => handleSubtaskInputChange("description", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                    className="form-input"
                     data-test-id="subtask-description-input"
                     disabled={isManager}
                 />
             </div>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Presupuesto (USD)</label>
                 <input
                     type="number"
                     min={0}
                     value={subtaskFormState.budget}
                     onChange={(e) => handleSubtaskInputChange("budget", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                    className="form-input"
                     data-test-id="subtask-budget-input"
                     disabled={isManager || isEditing}
+                    required
                 />
             </div>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Fecha de Inicio</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Fecha de Inicio</label>
                 <input
                     type="date"
                     value={subtaskFormState.startDate}
                     onChange={(e) => handleSubtaskInputChange("startDate", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                    className={`form-input ${dateError ? 'input-error' : ''}`}
                     data-test-id="subtask-start-date-input"
                     disabled={isManager || isEditing}
+                    required
                 />
             </div>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Fecha de Término</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Fecha de Término</label>
                 <input
                     type="date"
                     value={subtaskFormState.endDate}
                     onChange={(e) => handleSubtaskInputChange("endDate", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                    className={`form-input ${dateError ? 'input-error' : ''}`}
                     data-test-id="subtask-end-date-input"
                     disabled={isManager || isEditing}
+                    required
                 />
+                {dateError && <span className="error-message">{dateError}</span>}
             </div>
+            
             {isEditing && (
-            <>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Fecha de Finalización</label>
-                <input
-                    type="date"
-                    value={subtaskFormState.finalDate}
-                    onChange={(e) => handleSubtaskInputChange("finalDate", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                    data-test-id="subtask-finish-date-input"
-                    disabled={isManager}
-                />
-            </div>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Gastos (USD) </label>
-                <input
-                    type="number"
-                    min={0}
-                    value={subtaskFormState.expense}
-                    onChange={(e) => handleSubtaskInputChange("expense", e.target.value)}
-                    className="w-full border rounded px-3 py-2"
-                    data-test-id="subtask-expense-input"
-                    disabled={isManager}
-                />
-            </div>
-            <div className="mb-4">                                                 
-                <label className="block text-sm font-medium mb-1">Estado</label>
-                <DropdownMenu
-                    buttonText="Seleccione Estado"
-                    items={dropdownItems.subtaskState}
-                    onSelect={(value) => {handleSubtaskInputChange("state", value)}}
-                    isInModal={true}
-                    selectedValue={dropdownItems.subtaskState[(subtask?.status?.id ?? 1) - 1]}
-                    data-test-id="subtask-state-dropdown"
-                    disabled={isManager}
-                />
-            </div>
-            </>
+                <>
+                    <div className="form-field">
+                        <label className="form-label">Fecha de Finalización</label>
+                        <input
+                            type="date"
+                            value={subtaskFormState.finalDate}
+                            onChange={(e) => handleSubtaskInputChange("finalDate", e.target.value)}
+                            className="form-input"
+                            data-test-id="subtask-finish-date-input"
+                            disabled={isManager}
+                        />
+                    </div>
+                    
+                    <div className="form-field">
+                        <label className="form-label">Gastos (USD)</label>
+                        <input
+                            type="number"
+                            min={0}
+                            value={subtaskFormState.expense}
+                            onChange={(e) => handleSubtaskInputChange("expense", e.target.value)}
+                            className="form-input"
+                            data-test-id="subtask-expense-input"
+                            disabled={isManager}
+                        />
+                    </div>
+                    
+                    <div className="form-field">                                                 
+                        <label className="form-label">Estado</label>
+                        <DropdownMenu
+                            buttonText="Seleccione Estado"
+                            items={dropdownItems.subtaskState}
+                            onSelect={(value) => {handleSubtaskInputChange("state", value)}}
+                            isInModal={true}
+                            selectedValue={dropdownItems.subtaskState[(subtask?.status?.id ?? 1) - 1]}
+                            data-test-id="subtask-state-dropdown"
+                            disabled={isManager}
+                        />
+                    </div>
+                </>
             )}
-            <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Prioridad</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Prioridad</label>
                 <DropdownMenu
                     buttonText="Seleccione Prioridad"
                     items={dropdownItems.subtaskPriority}
@@ -131,6 +146,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     disabled={isManager}
                 />
             </div>
+            
             <div className="flex justify-end space-x-2">
                 <Button
                     variant="secondary"
@@ -138,16 +154,16 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     className="bg-gray-200 hover:bg-gray-300 cursor-pointer"
                     data-test-id="cancel-button"
                 >
-                Cancelar
+                    Cancelar
                 </Button>
                 <Button
                     variant="default"
                     onClick={handleSaveSubtask}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6] hover:cursor-pointer"
-                    disabled={!subtaskFormState.name || !subtaskFormState.budget || !subtaskFormState.endDate || !subtaskFormState.startDate || !subtaskFormState.priority} 
+                    disabled={!isFormValid}
                     data-test-id="save-button"
                 >
-                Guardar
+                    Guardar
                 </Button>
             </div>
         </div>

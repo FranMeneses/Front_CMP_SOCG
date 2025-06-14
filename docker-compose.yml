@@ -4,7 +4,7 @@ services:
   # Servicio de backend
   backend:
     build:
-      context: C:\Users\cclift\Desktop\CMP APP\cmp-back  # Ajusta esta ruta según la ubicación de tu backend
+      context: C:\Users\cclift\Desktop\CMP APP\cmp-back 
       dockerfile: Dockerfile
     ports:
       - "4000:4000"

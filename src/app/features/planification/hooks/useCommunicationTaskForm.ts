@@ -43,7 +43,7 @@ export const useCommunicationTaskForm = (
         statusId: 0,
         budget: 0,
         expense: 0,
-        applies: false,
+        applies: null as boolean | null,
     });
 
     /**
@@ -153,7 +153,7 @@ export const useCommunicationTaskForm = (
                 statusId: 0,
                 budget: 0,
                 expense: 0,
-                applies: false,
+                applies: null,
             });
         }
     }, [isEditing, selectedTask]);
@@ -212,7 +212,7 @@ export const useCommunicationTaskForm = (
             statusId: 0,
             budget: 0,
             expense: 0,
-            applies: false,
+            applies: null,
         });
 
     }, [formState, valleysName, faenasName, onSave, isEditing]);
@@ -223,10 +223,19 @@ export const useCommunicationTaskForm = (
         processes: userRole === 'encargado cumplimiento' ? processName : filteredProcessesNames || [],
     }), [taskStatuses]);
 
+    const saveButtonText = isEditing ? "Actualizar" : "Guardar";
+    
+    const isFormValid = formState.name && 
+                       formState.valleyId && 
+                       formState.processId && 
+                       formState.applies !== null
+
     return {
         formState,
         dropdownItems,
         processes,
+        saveButtonText,
+        isFormValid,
         handleInputChange,
         handleSave,
         handleGetTask,

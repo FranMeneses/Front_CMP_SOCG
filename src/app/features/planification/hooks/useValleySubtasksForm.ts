@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
-import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
 import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK, DELETE_SUBTASK } from "@/app/api/subtasks";
 import { IPriority, ISubtask, ISubtasksStatus } from "@/app/models/ISubtasks";
 import { SubtasksInitialValues, ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 
 export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) => void, subtask?: ISubtask) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
-    const {data: beneficiariesData} = useQuery(GET_BENEFICIARIES);
+    const [dateError, setDateError] = useState<string>("");
 
     const [beneficiariesMap, setBeneficiariesMap] = useState<Record<string, string>>({});
     const [beneficiariesIdToNameMap, setBeneficiariesIdToNameMap] = useState<Record<string, string>>({});
@@ -20,11 +19,33 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
     const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);
     const {data: subtaskStateData} = useQuery(GET_SUBTASK_STATUSES);
 
+
     const priority = subtaskPriorityData?.priorities || [];
     const state = subtaskStateData?.subtaskStatuses || [];
 
     const subtaskPriority = priority.map((p: IPriority) => p.name);
     const subtaskState = state.map((s: ISubtasksStatus) => s.name);
+
+    /**
+     * Valida que la fecha de inicio no sea posterior a la fecha de término
+     * @param startDate - Fecha de inicio
+     * @param endDate - Fecha de término
+     * @returns true si las fechas son válidas
+     */
+    const validateDates = (startDate: string, endDate: string): boolean => {
+        if (!startDate || !endDate) return true; // No validar si alguna fecha está vacía
+        
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        if (start > end) {
+            setDateError("La fecha de inicio no puede ser posterior a la fecha de término");
+            return false;
+        }
+        
+        setDateError("");
+        return true;
+    };
 
     /**
      * Función para obtener una subtarea por su ID
@@ -241,9 +262,19 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      * @param field Campo del formulario que se está actualizando
      * @param value Nuevo valor para el campo del formulario
      */
-    const handleSubtaskInputChange = useCallback((field: string, value: string) => {
-        setSubtaskFormState((prev) => ({ ...prev, [field]: value }));
-    }, []);
+    const handleSubtaskInputChange = (field: string, value: string) => {
+        setSubtaskFormState(prev => ({
+            ...prev,
+            [field]: value
+        }));
+
+        // Validar fechas cuando se cambie startDate o endDate
+        if (field === "startDate") {
+            validateDates(value, subtaskFormState.endDate);
+        } else if (field === "endDate") {
+            validateDates(subtaskFormState.startDate, value);
+        }
+    };
 
     /**
      * Función para guardar los cambios en la subtarea
@@ -281,9 +312,18 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         };
     }, []);
 
+    const isFormValid = subtaskFormState.name && 
+                       subtaskFormState.budget && 
+                       subtaskFormState.endDate && 
+                       subtaskFormState.startDate && 
+                       subtaskFormState.priority &&
+                       !dateError; 
+
     return {
         subtaskFormState,
         dropdownItems,
+        dateError,
+        isFormValid,
         handleSubtaskInputChange,
         handleSaveSubtask,
         handleGetSubtask,

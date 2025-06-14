@@ -19,7 +19,6 @@ export default function CommunicationForm({
         dropdownOptions,
         isLoading,
         handleFileChange,
-        handleOptionChange,
         handleDocumentTypeChange,
         handleTaskChange,
         getDocumentTypeText,
@@ -43,7 +42,7 @@ export default function CommunicationForm({
     return (
         <div className="font-[Helvetica]" data-test-id="communication-form">
             <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Seleccione tipo de documento</label>
+                <label className="block text-sm font-medium mb-1 required">Seleccione tipo de documento</label>
                 <DropdownMenu
                     buttonText={getDocumentTypeText()}
                     isInModal={true}
@@ -54,7 +53,7 @@ export default function CommunicationForm({
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Seleccione tarea asociada</label>
+                <label className="block text-sm font-medium mb-1 required">Seleccione tarea asociada</label>
                 <DropdownMenu
                     buttonText={getTaskText()}
                     isInModal={true}

@@ -20,7 +20,7 @@ export default function CommunicationForm({
     userRole
 }: CommunicationFormProps) {
 
-    const { formState, dropdownItems, handleSave, handleInputChange,handleComplianceChange } = useCommunicationTaskForm(
+    const { formState, dropdownItems, saveButtonText, isFormValid, handleSave, handleInputChange, handleComplianceChange } = useCommunicationTaskForm(
         onSave, 
         isEditing, 
         selectedTask,
@@ -28,8 +28,6 @@ export default function CommunicationForm({
     );
 
     const { valleys, isManager } = useHooks();
-
-    const saveButtonText = isEditing ? "Actualizar" : "Guardar";
     
     return (
         <div className='font-[Helvetica]' data-test-id="communication-form">
@@ -37,30 +35,33 @@ export default function CommunicationForm({
                 {isEditing ? "Editar Tarea" : "Nueva Tarea"}
             </h2>
             
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Titulo</label>
+            <div className="form-field">
+                <label className="form-label required">Titulo</label>
                 <input
                     type="text"
                     value={formState.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                    className="form-input"
                     data-test-id="communication-title-input"
                     disabled={isManager}
+                    required
                 />
             </div>
-            <div className="mb-4 truncate">
-                <label className="block text-sm font-medium mb-1">Descripción</label>
+            
+            <div className="form-field">
+                <label className="form-label">Descripción</label>
                 <input
                     type="text"
                     value={formState.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    className="w-full border rounded px-3 py-2"
+                    className="form-input"
                     data-test-id="communication-description-input"
                     disabled={isManager}
                 />
             </div>
-            <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Valle</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Valle</label>
                 <DropdownMenu
                     buttonText={"Seleccione el valle asociado"}
                     isInModal={true}
@@ -71,8 +72,9 @@ export default function CommunicationForm({
                     disabled={isManager}
                 />
             </div>
-            <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Proceso</label>
+            
+            <div className="form-field">
+                <label className="form-label required">Proceso</label>
                 <DropdownMenu
                     buttonText={"Seleccione el proceso asociado"}
                     isInModal={true}
@@ -83,8 +85,9 @@ export default function CommunicationForm({
                     disabled={isManager}
                 />
             </div>
-            <div className="mb-4 ">
-                <label className="block text-sm font-medium mb-1">¿Compliance?</label>
+            
+            <div className="form-field">
+                <label className="form-label required">¿Compliance?</label>
                 <DropdownMenu
                     buttonText="Seleccione Compliance"
                     items={["Si", "No"]}
@@ -95,10 +98,11 @@ export default function CommunicationForm({
                     disabled={isEditing ? true : false}
                 />
             </div>
+            
             {isEditing && (
                 <>
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium mb-1">Estado</label>
+                    <div className="form-field">
+                        <label className="form-label">Estado</label>
                         <DropdownMenu
                             buttonText={"Seleccione Estado"}
                             isInModal={true}
@@ -109,31 +113,33 @@ export default function CommunicationForm({
                             disabled={isManager}
                         />
                     </div>  
-                    <div className="mb-4 truncate">
-                        <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
+                    
+                    <div className="form-field">
+                        <label className="form-label">Presupuesto (USD)</label>
                         <input
                             type="number"
                             min={0}
                             value={formState.budget}
                             disabled={true}
-                            className="w-full border rounded px-3 py-2"
+                            className="form-input"
                             data-test-id="communication-budget-input"
                         />
                     </div>
-                    <div className="mb-4 truncate">
-                        <label className="block text-sm font-medium mb-1">Gastos (USD)</label>
+                    
+                    <div className="form-field">
+                        <label className="form-label">Gastos (USD)</label>
                         <input
                             type="number"
                             min={0}
                             value={formState.expense}
                             disabled={true}
-                            className="w-full border rounded px-3 py-2"
+                            className="form-input"
                             data-test-id="communication-expense-input"
                         />
                     </div>
                 </>  
-            )
-            }
+            )}
+            
             <div className="flex justify-end space-x-2">
                 <Button
                     variant="secondary"
@@ -146,7 +152,7 @@ export default function CommunicationForm({
                 <Button
                     variant="default"
                     onClick={() => handleSave()}
-                    disabled={!formState.name || !formState.valleyId || !formState.processId}
+                    disabled={!isFormValid}
                     className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >

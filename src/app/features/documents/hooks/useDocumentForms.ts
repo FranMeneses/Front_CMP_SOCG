@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_TASK_SUBTASKS, GET_TASKS, GET_TASKS_BY_PROCESS } from '@/app/api/tasks';
+import { GET_TASKS, GET_TASKS_BY_PROCESS } from '@/app/api/tasks';
 import { ITask } from '@/app/models/ITasks';
 import { GET_ALL_DOCUMENT_TYPES } from '@/app/api/documents';
 import { ITipoDocumento } from '@/app/models/IDocuments';

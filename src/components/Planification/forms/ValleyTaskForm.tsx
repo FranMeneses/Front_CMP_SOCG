@@ -43,6 +43,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           className="w-full border rounded px-3 py-2"
           data-test-id="task-title-input"
           disabled={isManager}
+          required
         />
       </div>
       <div className="mb-4 truncate">
@@ -57,7 +58,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         />
       </div>
       <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1">Origen</label>
+        <label className="block text-sm font-medium mb-1 required">Origen</label>
         <DropdownMenu
           items={dropdownItems.origin}
           onSelect={(value) => handleInputChange("origin", value)}
@@ -68,7 +69,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         />
       </div>
       <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1">Inversión</label>
+        <label className="block text-sm font-medium mb-1 required">Inversión</label>
         <DropdownMenu
           buttonText="Seleccione Inversión"
           items={dropdownItems.investment}
@@ -80,7 +81,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Tipo de Iniciativa</label>
+        <label className="block text-sm font-medium mb-1 required">Tipo de Iniciativa</label>
         <DropdownMenu
           buttonText="Seleccione Tipo de Iniciativa"
           items={dropdownItems.type}
@@ -92,7 +93,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         />
       </div>
       <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1">Alcance de Iniciativa</label>
+        <label className="block text-sm font-medium mb-1 required">Alcance de Iniciativa</label>
         <DropdownMenu
           buttonText="Seleccione Alcance"
           items={dropdownItems.scope}
@@ -104,7 +105,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         />
       </div>
       <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1">Interacción</label>
+        <label className="block text-sm font-medium mb-1 required">Interacción</label>
         <DropdownMenu
           buttonText="Seleccione Interacción"
           items={dropdownItems.interaction}
@@ -116,7 +117,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         />
       </div>
       <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1">¿Compliance?</label>
+        <label className="block text-sm font-medium mb-1 required">¿Compliance?</label>
         <DropdownMenu
           buttonText="Seleccione Compliance"
           items={["Si", "No"]}
@@ -129,7 +130,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
       </div>
       {isEditing && (
         <div className="mb-4 ">
-          <label className="block text-sm font-medium mb-1">Estado</label>
+          <label className="block text-sm font-medium mb-1 required">Estado</label>
           <DropdownMenu
             buttonText="Seleccione Estado"
             items={dropdownItems.state}
@@ -170,7 +171,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         </>
       )}
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Riesgo</label>
+        <label className="block text-sm font-medium mb-1 required">Riesgo</label>
         <DropdownMenu
           buttonText="Seleccionar el riesgo"
           items={dropdownItems.risk}
@@ -182,7 +183,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">Faena</label>
+        <label className="block text-sm font-medium mb-1 required">Faena</label>
         <DropdownMenu
           buttonText="Seleccionar faena"
           items={faenas}
