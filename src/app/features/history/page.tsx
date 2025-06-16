@@ -67,7 +67,6 @@ export default function Compliance() {
                         </main>
                     </div>
 
-                    {/* Modal para mostrar detalles del historial */}
                     {isModalOpen && (
                         <Modal onClose={closeHistoryModal} isOpen={isModalOpen}>
                             <HistoryForm

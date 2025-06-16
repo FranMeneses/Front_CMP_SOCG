@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=4000
-      - DATABASE_URL=${sqlserver://sv-cmp.database.windows.net;database=db-cmp;user=cmp-server-admin;password=CM2025ap@;encrypt=true} 
+      - DATABASE_URL=${DATABASE_URL} 
     networks:
       - app-network
     healthcheck:
