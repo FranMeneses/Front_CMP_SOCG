@@ -137,7 +137,6 @@ export default function ComplianceForm({
         }
     };
 
-    // Función para validar el formulario según su estado
     const isFormValid = () => {
         const baseValidation = formState.statusId;
         

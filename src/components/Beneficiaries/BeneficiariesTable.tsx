@@ -3,15 +3,14 @@ import { BeneficiariesTableColumns } from "@/constants/tableConstants";
 import { Plus, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/Modal";
-import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; // Agregar esta importación
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; 
 import ContactForm from "./ContactForm";
 import { useBeneficiaries } from "@/app/features/beneficiaries/hooks/useBeneficiaries";
-import React, { useState } from "react"; // Agregar useState
+import React, { useState } from "react"; 
 import BeneficiariesForm from "./BeneficiariesForm";
 import { useHooks } from "@/app/features/hooks/useHooks";
 
 const BeneficiariesTable: React.FC = () => {
-    // Estados para el modal de confirmación
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteModalData, setDeleteModalData] = useState<{
         id: string;
@@ -44,7 +43,6 @@ const BeneficiariesTable: React.FC = () => {
 
     const { userRole } = useHooks();
 
-    // Funciones para manejar la confirmación de eliminación
     const handleDeleteBeneficiaryClick = (beneficiaryId: string) => {
         setDeleteModalData({ id: beneficiaryId, type: 'beneficiario' });
         setShowDeleteModal(true);
