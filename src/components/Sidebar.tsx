@@ -1,5 +1,5 @@
 'use client';
-import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard  } from 'lucide-react';
+import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard, History  } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,14 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/compliance",
       icon: Clipboard,
       isActive: pathname === "/features/compliance",
+      admitedRoles: ["encargado cumplimiento"]
+    },    
+    {
+      title: "Compliance Histórico",
+      href: "/features/history",
+      displayHref: "/history",
+      icon: History,
+      isActive: pathname === "/features/history",
       admitedRoles: ["encargado cumplimiento"]
     },
     {
@@ -75,7 +83,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       icon: ChartPie,
       isActive: pathname === "/features/resume",
       admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento"]
-    },
+    }
   ];
 
   const filteredNavItems = navItems.filter(item => item.admitedRoles.includes(userRole));
