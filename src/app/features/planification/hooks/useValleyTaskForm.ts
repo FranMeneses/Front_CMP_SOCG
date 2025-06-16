@@ -9,12 +9,13 @@ import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
-import client from "@/lib/apolloClient";
+import { GET_TASK_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
 export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
     const [updateTask] = useMutation(UPDATE_TASK);
+    const [updateRegistry] = useMutation(UPDATE_REGISTRY);
     const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
     const [deleteTask] = useMutation(DELETE_TASK);
     
@@ -22,6 +23,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
     const [getTask] = useLazyQuery(GET_TASK);
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
+    const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
 
     const {valleysName: valleyNames, faenasName: faenaNames, faenas: Faenas} = useHooks();
 
@@ -47,7 +49,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const taskInteraction = interactions.map((i: IInteraction) => i.operation);
     const taskScope = scopes.map((s: IScope) => s.name);
     const taskType = types.map((t: IType) => t.name);
-    const taskState = states.map((s: ITaskStatus) => s.name);
+    const taskState = initialValues?.compliance? states.map((s: ITaskStatus) => s.name) : states.filter((s: ITaskStatus) => s.name !== "En Cumplimiento").map((s: ITaskStatus) => s.name);
 
     /**
      * Función para eliminar una tarea
@@ -56,6 +58,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      */
     const handleDeleteTask = async (taskId: string) => {
         try {
+            console.log("Deleting task with ID:", taskId);
             const { data } = await deleteTask({
                 variables: { id: taskId },
             });
@@ -101,6 +104,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         try {
             const { data: expensesData } = await getTaskExpenses({
                 variables: { id: taskId },
+                fetchPolicy: 'network-only', 
             });
             if (expensesData) {
                 return expensesData.taskTotalExpense;
@@ -148,6 +152,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         try {
             const { data: taskData } = await getTask({
                 variables: { id: taskId },
+                fetchPolicy: 'network-only',
             });
             if (taskData) {
                 return taskData.task.faenaId;
@@ -184,7 +189,23 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
 
             if (!data?.updateTask?.id) {
                 throw new Error("Task update failed: ID is undefined.");
-            }
+            };
+            if (data?.updateTask.status.id === 3) {
+                const { data: complianceData } = await getCompliance({
+                    variables: { taskId: selectedTaskId },
+                });
+                console.log("Compliance data:", complianceData.getTaskCompliance);
+                const { data: complianceUpdateData } = await updateRegistry({
+                    variables: {
+                        id: complianceData?.getTaskCompliance.registries?.[0]?.id,
+                        input: {
+                            startDate: new Date(),
+                        },
+                    },
+                });
+                console.log("Compliance updated:", complianceUpdateData);
+            };
+
             const { data: infoData } = await updateInfoTask({
                 variables: {
                     id: selectedInfoTask?.id,
@@ -296,7 +317,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         expenses: initialValues.expenses || "",
         risk: initialValues.risk || "",
         faena: initialValues.faena || "",
-        compliance: initialValues.compliance ?? undefined,
+        compliance: initialValues.compliance ?? false,
         });
     }
     }, [initialValues]); // Keep this dependency array simple
@@ -356,13 +377,13 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
                 process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null,
-                compliance: formState.compliance || false,
+                compliance: formState.compliance ?? false,
             };
         } else {
             taskDetails = {
                 ...formState,
                 risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
-                state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s: string | number) => s === formState.state) + 1,
+                state: states.find((s: ITaskStatus) => s.name === formState.state || s.id === formState.state)?.id || null,
                 interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
                 scope: Number(formState.scope) ? Number(formState.scope) : taskScope.findIndex((s: string | number) => s === formState.scope) + 1,
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,

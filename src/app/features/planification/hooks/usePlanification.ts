@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
@@ -19,6 +19,7 @@ export const usePlanification = () => {
     
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
+    const [isPopupPlanificationOpen, setIsPopupPlanificationOpen] = useState<boolean>(false);
     const [isCommunicationModalOpen, setIsCommunicationModalOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [selectedTask, setSelectedTask] = useState<ITask | undefined>(undefined);
@@ -76,6 +77,14 @@ export const usePlanification = () => {
     };
 
     /**
+     * Función para manejar la subida de un plan de planificación
+     * @description Abre el modal para subir un plan de planificación
+     */
+    const handleUploadPlanification = () => {
+        setIsPopupPlanificationOpen(true);
+    }
+
+    /**
      * Función para guardar una nueva tarea 
      * @param task Tarea a guardar
      * @description Guarda una nueva tarea
@@ -91,9 +100,26 @@ export const usePlanification = () => {
                         faenaId: task.faenaId,
                         statusId: task.statusId,
                         processId: task.processId,
+                        applies: task.applies,
                     }
                 }
-            })
+            });
+            const { data: complianceData } = await createCompliance({
+                variables: {
+                    input: {
+                        taskId: data.createTask.id,
+                        statusId: 1,
+                    },
+                },
+            });
+            const { data: registryData } = await createRegistry({
+                variables: {
+                    input: {
+                        complianceId: complianceData.create.id,
+                    },
+                },
+            });
+            await refetch();
         }catch (error) {
             console.error("Error saving communication task:", error);
         }
@@ -167,9 +193,9 @@ export const usePlanification = () => {
      * @description Abre el modal de confirmación para eliminar una tarea
      * @param taskId ID de la tarea a eliminar
      */
-    const handleDeleteTask = () => {
+    const handleDeleteTask = async () => {
         try {
-            valleyTaskForm.handleDeleteTask(itemToDeleteId!);
+            await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
             refetch();
             window.location.reload();
@@ -184,12 +210,11 @@ export const usePlanification = () => {
      * @description Abre el modal de confirmación para eliminar una sub-tarea
      * @param subtaskId ID de la sub-tarea a eliminar
      */
-    const handleDeleteSubtask = () => {
+    const handleDeleteSubtask = async () => {
         try {
-            valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
+            await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
             setIsDeleteSubtaskModalOpen(false);
             refetch();
-            window.location.reload();
         }
         catch (error) {
             console.error("Error deleting subtask:", error);
@@ -235,7 +260,6 @@ export const usePlanification = () => {
                     },
                 },
             });
-            console.log("Task ID after creation:", data.createTask.id);
             const { data: complianceData } = await createCompliance({
                 variables: {
                     input: {
@@ -248,7 +272,6 @@ export const usePlanification = () => {
                 variables: {
                     input: {
                         complianceId: complianceData.create.id,
-                        startDate: new Date(),
                     },
                 },
             });
@@ -295,7 +318,7 @@ export const usePlanification = () => {
                 console.error("Error handling task information:", error);
             }
         }
-        else if (isCommunicationsManager) {
+        else if (isCommunicationsManager || userRole === "encargado cumplimiento") {
             try {
                 const taskInfo = await communicationTaskForm.handleGetTask(taskId);
                 if (taskInfo) {
@@ -339,7 +362,6 @@ export const usePlanification = () => {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
             refetch();
-            window.location.reload();
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
         }
@@ -385,6 +407,7 @@ export const usePlanification = () => {
         setIsSidebarOpen,
         setIsDeleteSubtaskModalOpen,
         setIsDeleteTaskModalOpen,
+        setIsPopupPlanificationOpen,
         setItemToDeleteId,
         handleAddTask,
         handleSaveTask,
@@ -409,8 +432,10 @@ export const usePlanification = () => {
         handleUpdateCommunication,
         handleCancelCommunication,
         handleFilterByProcess,
+        handleUploadPlanification,
         selectedTask,
         isPopupOpen,
+        isPopupPlanificationOpen,
         isDeleteSubtaskModalOpen,
         isDeleteTaskModalOpen,
         isCommunicationModalOpen,

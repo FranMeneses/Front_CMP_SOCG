@@ -32,7 +32,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [loadingCommunicationTasks, setLoadingCommunicationTasks] = useState(isCommunicationsRole);
   const [loadingRelationshipTasks, setLoadingRelationshipTasks] = useState(isRelationshipSuperintendent);
 
-  const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos públicos"];
+  const validRoles = ["encargado copiapó", "encargado huasco", "encargado valle elqui", "encargado comunicaciones", "encargado asuntos públicos","jefe copiapó", "jefe huasco", "jefe elqui"];
 
   /**
    * Función para cargar las tareas de los procesos de comunicación
@@ -102,9 +102,15 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     switch(userRole) {
       case "encargado copiapó":
         return 1;
+      case "jefe copiapó":
+        return 1;
       case "encargado huasco":
         return 2;
+      case "jefe huasco":
+        return 2;
       case "encargado valle elqui":
+        return 3;
+      case "jefe elqui":
         return 3;
       case "encargado comunicaciones":
         return 4;
@@ -132,6 +138,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   } = useQuery(GET_TASKS_BY_PROCESS, { 
     variables: { processId: getCurrentProcessId(userRole) },
     skip: !shouldUseProcessQuery || isCommunicationsRole || isRelationshipSuperintendent,
+    fetchPolicy: "network-only",
   });
 
   const { 
@@ -141,19 +148,30 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     refetch: refetchAllTasks 
   } = useQuery(GET_TASKS, {
     skip: shouldUseProcessQuery || isCommunicationsRole || isRelationshipSuperintendent,
+    fetchPolicy: "network-only",
   });
 
   const {
     data: allProcessData,
     loading: allProcessQueryLoading,
     error: allProcessQueryError,
-  } = useQuery(GET_ALL_PROCESSES);
+  } = useQuery(GET_ALL_PROCESSES, {
+    fetchPolicy: "network-only",
+  });
 
-  const { data: taskStateData } = useQuery(GET_TASK_STATUSES);
+  const { data: taskStateData } = useQuery(GET_TASK_STATUSES,{
+        fetchPolicy: "network-only",
+  });
   
-  const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS);
-  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS);
-  const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
+  const [getSubtasks] = useLazyQuery(GET_TASK_SUBTASKS,{
+        fetchPolicy: "network-only",
+  });
+  const [getTasksByStatus] = useLazyQuery(GET_TASKS_BY_PROCESS_AND_STATUS,{
+        fetchPolicy: "network-only",
+  });
+  const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS, {
+        fetchPolicy: "network-only",
+  });
   
   const tasks = isCommunicationsRole 
     ? tasksData 
@@ -392,10 +410,9 @@ const loadInitialRelationshipTasks = async () => {
    */
   const getRemainingSubtaskDays = (subtask: ISubtask) => {
     const end = new Date(subtask.endDate);
-    if (subtask.status.name === "Completada con Informe Final") {
+    if (subtask.status.name === "Completada") {
       const finishDate = new Date(subtask.finalDate);
-      const startDate = new Date(subtask.startDate);
-      const diffTime = finishDate.getTime() - startDate.getTime();
+      const diffTime = end.getTime() - finishDate.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       if (isNaN(diffDays)) {
         return "-";
@@ -464,13 +481,24 @@ const loadInitialRelationshipTasks = async () => {
           ? new Date(Math.max(...associatedSubtasks.map((subtask) => new Date(subtask.endDate).getTime())))
           : null;
       
-        const validFinalDates = associatedSubtasks
-          .filter(subtask => subtask.finalDate && !isNaN(new Date(subtask.finalDate).getTime()))
-          .map(subtask => new Date(subtask.finalDate).getTime());
+        const allSubtasksHaveFinalDate = associatedSubtasks.length > 0 && 
+          associatedSubtasks.every(subtask => 
+            subtask.finalDate && 
+            subtask.finalDate !== null && 
+            subtask.finalDate !== undefined && 
+            !isNaN(new Date(subtask.finalDate).getTime())
+          );
         
-        const finishDate = validFinalDates.length > 0
-          ? new Date(Math.max(...validFinalDates))
-          : null;
+        let finishDate = null;
+        
+        if (allSubtasksHaveFinalDate) {
+          const validFinalDates = associatedSubtasks
+            .map(subtask => new Date(subtask.finalDate).getTime());
+          
+          finishDate = validFinalDates.length > 0
+            ? new Date(Math.max(...validFinalDates))
+            : null;
+        }
       
         return {
           ...task,

@@ -119,6 +119,7 @@ export function useDocumentsGraph() {
         } catch (error) {
             console.error("Error deleting document:", error);
         } 
+        window.location.reload();
     };
 
     /**

@@ -3,12 +3,12 @@ import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useHooks } from "../hooks/useHooks";
-import { DocumentTable } from "./components/DocumentsTable";
+import { DocumentTable } from "@/components/Documents/DocumentsTable";
 import { useDocumentsGraph } from "./hooks/useDocumentsGraph";
 import { useDocumentsPage } from "./hooks/useDocumentsPage";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import DocumentForm from "./components/DocumentForm";
+import DocumentForm from "@/components/Documents/DocumentForm";
 import Modal from "@/components/Modal";
 import DropdownMenu from "@/components/Dropdown";
 import { useEffect } from "react";
@@ -65,7 +65,7 @@ export default function Documents() {
                     <aside
                     className={`border-r h-full ${
                         isSidebarOpen
-                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
+                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
                         : ""
                     }`}
                     >

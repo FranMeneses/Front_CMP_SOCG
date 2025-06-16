@@ -10,7 +10,7 @@ export interface SubtasksInitialValues {
     expense?: string;
     startDate?: string;
     endDate?: string;
-    finishDate?: string;
+    finalDate?: string;
     beneficiary?: string;
     state?: string;
     priority?: string;

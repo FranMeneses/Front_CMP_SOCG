@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { CREATE_BENEFICIARY, CREATE_CONTACT, GET_BENEFICIARIES, GET_BENEFICIARY, UPDATE_BENEFICIARY, UPDATE_CONTACT } from "@/app/api/beneficiaries";
+import { CREATE_BENEFICIARY, CREATE_CONTACT, GET_BENEFICIARIES, GET_BENEFICIARY, REMOVE_BENEFICIARY, REMOVE_CONTACT, UPDATE_BENEFICIARY, UPDATE_CONTACT } from "@/app/api/beneficiaries";
 import { IBeneficiary, IContact } from "@/app/models/IBeneficiary";
 
 export const useBeneficiaries = () => {
@@ -20,6 +20,8 @@ export const useBeneficiaries = () => {
     const [createBeneficiary] = useMutation(CREATE_BENEFICIARY);
     const [updateContact] = useMutation(UPDATE_CONTACT);
     const [updateBeneficiary] = useMutation(UPDATE_BENEFICIARY);
+    const [deleteBeneficiary] = useMutation(REMOVE_BENEFICIARY);
+    const [deleteContact] = useMutation(REMOVE_CONTACT);
 
     /**
      * Cargar los beneficiarios al iniciar el componente
@@ -190,6 +192,55 @@ export const useBeneficiaries = () => {
     };
 
     /**
+     * Función para eliminar un beneficiario
+     * @description Elimina un beneficiario y actualiza la lista local de beneficiarios
+     * @param beneficiaryId Id del beneficiario a eliminar
+     */
+    const handleDeleteBeneficiary = async (beneficiaryId: string) => {
+        try {
+            const { data } = await deleteBeneficiary({
+                variables: { id: beneficiaryId },
+            });
+
+            const deletedBeneficiary = data.removeBeneficiary;
+
+            setLocalBeneficiaries((prev) => prev.filter((b) => b.id !== deletedBeneficiary.id));
+
+            await refetch();
+        }
+        catch (err) {
+            console.error("Error eliminando el beneficiario:", err);
+        }
+    };
+
+    /**
+     * Función para eliminar un contacto
+     * @description Elimina un contacto del beneficiario seleccionado
+     * @param contactId ID del contacto a eliminar
+     */
+    const handleDeleteContact = async (contactId: string) => {
+        try {
+            const { data } = await deleteContact({
+                variables: { id: contactId },
+            });
+
+            const deletedContact = data.removeContact;
+
+            setSelectedBeneficiary((prev) => {
+                if (!prev) return null;
+                return {
+                    ...prev,
+                    contacts: prev.contacts.filter((c) => c.id !== deletedContact.id),
+                };
+            });
+
+            await refetch();
+        } catch (error) {
+            console.error("Error eliminando el contacto:", error);
+        }
+    }
+
+    /**
      * Maneja la edición de un beneficiario
      * @param beneficiaryId Id del beneficiario a editar
      * @description Abre el modal de edición de beneficiario con los datos del beneficiario seleccionado
@@ -239,6 +290,8 @@ export const useBeneficiaries = () => {
         isEditContactModalOpen,
         setIsEditContactModalOpen,
         selectedContact,
-        setSelectedContact
+        setSelectedContact,
+        handleDeleteBeneficiary,
+        handleDeleteContact,
     };
 };

@@ -2,10 +2,9 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ComplianceTable from "./components/Table/ComplianceTable";
+import ComplianceTable from "../../../components/Compliance/Table/ComplianceTable";
 import { useCompliance } from "./hooks/useCompliance";
 import { useHooks } from "../hooks/useHooks";
-
 
 export default function Compliance() {
     const {
@@ -36,7 +35,7 @@ export default function Compliance() {
                             <aside
                                 className={`border-r h-full ${
                                     isSidebarOpen
-                                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
+                                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
                                         : ""
                                 }`}
                                 data-test-id="sidebar"
@@ -64,4 +63,4 @@ export default function Compliance() {
             )}
         </div>
     );
-}
+}   

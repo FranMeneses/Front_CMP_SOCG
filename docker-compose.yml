@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Servicio de backend
+  backend:
+    build:
+      context: C:\Users\cclift\Desktop\CMP APP\cmp-back 
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - DATABASE_URL=${DATABASE_URL} 
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/graphql"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
+
+  # Servicio de desarrollo frontend
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:4000
+    command: npm run dev
+    networks:
+      - app-network
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # Servicio de producción frontend
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=production
+      # En Azure Container Apps, la URL interna será:
+      # https://backend-app.internal.<nombre-entorno>.<region>.azurecontainerapps.io
+      - NEXT_PUBLIC_API_URL=${BACKEND_INTERNAL_URL}
+    restart: unless-stopped
+    networks:
+      - app-network
+    depends_on:
+      backend:
+        condition: service_healthy
+
+networks:
+  app-network:
+    driver: bridge 

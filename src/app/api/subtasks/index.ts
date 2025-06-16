@@ -176,9 +176,9 @@ export const GET_PRIORITIES = gql`
   }
 `;
 
-export const GET_SUBTASKS_BY_MONTH_YEAR_AND_VALLEY = gql`
-  query GetSubtasksByMonthYearAndValley($monthName: String!, $year: Int!, $valleyId: Int!) {
-    subtasksByMonthYearAndValley(monthName: $monthName, year: $year, valleyId: $valleyId) {
+export const GET_SUBTASKS_BY_MONTH_YEAR_AND_PROCESS = gql`
+  query GetSubtasksByMonthYearAndProcess($monthName: String!, $year: Int!, $processId: Int!) {
+    subtasksByMonthYearAndProcess(monthName: $monthName, year: $year, processId: $processId) {
       id
       taskId
       name

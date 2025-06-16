@@ -6,7 +6,7 @@ import "./styles/frappe-gantt.css";
 import { ISubtaskScheduler } from "@/app/models/ISubtasks";
 import { useSchedule } from "@/app/features/schedule/hooks/useSchedule";
 import { ITask } from "@/app/models/ITasks";
-import TaskDetailsModal from "@/app/features/schedule/components/GanttModal";
+import TaskDetailsModal from "@/components/Schedule/GanttModal";
 
 export default function GanttChart({ subtasks }: { subtasks: ISubtaskScheduler[]; }) {
   const ganttRef = useRef<HTMLDivElement | null>(null);

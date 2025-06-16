@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useHooks } from "../../hooks/useHooks";
 import { ITask } from "@/app/models/ITasks";
@@ -6,7 +6,7 @@ import { useComplianceData } from "./useComplianceData";
 import { ITaskForm } from "@/app/models/ICommunicationsForm";
 import { useComplianceForm } from "./useComplianceForm";
 import { IComplianceForm } from "@/app/models/ICompliance";
-import { CREATE_COMPLIANCE, CREATE_REGISTRY, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
 export const useCompliance = () => {
     const { currentValleyId, userRole } = useHooks();
@@ -21,7 +21,8 @@ export const useCompliance = () => {
     const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
     const [isDeleteSubtaskModalOpen, setIsDeleteSubtaskModalOpen] = useState(false);
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
-    
+    const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('Todos');
+
     const dummyTask = (task: ITaskForm) => {}; 
 
     const complianceForm = useComplianceForm(dummyTask);
@@ -142,13 +143,13 @@ export const useCompliance = () => {
                     if (taskRegistry) {
                         const complianceWithRegistry: IComplianceForm = {
                             ...taskInfo,
-                            cartaAporteObs: taskRegistry.cartaAporteObs || "",
-                            minutaObs: taskRegistry.minutaObs || "",
-                            hasMemo: taskRegistry.hasMemo || false,
-                            hasSolped: taskRegistry.hasSolped || false,
-                            hasHem: taskRegistry.hasHem || false,
-                            hasHes: taskRegistry.hasHes || false,
-                            provider: taskRegistry.provider || "",
+                            cartaAporte: taskRegistry[0].cartaAporte || "",
+                            minuta: taskRegistry[0].minuta || "",
+                            hasMemo: taskRegistry[0].es_memo || false,
+                            hasSolped: taskRegistry[0].es_solped || false,
+                            hasHem: taskRegistry[0].hem || false,
+                            hasHes: taskRegistry[0].hes || false,
+                            provider: taskRegistry[0].provider || "",
                         };
                         setSelectedCompliance(complianceWithRegistry);
                         setIsComplianceModalOpen(true);
@@ -161,6 +162,30 @@ export const useCompliance = () => {
             catch (error) {
                 console.error("Error fetching task information:", error);
             }
+    };
+
+    /**
+     * Función para manejar los filtros de estado
+     * @description Filtra los datos de cumplimiento según el estado seleccionado
+     */
+    const filteredCompliance = useMemo(() => {
+        if (selectedStatusFilter === '' || selectedStatusFilter === 'Todos') {
+            return data;
+        }
+        
+        return data.filter(compliance => {
+            const status = compliance.status?.name || "NO iniciado";
+            return status === selectedStatusFilter;
+        });
+    }, [data, selectedStatusFilter]);
+
+    /**
+     * Función para manejar el cambio de filtro de estado
+     * @description Actualiza el estado del filtro seleccionado
+     * @param status Estado seleccionado
+     */
+    const handleStatusFilterChange = (status: string) => {
+        setSelectedStatusFilter(status);
     };
 
 
@@ -179,6 +204,7 @@ export const useCompliance = () => {
         handleCreateTask,
         handleUpdateCompliance,
         handleCancelCompliance,
+        handleStatusFilterChange,
         selectedTask,
         selectedCompliance,
         isDeleteSubtaskModalOpen,
@@ -192,5 +218,7 @@ export const useCompliance = () => {
         error,
         expandedRow,
         activeFilter,
+        selectedStatusFilter,
+        filteredCompliance,
     };
 };

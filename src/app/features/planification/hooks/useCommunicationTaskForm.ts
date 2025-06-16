@@ -25,7 +25,7 @@ export const useCommunicationTaskForm = (
     const filteredProcessesNames = processes
     .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name))
     .map((p: IProcess) => p.name);
-
+    const processName = processes.map((p: IProcess) => p.name);
     const isPublicAffair = userRole === "encargado asuntos públicos" 
 
     const { valleysName, faenasName, valleys } = useHooks();
@@ -43,6 +43,7 @@ export const useCommunicationTaskForm = (
         statusId: 0,
         budget: 0,
         expense: 0,
+        applies: null as boolean | null,
     });
 
     /**
@@ -129,7 +130,8 @@ export const useCommunicationTaskForm = (
                 statusId: selectedTask.statusId || 0,
                 processId: processName,
                 budget: budget,
-                expense: expenses
+                expense: expenses,
+                applies: selectedTask.applies || false,
             });
         }
     }
@@ -151,6 +153,7 @@ export const useCommunicationTaskForm = (
                 statusId: 0,
                 budget: 0,
                 expense: 0,
+                applies: null,
             });
         }
     }, [isEditing, selectedTask]);
@@ -168,6 +171,14 @@ export const useCommunicationTaskForm = (
 
 
     /**
+     * Función para manejar el cambio en el campo de cumplimiento
+     * @param value Nuevo valor para el campo de cumplimiento
+     */
+    const handleComplianceChange = useCallback((value: boolean) => {
+        setFormState((prev) => ({ ...prev, applies: value }));
+    }, []);
+
+    /**
      * Función para manejar el guardado del formulario
      * @description Maneja el guardado de los datos del formulario, ya sea creando una nueva tarea o actualizando una existente
      */
@@ -181,6 +192,7 @@ export const useCommunicationTaskForm = (
                 valleyId: valleys.findIndex((v) => v.name === formState.valleyId) + 1,
                 processId: processes.findIndex((p:IProcess) => p.name === formState.processId) + 1,
                 faenaId: faenasName.findIndex((f) => f === "Transversal") + 1,
+                
             };
         }else {
             newTask = {
@@ -200,6 +212,7 @@ export const useCommunicationTaskForm = (
             statusId: 0,
             budget: 0,
             expense: 0,
+            applies: null,
         });
 
     }, [formState, valleysName, faenasName, onSave, isEditing]);
@@ -207,15 +220,25 @@ export const useCommunicationTaskForm = (
 
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
-        processes: filteredProcessesNames || [],
+        processes: userRole === 'encargado cumplimiento' ? processName : filteredProcessesNames || [],
     }), [taskStatuses]);
+
+    const saveButtonText = isEditing ? "Actualizar" : "Guardar";
+    
+    const isFormValid = formState.name && 
+                       formState.valleyId && 
+                       formState.processId && 
+                       formState.applies !== null
 
     return {
         formState,
         dropdownItems,
         processes,
+        saveButtonText,
+        isFormValid,
         handleInputChange,
         handleSave,
         handleGetTask,
+        handleComplianceChange,
     };
 };

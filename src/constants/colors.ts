@@ -1,26 +1,33 @@
 
 export const ValleyColors = [
-    "#B0A3CC",
-    "#54B87E",
-    "#EFA585",
+    "#D89E1D",
+    "#47BF6F",
+    "#FF6F68",
     "#F2C94C",
 ]
 
 export const ValleyColorsHover = [
-    "#573B92",
-    "#2D7A4D",
-    "#E66C37",
-    "#EFD689",
+    "#FF6058",
+    "#10B747",
+    "#BA8100",
+    "#F3C435",
 ]
 
 export const CommunicationsColors = [
-    "#5489B8", // INTERNA
-    "#B854B1", // EXTERNA
-    "#B85468", // ASUNTOS PÚBLICOS
-    "#F2C94C", // TRANSVERSAL  
+    "#68d100", // INTERNA
+    "#D10068", // EXTERNA
+    "#850042", // ASUNTOS PÚBLICOS
+    "#0068D1", // TRANSVERSAL  
+]
+
+export const CommunicationsColorsHover = [
+    "#68d100", // INTERNA
+    "#D10068", // EXTERNA
+    "#7A2D3C", // ASUNTOS PÚBLICOS
+    "#0068D1", // TRANSVERSAL
 ]
 
 export const AllColors = [
-    ...ValleyColors.filter(color => color !== "#F2C94C"), // Exclude TRANSVERSAL from ValleyColors
+    ...ValleyColors.filter(color => color !== "#F2C94C"), 
     ...CommunicationsColors,
 ];

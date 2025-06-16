@@ -30,7 +30,7 @@ export default function Schedule() {
             <aside
               className={`border-r h-full ${
                 isSidebarOpen
-                  ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-2000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
+                  ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
                   : ""
               }`}
               data-test-id="sidebar"

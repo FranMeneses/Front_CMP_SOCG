@@ -2,13 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import { GET_COMPLIANCE, GET_COMPLIANCE_REGISTRIES, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
-import { IComplianceForm, IComplianceRegistry, IComplianceStatus, IMemo, ISolped } from "@/app/models/ICompliance";
+import { IComplianceForm, IComplianceStatus, IMemo, ISolped } from "@/app/models/ICompliance";
 import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
 import { ITipoDocumento } from "@/app/models/IDocuments";
 import { useDocumentsPage } from "../../documents/hooks/useDocumentsPage";
 import { FormData } from "../../documents/hooks/useDocumentForms";
-import { CREATE_SOLPED } from "@/app/api/solped";
-import { CREATE_MEMO } from "@/app/api/memo";
+import { CREATE_SOLPED, GET_REGISTRY_SOLPED } from "@/app/api/solped";
+import { CREATE_MEMO, GET_REGISTRY_MEMO } from "@/app/api/memo";
 
 export const useComplianceForm = (
     onSave: any,
@@ -68,6 +68,8 @@ export const useComplianceForm = (
     const [getCompliance] = useLazyQuery(GET_COMPLIANCE);
     const [getRegistry] = useLazyQuery(GET_COMPLIANCE_REGISTRIES);
     const [getDocument] = useLazyQuery(GET_DOCUMENT_BY_TASK_AND_TYPE);
+    const [getSolped] = useLazyQuery(GET_REGISTRY_SOLPED);
+    const [getMemo] = useLazyQuery(GET_REGISTRY_MEMO);
 
     const [createSolped] = useMutation(CREATE_SOLPED);
     const [createMemo] = useMutation(CREATE_MEMO);
@@ -115,6 +117,48 @@ export const useComplianceForm = (
         }
         catch (error) {
             console.error("Error fetching document:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene la Solped asociada a un registro de cumplimiento.	
+     * @description Esta función realiza una consulta para obtener la Solped asociada al registro de cumplimiento especificado.
+     * @param registryId ID del registro de cumplimiento para el cual se desea obtener la Solped.
+     * @returns 
+     */
+    const handleGetSolped = async (registryId: string) => {
+        try {
+            const { data } = await getSolped({
+                variables: {
+                    registryId
+                }
+            });
+            return data.getRegistrySolped;
+        }
+        catch (error) {
+            console.error("Error fetching Solped:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene el Memo asociado a un registro de cumplimiento.
+     * @description Esta función realiza una consulta para obtener el Memo asociado al registro de cumplimiento especificado.
+     * @param registryId ID del registro de cumplimiento para el cual se desea obtener el Memo.
+     * @returns 
+     */
+    const handleGetMemo = async (registryId: string) => {
+        try {
+            const { data } = await getMemo({
+                variables: {
+                    registryId
+                }
+            });
+            return data.getRegistryMemo;
+        }
+        catch (error) {
+            console.error("Error fetching Memo:", error);
             return null;
         }
     };
@@ -371,6 +415,8 @@ export const useComplianceForm = (
         handleMinutaChange,
         handleGetCarta,
         handleGetMinuta,
+        handleGetSolped,
+        handleGetMemo,
         formState,
         valleysName,
         faenasName,

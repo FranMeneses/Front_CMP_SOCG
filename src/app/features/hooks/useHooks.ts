@@ -2,12 +2,14 @@ import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
 import { IValley } from "@/app/models/IValleys";
+import { IProcess } from "@/app/models/IProcess";
 
 export function useHooks() {
     const router = useRouter();
     const [userRole, setUserRole] = useState<string>("encargado cumplimiento"); 
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
-    const { valleys, faenas } = useData();
+    const [currentProcess, setCurrentProcess] = useState<IProcess | null>(null);
+    const { valleys, faenas, processes } = useData();
 
     /**
     * Manejo de los IDs de los valles según el rol del usuario
@@ -23,6 +25,17 @@ export function useHooks() {
             "encargado cumplimiento": valleys?.find(v => v.name === "Transversal")?.id || 4,
         };
     }, [valleys]);
+
+    const processByRole = useMemo(() => {
+        return {
+            "encargado valle elqui": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
+            "encargado copiapó": processes?.find(p => p.name === "Relacionamiento VC")?.id || 1,
+            "encargado huasco": processes?.find(p => p.name === "Relacionamiento VH")?.id || 2,
+            "jefe elqui": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
+            "jefe copiapó": processes?.find(p => p.name === "Relacionamiento VC")?.id || 1,
+            "jefe huasco": processes?.find(p => p.name === "Relacionamiento VH")?.id || 2,
+        };
+    }, [processes]);
 
     /**
     * Manejo de los nombres de los valles según el rol del usuario
@@ -71,6 +84,16 @@ export function useHooks() {
         return valleyIdByRole[userRole as keyof typeof valleyIdByRole] || null;
     }, [currentValley, valleyIdByRole, userRole]);
 
+    /**
+    * Manejo del proceso actual según el rol del usuario
+    */
+    useEffect(() => {
+        if (processes && processes.length > 0 && !currentProcess) {
+            const roleBasedProcessId = processByRole[userRole as keyof typeof processByRole];
+            const defaultProcess = processes.find(p => p.id === roleBasedProcessId) || processes[0];
+            setCurrentProcess(defaultProcess);
+        }
+    }, [processes, userRole, processByRole, currentProcess]);
 
     const valleysName = valleys?.map((valley) => valley.name) || [];
     const faenasName = faenas?.map((faena) => faena.name) || [];
@@ -95,6 +118,23 @@ export function useHooks() {
             setCurrentValley(newValley);
         }
     };
+
+    const handleSetCurrentProcess = (processNameOrObject: string | IProcess) => {
+    if (!processes) return;
+
+    let newProcess: IProcess | undefined;
+
+    if (typeof processNameOrObject === 'string') {
+        newProcess = processes.find(p => p.name === processNameOrObject);
+    } else {
+        newProcess = processNameOrObject;
+    }
+
+    if (newProcess) {
+        setCurrentProcess(newProcess);
+    }
+    };
+
 
     /**
      * Función para manejar la redirección después del inicio de sesión.
@@ -134,6 +174,15 @@ export function useHooks() {
             case "encargado huasco":
                 router.push("/features/planification");
                 break;
+            case "jefe elqui":
+                router.push("/features/planification");
+                break;
+            case "jefe copiapó":
+                router.push("/features/planification");
+                break;
+            case "jefe huasco":
+                router.push("/features/planification");
+                break;
             default:
                 router.push("/features/documents");
                 break;
@@ -145,17 +194,18 @@ export function useHooks() {
      * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
      * @returns 
      */
-    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "superintendente de relacionamiento";
+    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "superintendente de relacionamiento" || userRole === 'jefe elqui' || userRole === 'jefe copiapó' || userRole === 'jefe huasco';
     
     const isCommunicationsManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos" || userRole === "superintendente de comunicaciones";
 
-    const isManager = userRole === 'gerente' || userRole === 'superintendente de relacionamiento' || userRole === 'superintendente de comunicaciones' || userRole === 'encargado cumplimiento';
+    const isManager = userRole === 'gerente' || userRole === 'superintendente de relacionamiento' || userRole === 'superintendente de comunicaciones' ;
     
     return {
         handleLoginRedirect,
         userRole,
         setUserRole,
         currentValley,
+        currentProcess,
         currentValleyName, 
         currentValleyId,
         valleysName,
@@ -165,6 +215,8 @@ export function useHooks() {
         isManager,
         faenas,
         valleys,
+        processes,
         setCurrentValley: handleSetCurrentValley,
+        setCurrentProcess: handleSetCurrentProcess,  
     };
 }

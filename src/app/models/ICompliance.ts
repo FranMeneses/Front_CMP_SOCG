@@ -60,6 +60,7 @@ export interface IComplianceForm {
     provider: string;
     registryId?: string;
     endDate?: string;
+    registries?: IComplianceRegistry[];
 };
 
 export interface ISolped {

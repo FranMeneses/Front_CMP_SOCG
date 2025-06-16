@@ -7,6 +7,7 @@ export interface IEvent {
     progress: string;
     taskId: string;
     faena: string;
+    process: string;
 }
 
 export interface ICalendarInfo {
