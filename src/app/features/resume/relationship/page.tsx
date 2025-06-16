@@ -1,7 +1,6 @@
 'use client';
 import PieChart from "@/components/Charts/PieChart";
 import BarChart from "@/components/Charts/BarChart";
-import DynamicTable from "../../../../components/Resume/DynamicTable";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { useResume } from "./hooks/useResume";
 import { useHooks } from "../../hooks/useHooks";
@@ -29,7 +28,6 @@ export default function ResumeRelationship() {
   const {pieChartData} = usePieChart();
   const {barChartData, loading: barChartLoading} = useBarChart();
   const {comboChartData, loading: comboChartLoading} = useComboChart();
-  const {userRole} = useHooks();
   
   const [isLoading, setIsLoading] = useState(true);
   
@@ -48,23 +46,38 @@ export default function ResumeRelationship() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-7xl mx-auto font-[Helvetica]">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-[#e3affbe0] p-4 rounded-lg shadow">
-          <p className="text-4xl font-semibold ">{tasksData.length || 0}</p>
-          <h3 className="text-[#070707] font-light text-sm mb-1">Iniciativas en desarrollo</h3> 
-        </div>
-        <div className="bg-[#b5f1a8e0] p-4 rounded-lg shadow">
-          <p className="text-4xl font-semibold">{formattedBudget} USD</p>
-          <h3 className="text-[#070707] font-light text-sm mb-1">Presupuesto total</h3> 
-        </div>
-        <div className="bg-[#f6a5a5e0] p-4 rounded-lg shadow">  
-          <p className="text-4xl font-semibold">{formattedExpenses} USD</p>
-          <h3 className="text-[#070707] font-light text-sm mb-1">Gasto total</h3> 
+
+  <div className="flex flex-col gap-6 max-w-7xl mx-auto font-[Helvetica]">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-[#00B7FF] p-6 rounded-2xl shadow-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-5xl text-white font-bold mb-1">{tasksData.length || 0}</p>
+            <h3 className="text-white font-medium text-lg">Iniciativas en desarrollo</h3>
+          </div>
         </div>
       </div>
+      
+      <div className="bg-[#00B837] p-6 rounded-2xl shadow-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-5xl text-white font-bold mb-1">{formattedBudget} USD</p>
+            <h3 className="text-white font-medium text-lg">Presupuesto Total</h3>
+          </div>
+        </div>
+      </div>
+      
+      <div className="bg-[#D30023] p-6 rounded-2xl shadow-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-5xl text-white font-bold mb-1">{formattedExpenses} USD</p>
+            <h3 className="text-white font-medium text-lg">Gasto Total</h3>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="bg-white p-4 rounded-lg shadow-lg">
         <div className="w-5/6 aspect-w-16 aspect-h-9 mx-auto h-full">
           <ComboChart
             data={comboChartData}

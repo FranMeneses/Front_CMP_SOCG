@@ -10,7 +10,7 @@ import { Sidebar } from "@/components/Sidebar";
 export default function Resume() {
     const { userRole } = useHooks();
     const [activeView, setActiveView] = useState("relationship");
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
@@ -31,7 +31,7 @@ export default function Resume() {
                             <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                         </aside>
                     )}
-                    <main className="flex-1 p-6 overflow-y-auto bg-gray-50 font-[Helvetica]">
+                    <main className="flex-1 p-6 overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
                         <ResumeCommunications />
                     </main>
                 </div>
@@ -54,7 +54,7 @@ export default function Resume() {
                             <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                         </aside>
                     )}
-                    <main className="flex-1 p-6 overflow-y-auto bg-gray-50 font-[Helvetica]">
+                    <main className="flex-1 p-6 overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
                         <ResumeRelationship />
                     </main>
                 </div>
@@ -77,7 +77,7 @@ export default function Resume() {
                             <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                         </aside>
                     )}
-                    <main className="flex-1 p-6 overflow-y-auto bg-gray-50 font-[Helvetica]">
+                    <main className="flex-1 p-6 overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
                         <div className="flex justify-start space-x-4 mb-4">
                             <Button
                                 onClick={() => setActiveView("relationship")}

@@ -5,10 +5,12 @@ import { IHistory } from "@/app/models/IHistory";
 
 interface HistoryTableProps {
     history: IHistory[];
+    onViewDetails: (history: IHistory) => void;
 }
 
 const HistoryTable: React.FC<HistoryTableProps> = ({ 
     history, 
+    onViewDetails
 }) => {
 
     return (
@@ -18,18 +20,19 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
                     <thead className="bg-gray-100">
                         <tr className="text-sm text-gray-700">
                             <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Nombre</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Inicio</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Finalización</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Días Restantes</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Estado</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Proceso</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Valle</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Faena</th>
                             <th colSpan={3}/>
                         </tr>
                     </thead>
                     <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
-                        {history.map((history) => (
-                            <React.Fragment key={history.id}>
+                        {history.map((historyItem) => (
+                            <React.Fragment key={historyItem.id}>
                                 <HistoryRow
-                                    history={history}
+                                    history={historyItem}
+                                    onViewDetails={onViewDetails}
                                 />
                             </React.Fragment>
                         ))}

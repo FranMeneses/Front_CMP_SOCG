@@ -27,8 +27,6 @@ export const useDocumentsRest = () => {
 
             fileFormData.append('documentType', formData.documentType.toString());
             fileFormData.append('taskId', formData.task.toString());
-            fileFormData.append('subtaskId', formData.subtask.toString());
-            fileFormData.append('option', formData.option.toString());
 
             const response = await axios.post('http://localhost:4000/documents/upload', fileFormData, {
                 headers: {

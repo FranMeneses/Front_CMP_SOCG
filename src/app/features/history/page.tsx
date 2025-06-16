@@ -2,16 +2,22 @@
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Modal from "@/components/Modal";
 import { useHooks } from "../hooks/useHooks";
 import { useHistory } from "./hooks/useHistory";
 import HistoryTable from "@/components/History/Table/HistoryTable";
+import HistoryForm from "@/components/History/HistoryForm";
 
 export default function Compliance() {
     const {
         toggleSidebar,
         historyLoading,
         isSidebarOpen,
-        historyData
+        historyData,
+        isModalOpen,
+        selectedHistory,
+        openHistoryModal,
+        closeHistoryModal
     } = useHistory();
 
     const { userRole } = useHooks();
@@ -51,6 +57,7 @@ export default function Compliance() {
                                         <div className="bg-white rounded-lg shadow-md p-4">
                                             <HistoryTable
                                                 history={historyData}
+                                                onViewDetails={openHistoryModal}
                                                 data-test-id="tasks-table"
                                             />
                                         </div>
@@ -59,8 +66,18 @@ export default function Compliance() {
                             </div>
                         </main>
                     </div>
+
+                    {/* Modal para mostrar detalles del historial */}
+                    {isModalOpen && (
+                        <Modal onClose={closeHistoryModal} isOpen={isModalOpen}>
+                            <HistoryForm
+                                historyData={selectedHistory ?? undefined}
+                                onClose={closeHistoryModal}
+                            />
+                        </Modal>
+                    )}
                 </>
             )}
         </div>
     );
-}   
+}
