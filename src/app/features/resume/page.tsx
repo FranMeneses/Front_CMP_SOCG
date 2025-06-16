@@ -18,20 +18,15 @@ export default function Resume() {
     
     if (userRole === "superintendente de comunicaciones") {
         return (
-            <div className="overflow-x-hidden">
+            <div className="h-screen flex flex-col overflow-hidden">
                 <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
-                <div className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} 
-                     style={{ height: "calc(100vh - 5rem)" }}>
+                <div className={`flex flex-1 overflow-hidden ${isSidebarOpen ? "" : ""}`}>
                     {isSidebarOpen && (
-                        <aside className={`border-r h-full ${
-                            isSidebarOpen
-                            ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
-                            : ""
-                        }`}>
+                        <aside className="w-56 border-r bg-white flex-shrink-0">
                             <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                         </aside>
                     )}
-                    <main className="flex-1 p-6 overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
+                    <main className="flex-1 p-4 overflow-y-auto bg-[#F2F2F2] font-[Helvetica] min-w-0">
                         <ResumeCommunications />
                     </main>
                 </div>
@@ -41,20 +36,15 @@ export default function Resume() {
 
     else if (userRole === "superintendente de relacionamiento") {
         return (
-            <div className="overflow-x-hidden">
+            <div className="h-screen flex flex-col overflow-hidden">
                 <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
-                <div className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} 
-                     style={{ height: "calc(100vh - 5rem)" }}>
+                <div className={`flex flex-1 overflow-hidden ${isSidebarOpen ? "" : ""}`}>
                     {isSidebarOpen && (
-                        <aside className={`border-r h-full ${
-                            isSidebarOpen
-                            ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
-                            : ""
-                        }`}>
+                        <aside className="w-56 border-r bg-white flex-shrink-0">
                             <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                         </aside>
                     )}
-                    <main className="flex-1 p-6 overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
+                    <main className="flex-1 p-4 overflow-y-auto bg-[#F2F2F2] font-[Helvetica] min-w-0">
                         <ResumeRelationship />
                     </main>
                 </div>
@@ -64,44 +54,41 @@ export default function Resume() {
 
     else if (userRole === "gerente" || userRole === "encargado cumplimiento") {
         return (
-            <div className="overflow-x-hidden">
+            <div className="h-screen flex flex-col overflow-hidden">
                 <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
-                <div className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} 
-                     style={{ height: "calc(100vh - 5rem)" }}>
+                <div className={`flex flex-1 overflow-hidden ${isSidebarOpen ? "" : ""}`}>
                     {isSidebarOpen && (
-                        <aside className={`border-r h-full ${
-                            isSidebarOpen
-                            ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
-                            : ""
-                        }`}>
+                        <aside className="w-56 border-r bg-white flex-shrink-0">
                             <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                         </aside>
                     )}
-                    <main className="flex-1 p-6 overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
-                        <div className="flex justify-start space-x-4 mb-4">
+                    <main className="flex-1 p-4 overflow-y-auto bg-[#F2F2F2] font-[Helvetica] min-w-0">
+                        <div className="flex justify-start space-x-4 mb-4 flex-shrink-0">
                             <Button
                                 onClick={() => setActiveView("relationship")}
-                                className={`px-4 py-2 rounded-md ${
+                                className={`px-4 py-2 rounded-md text-lg ${
                                     activeView === "relationship" 
-                                    ? "bg-[#367acd] text-white hover:bg-[#08203d]" 
-                                    : "bg-gray-200 text-gray-800 hover:bg-[#08203d]  hover:text-white cursor-pointer"
+                                    ? "bg-[#0068D1] text-white text-lg hover:bg-[#0068D1]" 
+                                    : "bg-gray-200 text-gray-800 hover:bg-[#0068D1] hover:text-white hover:text-lg cursor-pointer"
                                 }`}
                             >
                                 Resumen Relacionamiento
                             </Button>
                             <Button
                                 onClick={() => setActiveView("communications")}
-                                className={`px-4 py-2 rounded-md ${
+                                className={`px-4 py-2 rounded-md text-lg ${
                                     activeView === "communications" 
-                                    ? "bg-[#367acd] text-white hover:bg-[#08203d]" 
-                                    : "bg-gray-200 text-gray-800 hover:bg-[#08203d] hover:text-white cursor-pointer"
+                                    ? "bg-[#0068D1] text-white text-lg hover:bg-[#0068D1]" 
+                                    : "bg-gray-200 text-gray-800 hover:bg-[#0068D1] hover:text-white hover:text-lg cursor-pointer"
                                 }`}
                             >
                                 Resumen Comunicaciones
                             </Button>
                         </div>
                         
-                        {activeView === "relationship" ? <ResumeRelationship /> : <ResumeCommunications />}
+                        <div className="min-w-0">
+                            {activeView === "relationship" ? <ResumeRelationship /> : <ResumeCommunications />}
+                        </div>
                     </main>
                 </div>
             </div>

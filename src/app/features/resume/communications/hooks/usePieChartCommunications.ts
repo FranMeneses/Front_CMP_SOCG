@@ -106,7 +106,7 @@ export function usePieChartCommunications() {
     }, []);
 
     const pieChartData = {
-        labels: ["Comunicaciones Internas", "Comunicaciones Externas","Asuntos Públicos", "Transversal"],
+        labels: ["Comunicaciones Internas", "Comunicaciones Externas","Asuntos Públicos", "Transversales"],
         datasets: [
             {
                 data: processesTask,

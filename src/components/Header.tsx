@@ -27,17 +27,18 @@ export function Header({ toggleSidebar, isOpen }: HeaderProps) {
   }, []);
 
   return (
-    <header className="flex flex-1 justify-between h-20 w-screen p-4 bg-gradient-to-r from-[#2771CC] to-[#041e3e] animate-darken">
+    <header className="flex justify-between items-center h-[125px] w-full px-4 bg-[#0068D1] flex-shrink-0">
       <div className="flex items-center gap-4">
         <Menu
+          size={40}
           className={`text-white cursor-pointer transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
           onClick={toggleSidebar}
         />
       </div>
-      <div className="flex flex-row gap-4">
-        <div className="flex items-center mr-4 relative" ref={notificationRef}>
+      <div className="flex items-center gap-4">
+        <div className="relative" ref={notificationRef}>
           <Bell 
-            className="text-white cursor-pointer hover:animate-bounce hover:cursor-pointer"
+            className="text-white cursor-pointer hover:animate-bounce"
             onClick={() => setShowNotifications(!showNotifications)}
           />
           {showNotifications && <NotificationsMenu />}
@@ -45,8 +46,8 @@ export function Header({ toggleSidebar, isOpen }: HeaderProps) {
         <Image
           src="/CmpLogo.png"
           alt="Logo"
-          width={100}
-          height={50}
+          width={120}
+          height={40}
           className="object-contain"
           priority
         />
