@@ -6,7 +6,6 @@ import ComplianceTable from "../../../components/Compliance/Table/ComplianceTabl
 import { useCompliance } from "./hooks/useCompliance";
 import { useHooks } from "../hooks/useHooks";
 
-
 export default function Compliance() {
     const {
         toggleSidebar,
@@ -64,4 +63,4 @@ export default function Compliance() {
             )}
         </div>
     );
-}
+}   

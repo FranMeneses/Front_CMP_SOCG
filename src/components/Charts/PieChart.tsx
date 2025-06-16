@@ -25,22 +25,20 @@ const PieChart = ({
 }) => {
 
   const chartRef = useRef<ChartJS | null>(null);
-  const [visibleLegend, setVisibleLegend] = useState<string | null>(null);
-
-  useResizeCharts(chartRef);
 
   const filteredData = {
     ...data,
     datasets: data.datasets.map((dataset) => ({
       ...dataset,
-      data: (selectedLegend || visibleLegend)
+      // Usar solo selectedLegend, no visibleLegend
+      data: selectedLegend
         ? dataset.data.map((value, index) =>
-            data.labels[index] === (selectedLegend || visibleLegend) ? value : 0
+            data.labels[index] === selectedLegend ? value : 0
           )
         : dataset.data,
-      backgroundColor: (selectedLegend || visibleLegend)
+      backgroundColor: selectedLegend
         ? dataset.backgroundColor.map((color, index) =>
-            data.labels[index] === (selectedLegend || visibleLegend)
+            data.labels[index] === selectedLegend
               ? color
               : `${color}80`
           )
@@ -49,31 +47,6 @@ const PieChart = ({
   };
   
   const handleLegendClick = (legend: string) => {
-    if (chartRef.current) {
-      const chart = chartRef.current;
-      const labelIndex = data.labels.indexOf(legend);
-
-      if (labelIndex !== -1) {
-        setVisibleLegend((prev) => (prev === legend ? null : legend));
-        
-        chart.setActiveElements([
-          {
-            datasetIndex: 0,
-            index: labelIndex,
-          },
-        ]);
-        chart.tooltip?.setActiveElements(
-          [
-            {
-              datasetIndex: 0,
-              index: labelIndex,
-            },
-          ],
-          { x: 0, y: 0 }
-        );
-        chart.update();
-      }
-    }
     onLegendClick(legend);
   };
 
@@ -95,7 +68,6 @@ const PieChart = ({
               onClick: (_event, legendItem) => {
                 const legend = legendItem.text;
                 handleLegendClick(legend);
-                onLegendClick(legend);
               },
             },
             title: {

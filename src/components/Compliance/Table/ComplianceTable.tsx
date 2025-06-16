@@ -4,6 +4,7 @@ import { useCompliance } from "../../../app/features/compliance/hooks/useComplia
 import { useHooks } from "../../../app/features/hooks/useHooks";
 import ComplianceRow from "./ComplianceRow";
 import ComplianceModals from "../ComplianceModalForms";
+import ComplianceFilters from "../ComplianceFilters";
 import { ICompliance } from "@/app/models/ICompliance";
 
 interface ComplianceTableProps {
@@ -14,7 +15,6 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
     compliance, 
 }) => {
     const { 
-
         handleSeeInformation, 
         handleOnTaskClick,
         setIsComplianceModalOpen,
@@ -23,12 +23,21 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
         isComplianceModalOpen,
         handleUpdateCompliance,
         handleCancelCompliance,
+        selectedStatusFilter,
+        filteredCompliance,
+        handleStatusFilterChange,
     } = useCompliance();
 
     const { currentValleyName, userRole } = useHooks();
 
     return (
-        <div>          
+        <div>
+            <ComplianceFilters
+                compliance={compliance}
+                selectedStatus={selectedStatusFilter}
+                onStatusChange={handleStatusFilterChange}
+            />
+            
             <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
                 <table className="w-full">
                     <thead className="bg-gray-100">
@@ -42,7 +51,7 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
                         </tr>
                     </thead>
                     <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
-                        {compliance.map((compliance) => (
+                        {filteredCompliance.map((compliance) => (
                             <React.Fragment key={compliance.id}>
                                 <ComplianceRow 
                                     compliance={compliance}
@@ -50,21 +59,24 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
                                     handleSeeInformation={handleSeeInformation}
                                     userRole={userRole}
                                 />
-                            
                             </React.Fragment>
                         ))}
                     </tbody>
                 </table>
+                
+                {filteredCompliance.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                        No se encontraron registros para el estado seleccionado.
+                    </div>
+                )}
             </div>
             
             <ComplianceModals
-
                 isComplianceModalOpen={isComplianceModalOpen}
                 selectedCompliance={selectedCompliance}
                 setIsComplianceModalOpen={setIsComplianceModalOpen}
                 handleUpdateCompliance={handleUpdateCompliance}
                 handleCancelCompliance={handleCancelCompliance}
-                
                 currentValleyName={currentValleyName}
                 userRole={userRole}
             />

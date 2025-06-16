@@ -1,5 +1,5 @@
 import React from 'react';
-import { ZoomIn, Plus } from "lucide-react";
+import { ZoomIn } from "lucide-react";
 import { ICompliance } from '@/app/models/ICompliance';
 import { useComplianceTable } from '../../../app/features/compliance/hooks/useComplianceTable';
 

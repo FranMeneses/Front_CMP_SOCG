@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { useHooks } from "../../hooks/useHooks";
 import { ITask } from "@/app/models/ITasks";
@@ -21,7 +21,8 @@ export const useCompliance = () => {
     const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
     const [isDeleteSubtaskModalOpen, setIsDeleteSubtaskModalOpen] = useState(false);
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
-    
+    const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('Todos');
+
     const dummyTask = (task: ITaskForm) => {}; 
 
     const complianceForm = useComplianceForm(dummyTask);
@@ -163,6 +164,30 @@ export const useCompliance = () => {
             }
     };
 
+    /**
+     * Función para manejar los filtros de estado
+     * @description Filtra los datos de cumplimiento según el estado seleccionado
+     */
+    const filteredCompliance = useMemo(() => {
+        if (selectedStatusFilter === '' || selectedStatusFilter === 'Todos') {
+            return data;
+        }
+        
+        return data.filter(compliance => {
+            const status = compliance.status?.name || "NO iniciado";
+            return status === selectedStatusFilter;
+        });
+    }, [data, selectedStatusFilter]);
+
+    /**
+     * Función para manejar el cambio de filtro de estado
+     * @description Actualiza el estado del filtro seleccionado
+     * @param status Estado seleccionado
+     */
+    const handleStatusFilterChange = (status: string) => {
+        setSelectedStatusFilter(status);
+    };
+
 
     return {
         setIsComplianceModalOpen,
@@ -179,6 +204,7 @@ export const useCompliance = () => {
         handleCreateTask,
         handleUpdateCompliance,
         handleCancelCompliance,
+        handleStatusFilterChange,
         selectedTask,
         selectedCompliance,
         isDeleteSubtaskModalOpen,
@@ -192,5 +218,7 @@ export const useCompliance = () => {
         error,
         expandedRow,
         activeFilter,
+        selectedStatusFilter,
+        filteredCompliance,
     };
 };
