@@ -92,10 +92,10 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             const { data } = await deleteSubtask({
                 variables: { id: subtaskId },
             });
-            if (!data?.deleteSubtask?.id) {
+            if (!data?.removeSubtask?.id) {
                 throw new Error("Subtask deletion failed: ID is undefined.");
             }
-            return data.deleteSubtask.id;
+            return data.removeSubtask.id;
         } catch (error) {
             console.error("Error deleting subtask:", error);
             throw error;

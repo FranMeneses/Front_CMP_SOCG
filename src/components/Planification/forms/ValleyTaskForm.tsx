@@ -27,7 +27,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
   } = useValleyTaskForm(onSave, valley, isEditing, infoTask);
 
   const selectedFaenaName = isEditing ? getFaenaNameById(formState.faena) : "";
-  const { isManager } = useHooks();
+  const { isManager, userRole } = useHooks();
 
   return (
     <div className='font-[Helvetica]' data-test-id="task-form">
@@ -65,7 +65,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           buttonText="Seleccione Origen"
           selectedValue={infoTask?.originId ? dropdownItems.origin[infoTask.originId - 1] : undefined}
           isInModal={true}
-          disabled={isManager || isEditing}
+          disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
         />
       </div>
       <div className="mb-4 ">
@@ -77,7 +77,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.investmentId !== undefined ? dropdownItems.investment[infoTask.investmentId - 1] : undefined}
           data-test-id="task-investment-dropdown"
-          disabled={isManager || isEditing}
+          disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
         />
       </div>
       <div className="mb-4">
@@ -89,7 +89,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.typeId ? dropdownItems.type[infoTask.typeId - 1] : undefined}
           data-test-id="task-type-dropdown"
-          disabled={isManager || isEditing}
+          disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
         />
       </div>
       <div className="mb-4 ">
@@ -101,7 +101,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.scopeId !== undefined ? dropdownItems.scope[infoTask.scopeId - 1] : undefined}
           data-test-id="task-scope-dropdown"
-          disabled={isManager || isEditing}
+          disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
         />
       </div>
       <div className="mb-4 ">
@@ -113,7 +113,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.interactionId !== undefined ? dropdownItems.interaction[infoTask.interactionId - 1] : undefined}
           data-test-id="task-interaction-dropdown"
-          disabled={isManager || isEditing}
+          disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
         />
       </div>
       <div className="mb-4 ">
@@ -179,7 +179,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           isInModal={true}
           selectedValue={infoTask?.riskId !== undefined ? dropdownItems.risk[infoTask.riskId - 1] : undefined}
           data-test-id="task-risk-dropdown"
-          disabled={isManager || isEditing}
+          disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
         />
       </div>
       <div className="mb-4">

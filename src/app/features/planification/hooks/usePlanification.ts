@@ -215,7 +215,6 @@ export const usePlanification = () => {
             await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
             setIsDeleteSubtaskModalOpen(false);
             refetch();
-            window.location.reload();
         }
         catch (error) {
             console.error("Error deleting subtask:", error);
@@ -363,7 +362,6 @@ export const usePlanification = () => {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
             refetch();
-            window.location.reload();
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
         }

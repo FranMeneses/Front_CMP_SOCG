@@ -98,6 +98,9 @@ export const useTaskFilters = (
      * @param statusName Nombre del estado por el que se desea filtrar las tareas.
      */
     const handleStatusFilterChange = (statusName: string) => {
+        
+        setIsLateFilterActive(false);
+            
         if (activeStatusFilter === statusName) {
             setActiveStatusFilter(null);
             
