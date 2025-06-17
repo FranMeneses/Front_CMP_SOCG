@@ -32,7 +32,7 @@ export default function Planification() {
     }
 
     return (
-        <div className="min-h-screen w-full">
+        <div className="min-h-screen w-full bg-[#F2F2F2]">
             <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
             <div
                 className={`grid ${
