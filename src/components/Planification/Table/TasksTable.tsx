@@ -72,6 +72,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
+
+        handleCreateComplianceManager,
     } = usePlanification();
 
     const { currentValleyName, userRole } = useHooks();
@@ -102,6 +104,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                     handleProcessFilterChange={handleProcessFilterChange}
                     handleCreateTask={handleCreateTask}
                     handleUploadPlanification={handleUploadPlanification}
+                    handleCreateComplianceManager={handleCreateComplianceManager}
                 />
 
                 <TaskFilters 
