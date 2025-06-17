@@ -373,6 +373,7 @@ export const usePlanification = () => {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
             refetch();
+            window.location.reload();
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
         }
