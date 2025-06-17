@@ -9,6 +9,7 @@ import Modal from "@/components/Modal";
 import { useBeneficiaries } from "./hooks/useBeneficiaries";
 import { useHooks } from "../hooks/useHooks";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Image from "next/image";
 
 export default function Beneficiaries() {
   const {
@@ -54,9 +55,17 @@ export default function Beneficiaries() {
         )}
         <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
           <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
-            <h1 className="text-3xl font-bold">Beneficiarios</h1>
-            
             <div className="bg-white rounded-lg shadow">
+              <div className="flex flex-row gap-4 items-center px-6 pt-6 pb-4 border-b border-gray-200">
+                <Image
+                  src={'/Caja4GRP.png'}
+                  alt="Beneficiarios Icon"
+                  width={98}
+                  height={98}
+                />
+                <h1 className="text-3xl font-bold">Beneficiarios</h1>
+              </div>
+              
               <div className="p-4 border-b border-gray-200">
                 <div className="flex justify-end items-center gap-4">
                   {userRole === "encargado cumplimiento" && (

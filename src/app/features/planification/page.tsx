@@ -5,6 +5,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import TasksTable from "@/components/Planification/Table/TasksTable";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";
+import Image from "next/image";
 
 export default function Planification() {
     const {
@@ -53,10 +54,16 @@ export default function Planification() {
                 )}
                 <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
                     <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
-                        <h1 className="text-3xl font-bold">Planificación</h1>
-
-                        {/* Tabla de planificación */}
                         <div className="bg-white rounded-lg shadow">
+                            <div className="flex flex-row gap-4 items-center px-6 pt-6 pb-4 border-b border-gray-200">
+                                <Image
+                                    src={'/Caja3GRP.png'}
+                                    alt="Planificación Icon"
+                                    width={80}
+                                    height={80}
+                                />
+                                <h1 className="text-3xl font-bold">Planificación</h1>
+                            </div>
                             <TasksTable
                                 tasks={detailedTasks}
                                 subtasks={subTasks}

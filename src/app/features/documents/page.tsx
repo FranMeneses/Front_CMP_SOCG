@@ -12,6 +12,7 @@ import DocumentForm from "@/components/Documents/DocumentForm";
 import Modal from "@/components/Modal";
 import DropdownMenu from "@/components/Dropdown";
 import { useEffect } from "react";
+import Image from "next/image";
 
 export default function Documents() {
     const { userRole } = useHooks();
@@ -45,9 +46,9 @@ export default function Documents() {
 
     if (isLoading) {
         return (
-            <div className="overflow-x-hidden">
+            <div className="min-h-screen w-full">
                 <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
                     <LoadingSpinner />
                 </div>
             </div>
@@ -55,27 +56,35 @@ export default function Documents() {
     }
 
     return (
-        <div className="overflow-x-hidden bg-[#F2F2F2]">
+        <div className="min-h-screen w-full bg-[#F2F2F2]">
             <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
             <div 
-                className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} 
-                style={{height: "calc(100vh - 5rem)"}}
+                className={`grid ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`}
             >
                 {isSidebarOpen && (
                     <aside
-                    className={`border-r h-full ${
-                        isSidebarOpen
-                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
-                        : ""
-                    }`}
+                        className={`border-r ${
+                            isSidebarOpen
+                                ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent overflow-y-auto"
+                                : ""
+                        }`}
                     >
-                    <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                     </aside>
                 )}
-                <main className="flex-1 px-16 py-4 overflow-y-auto font-[Helvetica]">
-                    <div className="flex flex-col gap-4">
-                        <h1 className="text-2xl font-bold">Centro Documental</h1>
-                        <div className="bg-white rounded-lg shadow-md">
+                <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
+                    <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
+                        <div className="bg-white rounded-lg shadow">
+                            <div className="flex flex-row gap-4 items-center px-6 pt-6 pb-4 border-b border-gray-200">
+                                <Image
+                                    src={'/Caja4GRP.png'}
+                                    alt="Documentos Icon"
+                                    width={95}
+                                    height={95}
+                                />
+                                <h1 className="text-3xl font-bold">Documentos</h1>
+                            </div>
+                            
                             <div className="p-4 border-b border-gray-200">
                                 <div className="flex justify-start items-center gap-4">
                                     <div className="w-auto min-w-[180px]">

@@ -7,8 +7,9 @@ import { useHooks } from "../hooks/useHooks";
 import { useHistory } from "./hooks/useHistory";
 import HistoryTable from "@/components/History/Table/HistoryTable";
 import HistoryForm from "@/components/History/HistoryForm";
+import Image from "next/image";
 
-export default function Compliance() {
+export default function ComplianceHistory() {
     const {
         toggleSidebar,
         historyLoading,
@@ -22,60 +23,69 @@ export default function Compliance() {
 
     const { userRole } = useHooks();
 
-    return (
-        <div className="overflow-x-hidden bg-[#F2F2F2]">
-            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
-            {historyLoading ? (
-                <div className="flex items-center justify-center" data-test-id="loading-spinner">
-                    <LoadingSpinner />
+    if (historyLoading) {
+        return (
+            <div className="min-h-screen w-full">
+                <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+                <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
+                    <LoadingSpinner data-test-id="loading-spinner" />
                 </div>
-            ) : (
-                <>
-                    <div
-                        className={`grid h-screen overflow-hidden ${
-                            isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"
-                        }`}
-                        style={{ height: "calc(100vh - 5rem)" }}
-                    >
-                        {isSidebarOpen && (
-                            <aside
-                                className={`border-r h-full ${
-                                    isSidebarOpen
-                                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
-                                        : ""
-                                }`}
-                                data-test-id="sidebar"
-                            >
-                                <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
-                            </aside>
-                        )}
-                        <main className="px-16 py-4 h-full overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
-                            <div className="flex flex-col gap-4">
-                                <h1 className="text-3xl font-bold">Compliance Histórico</h1>
-                                <div className="">
-                                    <div className="flex-1">
-                                        <div className="bg-white rounded-lg shadow-md p-4">
-                                            <HistoryTable
-                                                history={historyData}
-                                                onViewDetails={openHistoryModal}
-                                                data-test-id="tasks-table"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
-                    </div>
+            </div>
+        );
+    }
 
-                    {isModalOpen && (
-                        <Modal onClose={closeHistoryModal} isOpen={isModalOpen}>
-                            <HistoryForm
-                                historyData={selectedHistory ?? undefined}
-                                onClose={closeHistoryModal}
-                            />
-                        </Modal>
-                    )}
-                </>
+    return (
+        <div className="min-h-screen w-full bg-[#F2F2F2]">
+            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+            <div
+                className={`grid ${
+                    isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"
+                }`}
+            >
+                {isSidebarOpen && (
+                    <aside
+                        className={`border-r ${
+                            isSidebarOpen
+                                ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent overflow-y-auto"
+                                : ""
+                        }`}
+                        data-test-id="sidebar"
+                    >
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                    </aside>
+                )}
+                <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
+                    <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
+                        <div className="bg-white rounded-lg shadow">
+                            <div className="flex flex-row gap-4 items-center px-6 pt-6 pb-4 border-b border-gray-200">
+                                <Image
+                                    src={'/Caja6GRP.png'}
+                                    alt="History Icon"
+                                    width={100}
+                                    height={100}
+                                />
+                                <h1 className="text-3xl font-bold">Compliance Histórico</h1>
+                            </div>
+
+                            <div className="p-4">
+                                <HistoryTable
+                                    history={historyData}
+                                    onViewDetails={openHistoryModal}
+                                    data-test-id="tasks-table"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+
+            {isModalOpen && (
+                <Modal onClose={closeHistoryModal} isOpen={isModalOpen}>
+                    <HistoryForm
+                        historyData={selectedHistory ?? undefined}
+                        onClose={closeHistoryModal}
+                    />
+                </Modal>
             )}
         </div>
     );

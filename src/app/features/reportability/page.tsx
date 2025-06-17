@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import TaskResume from "../../../components/Reportability/TaskResume";
 import { Months } from "@/constants/months";
 import { IProcess } from "@/app/models/IProcess";
+import Image from "next/image";
 
 
 export default function Reportability() {
@@ -83,14 +84,24 @@ export default function Reportability() {
           <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
             <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
               <div className="bg-white p-4 rounded-lg shadow">
-                <h1 className="text-4xl font-bold mb-4">Programación de actividades</h1>
-                {(isManager || userRole === "encargado cumplimiento" || isCommunicationsManager) && (
-                  <DropdownMenu
-                    buttonText={"Transversales"}
-                    items={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? filteredProcessesNames : ValleysProcessesName}
-                    onSelect={(item) => handleDropdownSelect(item)}
-                    data-test-id="dropdown-menu"
+                <div className="flex flex-row gap-4 items-center">
+                  <Image
+                    src={'/Caja3GRP.png'}
+                    alt="Programación Icon"
+                    width={80}
+                    height={80}
                   />
+                  <h1 className="text-3xl font-bold">Programación de Actividades</h1>
+                </div>
+                {(isManager || userRole === "encargado cumplimiento" || isCommunicationsManager) && (
+                  <div className="mt-4">
+                    <DropdownMenu
+                      buttonText={"Transversales"}
+                      items={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? filteredProcessesNames : ValleysProcessesName}
+                      onSelect={(item) => handleDropdownSelect(item)}
+                      data-test-id="dropdown-menu"
+                    />
+                  </div>
                 )}
               </div>
               
