@@ -23,7 +23,7 @@ export default function Compliance() {
     const { userRole } = useHooks();
 
     return (
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-hidden bg-[#F2F2F2]">
             <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
             {historyLoading ? (
                 <div className="flex items-center justify-center" data-test-id="loading-spinner">
@@ -49,9 +49,9 @@ export default function Compliance() {
                                 <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                             </aside>
                         )}
-                        <main className="p-4 h-full overflow-y-auto bg-gray-50 font-[Helvetica]">
+                        <main className="px-12 py-4 h-full overflow-y-auto bg-gray-50 font-[Helvetica]">
                             <div className="flex flex-col gap-4">
-                                <h1 className="text-2xl font-bold">Compliance Histórico</h1>
+                                <h1 className="text-3xl font-bold">Compliance Histórico</h1>
                                 <div className="">
                                     <div className="flex-1">
                                         <div className="bg-white rounded-lg shadow-md p-4">

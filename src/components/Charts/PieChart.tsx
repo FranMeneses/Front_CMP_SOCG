@@ -56,7 +56,7 @@ const PieChart = ({
       <div className="flex justify-end p-2 lg:p-4 pb-2 flex-shrink-0">
         <Button
           variant={'default'}
-          onClick={() => downloadChart(chartRef, 'pie-chart', 'jpeg')}
+          onClick={() => downloadChart(chartRef, 'pie-chart', 'png')}
           className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-[#0068D1] text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors cursor-pointer text-sm"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

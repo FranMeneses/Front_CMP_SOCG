@@ -209,7 +209,7 @@ export default function ComplianceForm({
                     variant="default"
                     onClick={handleSave}
                     disabled={!isFormValid()}
-                    className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6]"
+                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
                     {formState.statusId >= 2 && formState.statusId < 6 ? 

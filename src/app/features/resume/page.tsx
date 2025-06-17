@@ -69,7 +69,7 @@ export default function Resume() {
                                 className={`px-4 py-2 rounded-md text-lg ${
                                     activeView === "relationship" 
                                     ? "bg-[#0068D1] text-white text-lg hover:bg-[#0068D1]" 
-                                    : "bg-gray-200 text-gray-800 hover:bg-[#0068D1] hover:text-white hover:text-lg cursor-pointer"
+                                    : "bg-gray-200 text-gray-800 hover:bg-[#0056b3] hover:text-white hover:text-lg cursor-pointer"
                                 }`}
                             >
                                 Resumen Relacionamiento
@@ -79,7 +79,7 @@ export default function Resume() {
                                 className={`px-4 py-2 rounded-md text-lg ${
                                     activeView === "communications" 
                                     ? "bg-[#0068D1] text-white text-lg hover:bg-[#0068D1]" 
-                                    : "bg-gray-200 text-gray-800 hover:bg-[#0068D1] hover:text-white hover:text-lg cursor-pointer"
+                                    : "bg-gray-200 text-gray-800 hover:bg-[#0056b3] hover:text-white hover:text-lg cursor-pointer"
                                 }`}
                             >
                                 Resumen Comunicaciones

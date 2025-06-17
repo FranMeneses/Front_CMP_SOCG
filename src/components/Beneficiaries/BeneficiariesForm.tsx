@@ -112,7 +112,7 @@ export default function BeneficiariesForm({ onSave, onCancel, initialValues }: B
                 <Button 
                     variant="default" 
                     onClick={handleSave} 
-                    className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-gray-600 cursor-pointer"
+                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-gray-600 cursor-pointer"
                     disabled={!isFormValid}
                     data-test-id="save-button"
                 >

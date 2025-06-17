@@ -46,6 +46,7 @@ export default function ResumeRelationship() {
 
   return (
     <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16">
+      <h2 className="text-4xl font-bold my-4">Resumen de Relacionamiento</h2>
       {/* Tarjetas de métricas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-shrink-0">
         <div className="bg-[#00B7FF] p-6 rounded-2xl shadow-lg">

@@ -86,7 +86,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                  { (( isCommunicationsManager || userRole === "encargado cumplimiento") && !isManager) && (
                 <Button 
                     onClick={handleCreateTask}
-                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
+                    className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"
                 >
                     <Plus size={16} /> Añadir
                 </Button>
@@ -94,7 +94,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             { (( userRole === "encargado cumplimiento") && !isManager) && (
                 <Button 
                     onClick={handleUploadPlanification}
-                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
+                    className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"
                 >
                     <Plus size={16} /> Cargar planificación
                 </Button>

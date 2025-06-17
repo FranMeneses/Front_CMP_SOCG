@@ -36,69 +36,72 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
 
   return (
     <>
-    <div className="overflow-x-auto rounded-lg font-[Helvetica]">
-      <table className="min-w-full">
-        <thead>
-          <tr className="text-black uppercase text-sm leading-normal">
-            <th className='py-3 px-6 text-center border-b border-gray-300'></th>
-            <th className="py-3 px-6 text-center border-b border-gray-300">Nombre</th>
-            <th className="py-3 px-6 text-center border-b border-gray-300">Fecha</th>
-            <th className="py-3 px-6 text-center border-b border-gray-300">Tipo</th>
-            <th className="py-3 px-6 text-center border-b border-gray-300">Iniciativa</th>
-            <th className='py-3 px-6 text-center border-b border-gray-300'></th>
-          </tr>
-        </thead>
-        <tbody className="cursor-pointer text-sm text-gray-700">
-          {documents && documents.length > 0 ? (
-            documents.map((doc, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="px-4 py-2 border-b border-gray-300">
-                  <div className="flex items-center">
-                    <img
-                      src="/pdfIcon.png"
-                      alt="PDF Icon"
-                      className="w-6 h-6 mr-2"
-                    />
-                  </div>
-                </td>
-                <td className="px-4 py-2 text-center border-b border-gray-300 text-blue-900" 
-                  onClick={() => handleDownload(doc.id_documento)}>
-                  {doc.nombre_archivo ? decodeURIComponent(escape(doc.nombre_archivo)) : 'Sin nombre'}
-                </td>
-                <td className="px-4 py-2 text-center border-b border-gray-300 truncate">
-                  {doc.fecha_carga ? new Date(doc.fecha_carga).toLocaleDateString() : 'N/A'}
-                </td>
-                <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {doc.tipo_doc.tipo_documento || 'N/A'}
-                </td>
-                <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {doc.tarea?.name || 'N/A'}
-                </td>
-                <td className='px-4 py-2 text-center border-b border-gray-300'>
-                  <Trash
-                    className="w-5 h-5 cursor-pointer"
-                    color='#041e3e'
-                    onClick={() => handleDeleteClick(doc.id_documento)}
-                  />
-                </td>
+      <div className="p-4">
+        <div className="overflow-x-auto font-[Helvetica]">
+          <table className="w-full border-collapse">
+            <thead className="bg-gray-100">
+              <tr className="text-sm text-gray-700">
+                <th className='py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200'></th>
+                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Nombre</th>
+                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Fecha</th>
+                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Tipo</th>
+                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Iniciativa</th>
+                <th className='py-3 text-center text-xs font-medium text-gray-500'></th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={7} className="px-4 py-2 text-center border-b border-gray-300">
-                No hay documentos disponibles
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-    <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
-        onClose={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-        itemType="documento"
-      />
+            </thead>
+            <tbody className="bg-white text-xs truncate divide-y divide-gray-200">
+              {documents && documents.length > 0 ? (
+                documents.map((doc, index) => (
+                  <tr key={index} className="hover:bg-gray-50 border-b border-gray-200">
+                    <td className="px-4 py-3 border-r border-gray-200">
+                      <div className="flex items-center justify-center">
+                        <img
+                          src="/pdfIcon.png"
+                          alt="PDF Icon"
+                          className="w-6 h-6"
+                        />
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center border-r border-gray-200 text-blue-900 cursor-pointer" 
+                      onClick={() => handleDownload(doc.id_documento)}>
+                      {doc.nombre_archivo ? decodeURIComponent(escape(doc.nombre_archivo)) : 'Sin nombre'}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r border-gray-200 truncate">
+                      {doc.fecha_carga ? new Date(doc.fecha_carga).toLocaleDateString() : 'N/A'}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r border-gray-200">
+                      {doc.tipo_doc.tipo_documento || 'N/A'}
+                    </td>
+                    <td className="px-4 py-3 text-center border-r border-gray-200">
+                      {doc.tarea?.name || 'N/A'}
+                    </td>
+                    <td className='px-4 py-3 text-center'>
+                      <Trash
+                        className="w-5 h-5 cursor-pointer mx-auto"
+                        color='#082C4B'
+                        onClick={() => handleDeleteClick(doc.id_documento)}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                    No hay documentos disponibles
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <DeleteConfirmationModal
+          isOpen={isDeleteModalOpen}
+          onClose={handleCancelDelete}
+          onConfirm={handleConfirmDelete}
+          itemType="documento"
+        />
     </>
   );
 };

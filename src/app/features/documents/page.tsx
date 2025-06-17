@@ -55,7 +55,7 @@ export default function Documents() {
     }
 
     return (
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-hidden bg-[#F2F2F2]">
             <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
             <div 
                 className={`grid h-screen overflow-hidden ${isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"}`} 
@@ -72,18 +72,12 @@ export default function Documents() {
                     <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                     </aside>
                 )}
-                <main className="flex-1 p-4 overflow-y-auto font-[Helvetica]">
+                <main className="flex-1 px-12 py-4 overflow-y-auto font-[Helvetica]">
                     <div className="flex flex-col gap-4">
                         <h1 className="text-2xl font-bold">Centro Documental</h1>
-                        <div className="flex flex-row">
-                            <div className="w-full ml-4">
-                                <div className="flex justify-between items-center mb-4">
-                                    <Button 
-                                        onClick={handleOpenForm}
-                                        className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
-                                    >
-                                        <Plus size={16} /> Añadir
-                                    </Button>
+                        <div className="bg-white rounded-lg shadow-md">
+                            <div className="p-4 border-b border-gray-200">
+                                <div className="flex justify-start items-center gap-4">
                                     <div className="w-auto min-w-[180px]">
                                         <DropdownMenu
                                             buttonText="Filtrar por tipo"
@@ -93,16 +87,22 @@ export default function Documents() {
                                             disabled={isFilterLoading}
                                         />
                                     </div>
+                                    <Button 
+                                        onClick={handleOpenForm}
+                                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white flex items-center gap-1"
+                                    >
+                                        <Plus size={16} /> Añadir
+                                    </Button>
                                 </div>
-                                
-                                {isFilterLoading ? (
+                            </div>
+                            
+                            {isFilterLoading ? (
                                 <div className="flex justify-center py-8">
                                     <LoadingSpinner />
                                 </div>
-                                ) : (
-                                    <DocumentTable documents={filteredDocuments} />
-                                )}
-                            </div>
+                            ) : (
+                                <DocumentTable documents={filteredDocuments} />
+                            )}
                         </div>
                     </div>
                 </main>

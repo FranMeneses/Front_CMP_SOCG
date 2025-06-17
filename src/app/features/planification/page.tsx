@@ -6,7 +6,6 @@ import TasksTable from "@/components/Planification/Table/TasksTable";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";
 
-
 export default function Planification() {
     const {
         toggleSidebar,
@@ -21,55 +20,55 @@ export default function Planification() {
 
     const { userRole } = useHooks();
 
-    return (
-        <div className="overflow-x-hidden">
-            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
-            {loading ? (
-                <div className="flex items-center justify-center" data-test-id="loading-spinner">
-                    <LoadingSpinner />
+    if (loading) {
+        return (
+            <div className="min-h-screen w-full">
+                <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+                <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
+                    <LoadingSpinner data-test-id="loading-spinner" />
                 </div>
-            ) : (
-                <>
-                    <div
-                        className={`grid h-screen overflow-hidden ${
-                            isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen w-full">
+            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+            <div
+                className={`grid ${
+                    isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"
+                }`}
+            >
+                {isSidebarOpen && (
+                    <aside
+                        className={`border-r ${
+                            isSidebarOpen
+                                ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent overflow-y-auto"
+                                : ""
                         }`}
-                        style={{ height: "calc(100vh - 5rem)" }}
+                        data-test-id="sidebar"
                     >
-                        {isSidebarOpen && (
-                            <aside
-                                className={`border-r h-full ${
-                                    isSidebarOpen
-                                        ? "fixed top-[5rem] left-0 w-full h-[calc(100vh-5rem)] bg-white z-1000 sm:top-0 sm:left-0 sm:w-[220px] sm:relative sm:h-auto sm:bg-transparent"
-                                        : ""
-                                }`}
-                                data-test-id="sidebar"
-                            >
-                                <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
-                            </aside>
-                        )}
-                        <main className="p-4 h-full overflow-y-auto bg-gray-50 font-[Helvetica]">
-                            <div className="flex flex-col gap-4">
-                                <h1 className="text-2xl font-bold">Planificación</h1>
-                                <div className="">
-                                    <div className="flex-1">
-                                        <div className="bg-white rounded-lg shadow-md p-4">
-                                            <TasksTable
-                                                tasks={detailedTasks}
-                                                subtasks={subTasks}
-                                                taskStates={taskState}
-                                                onFilterClick={handleFilterClick}
-                                                activeFilter={activeFilter}
-                                                data-test-id="tasks-table"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                    </aside>
+                )}
+                <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
+                    <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
+                        <h1 className="text-3xl font-bold">Planificación</h1>
+
+                        {/* Tabla de planificación */}
+                        <div className="bg-white rounded-lg shadow">
+                            <TasksTable
+                                tasks={detailedTasks}
+                                subtasks={subTasks}
+                                taskStates={taskState}
+                                onFilterClick={handleFilterClick}
+                                activeFilter={activeFilter}
+                                data-test-id="tasks-table"
+                            />
+                        </div>
                     </div>
-                </>
-            )}
+                </main>
+            </div>
         </div>
     );
 }

@@ -38,19 +38,19 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
                 onStatusChange={handleStatusFilterChange}
             />
             
-            <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
-                <table className="w-full">
+            <div className="overflow-x-auto rounded-lg shadow font-[Helvetica] border border-gray-200">
+                <table className="w-full border-collapse">
                     <thead className="bg-gray-100">
                         <tr className="text-sm text-gray-700">
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Nombre</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Inicio</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Finalización</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Días Restantes</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Estado</th>
-                            <th colSpan={3}/>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Nombre</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Fecha Inicio</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Fecha Finalización</th>
+                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Días Restantes</th>
+                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Estado</th>
+                            <th colSpan={3} className="py-2 text-center text-xs font-medium text-gray-500 truncate"/>
                         </tr>
                     </thead>
-                    <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
+                    <tbody className="bg-white text-xs truncate divide-y divide-gray-200">
                         {filteredCompliance.map((compliance) => (
                             <React.Fragment key={compliance.id}>
                                 <ComplianceRow 
