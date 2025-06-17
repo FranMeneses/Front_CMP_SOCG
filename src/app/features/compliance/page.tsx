@@ -43,7 +43,7 @@ export default function Compliance() {
                                 <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
                             </aside>
                         )}
-                        <main className="px-6 py-4 h-full overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
+                        <main className="px-16 py-4 h-full overflow-y-auto bg-[#F2F2F2] font-[Helvetica]">
                             <div className="flex flex-col gap-4">
                                 <h1 className="text-3xl font-bold">Compliance</h1>
                                 <div className="">

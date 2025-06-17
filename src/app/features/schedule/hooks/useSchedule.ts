@@ -56,8 +56,6 @@ export function useSchedule() {
           const subtaskArrays = await Promise.all(subtaskPromises);
           
           const allSubtasks = subtaskArrays.flat();
-          
-          console.log("All subtasks fetched:", allSubtasks);
 
           setSubtasks(allSubtasks);
           

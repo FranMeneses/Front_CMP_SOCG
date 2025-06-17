@@ -83,7 +83,7 @@ export const ComboChartOptions = ({
           
           if (value !== null && value !== undefined) {
             if (currency === 'USD') {
-              formattedValue = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+              formattedValue = new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'USD' }).format(value);
             } else if (currency === 'UF') {
               formattedValue = `${value.toFixed(2)} UF`;
             } else if (currency === 'CLP') {

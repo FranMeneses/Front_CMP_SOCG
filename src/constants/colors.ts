@@ -7,9 +7,9 @@ export const ValleyColors = [
 ]
 
 export const ValleyColorsHover = [
-    "#FF6058",
-    "#10B747",
     "#BA8100",
+    "#10B747",
+    "#FF6058",
     "#F3C435",
 ]
 

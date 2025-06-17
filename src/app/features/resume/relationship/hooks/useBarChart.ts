@@ -3,6 +3,7 @@ import { useData } from "@/context/DataContext";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 import { IInvestment } from "@/app/models/IInfoTask";
+import { ValleyColors } from "@/constants/colors";
 
 export function useBarChart() {
     const [getValleyInvesment] = useLazyQuery(GET_VALLEY_INVESTMENT_TASKS_COUNT);
@@ -133,21 +134,21 @@ export function useBarChart() {
                 id: 'Valle de Copiapó',
                 data: copiapoData,
                 backgroundColor: ['#E9D160'],
-                hoverBackgroundColor: ['#BB9B09'],
+                hoverBackgroundColor: ValleyColors[0],
             },
             {
                 label: valleyNames[1],
                 id: 'Valle del Huasco',
                 data: huascoData,
                 backgroundColor: ['#E9D160'],
-                hoverBackgroundColor: ['#BB9B09'],
+                hoverBackgroundColor: ValleyColors[1],
             },
             {
                 label: valleyNames[2],
                 id: 'Valle del Elqui',
                 data: elquiData,
                 backgroundColor: ['#E9D160'],
-                hoverBackgroundColor: ['#BB9B09'],
+                hoverBackgroundColor: ValleyColors[2],
             },
         ],
     };

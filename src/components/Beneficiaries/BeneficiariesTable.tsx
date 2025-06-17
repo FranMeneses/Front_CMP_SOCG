@@ -1,6 +1,6 @@
 'use client';
 import { BeneficiariesTableColumns } from "@/constants/tableConstants";
-import { Plus, Pencil, Trash } from "lucide-react";
+import { Plus, Pencil, Trash, UserRoundPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/Modal";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; 
@@ -77,6 +77,7 @@ const BeneficiariesTable: React.FC = () => {
     
 
     return (
+        <div className="p-4">
         <div className="overflow-x-auto rounded-lg font-[Helvetica] border border-gray-200">
             <table className="w-full border-collapse">
             <thead className="bg-gray-100">
@@ -108,12 +109,19 @@ const BeneficiariesTable: React.FC = () => {
                                 <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200">
                                     {beneficiary.hasLegalPersonality ? "Si" : "No"}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap flex flex-row gap-2">
+                                <td className="px-6 py-4 whitespace-nowrap flex flex-row gap-2 items-center justify-center">
                                     <Pencil
                                         size={20}
                                         className="cursor-pointer"
                                         onClick={() => handleEditBeneficiary(beneficiary.id)}
                                         data-test-id="edit-beneficiary-button"
+                                        color="#082C4B"
+                                    />
+                                    <UserRoundPen
+                                        size={20}
+                                        className="cursor-pointer"
+                                        onClick={() => {toggleRow(beneficiary.id)}}
+                                        data-test-id="edit-representative-button"
                                         color="#082C4B"
                                     />
                                     { userRole === "encargado cumplimiento" && (
@@ -249,6 +257,7 @@ const BeneficiariesTable: React.FC = () => {
                 itemType={deleteModalData?.type === 'beneficiario' ? 'beneficiario' : 'contacto'}
             />
         </div>
+    </div>
     );
 };
 

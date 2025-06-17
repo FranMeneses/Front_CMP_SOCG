@@ -35,7 +35,7 @@ const HistoryRow: React.FC<HistoryRowProps> = ({
       <td className="px-2 py-2 text-center">
         {history.faena?.name.toUpperCase() || '-'}
       </td>
-      <td className="px-4 py-2 text-center flex flex-row">
+      <td className="px-4 py-2 text-center flex flex-row justify-center items-center">
         <ZoomIn
           size={20}
           color="#041e3e"

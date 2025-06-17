@@ -55,19 +55,22 @@ export default function Beneficiaries() {
         <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
           <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
             <h1 className="text-3xl font-bold">Beneficiarios</h1>
-              <div className="flex justify-between items-center">
-                {userRole === "encargado cumplimiento" && (
-                  <Button
-                    onClick={() => setIsPopupOpen(true)}
-                    className="bg-[#0068D1] hover:bg-[#0056A3] cursor-pointer text-white flex items-center gap-2"
-                  >
-                    <Plus size={20} />
-                    Añadir Beneficiario
-                  </Button>
-                )}
+            
+            <div className="bg-white rounded-lg shadow">
+              <div className="p-4 border-b border-gray-200">
+                <div className="flex justify-end items-center gap-4">
+                  {userRole === "encargado cumplimiento" && (
+                    <Button
+                      onClick={() => setIsPopupOpen(true)}
+                      className="bg-[#0068D1] hover:bg-[#0056A3] text-white flex items-center gap-1"
+                    >
+                      <Plus size={16} />
+                      Añadir Beneficiario
+                    </Button>
+                  )}
+                </div>
               </div>
-        
-            <div className="bg-[#F2F2F2] rounded-lg shadow">
+              
               <BeneficiariesTable />
             </div>
           </div>
