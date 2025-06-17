@@ -1,39 +1,109 @@
+
+.fc {
+    font-family: 'Helvetica';
+}
+
 .fc .fc-toolbar-title,
 .fc .fc-daygrid-day-top {
     text-transform: capitalize; 
+    font-family: 'Helvetica';
 }
+
 .fc .fc-col-header-cell {
     text-transform: capitalize; 
+    background-color: #97C1EC; 
+    border: 1px solid #bbdefb;
+    font-weight: 600;
+    color: #002A55; 
+    padding: 10px 6px; 
+    text-align: center;
+    font-family: 'Helvetica';
 }
+
+.fc .fc-col-header-cell-cushion {
+    padding: 0;
+    font-size: 0; 
+    font-family: 'Helvetica';
+}
+
+.fc .fc-col-header-cell-cushion::after {
+    font-size: 16px; 
+    font-weight: 600;
+    color: #002A55; 
+    font-family: 'Helvetica';
+}
+
+.fc .fc-day-sun .fc-col-header-cell-cushion::after {
+    content: "Dom";
+}
+
+.fc .fc-day-mon .fc-col-header-cell-cushion::after {
+    content: "Lun";
+}
+
+.fc .fc-day-tue .fc-col-header-cell-cushion::after {
+    content: "Mar";
+}
+
+.fc .fc-day-wed .fc-col-header-cell-cushion::after {
+    content: "Mié";
+}
+
+.fc .fc-day-thu .fc-col-header-cell-cushion::after {
+    content: "Jue";
+}
+
+.fc .fc-day-fri .fc-col-header-cell-cushion::after {
+    content: "Vie";
+}
+
+.fc .fc-day-sat .fc-col-header-cell-cushion::after {
+    content: "Sáb";
+}
+
 .fc .fc-daygrid-day-number {
     font-weight: medium;
     position: absolute; 
     top: 0; 
-    left: 0; 
+    left: 0;
+    font-family: 'Helvetica';
+    font-size: 16px; 
+    color: #002A55;
 }
+
+.fc .fc-toolbar-title {
+    font-family: 'Helvetica';
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
 .fc-prev-button, .fc-next-button {
     background-color: transparent !important; 
     border: none !important; 
     color: #000000 !important; 
-    font-size: 1.5rem !important; 
+    font-size: 1.8rem !important;
     padding: 0 !important; 
+    font-family: 'Helvetica';
 }
+
 .fc-daygrid-day {
     width: auto;
     height: auto;
     max-width: none;
     max-height: none;
-    min-height: 80px;
+    min-height: 90px;
     position: relative;
 }
+
 .fc-day-today {
     background-color: transparent !important; 
 }
+
 .fc-day-today .fc-daygrid-day-number {
     background-color: #00438a; 
     color: white;
-    height: 25px;
-    width: 25px;
+    height: 28px; 
+    width: 28px;
     border-radius: 50%; 
     padding: 0px;
     box-sizing: border-box;
@@ -42,18 +112,29 @@
     align-items: center;
     top: 2px;
     left: 2px;
+    font-family: 'Helvetica';
+    font-size: 16px;
 }
+
 .fc-daygrid-day-top {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     margin-bottom: 25px !important;
+    font-family: 'Helvetica';
 }
 
 .fc-daygrid-day-events {
     margin-left: 2px !important;
     margin-right: 2px !important;
     font-weight: normal !important;
+    font-family: 'Helvetica';
+    font-size: 14px; 
+}
+
+.fc-event {
+    font-family: 'Helvetica';
+    font-size: 13px; 
 }
 
 @media (max-width: 768px) {
@@ -62,19 +143,20 @@
         height: auto; 
         max-width: none; 
         max-height: none;
-        min-height: 60px; 
+        min-height: 70px;
     }
 
     .fc-daygrid-day-number {
-        font-size: 0.8rem; 
+        font-size: 14px; 
+        color: #002A55; 
     }
 
     .fc .fc-toolbar-title {
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
 
     .fc-prev-button, .fc-next-button {
-        font-size: 1rem; 
+        font-size: 1.4rem; 
     }
 
     .fc-daygrid-day-top {
@@ -84,22 +166,53 @@
     .fc-daygrid-day-events {
         margin-left: 1px !important;
         margin-right: 1px !important;
-        font-size: 0.9rem !important; 
+        font-size: 12px !important; 
     }
     
     .fc-header-toolbar {
         flex-direction: column;
         gap: 0.5rem;
     }
+
+    .fc .fc-col-header-cell-cushion::after {
+        font-size: 14px; 
+        color: #002A55; 
+    }
+
+    .fc .fc-col-header-cell {
+        padding: 8px 4px;
+        color: #002A55; 
+    }
+
+    .fc-day-today .fc-daygrid-day-number {
+        height: 24px;
+        width: 24px;
+        font-size: 14px;
+        color: white; 
+    }
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
     .fc-daygrid-day {
-        min-height: 70px;
+        min-height: 80px; 
     }
     
     .fc-daygrid-day-events {
-        font-size: 0.95rem !important;
+        font-size: 13px !important; 
+    }
+
+    .fc .fc-col-header-cell-cushion::after {
+        font-size: 15px; 
+        color: #002A55; 
+    }
+
+    .fc .fc-toolbar-title {
+        font-size: 1.4rem;
+    }
+
+    .fc-daygrid-day-number {
+        font-size: 15px;
+        color: #002A55; 
     }
 }
 

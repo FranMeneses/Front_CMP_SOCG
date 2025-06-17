@@ -31,8 +31,6 @@ export const usePlanificationRest = () => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-
-            console.log('Respuesta del servidor:', response.data);
             
         } catch (err) {
             console.error('Error en loadPlanificationData:', err);

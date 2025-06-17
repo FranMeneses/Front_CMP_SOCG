@@ -6,7 +6,7 @@ export const useResizeCharts = (chartRef: React.RefObject<any>) => {
             if (chartRef.current) {
                 chartRef.current.resize(); 
             } else {
-                console.log('Chart reference is null');
+                console.error('Chart reference is null');
             }
         };
         window.addEventListener('resize', handleResize); 

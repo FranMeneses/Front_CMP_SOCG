@@ -58,7 +58,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      */
     const handleDeleteTask = async (taskId: string) => {
         try {
-            console.log("Deleting task with ID:", taskId);
             const { data } = await deleteTask({
                 variables: { id: taskId },
             });
@@ -194,7 +193,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 const { data: complianceData } = await getCompliance({
                     variables: { taskId: selectedTaskId },
                 });
-                console.log("Compliance data:", complianceData.getTaskCompliance);
                 const { data: complianceUpdateData } = await updateRegistry({
                     variables: {
                         id: complianceData?.getTaskCompliance.registries?.[0]?.id,
@@ -203,7 +201,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                         },
                     },
                 });
-                console.log("Compliance updated:", complianceUpdateData);
             };
 
             const { data: infoData } = await updateInfoTask({

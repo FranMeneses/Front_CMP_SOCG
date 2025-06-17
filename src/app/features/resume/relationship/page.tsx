@@ -8,6 +8,7 @@ import { useBarChart } from "./hooks/useBarChart";
 import { useComboChart } from "./hooks/useComboChart";
 import { useEffect, useState } from "react";
 import ComboChart from "@/components/Charts/ComboChart";
+import Image from "next/image";
 
 // TODO: ARREGLAR BUG VISUAL DE COMBO CHART
 
@@ -46,6 +47,15 @@ export default function ResumeRelationship() {
 
   return (
     <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16">
+      <div className="flex flex-row gap-4 items-center px-6 pt-6 pb-4 bg-white rounded-lg shadow-md">
+        <Image
+          src={'/Caja5GRP.png'}
+          alt="RelatioshipResume Icon"
+          width={95}
+          height={95}
+        />
+        <h1 className="text-3xl font-bold">Resumen Relacionamiento</h1>
+      </div>
       {/* Tarjetas de métricas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-shrink-0">
         <div className="bg-[#00B7FF] p-6 rounded-2xl shadow-lg">

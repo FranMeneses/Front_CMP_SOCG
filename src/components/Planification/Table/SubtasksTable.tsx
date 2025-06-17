@@ -51,12 +51,12 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
         <thead className="bg-gray-50">
           <tr>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Nombre</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Presupuesto</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Gasto</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Presupuesto (USD)</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Gasto (USD)</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Inicio</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Finalización</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Días Restantes</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha de Termino</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha de Término</th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Estado</th> 
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500"></th>
           </tr>

@@ -13,6 +13,7 @@ interface TaskTableHeaderProps {
     handleProcessFilterChange: (item: string) => void;
     handleCreateTask: () => void;
     handleUploadPlanification?: () => void;
+    handleCreateComplianceManager?: () => void;
 }
 
 const PROCESS_FILTERS = {
@@ -27,7 +28,8 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     selectedProcess, 
     handleProcessFilterChange, 
     handleCreateTask,
-    handleUploadPlanification
+    handleUploadPlanification,
+    handleCreateComplianceManager,
 }) => {
     const { isCommunicationsManager, isValleyManager, isManager } = useHooks();
 
@@ -76,6 +78,14 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             return null;
         }
     };
+
+    const handleAddButtonClick = () => {
+        if (userRole === "encargado cumplimiento") {
+            handleCreateComplianceManager?.();
+        } else if (isCommunicationsManager) {
+            handleCreateTask();
+        }
+    };
     
     return (
         <div className="flex justify-between items-center mb-2 font-[Helvetica]">
@@ -83,18 +93,18 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                 {renderProcessDropdown()}
             </div>
             <div className=' flex flex-row gap-2'>
-                 { (( isCommunicationsManager || userRole === "encargado cumplimiento") && !isManager) && (
+                 {((isCommunicationsManager || userRole === "encargado cumplimiento") && !isManager) && (
                 <Button 
-                    onClick={handleCreateTask}
-                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
+                    onClick={handleAddButtonClick}
+                    className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"
                 >
                     <Plus size={16} /> Añadir
                 </Button>
             )}
-            { (( userRole === "encargado cumplimiento") && !isManager) && (
+            {((userRole === "encargado cumplimiento") && !isManager) && (
                 <Button 
                     onClick={handleUploadPlanification}
-                    className="bg-[#4f67b8e0] text-white flex items-center gap-1 hover:cursor-pointer"
+                    className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"
                 >
                     <Plus size={16} /> Cargar planificación
                 </Button>

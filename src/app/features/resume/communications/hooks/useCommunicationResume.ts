@@ -115,7 +115,6 @@ export function useCommunicationResume() {
                 totalBudget += BudgetData.totalBudgetByMonthAndProcess || 0;
             }
         }
-        console.log("Total Budget for process", processId, ":", totalBudget);
         return totalBudget;
       } catch (error) {
           console.error("Error calculating yearly budget:", error);

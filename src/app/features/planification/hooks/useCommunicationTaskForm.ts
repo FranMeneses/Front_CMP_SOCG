@@ -198,7 +198,7 @@ export const useCommunicationTaskForm = (
             newTask = {
                 ...formState,
                 statusId: Number(formState.statusId) ? Number(formState.statusId) : taskStatuses.findIndex((s: string | number) => s === formState.statusId) + 1,
-                processId: isPublicAffair ? 5 : 4,
+                processId: isPublicAffair ? 5 : userRole === 'encargado cumplimiento' ? processes.findIndex((p:IProcess) => p.name === formState.processId) + 1 : 4,
             }
         }
         onSave(newTask);
@@ -221,6 +221,7 @@ export const useCommunicationTaskForm = (
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
         processes: userRole === 'encargado cumplimiento' ? processName : filteredProcessesNames || [],
+        processesComplianceManager: filteredProcessesNames || [],
     }), [taskStatuses]);
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";

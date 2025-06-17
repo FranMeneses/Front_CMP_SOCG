@@ -78,7 +78,7 @@ export default function CommunicationForm({
                 <DropdownMenu
                     buttonText={"Seleccione el proceso asociado"}
                     isInModal={true}
-                    items={dropdownItems.processes} 
+                    items={userRole === 'encargado cumplimiento' ? dropdownItems.processesComplianceManager : dropdownItems.processes} 
                     onSelect={(value) => handleInputChange('processId', value)}
                     selectedValue={isEditing && selectedTask ? formState.processId : ""}
                     data-test-id="communication-faena-dropdown"

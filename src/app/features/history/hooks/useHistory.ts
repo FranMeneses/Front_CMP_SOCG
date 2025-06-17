@@ -27,8 +27,6 @@ export const useHistory = () => {
     };
 
     const histories = historyData?.histories || [];
-
-    console.log("History Data:", histories);
     
     return {
         historyData: histories, 

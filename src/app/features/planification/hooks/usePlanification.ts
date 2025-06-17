@@ -21,6 +21,7 @@ export const usePlanification = () => {
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
     const [isPopupPlanificationOpen, setIsPopupPlanificationOpen] = useState<boolean>(false);
     const [isCommunicationModalOpen, setIsCommunicationModalOpen] = useState<boolean>(false);
+    const [isComplianceManagerModalOpen, setIsComplianceManagerModalOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [selectedTask, setSelectedTask] = useState<ITask | undefined>(undefined);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -85,6 +86,15 @@ export const usePlanification = () => {
     }
 
     /**
+     * Función para manejar la creación de un encargado de cumplimiento
+     * @description Abre el modal de comunicación para crear una tarea de cumplimiento
+     */
+    const handleCreateComplianceManager = () => {
+        if (userRole === "encargado cumplimiento") {
+            setIsCommunicationModalOpen(true); 
+        }
+    };
+    /**
      * Función para guardar una nueva tarea 
      * @param task Tarea a guardar
      * @description Guarda una nueva tarea
@@ -141,6 +151,7 @@ export const usePlanification = () => {
                     input: {
                         name: task.name,
                         description: task.description,
+                        processId: task.processId,
                         statusId: task.statusId,
                     }
                 }
@@ -215,6 +226,7 @@ export const usePlanification = () => {
             await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
             setIsDeleteSubtaskModalOpen(false);
             refetch();
+            window.location.reload();
         }
         catch (error) {
             console.error("Error deleting subtask:", error);
@@ -362,6 +374,7 @@ export const usePlanification = () => {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
             refetch();
+            window.location.reload();
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
         }
@@ -433,6 +446,7 @@ export const usePlanification = () => {
         handleCancelCommunication,
         handleFilterByProcess,
         handleUploadPlanification,
+        handleCreateComplianceManager,
         selectedTask,
         isPopupOpen,
         isPopupPlanificationOpen,
@@ -453,6 +467,7 @@ export const usePlanification = () => {
         expandedRow,
         taskState,
         activeFilter,
+        isComplianceManagerModalOpen,
         allProcesses: useTasksData(currentValleyId ?? undefined, userRole).allProcesses,
     };
 };

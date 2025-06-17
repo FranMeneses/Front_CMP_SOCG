@@ -99,7 +99,7 @@ export default function TaskResume({
     <div className="mt-4 border-t pt-4 font-[Helvetica]">
         {(isManager || userRole === "encargado cumplimiento") && (
             <div className="mb-6">
-                <h3 className="text-lg font-medium mb-3">Resumen de tareas</h3>
+                <h3 className="text-xl font-bold mb-3">Resumen de tareas</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="rounded shadow-sm border p-3">
                         <p className="text-sm text-gray-500">Tareas planeadas</p>
@@ -130,7 +130,7 @@ export default function TaskResume({
         )}
         
         <div>
-            <h2 className="text-lg font-medium mb-3">Resumen de tareas por mes</h2>
+            <h2 className="text-xl font-bold mb-3">Resumen de tareas por mes</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="rounded shadow-sm border p-3">
                     <p className="text-sm text-gray-500">Tareas planeadas por mes</p>
@@ -159,9 +159,18 @@ export default function TaskResume({
                             </div>
                         </>
                     ) : (
-                        <>
-                            <PieChart data={pieChartData} selectedLegend={""} title="Avance Plan de Trabajo" titleSize={16} font="Helvetica" />
-                        </>
+                        <div className="w-full overflow-hidden">
+                            <h2 className="font-[Helvetica] font-bold text-lg mb-4">Avance plan de trabajo valles</h2>
+                            <div className="w-full h-64 max-w-full overflow-hidden">
+                                <PieChart 
+                                    data={pieChartData} 
+                                    selectedLegend={""} 
+                                    title="" 
+                                    titleSize={16} 
+                                    font="Helvetica" 
+                                />
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>

@@ -72,6 +72,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
+
+        handleCreateComplianceManager,
     } = usePlanification();
 
     const { currentValleyName, userRole } = useHooks();
@@ -91,75 +93,79 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const handleLocalFilterClick = (filter: string) => {
         handleStatusFilterChange(filter);
     };
-    
 
     return (
         <div>
-            <TaskTableHeader 
-                userRole={userRole}
-                allProcesses={allProcesses}
-                selectedProcess={selectedProcess}
-                handleProcessFilterChange={handleProcessFilterChange}
-                handleCreateTask={handleCreateTask}
-                handleUploadPlanification={handleUploadPlanification}
-            />
+            <div className="p-4 border-b border-gray-200">
+                <TaskTableHeader 
+                    userRole={userRole}
+                    allProcesses={allProcesses}
+                    selectedProcess={selectedProcess}
+                    handleProcessFilterChange={handleProcessFilterChange}
+                    handleCreateTask={handleCreateTask}
+                    handleUploadPlanification={handleUploadPlanification}
+                    handleCreateComplianceManager={handleCreateComplianceManager}
+                />
 
-            <TaskFilters 
-                taskStates={actualTaskState}
-                activeFilter={activeStatusFilter} 
-                handleFilterClick={handleLocalFilterClick} 
-                isLateFilterActive={isLateFilterActive}
-                handleLateFilterClick={handleLateFilterClick} 
-            />
-            
-            <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
-                <table className="w-full">
-                    <thead className="bg-gray-100">
-                        <tr className="text-sm text-gray-700">
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Nombre</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Presupuesto</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Inicio</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha Finalización</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Días Restantes</th>
-                            <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">Fecha de Termino</th>
-                            <th className="py-2 text-center text-xs font-medium text-gray-500 truncate">Estado</th>
-                            <th colSpan={3}/>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
-                        {filteredTasks.map((task) => (
-                            <React.Fragment key={task.id}>
-                                <TaskRow 
-                                    task={task}
-                                    formatDate={formatDate}
-                                    getRemainingDays={getRemainingDays}
-                                    handleOnTaskClick={handleOnTaskClick}
-                                    handleSeeInformation={handleSeeInformation}
-                                    setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
-                                    setItemToDeleteId={setItemToDeleteId}
-                                    userRole={userRole}
-                                />
-                                
-                                {expandedRow === task.id && (
-                                    <tr>
-                                        <SubtasksTable 
-                                            subtasks={subtasks}
-                                            taskId={task.id || ''}
-                                            formatDate={formatDate}
-                                            getRemainingSubtaskDays={getRemainingSubtaskDays}
-                                            handleGetSubtask={handleGetSubtask}
-                                            setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
-                                            setItemToDeleteId={setItemToDeleteId}
-                                            setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
-                                            userRole={userRole}
-                                        />
-                                    </tr>
-                                )}
-                            </React.Fragment>
-                        ))}
-                    </tbody>
-                </table>
+                <TaskFilters 
+                    taskStates={actualTaskState}
+                    activeFilter={activeStatusFilter} 
+                    handleFilterClick={handleLocalFilterClick} 
+                    isLateFilterActive={isLateFilterActive}
+                    handleLateFilterClick={handleLateFilterClick} 
+                />
             </div>
+            <div className="p-4">
+                <div className="overflow-x-auto rounded-lg shadow font-[Helvetica] border border-gray-200">
+                    <table className="w-full border-collapse">
+                        <thead className="bg-gray-100">
+                            <tr className="text-sm text-gray-700">
+                                <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Nombre</th>
+                                <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Presupuesto (USD)</th>
+                                <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Fecha Inicio</th>
+                                <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Fecha Finalización</th>
+                                <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Días Restantes</th>
+                                <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Fecha de Término</th>
+                                <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">Estado</th>
+                                <th colSpan={3} className="py-2 text-center text-xs font-medium text-gray-500 truncate"/>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white text-xs truncate divide-y divide-gray-200">
+                            {filteredTasks.map((task) => (
+                                <React.Fragment key={task.id}>
+                                    <TaskRow 
+                                        task={task}
+                                        formatDate={formatDate}
+                                        getRemainingDays={getRemainingDays}
+                                        handleOnTaskClick={handleOnTaskClick}
+                                        handleSeeInformation={handleSeeInformation}
+                                        setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
+                                        setItemToDeleteId={setItemToDeleteId}
+                                        userRole={userRole}
+                                    />
+                                    
+                                    {expandedRow === task.id && (
+                                        <tr>
+                                            <SubtasksTable 
+                                                subtasks={subtasks}
+                                                taskId={task.id || ''}
+                                                formatDate={formatDate}
+                                                getRemainingSubtaskDays={getRemainingSubtaskDays}
+                                                handleGetSubtask={handleGetSubtask}
+                                                setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
+                                                setItemToDeleteId={setItemToDeleteId}
+                                                setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
+                                                userRole={userRole}
+                                            />
+                                        </tr>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
             
             <TaskModals
                 isPopupOpen={isPopupOpen}

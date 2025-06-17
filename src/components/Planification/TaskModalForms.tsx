@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from "@/components/Modal";
 import ValleyTaskForm from "./forms/ValleyTaskForm";
 import ValleySubtaskForm from "./forms/ValleySubtaskForm";
 import CommunicationForm from "./forms/CommunicationForm";
+import TaskTypeSelectionForm from "./forms/TaskTypeSelectionForm";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
+import { UploadPlanificationForm } from './forms/UploadPlanificationForm';
 import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
 import { useHooks } from '@/app/features/hooks/useHooks';
-import { IComplianceForm } from '@/app/models/ICompliance';
-import { UploadPlanificationForm } from './forms/UploadPlanificationForm';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
@@ -44,12 +44,8 @@ interface TaskModalsProps {
     setIsPopupPlanificationOpen?: (isOpen: boolean) => void;
 
     currentValleyName: string | null;
-
     userRole: string;
-
     selectedTask?: ITask | undefined; 
-    selectedCompliance?: IComplianceForm | undefined;
-    isEditingCommunication?: boolean; 
 }
 
 const TaskModals: React.FC<TaskModalsProps> = ({
@@ -80,24 +76,97 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     currentValleyName,
     userRole,
     selectedTask,
-    selectedCompliance,
     isPopupPlanificationOpen = false,
     setIsPopupPlanificationOpen = () => {},
 }) => {
 
     const { isValleyManager, isCommunicationsManager } = useHooks();
+    const [selectedTaskType, setSelectedTaskType] = useState<'communication' | 'relationship' | null>(null);
 
     const isEditingCommunication = selectedTask !== undefined && selectedTask !== null;
-    const isEditingCompliance = selectedCompliance !== undefined && selectedCompliance !== null;
 
     const handlePlanificationSuccess = () => {
         console.log('Planificación cargada exitosamente');
+    };
 
+    const handleTaskTypeSelection = (type: 'communication' | 'relationship') => {
+        setSelectedTaskType(type);
+    };
+
+    const handleTaskTypeCancel = () => {
+        setSelectedTaskType(null);
+        handleCancelCommunication();
+    };
+
+    const handleTaskFormCancel = () => {
+        setSelectedTaskType(null);
+        handleCancelCommunication();
+    };
+
+    const renderTaskCreationModal = () => {
+        // Para encargado de cumplimiento, mostrar selección de tipo primero
+        if (userRole === 'encargado cumplimiento' && !isEditingCommunication) {
+            if (!selectedTaskType) {
+                return (
+                    <TaskTypeSelectionForm
+                        onSelectType={handleTaskTypeSelection}
+                        onCancel={handleTaskTypeCancel}
+                    />
+                );
+            } else if (selectedTaskType === 'communication') {
+                return (
+                    <CommunicationForm
+                        onCancel={handleTaskFormCancel}
+                        onSave={handleSaveCommunication}
+                        isEditing={false}
+                        selectedTask={undefined}
+                        userRole={userRole}
+                    />
+                );
+            } else if (selectedTaskType === 'relationship') {
+                return (
+                    <ValleyTaskForm
+                        onCancel={handleTaskFormCancel}
+                        onSave={handleSaveTask}
+                        valley={currentValleyName || ""}
+                        data-test-id="task-form"
+                    />
+                );
+            }
+        }
+
+        // Para casos de edición
+        if (isEditingCommunication) {
+            return (
+                <CommunicationForm
+                    onCancel={handleCancelCommunication}
+                    onSave={handleUpdateCommunication}
+                    isEditing={true}
+                    selectedTask={selectedTask}
+                    userRole={userRole}
+                />
+            );
+        }
+
+        // Para communications manager
+        if (isCommunicationsManager) {
+            return (
+                <CommunicationForm
+                    onCancel={handleCancelCommunication}
+                    onSave={handleSaveCommunication}
+                    isEditing={false}
+                    selectedTask={undefined}
+                    userRole={userRole}
+                />
+            );
+        }
+
+        return null;
     };
 
     return (
         <>
-            {/* Task Modal */}
+            {/* Task Modal - Valley Manager */}
             {isValleyManager && (
                 <Modal isOpen={isPopupOpen} onClose={handleCancel}>
                     {selectedInfoTask ? (
@@ -143,16 +212,10 @@ const TaskModals: React.FC<TaskModalsProps> = ({
                 )}
             </Modal>
                 
-            {/* Communication Modal */}
+            {/* Communication/Task Selection Modal */}
             {(isCommunicationsManager || userRole === 'encargado cumplimiento') && (
                 <Modal isOpen={isCommunicationModalOpen} onClose={handleCancelCommunication}>
-                    <CommunicationForm
-                        onCancel={handleCancelCommunication}
-                        onSave={isEditingCommunication ? handleUpdateCommunication : handleSaveCommunication}
-                        isEditing={isEditingCommunication} 
-                        selectedTask={selectedTask}
-                        userRole={userRole}
-                    />
+                    {renderTaskCreationModal()}
                 </Modal>
             )}
 

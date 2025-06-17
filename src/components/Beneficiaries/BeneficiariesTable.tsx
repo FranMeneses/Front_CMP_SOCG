@@ -1,6 +1,6 @@
 'use client';
 import { BeneficiariesTableColumns } from "@/constants/tableConstants";
-import { Plus, Pencil, Trash } from "lucide-react";
+import { Plus, Pencil, Trash, UserRoundPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/Modal";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal"; 
@@ -77,49 +77,57 @@ const BeneficiariesTable: React.FC = () => {
     
 
     return (
-    <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
-        <table className="w-full">
+        <div className="p-4">
+        <div className="overflow-x-auto rounded-lg font-[Helvetica] border border-gray-200">
+            <table className="w-full border-collapse">
             <thead className="bg-gray-100">
                 <tr className="text-sm text-gray-700">
                     {BeneficiariesTableColumns.map((column, index) => (
                         <th
                             key={index}
-                            className="py-2 text-center text-xs font-medium text-gray-500"
+                            className="py-2 text-center text-md font-medium text-gray-700 border-r border-gray-200 last:border-r-0"
                         >
                             {column}
                         </th>
                     ))}
                 </tr>
             </thead>
-            <tbody className="bg-white text-xs truncate divide-y divide-[#e5e5e5]">
+            <tbody className="bg-white text-xs truncate divide-y divide-gray-200">
                 {beneficiaries.map((beneficiary) => (
                         <React.Fragment key={beneficiary.id}>
-                            <tr className="text-center">
-                                <td className="px-6 py-4 whitespace-nowrap">{beneficiary.legalName}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{beneficiary.rut}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{beneficiary.address}</td>
-                                <td className="px-6 py-4 whitespace-nowrap">{beneficiary.entityType}</td>
+                            <tr className="text-center border-b border-gray-200">
+                                <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200">{beneficiary.legalName}</td>
+                                <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200">{beneficiary.rut}</td>
+                                <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200">{beneficiary.address}</td>
+                                <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200">{beneficiary.entityType}</td>
                                 <td
-                                    className="px-6 py-4 whitespace-nowrap cursor-pointer font-medium text-[#003474]"
+                                    className="px-6 py-4 whitespace-nowrap cursor-pointer font-medium text-[#003474] border-r border-gray-200"
                                     onClick={() => toggleRow(beneficiary.id)}
                                 >
                                     {beneficiary.representative}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200">
                                     {beneficiary.hasLegalPersonality ? "Si" : "No"}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap flex flex-row gap-2">
+                                <td className="px-6 py-4 whitespace-nowrap flex flex-row gap-2 items-center justify-center">
                                     <Pencil
                                         size={20}
                                         className="cursor-pointer"
                                         onClick={() => handleEditBeneficiary(beneficiary.id)}
                                         data-test-id="edit-beneficiary-button"
-                                        color="gray"
+                                        color="#082C4B"
+                                    />
+                                    <UserRoundPen
+                                        size={20}
+                                        className="cursor-pointer"
+                                        onClick={() => {toggleRow(beneficiary.id)}}
+                                        data-test-id="edit-representative-button"
+                                        color="#082C4B"
                                     />
                                     { userRole === "encargado cumplimiento" && (
                                         <Trash
                                             size={20}
-                                            color="gray"
+                                            color="#082C4B"
                                             className="cursor-pointer ml-2"
                                             onClick={() => handleDeleteBeneficiaryClick(beneficiary.id)} 
                                         />
@@ -129,7 +137,7 @@ const BeneficiariesTable: React.FC = () => {
                             </tr>
                             {expandedRow === beneficiary.id && (
                                 <tr>
-                                    <td colSpan={7} className="px-6 py-4 bg-gray-200 relative">
+                                    <td colSpan={7} className="px-6 py-4 bg-gray-200 relative border-b border-gray-200">
                                         <div>
                                             <h4 className="font-medium text-gray-700">Contactos:</h4>
                                             <ul className="list-disc pl-5">
@@ -138,13 +146,16 @@ const BeneficiariesTable: React.FC = () => {
                                                         <strong>{contact.name}</strong> - {contact.position} - {contact.email} - {contact.phone}
                                                         <Pencil 
                                                             className="ml-4 cursor-pointer" 
-                                                            onClick={() => handleEditContact(contact)} data-test-id="edit-contact-button"
+                                                            onClick={() => handleEditContact(contact)} 
+                                                            data-test-id="edit-contact-button"
+                                                            color="#082C4B"
                                                         />
                                                         { userRole === "encargado cumplimiento" && (
                                                             <Trash
                                                                 size={20}
                                                                 className="cursor-pointer ml-2"
-                                                                onClick={() => handleDeleteContactClick(contact.id)} 
+                                                                onClick={() => handleDeleteContactClick(contact.id)}
+                                                                color="#082C4B"
                                                             />
                                                         )}
                                                     </li>
@@ -159,7 +170,7 @@ const BeneficiariesTable: React.FC = () => {
                                                 className="flex flex-row cursor-pointer bg-gray-200 hover:bg-gray-300"
                                                 data-test-id="add-contact-button"
                                             >
-                                                <Plus color="black" />
+                                                <Plus color="#082C4B" />
                                             </Button>
                                         </div>
                                     </td>
@@ -246,6 +257,7 @@ const BeneficiariesTable: React.FC = () => {
                 itemType={deleteModalData?.type === 'beneficiario' ? 'beneficiario' : 'contacto'}
             />
         </div>
+    </div>
     );
 };
 

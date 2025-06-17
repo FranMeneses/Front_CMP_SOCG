@@ -26,7 +26,7 @@ export const FileUploadButton = ({ onFileChange, accept = ".xlsx,.xls", disabled
         disabled={disabled}
       >
         <ArrowUpFromLine className="text-black" size={24} />
-        <span className="ml-2 font-[Helvetica]">Seleccione archivo</span>
+        <span className="ml-2 font-[Helvetica]">Seleccione la planificación a subir (Excel)</span>
       </Button>
       <input
         type="file"
