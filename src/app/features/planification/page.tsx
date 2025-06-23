@@ -64,8 +64,9 @@ export default function Planification() {
                                 />
                                 <h1 className="text-3xl font-bold">Planificación</h1>
                             </div>
-                            <TasksTable
-                                tasks={detailedTasks.slice().sort((a, b) => {
+                <TasksTable
+                                key={`tasks-table-${detailedTasks.length}-${subTasks.length}-${JSON.stringify(detailedTasks.map((t: any) => t.id))}-${JSON.stringify(subTasks.map((s: any) => s.id))}`}
+                                tasks={detailedTasks.slice().sort((a: any, b: any) => {
                                     const aCompleted = a.status?.name === 'Completada';
                                     const bCompleted = b.status?.name === 'Completada';
                                     const aCanceled = a.status?.name === 'Cancelada';
