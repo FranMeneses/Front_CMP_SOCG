@@ -12,6 +12,7 @@ export const GET_TASKS = gql`
       statusId
       processId
       applies
+      beneficiaryId
       valley {
         id
         name
@@ -27,6 +28,10 @@ export const GET_TASKS = gql`
       process {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
       }
     }
   }
@@ -44,6 +49,7 @@ export const GET_TASK = gql`
       applies
       statusId
       processId
+      beneficiaryId
       valley {
         id
         name
@@ -60,6 +66,11 @@ export const GET_TASK = gql`
         id
         name
       }
+      beneficiary {
+        id
+        legalName
+        rut
+      }
     }
   }
 `;
@@ -74,6 +85,7 @@ export const GET_TASKS_BY_VALLEY = gql`
       statusId
       processId
       applies
+      beneficiaryId
       status {
         id
         name
@@ -91,6 +103,10 @@ export const GET_TASKS_BY_VALLEY = gql`
       process {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
       }
     }
   }
@@ -116,7 +132,6 @@ export const GET_TASK_SUBTASKS = gql`
       startDate
       endDate
       finalDate
-      beneficiaryId
       statusId
       priorityId
       status {
@@ -159,7 +174,6 @@ export const GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS = gql`
     totalBudgetByMonthAndProcess(monthName: $monthName, year: $year, processId: $processId)
   }
 `;
-
 
 // Query para obtener el total gasto por mes
 export const GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS = gql`
@@ -227,6 +241,7 @@ export const GET_TASKS_BY_VALLEY_AND_STATUS = gql`
       description
       statusId
       applies
+      beneficiaryId
       status {
         id
         name
@@ -241,36 +256,45 @@ export const GET_TASKS_BY_VALLEY_AND_STATUS = gql`
         id
         name
       }
+      beneficiary {
+        id
+        legalName
+      }
     }
   }
 `;
 
 // Mutación para crear una tarea
 export const CREATE_TASK = gql`
-mutation CreateTask($input: CreateTaskDto!) {
-  createTask(input: $input) {
-    id
-    name
-    description
-    applies
-    faena {
+  mutation CreateTask($input: CreateTaskDto!) {
+    createTask(input: $input) {
       id
       name
-    }
-    valley {
-      id
-      name
-    }
-    status {
-      id
-      name
-    }
-    process {
-      id
-      name
+      description
+      applies
+      beneficiaryId
+      faena {
+        id
+        name
+      }
+      valley {
+        id
+        name
+      }
+      status {
+        id
+        name
+      }
+      process {
+        id
+        name
+      }
+      beneficiary {
+        id
+        legalName
+      }
     }
   }
-}
 `;
 
 // Mutación para actualizar una tarea
@@ -282,6 +306,7 @@ export const UPDATE_TASK = gql`
       description
       faenaId
       applies
+      beneficiaryId
       status {
         id
         name
@@ -297,6 +322,10 @@ export const UPDATE_TASK = gql`
       process {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
       }
     }
   }
@@ -332,6 +361,7 @@ export const GET_TASKS_BY_PROCESS = gql`
       description
       statusId
       applies
+      beneficiaryId
       status {
         id
         name
@@ -350,6 +380,10 @@ export const GET_TASKS_BY_PROCESS = gql`
       process {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
       }
     }
   }
@@ -367,6 +401,7 @@ export const GET_TASKS_BY_PROCESS_AND_VALLEY = gql`
       processId
       applies
       statusId
+      beneficiaryId
       valley {
         id
         name
@@ -382,6 +417,10 @@ export const GET_TASKS_BY_PROCESS_AND_VALLEY = gql`
       status {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
       }
     }
   }
@@ -399,6 +438,7 @@ export const GET_TASKS_BY_PROCESS_AND_STATUS = gql`
       processId
       applies
       statusId
+      beneficiaryId
       valley {
         id
         name
@@ -415,6 +455,67 @@ export const GET_TASKS_BY_PROCESS_AND_STATUS = gql`
         id
         name
       }
+      beneficiary {
+        id
+        legalName
+      }
+    }
+  }
+`;
+
+// Nuevas queries para beneficiarios
+export const GET_BENEFICIARIES = gql`
+  query GetBeneficiaries {
+    beneficiaries {
+      id
+      legalName
+      rut
+      address
+      entityType
+      representative
+      hasLegalPersonality
+    }
+  }
+`;
+
+// Query para obtener un beneficiario por ID
+export const GET_BENEFICIARY = gql`
+  query GetBeneficiary($id: ID!) {
+    beneficiary(id: $id) {
+      id
+      legalName
+      rut
+      address
+      entityType
+      representative
+      hasLegalPersonality
+      contacts {
+        id
+        name
+        position
+        email
+        phone
+      }
+      tasks {
+        id
+        name
+      }
+    }
+  }
+`;
+
+// Query para obtener documentos relacionados con tareas
+export const GET_DOCUMENTS_BY_TASK = gql`
+  query GetDocumentsByTask($taskId: String!) {
+    documents(id_tarea: $taskId) {
+      id_documento
+      nombre_archivo
+      tipo_doc {
+        id_tipo_documento
+        tipo_documento
+      }
+      fecha_carga
+      ruta
     }
   }
 `;

@@ -206,7 +206,39 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         return { data: { tasksByProcess: [] } };
       }
     } else {
-      return shouldUseProcessQuery ? refetchValleyTasks() : refetchAllTasks();
+      try {
+        // Refetch de las consultas principales
+        if (shouldUseProcessQuery) {
+          await refetchValleyTasks();
+        } else {
+          await refetchAllTasks();
+        }
+        
+        // Refetch de las subtareas si hay tareas
+        if (tasks && tasks.length > 0 && !isCommunicationsRole) {
+          const allSubtasks = await Promise.all(
+            tasks.map(async (task: ITask) => {
+              const { data: subtaskData } = await getSubtasks({
+                variables: { id: task.id },
+              });
+              return subtaskData?.taskSubtasks || [];
+            })
+          );
+          const flattenedSubtasks = allSubtasks.flat();
+          setSubtasks(flattenedSubtasks);
+        }
+        
+        // Refetch de los detalles de las tareas
+        if (tasks && tasks.length > 0) {
+          const processedTasks = await loadTasksWithDetails();
+          setDetailedTasks(processedTasks);
+        }
+        
+        return { data: { tasksByProcess: tasks || [] } };
+      } catch (error) {
+        console.error("Error refetching data:", error);
+        return { data: { tasksByProcess: [] } };
+      }
     }
   };
   
@@ -590,7 +622,7 @@ const loadInitialRelationshipTasks = async () => {
     };
     
     fetchTaskDetails();
-  }, [tasks, mainQueryLoading, isLoadingSubtasks, loadingCommunicationTasks]);
+  }, [tasks, mainQueryLoading, isLoadingSubtasks, loadingCommunicationTasks, subTasks]);
 
   /**
   * Función para filtrar tareas por proceso

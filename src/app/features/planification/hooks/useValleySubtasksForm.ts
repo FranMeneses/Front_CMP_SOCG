@@ -1,24 +1,41 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
-import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK, DELETE_SUBTASK } from "@/app/api/subtasks";
+import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK, DELETE_SUBTASK, GET_SUBTASKS } from "@/app/api/subtasks";
 import { IPriority, ISubtask, ISubtasksStatus } from "@/app/models/ISubtasks";
 import { SubtasksInitialValues, ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 
-export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) => void, subtask?: ISubtask) => {
+export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) => void, subtask?: ISubtask, onSuccess?: () => void) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
     const [dateError, setDateError] = useState<string>("");
 
     const [beneficiariesMap, setBeneficiariesMap] = useState<Record<string, string>>({});
     const [beneficiariesIdToNameMap, setBeneficiariesIdToNameMap] = useState<Record<string, string>>({});
 
-    const [createSubtask] = useMutation(CREATE_SUBTASK);
-    const [updateSubtask] = useMutation(UPDATE_SUBTASK);
+    const [createSubtask] = useMutation(CREATE_SUBTASK, {
+        refetchQueries: [
+            { query: GET_SUBTASKS },
+            'GetAllSubtasks'
+        ]
+    });
+    
+    const [updateSubtask] = useMutation(UPDATE_SUBTASK, {
+        refetchQueries: [
+            { query: GET_SUBTASKS },
+            'GetAllSubtasks'
+        ]
+    });
+    
     const [getSubtask] = useLazyQuery(GET_SUBTASK, {fetchPolicy: 'network-only'});
-    const [deleteSubtask] = useMutation(DELETE_SUBTASK);
+    
+    const [deleteSubtask] = useMutation(DELETE_SUBTASK, {
+        refetchQueries: [
+            { query: GET_SUBTASKS },
+            'GetAllSubtasks'
+        ]
+    });
 
     const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);
     const {data: subtaskStateData} = useQuery(GET_SUBTASK_STATUSES);
-
 
     const priority = subtaskPriorityData?.priorities || [];
     const state = subtaskStateData?.subtaskStatuses || [];
@@ -62,7 +79,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                 const subtaskWithDefaults = {
                     ...subtaskData.subtask,
                     priorityId: subtaskData.subtask.priorityId || "",  
-                    number: subtaskData.subtask.number || "",
                     name: subtaskData.subtask.name || "",
                     description: subtaskData.subtask.description || "",
                     budget: subtaskData.subtask.budget || 0,
@@ -95,6 +111,9 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             if (!data?.removeSubtask?.id) {
                 throw new Error("Subtask deletion failed: ID is undefined.");
             }
+            if (onSuccess) {
+                onSuccess();
+            }
             return data.removeSubtask.id;
         } catch (error) {
             console.error("Error deleting subtask:", error);
@@ -115,7 +134,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                 variables: {
                     input: {
                         taskId: selectedTaskId,
-                        number: subtask.number,
                         name: subtask.name,
                         description: subtask.description,
                         budget: subtask.budget,
@@ -128,6 +146,9 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             });
             if (!data?.createSubtask?.id) {
                 throw new Error("Subtask creation failed: ID is undefined.");
+            }
+            if (onSuccess) {
+                onSuccess();
             }
             return data.createSubtask.id;
         }
@@ -152,7 +173,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
                     id: selectedSubtask?.id,
                     input: {
                         taskId: selectedTaskId,
-                        number: subtask.number,
                         name: subtask.name,
                         description: subtask.description,
                         budget: subtask.budget,
@@ -167,6 +187,9 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             });
             if (!data?.updateSubtask?.id) {
                 throw new Error("Subtask update failed: ID is undefined.");
+            }
+            if (onSuccess) {
+                onSuccess();
             }
             return data.updateSubtask.id;
         }

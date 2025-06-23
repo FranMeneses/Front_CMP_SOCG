@@ -10,6 +10,8 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
 import { GET_TASK_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
+import { IBeneficiary } from "@/app/models/IBeneficiary";
 
 export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
@@ -34,6 +36,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const {data: scopeData} = useQuery(GET_ALL_SCOPES);
     const {data: typeData} = useQuery(GET_ALL_TYPES);
     const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
+    const {data: beneficiariesData} = useQuery(GET_BENEFICIARIES);
 
     const risks = riskData?.risks || [];
     const origins = originData?.origins || [];
@@ -42,6 +45,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const scopes = scopeData?.scopes || [];
     const types = typeData?.types || [];
     const states = taskStateData?.taskStatuses || [];
+    const beneficiaries = beneficiariesData?.beneficiaries || [];
 
     const taskRisk = risks.map((r: IRisk) => r.type);
     const taskOrigin = origins.map((o: IOrigin) => o.name);
@@ -50,6 +54,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const taskScope = scopes.map((s: IScope) => s.name);
     const taskType = types.map((t: IType) => t.name);
     const taskState = initialValues?.compliance? states.map((s: ITaskStatus) => s.name) : states.filter((s: ITaskStatus) => s.name !== "En Cumplimiento").map((s: ITaskStatus) => s.name);
+    const taskBeneficiaries = beneficiaries.map((b: IBeneficiary) => b.legalName);
 
     /**
      * Función para eliminar una tarea
@@ -243,6 +248,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         expenses: string | number;
         risk: string | number;
         faena: string | number;
+        beneficiary: string | number;
         compliance?: boolean;
     }>({
         name: initialValues?.name || "",
@@ -257,6 +263,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         expenses: initialValues?.expenses || "",
         risk: initialValues?.risk || "",
         faena: initialValues?.faena || "",
+        beneficiary: initialValues?.beneficiary || "",
         compliance: initialValues?.compliance ?? undefined,
     });
 
@@ -284,6 +291,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
               budget: budget || "",
               expenses: expenses || "",
               faena: faena || "",
+              beneficiary: typeof infoTask.task.beneficiaryId === "number" ? infoTask.task.beneficiaryId : undefined,
               compliance: infoTask.task.applies ?? undefined, 
             });
           }
@@ -314,6 +322,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         expenses: initialValues.expenses || "",
         risk: initialValues.risk || "",
         faena: initialValues.faena || "",
+        beneficiary: initialValues.beneficiary || "",
         compliance: initialValues.compliance ?? false,
         });
     }
@@ -373,6 +382,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
+                beneficiary: Number(formState.beneficiary) ? Number(formState.beneficiary) : taskBeneficiaries.findIndex((b: string | number) => b === formState.beneficiary) + 1,
                 process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null,
                 compliance: formState.compliance ?? false,
             };
@@ -386,6 +396,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
+                beneficiary: Number(formState.beneficiary) ? Number(formState.beneficiary) : taskBeneficiaries.findIndex((b: string | number) => b === formState.beneficiary) + 1,
             };
         }
         onSave(taskDetails);
@@ -402,6 +413,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             expenses: "",
             risk: "",
             faena: "",
+            beneficiary: "",
             compliance: undefined,
         });
         setFaenas([]);
@@ -470,8 +482,9 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         interaction: taskInteraction || [],
         investment: taskInvestment || [],
         state: taskState || [],
-        risk: taskRisk || []
-    }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk]);
+        risk: taskRisk || [],
+        beneficiaries: taskBeneficiaries || []
+    }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk, taskBeneficiaries]);
 
     /**
      * Función para obtener el nombre de una faena por su ID

@@ -1,7 +1,6 @@
 export interface ISubtask {
     id: string;
     taskId: string;
-    number: number;
     name: string;
     description: string;
     budget: number;

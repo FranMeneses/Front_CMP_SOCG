@@ -9,6 +9,7 @@ export interface ITask {
     faenaId: number;
     statusId: number;
     processId?: number;
+    beneficiaryId?: number;
     valley?: IValley;
     faena?: IFaena;
     status?: ITaskStatus;
@@ -22,6 +23,7 @@ export interface CreateTaskInput {
     faenaId: number;
     valleyId: number;
     name: string;
+    beneficiaryId?: number;
 }
 
 export interface IInfoTask {

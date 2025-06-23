@@ -16,7 +16,6 @@ export interface SubtasksInitialValues {
     priority?: string;
 }
 export interface ExtendedSubtaskValues {
-    number?: number;
     budget?: number;
     expense?: number;
     status?: number;

@@ -194,6 +194,18 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           data-test-id="task-faena-dropdown"
         />
       </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1 required">Beneficiario</label>
+        <DropdownMenu
+          buttonText="Seleccionar beneficiario"
+          items={dropdownItems.beneficiaries}
+          onSelect={(value) => handleInputChange("beneficiary", value)}
+          isInModal={true}
+          disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
+          selectedValue={infoTask?.task?.beneficiaryId ? dropdownItems.beneficiaries[infoTask.task.beneficiaryId - 1] : undefined}
+          data-test-id="task-beneficiary-dropdown"
+        />
+      </div>
       <div className="flex justify-end space-x-2">
         <Button
           variant="secondary"
@@ -207,7 +219,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           variant="default"
           onClick={handleSave}
           className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer disabled:cursor-default"
-          disabled={!formState.name || !formState.origin || !formState.type || !formState.scope || !formState.interaction || !formState.faena}
+          disabled={!formState.name || !formState.origin || !formState.type || !formState.scope || !formState.interaction || !formState.faena || !formState.beneficiary}
           data-test-id="save-button"
         >
           Guardar

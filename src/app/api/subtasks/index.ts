@@ -13,7 +13,6 @@ export const GET_SUBTASKS = gql`
       startDate
       endDate
       finalDate
-      beneficiaryId
       statusId
       priorityId
       status {
@@ -42,7 +41,6 @@ export const GET_SUBTASK = gql`
       startDate
       endDate
       finalDate
-      beneficiaryId
       statusId
       priorityId
       status {
@@ -61,7 +59,7 @@ export const GET_SUBTASK = gql`
 // Query para obtener las subtareas de un valle por su ID
 export const GET_VALLEY_SUBTASKS = gql`
   query GetValleySubtasks($valleyId: Int!) {
-    valleySubtasks (valleyId: $valleyId ) {
+    valleySubtasks(valleyId: $valleyId) {
       id
       name
       taskId
@@ -79,10 +77,6 @@ export const GET_VALLEY_SUBTASKS = gql`
         id
         name
         percentage
-      }
-      beneficiary {
-        id
-        legalName
       }
     }
   }
@@ -106,6 +100,7 @@ export const CREATE_SUBTASK = gql`
       status {
         id
         name
+        percentage
       }
     }
   }
@@ -133,11 +128,6 @@ export const UPDATE_SUBTASK = gql`
         id
         name
         percentage
-      }
-      beneficiaryId
-      beneficiary {
-        id
-        legalName
       }
       taskId
     }
@@ -176,6 +166,7 @@ export const GET_PRIORITIES = gql`
   }
 `;
 
+// Query para obtener subtareas por mes, año y proceso
 export const GET_SUBTASKS_BY_MONTH_YEAR_AND_PROCESS = gql`
   query GetSubtasksByMonthYearAndProcess($monthName: String!, $year: Int!, $processId: Int!) {
     subtasksByMonthYearAndProcess(monthName: $monthName, year: $year, processId: $processId) {
@@ -188,7 +179,6 @@ export const GET_SUBTASKS_BY_MONTH_YEAR_AND_PROCESS = gql`
       startDate
       endDate
       finalDate
-      beneficiaryId
       statusId
       priorityId
       status {
@@ -200,15 +190,11 @@ export const GET_SUBTASKS_BY_MONTH_YEAR_AND_PROCESS = gql`
         id
         name
       }
-      beneficiary {
-        id
-        legalName
-        rut
-      }
     }
   }
 `;
 
+// Query para obtener subtareas por proceso
 export const SUBTASKS_BY_PROCESS = gql`
   query GetSubtasksByProcess($processId: Int!) {
     subtasksByProcess(processId: $processId) {
@@ -222,15 +208,13 @@ export const SUBTASKS_BY_PROCESS = gql`
       endDate
       finalDate
       status {
+        id
         name
         percentage
       }
       priority {
+        id
         name
-      }
-      beneficiary {
-        legalName
-        rut
       }
     }
   }

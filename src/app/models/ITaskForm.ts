@@ -15,6 +15,7 @@ export interface TaskInitialValues {
     risk?: number;
     finishDate?: string;
     faena?: number;
+    beneficiary?: number;
     compliance?: boolean; // Uncomment if compliance is needed
 }
 
@@ -36,6 +37,7 @@ export interface TaskDetails {
     risk?: number;
     finishDate?: string;
     faenaId?: string | null;
+    beneficiary?: number;
 }
 
 export interface Task {
@@ -59,4 +61,5 @@ export interface Task {
     faena?: string | null;
     valley?: string | null;
     process?: string | null;
+    beneficiary?: number;
 }

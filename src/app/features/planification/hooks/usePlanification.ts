@@ -38,7 +38,10 @@ export const usePlanification = () => {
     const dummySubtask = (subtask: ExtendedSubtaskValues) => {}; 
 
     const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
-    const valleySubtaskForm = useValleySubtasksForm(dummySubtask);
+    const valleySubtaskForm = useValleySubtasksForm(dummySubtask, undefined, async () => {
+        // Callback que se ejecuta cuando se completa exitosamente una operación de subtarea
+        await refetch();
+    });
     const communicationTaskForm = useCommunicationTaskForm(dummyTask);
    
     const {
@@ -134,8 +137,7 @@ export const usePlanification = () => {
             console.error("Error saving communication task:", error);
         }
         setIsCommunicationModalOpen(false);
-        refetch();
-        window.location.reload();
+        await refetch();
     };
       
     /**
@@ -159,8 +161,7 @@ export const usePlanification = () => {
         }catch (error) {
             console.error("Error updating communication task:", error);
         }
-        refetch();
-        window.location.reload();
+        await refetch();
         setIsCommunicationModalOpen(false);
     };
 
@@ -208,8 +209,7 @@ export const usePlanification = () => {
         try {
             await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
-            refetch();
-            window.location.reload();
+            await refetch();
         } catch (error) {
             console.error("Error deleting task:", error);
         }
@@ -225,8 +225,6 @@ export const usePlanification = () => {
         try {
             await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
             setIsDeleteSubtaskModalOpen(false);
-            refetch();
-            window.location.reload();
         }
         catch (error) {
             console.error("Error deleting subtask:", error);
@@ -373,8 +371,6 @@ export const usePlanification = () => {
         try {
             await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
             setIsPopupSubtaskOpen(false);
-            refetch();
-            window.location.reload();
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
         }
@@ -389,7 +385,6 @@ export const usePlanification = () => {
         try {
             await valleySubtaskForm.handleUpdateSubtask(subtask, selectedTaskId!, selectedSubtask);
             setIsPopupSubtaskOpen(false);
-            window.location.reload();
         } catch (error) {
             console.error("Error in handleUpdateSubtask:", error);
         }
@@ -405,7 +400,6 @@ export const usePlanification = () => {
             const updatedTaskId = await valleyTaskForm.handleUpdateTask(task, selectedTaskId!, selectedInfoTask);
             setIsPopupOpen(false);
             setSelectedTaskId(updatedTaskId);
-            window.location.reload();
         } catch (error) {
             console.error("Error in handleUpdateTask:", error);
         }
