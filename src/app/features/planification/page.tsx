@@ -65,7 +65,23 @@ export default function Planification() {
                                 <h1 className="text-3xl font-bold">Planificación</h1>
                             </div>
                             <TasksTable
-                                tasks={detailedTasks}
+                                tasks={detailedTasks.slice().sort((a, b) => {
+                                    const aCompleted = a.status?.name === 'Completada';
+                                    const bCompleted = b.status?.name === 'Completada';
+                                    
+                                    if (a.endDate && a.endDate !== '-' && (b.endDate === '-' || !b.endDate)) return -1;
+                                    
+                                    if (b.endDate && b.endDate !== '-' && (a.endDate === '-' || !a.endDate)) return 1;
+                                    
+                                    if (a.endDate && a.endDate !== '-' && b.endDate && b.endDate !== '-') 
+                                        return a.endDate.localeCompare(b.endDate);
+                                    
+                                    if (aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
+                                    
+                                    if (!aCompleted && bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
+                                    
+                                    return 0;
+                                })}
                                 subtasks={subTasks}
                                 taskStates={taskState}
                                 onFilterClick={handleFilterClick}
