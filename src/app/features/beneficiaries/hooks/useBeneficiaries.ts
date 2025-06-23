@@ -151,6 +151,7 @@ export const useBeneficiaries = () => {
                 },
             });
     
+            setIsEditContactModalOpen(false);
             await refetch();
         } catch (err) {
             console.error("Error actualizando contacto:", err);
@@ -182,6 +183,7 @@ export const useBeneficiaries = () => {
                 },
             });
     
+            setIsEditModalOpen(false);
             const updatedBeneficiaryData = data.updateBeneficiary;
 
             await refetch();
