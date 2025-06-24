@@ -221,7 +221,6 @@ export const useCommunicationTaskForm = (
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
         processes: userRole === 'encargado cumplimiento' ? processName : filteredProcessesNames || [],
-        processesComplianceManager: filteredProcessesNames || [],
     }), [taskStatuses]);
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";

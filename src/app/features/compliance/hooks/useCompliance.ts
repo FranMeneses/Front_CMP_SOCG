@@ -7,6 +7,7 @@ import { ITaskForm } from "@/app/models/ICommunicationsForm";
 import { useComplianceForm } from "./useComplianceForm";
 import { IComplianceForm } from "@/app/models/ICompliance";
 import { UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { UPDATE_TASK } from "@/app/api/tasks";
 
 export const useCompliance = () => {
     const { currentValleyId, userRole } = useHooks();
@@ -37,6 +38,7 @@ export const useCompliance = () => {
     
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
     const [updateRegistry] = useMutation(UPDATE_REGISTRY);
+    const [updateTask] = useMutation(UPDATE_TASK);
 
     /**
      * Función para manejar la creación de una nueva tarea
@@ -66,6 +68,53 @@ export const useCompliance = () => {
             }
             catch (error) {
                 console.error("Error updating compliance task:", error);
+            }
+        }
+        else if (compliance.statusId === 6) {
+            try {
+                const { data: registryData } = await updateRegistry({
+                    variables: {
+                        id: compliance.registryId,
+                        input: {
+                            carta: (compliance.cartaAporte) ? compliance.cartaAporte : undefined,
+                            minuta: (compliance.minuta) ? compliance.minuta : undefined,
+                            hem: (compliance.hasHem || compliance.hasHes) ? compliance.hasHem : undefined,
+                            hes: (compliance.hasHem || compliance.hasHes) ? compliance.hasHes : undefined,
+                            provider: (compliance.provider) ? compliance.provider : undefined,
+                            es_solped: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasSolped : undefined,
+                            es_memo: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasMemo : undefined,
+                            endDate: (compliance.endDate) ? compliance.endDate : undefined,
+                        }
+                    }
+                })
+                try {
+                    const { data } = await updateCompliance({
+                        variables: {
+                            id: selectedCompliance?.id,
+                            input: {
+                                taskId: selectedCompliance?.task.id,
+                                statusId: compliance.statusId,
+                            }
+                        }
+                    })
+                }catch (error) {
+                    console.error("Error updating compliance", error);
+                }
+                try {
+                    const { data: taskData } = await updateTask({
+                        variables: {
+                            id: selectedCompliance?.task.id,
+                            input: {
+                                statusId: (selectedCompliance?.task?.statusId ?? 0) + 1,
+                            }
+                        }})
+                }
+                catch (error) {
+                    console.error("Error updating task status:", error);
+                }
+            }
+            catch (error) {
+                console.error("Error updating registry task:", error);
             }
         }
         else {

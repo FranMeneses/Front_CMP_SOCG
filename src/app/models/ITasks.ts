@@ -1,3 +1,4 @@
+import { IBeneficiary } from "./IBeneficiary";
 import { IFaena } from "./IFaena";
 import { IValley } from "./IValleys";
 
@@ -15,6 +16,7 @@ export interface ITask {
     status?: ITaskStatus;
     process?: ITaskProcess;
     applies? : boolean;
+    beneficiary?: IBeneficiary;
 }
 
 export interface CreateTaskInput {

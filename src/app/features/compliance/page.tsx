@@ -60,7 +60,6 @@ export default function Compliance() {
                                 />
                                 <h1 className="text-3xl font-bold">Compliance</h1>
                             </div>
-                            
                             <ComplianceTable
                                 compliance={data}
                                 data-test-id="tasks-table"

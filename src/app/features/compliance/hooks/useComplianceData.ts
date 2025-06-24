@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { GET_APPLIED_COMPLIANCES } from "@/app/api/compliance";
 import { TaskDetails } from "@/app/models/ITaskForm";
 import { ICompliance } from "@/app/models/ICompliance";

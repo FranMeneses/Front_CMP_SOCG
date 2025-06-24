@@ -78,7 +78,7 @@ export default function CommunicationForm({
                 <DropdownMenu
                     buttonText={"Seleccione el proceso asociado"}
                     isInModal={true}
-                    items={userRole === 'encargado cumplimiento' ? dropdownItems.processesComplianceManager : dropdownItems.processes} 
+                    items={dropdownItems.processes} 
                     onSelect={(value) => handleInputChange('processId', value)}
                     selectedValue={isEditing && selectedTask ? formState.processId : ""}
                     data-test-id="communication-faena-dropdown"
@@ -110,7 +110,7 @@ export default function CommunicationForm({
                             onSelect={(value) => handleInputChange('statusId', value)}
                             selectedValue={dropdownItems.statuses[selectedTask?.statusId ? selectedTask.statusId - 1 : 0]}
                             data-test-id="communication-faena-dropdown"
-                            disabled={isManager}
+                            disabled={isManager || selectedTask?.status?.name === "En Cumplimiento" || selectedTask?.statusId === dropdownItems.statuses.findIndex((state: string) => state === "En Cumplimiento") + 1}
                         />
                     </div>  
                     

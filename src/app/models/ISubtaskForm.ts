@@ -1,8 +1,3 @@
-export interface Beneficiary {
-    id: string;
-    legalName: string;
-  }  
-
 export interface SubtasksInitialValues {
     name?: string;
     description?: string;
@@ -11,7 +6,6 @@ export interface SubtasksInitialValues {
     startDate?: string;
     endDate?: string;
     finalDate?: string;
-    beneficiary?: string;
     state?: string;
     priority?: string;
 }
@@ -26,8 +20,5 @@ export interface ExtendedSubtaskValues {
     startDate?: string;
     endDate?: string;
     finishDate?: string;
-    beneficiary?: string;
     state?: string;
-    
-    beneficiaryId?: string;
 }

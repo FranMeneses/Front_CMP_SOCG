@@ -138,7 +138,9 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             isInModal={true}
             selectedValue={infoTask?.task?.statusId ? dropdownItems.state[infoTask.task.statusId - 1] : undefined}
             data-test-id="task-state-dropdown"
-            disabled={isManager}
+            disabled={isManager || 
+                      formState.state === "En Cumplimiento" || 
+                      infoTask?.task?.statusId === dropdownItems.state.findIndex((state: string) => state === "En Cumplimiento") + 1}
           />
         </div>
       )}
@@ -202,7 +204,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           onSelect={(value) => handleInputChange("beneficiary", value)}
           isInModal={true}
           disabled={isManager || (isEditing && userRole != "encargado cumplimiento")}
-          selectedValue={infoTask?.task?.beneficiaryId ? dropdownItems.beneficiaries[infoTask.task.beneficiaryId - 1] : undefined}
+          selectedValue={infoTask?.task?.beneficiary?.legalName ? dropdownItems.beneficiaries.find(infoTask?.task?.beneficiary.legalName) : undefined}
           data-test-id="task-beneficiary-dropdown"
         />
       </div>
@@ -219,7 +221,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           variant="default"
           onClick={handleSave}
           className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer disabled:cursor-default"
-          disabled={!formState.name || !formState.origin || !formState.type || !formState.scope || !formState.interaction || !formState.faena || !formState.beneficiary}
+          disabled={!formState.name || !formState.origin || !formState.type || !formState.scope || !formState.interaction || !formState.faena}
           data-test-id="save-button"
         >
           Guardar

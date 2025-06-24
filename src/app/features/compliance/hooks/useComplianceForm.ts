@@ -356,9 +356,7 @@ export const useComplianceForm = (
             document = {
                 file: formState.cartaAporteFile,
                 documentType: documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
-                option: 'Tarea',
                 task: selectedCompliance?.task.id || "",
-                subtask: "",
             };
             handleUploadFile(document);   
         }
@@ -367,9 +365,7 @@ export const useComplianceForm = (
             document = {
                 file: formState.minutaFile,
                 documentType: documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
-                option: "Tarea",
                 task: selectedCompliance?.task.id || "",
-                subtask: "",
             };
             handleUploadFile(document);
         }

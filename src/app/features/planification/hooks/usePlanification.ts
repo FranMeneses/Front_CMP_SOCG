@@ -1,5 +1,5 @@
 import { use, useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
@@ -12,7 +12,7 @@ import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task, TaskDetails } from "@/app/models/ITaskForm";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 import { ITaskForm } from "@/app/models/ICommunicationsForm";
-import { CREATE_COMPLIANCE, CREATE_REGISTRY } from "@/app/api/compliance";
+import { CREATE_COMPLIANCE, CREATE_REGISTRY, GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
 export const usePlanification = () => {
     const { currentValleyId, isValleyManager, isCommunicationsManager, userRole } = useHooks();
@@ -62,10 +62,13 @@ export const usePlanification = () => {
     
     const [createTask] = useMutation(CREATE_TASK);
     const [updateTask] = useMutation(UPDATE_TASK);
+    const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
+    const [updateRegistry] = useMutation(UPDATE_REGISTRY);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
     const [createRegistry] = useMutation(CREATE_REGISTRY);
 
+    const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
     /**
      * Función para manejar la creación de una nueva tarea
      * @description Abre el modal para crear una nueva tarea, dependiendo del rol del usuario
@@ -158,6 +161,44 @@ export const usePlanification = () => {
                     }
                 }
             })
+            if (!data?.updateTask?.id) {
+                throw new Error("Task update failed: ID is undefined.");
+            }
+            
+            if (data?.updateTask.status.id === 3) {
+                try {
+                    const complianceData = await getCompliance({
+                        variables: {
+                            taskId: data.updateTask.id,
+                        },
+                    });
+                    console.log("Compliance Data:", complianceData.data.getTaskCompliance);
+                    if (complianceData.data?.getTaskCompliance) {
+                        const complianceId = complianceData.data.getTaskCompliance.id
+                        await updateRegistry({
+                            variables: {
+                                id: complianceData?.data.getTaskCompliance.registries?.[0]?.id,
+                                input: {
+                                    startDate: new Date(),
+                                },
+                            },
+                        });
+                        await updateCompliance({
+                            variables: {
+                                id: complianceId,
+                                input: {
+                                    statusId: 2,
+                                },
+                            },
+                        });
+                    } else {
+                        console.warn("No compliance data found for the updated task.");
+                    }
+                }
+                catch (error) {
+                    console.error("Error fetching compliance data:", error);
+                }
+            }
         }catch (error) {
             console.error("Error updating communication task:", error);
         }
@@ -248,7 +289,8 @@ export const usePlanification = () => {
                         faenaId: task.faena,
                         statusId: 1,
                         processId: task.process,
-                        applies: task.compliance
+                        applies: task.compliance,
+                        beneficiaryId: task.beneficiary,
                     },
                 },
             });

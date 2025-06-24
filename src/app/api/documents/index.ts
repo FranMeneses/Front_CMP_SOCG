@@ -6,7 +6,6 @@ export const GET_DOCUMENTS = gql`
     documents {
       id_documento
       id_tarea
-      id_subtarea
       tipo_documento
       ruta
       fecha_carga
@@ -25,7 +24,6 @@ export const GET_DOCUMENTS_BY_TYPE = gql`
         documents(tipo_documento: $tipo_documento) {
             id_documento
             id_tarea
-            id_subtarea
             tipo_documento
             ruta
             fecha_carga
@@ -44,7 +42,6 @@ export const GET_DOCUMENT = gql`
         document(id_documento: $idDocumento) {
             id_documento
             id_tarea
-            id_subtarea
             tipo_documento
             ruta
             fecha_carga
@@ -53,10 +50,6 @@ export const GET_DOCUMENT = gql`
                 tipo_documento
             }
             tarea {
-                id
-                name
-            }
-            subtarea {
                 id
                 name
             }
@@ -70,7 +63,6 @@ export const CREATE_DOCUMENT = gql`
         createDocument(input: $input) {
             id_documento
             id_tarea
-            id_subtarea
             tipo_documento
             ruta
             fecha_carga

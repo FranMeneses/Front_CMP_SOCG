@@ -9,7 +9,7 @@ import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
-import { GET_TASK_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
 import { IBeneficiary } from "@/app/models/IBeneficiary";
 
@@ -18,6 +18,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
     const [updateTask] = useMutation(UPDATE_TASK);
     const [updateRegistry] = useMutation(UPDATE_REGISTRY);
+    const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
     const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
     const [deleteTask] = useMutation(DELETE_TASK);
     
@@ -190,7 +191,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                     },
                 },
             });
-
             if (!data?.updateTask?.id) {
                 throw new Error("Task update failed: ID is undefined.");
             };
@@ -198,11 +198,19 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 const { data: complianceData } = await getCompliance({
                     variables: { taskId: selectedTaskId },
                 });
-                const { data: complianceUpdateData } = await updateRegistry({
+                const { data: registryUpdateData } = await updateRegistry({
                     variables: {
                         id: complianceData?.getTaskCompliance.registries?.[0]?.id,
                         input: {
                             startDate: new Date(),
+                        },
+                    },
+                });
+                const {data: complianceUpdateData} = await updateCompliance({
+                    variables: {
+                        id: complianceData?.getTaskCompliance.id,
+                        input: {
+                            statusId: 2,
                         },
                     },
                 });
@@ -291,7 +299,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
               budget: budget || "",
               expenses: expenses || "",
               faena: faena || "",
-              beneficiary: typeof infoTask.task.beneficiaryId === "number" ? infoTask.task.beneficiaryId : undefined,
+              beneficiary: typeof infoTask.task.beneficiaryId === "string" ? infoTask.task.beneficiaryId : undefined,
               compliance: infoTask.task.applies ?? undefined, 
             });
           }
@@ -326,7 +334,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         compliance: initialValues.compliance ?? false,
         });
     }
-    }, [initialValues]); // Keep this dependency array simple
+    }, [initialValues]); 
     
     const [faenas, setFaenas] = useState<string[]>([]);
     const [faenaMap, setFaenaMap] = useState<{ [key: string]: string }>({});
@@ -382,7 +390,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
-                beneficiary: Number(formState.beneficiary) ? Number(formState.beneficiary) : taskBeneficiaries.findIndex((b: string | number) => b === formState.beneficiary) + 1,
+                beneficiary: formState.beneficiary ? beneficiaries.find((b: IBeneficiary) => b.legalName === formState.beneficiary).id : null,
                 process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null,
                 compliance: formState.compliance ?? false,
             };
@@ -396,7 +404,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 type: Number(formState.type) ? Number(formState.type) : taskType.findIndex((t: string | number) => t === formState.type) + 1,
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
-                beneficiary: Number(formState.beneficiary) ? Number(formState.beneficiary) : taskBeneficiaries.findIndex((b: string | number) => b === formState.beneficiary) + 1,
+                beneficiary: formState.beneficiary ? beneficiaries.find((b: IBeneficiary) => b.legalName === formState.beneficiary).id : null,
             };
         }
         onSave(taskDetails);
