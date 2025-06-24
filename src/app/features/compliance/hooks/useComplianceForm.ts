@@ -369,7 +369,7 @@ export const useComplianceForm = (
             };
             handleUploadFile(document);
         }
-        if (formState.hasMemo) {
+        if (formState.hasMemo && formState.statusId === 4) {
             let value = Number(formState.memoAmount);
             const memoData = {
                 registryId: registry[0]?.id || "",
@@ -377,7 +377,7 @@ export const useComplianceForm = (
             };
             handleCreateMemo(memoData);
         }
-        if (formState.hasSolped ) {
+        if (formState.hasSolped && formState.statusId === 4) {
             let value = Number(formState.solpedAmount);
             let ceco = Number(formState.solpedCECO);
             let account = Number(formState.solpedAccount);

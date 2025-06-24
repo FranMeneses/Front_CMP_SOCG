@@ -156,7 +156,10 @@ export const useCompliance = () => {
         setIsComplianceModalOpen(false);
     }
 
-
+    /**
+     * Función para manejar la cancelación del modal de cumplimiento
+     * @description Cierra el modal de cumplimiento y limpia la tarea seleccionada
+     */
     const handleCancelCompliance = () => {
         setSelectedTask(undefined);
         setIsComplianceModalOpen(false);
@@ -185,6 +188,7 @@ export const useCompliance = () => {
      */
     const handleSeeInformation = async (complianceId: string, userRole: string) => {
         setSelectedTaskId(complianceId);
+        console.log(selectedCompliance);
             try {
                 const taskInfo = await complianceForm.handleGetCompliance(complianceId);
                 try {

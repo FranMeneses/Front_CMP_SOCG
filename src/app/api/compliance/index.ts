@@ -15,6 +15,7 @@ export const GET_ALL_COMPLIANCES = gql`
         id
         name
         description
+        statusId
       }
       registries {
         id
@@ -41,6 +42,7 @@ export const GET_COMPLIANCE = gql`
         id
         name
         description
+        statusId
       }
       registries {
         id
