@@ -188,7 +188,6 @@ export const useCompliance = () => {
      */
     const handleSeeInformation = async (complianceId: string, userRole: string) => {
         setSelectedTaskId(complianceId);
-        console.log(selectedCompliance);
             try {
                 const taskInfo = await complianceForm.handleGetCompliance(complianceId);
                 try {
