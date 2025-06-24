@@ -58,6 +58,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         isDeleteTaskModalOpen,
         isDeleteSubtaskModalOpen,
         allProcesses,
+        localSubtasks,
 
         handleFilterByProcess,
         setIsDeleteTaskModalOpen,
@@ -93,6 +94,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const handleLocalFilterClick = (filter: string) => {
         handleStatusFilterChange(filter);
     };
+
+    const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subtasks;
 
     return (
         <div>
@@ -147,7 +150,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                     {expandedRow === task.id && (
                                         <tr>
                                             <SubtasksTable 
-                                                subtasks={subtasks}
+                                                subtasks={subtasksToUse}
                                                 taskId={task.id || ''}
                                                 formatDate={formatDate}
                                                 getRemainingSubtaskDays={getRemainingSubtaskDays}

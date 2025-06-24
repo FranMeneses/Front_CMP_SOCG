@@ -12,26 +12,82 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
     const [beneficiariesIdToNameMap, setBeneficiariesIdToNameMap] = useState<Record<string, string>>({});
 
     const [createSubtask] = useMutation(CREATE_SUBTASK, {
-        refetchQueries: [
-            { query: GET_SUBTASKS },
-            'GetAllSubtasks'
-        ]
+        update(cache, { data: { createSubtask } }) {
+            try {
+                type SubtasksData = { subtasks: ISubtask[] };
+                
+                const existingData = cache.readQuery<SubtasksData>({
+                    query: GET_SUBTASKS
+                });
+                
+                if (existingData && 'subtasks' in existingData) {
+                    cache.writeQuery<SubtasksData>({
+                        query: GET_SUBTASKS,
+                        data: {
+                            subtasks: [...existingData.subtasks, createSubtask]
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error updating cache after creating subtask:", error);
+            }
+        }
     });
     
     const [updateSubtask] = useMutation(UPDATE_SUBTASK, {
-        refetchQueries: [
-            { query: GET_SUBTASKS },
-            'GetAllSubtasks'
-        ]
+        update(cache, { data: { updateSubtask } }) {
+            try {
+                type SubtasksData = { subtasks: ISubtask[] };
+                
+                const existingData = cache.readQuery<SubtasksData>({
+                    query: GET_SUBTASKS
+                });
+                
+                if (existingData && 'subtasks' in existingData) {
+                    const updatedSubtasks = existingData.subtasks.map(
+                        (subtask: ISubtask) => subtask.id === updateSubtask.id ? updateSubtask : subtask
+                    );
+                    
+                    cache.writeQuery<SubtasksData>({
+                        query: GET_SUBTASKS,
+                        data: {
+                            subtasks: updatedSubtasks
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error updating cache after updating subtask:", error);
+            }
+        }
     });
     
     const [getSubtask] = useLazyQuery(GET_SUBTASK, {fetchPolicy: 'network-only'});
     
     const [deleteSubtask] = useMutation(DELETE_SUBTASK, {
-        refetchQueries: [
-            { query: GET_SUBTASKS },
-            'GetAllSubtasks'
-        ]
+        update(cache, { data: { removeSubtask } }) {
+            try {
+                type SubtasksData = { subtasks: ISubtask[] };
+                
+                const existingData = cache.readQuery<SubtasksData>({
+                    query: GET_SUBTASKS
+                });
+                
+                if (existingData && 'subtasks' in existingData) {
+                    const updatedSubtasks = existingData.subtasks.filter(
+                        (subtask: ISubtask) => subtask.id !== removeSubtask.id
+                    );
+                    
+                    cache.writeQuery<SubtasksData>({
+                        query: GET_SUBTASKS,
+                        data: {
+                            subtasks: updatedSubtasks
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Error updating cache after deleting subtask:", error);
+            }
+        }
     });
 
     const {data: subtaskPriorityData} = useQuery(GET_PRIORITIES);

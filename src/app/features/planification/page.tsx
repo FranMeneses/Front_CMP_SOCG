@@ -15,11 +15,14 @@ export default function Planification() {
         isSidebarOpen,
         detailedTasks,
         taskState,         
+        localSubtasks,
         handleFilterClick, 
         activeFilter,      
     } = usePlanification();
 
     const { userRole } = useHooks();
+
+    const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subTasks;    
 
     if (loading) {
         return (
@@ -64,38 +67,38 @@ export default function Planification() {
                                 />
                                 <h1 className="text-3xl font-bold">Planificación</h1>
                             </div>
-                <TasksTable
-                                key={`tasks-table-${detailedTasks.length}-${subTasks.length}-${JSON.stringify(detailedTasks.map((t: any) => t.id))}-${JSON.stringify(subTasks.map((s: any) => s.id))}`}
-                                tasks={detailedTasks.slice().sort((a: any, b: any) => {
-                                    const aCompleted = a.status?.name === 'Completada';
-                                    const bCompleted = b.status?.name === 'Completada';
-                                    const aCanceled = a.status?.name === 'Cancelada';
-                                    const bCanceled = b.status?.name === 'Cancelada';
+                            <TasksTable
+                            key={`tasks-table-${detailedTasks.length}-${subtasksToUse.length}-${JSON.stringify(detailedTasks.map((t: any) => t.id))}-${JSON.stringify(subtasksToUse.map((s: any) => s.id))}`}
+                            tasks={detailedTasks.slice().sort((a: any, b: any) => {
+                                const aCompleted = a.status?.name === 'Completada';
+                                const bCompleted = b.status?.name === 'Completada';
+                                const aCanceled = a.status?.name === 'Cancelada';
+                                const bCanceled = b.status?.name === 'Cancelada';
                                     
-                                    if (a.endDate && a.endDate !== '-' && (b.endDate === '-' || !b.endDate)) return -1;
-                                    if (b.endDate && b.endDate !== '-' && (a.endDate === '-' || !a.endDate)) return 1;
+                                if (a.endDate && a.endDate !== '-' && (b.endDate === '-' || !b.endDate)) return -1;
+                                if (b.endDate && b.endDate !== '-' && (a.endDate === '-' || !a.endDate)) return 1;
                                     
-                                    if (a.endDate && a.endDate !== '-' && b.endDate && b.endDate !== '-') 
-                                        return a.endDate.localeCompare(b.endDate);
+                                if (a.endDate && a.endDate !== '-' && b.endDate && b.endDate !== '-') 
+                                    return a.endDate.localeCompare(b.endDate);
                                     
-                                    if (aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
-                                    if (!aCompleted && bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
+                                if (aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
+                                if (!aCompleted && bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
                                     
-                                    if (aCanceled && !bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
-                                    if (!aCanceled && bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
+                                if (aCanceled && !bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
+                                if (!aCanceled && bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
                                     
                                     return 0;
-                                })}
-                                subtasks={subTasks}
-                                taskStates={taskState}
-                                onFilterClick={handleFilterClick}
-                                activeFilter={activeFilter}
-                                data-test-id="tasks-table"
-                            />
-                        </div>
+                            })}
+                            subtasks={subtasksToUse}
+                            taskStates={taskState}
+                            onFilterClick={handleFilterClick}
+                            activeFilter={activeFilter}
+                            data-test-id="tasks-table"
+                        />
                     </div>
-                </main>
-            </div>
+                </div>
+            </main>
         </div>
+    </div>
     );
 }

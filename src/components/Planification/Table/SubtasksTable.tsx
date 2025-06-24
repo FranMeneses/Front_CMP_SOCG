@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ISubtask } from "@/app/models/ISubtasks";
 import { Pen, Trash, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,34 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
   setIsPopupSubtaskOpen,
   userRole
 }) => {
+  // Mantener un estado local para animaciones y transiciones suaves
+  const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
+  const [animatingRowIds, setAnimatingRowIds] = useState<Record<string, string>>({});
   
-  const filteredSubtasks = subtasks.filter(subtask => subtask.taskId === taskId);
+  // Actualizar subtareas locales cuando cambian las props
+  useEffect(() => {
+    const filtered = subtasks.filter(subtask => subtask.taskId === taskId);
+    
+    // Identificar nuevas subtareas para animarlas
+    const currentIds = new Set(localSubtasks.map(s => s.id));
+    const newSubtasks = filtered.filter(s => !currentIds.has(s.id));
+    
+    if (newSubtasks.length > 0) {
+      // Marcar nuevas subtareas para animación
+      const newAnimations: Record<string, string> = {};
+      newSubtasks.forEach(s => {
+        newAnimations[s.id] = 'new';
+      });
+      setAnimatingRowIds(newAnimations);
+      
+      // Limpiar animaciones después de un tiempo
+      setTimeout(() => {
+        setAnimatingRowIds({});
+      }, 1000);
+    }
+    
+    setLocalSubtasks(filtered);
+  }, [subtasks, taskId]);
   
   const handleDelete = (id: string) => {
     setItemToDeleteId(id);
@@ -37,7 +63,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
   return (
     <td colSpan={10} className="bg-[#f8f8f8] font-[Helvetica]">
       <div className="flex flex-row justify-between items-center px-4 py-2">
-        <h2 className="font-medium text-sm ml-4 text-black">Subtareas: {filteredSubtasks.length}</h2>
+        <h2 className="font-medium text-sm ml-4 text-black">Subtareas: {localSubtasks.length}</h2>
         <Button
           onClick={() => setIsPopupSubtaskOpen(true)}
           variant="ghost"
@@ -62,9 +88,12 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
           </tr>
         </thead>
         <tbody className="divide-y divide-[#cacaca]">
-          {filteredSubtasks.length > 0 ? (
-            filteredSubtasks.map((subtask) => (
-              <tr key={subtask.id}>
+          {localSubtasks.length > 0 ? (
+            localSubtasks.map((subtask) => (
+              <tr 
+                key={subtask.id} 
+                className={`${animatingRowIds[subtask.id] ? 'bg-[#f8f8f8] transition-colors duration-1000' : ''}`}
+              >
                 <td className="px-4 py-2">{subtask.name}</td>
                 <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.budget || 0) || "-"}</td>
                 <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.expense || 0) || "-"}</td>

@@ -1,4 +1,4 @@
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
@@ -32,6 +32,8 @@ export const usePlanification = () => {
     const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
     const [isDeleteSubtaskModalOpen, setIsDeleteSubtaskModalOpen] = useState(false);
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
+
+    const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
     
     const dummyInfoTask = (task: TaskDetails) => {}; 
     const dummyTask = (task: ITaskForm) => {}; 
@@ -67,6 +69,12 @@ export const usePlanification = () => {
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
     const [createRegistry] = useMutation(CREATE_REGISTRY);
+
+    useEffect(() => {
+        if (subTasks && subTasks.length > 0) {
+            setLocalSubtasks(subTasks);
+        }
+    }, [subTasks]);
 
     const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
     /**
@@ -265,9 +273,11 @@ export const usePlanification = () => {
     const handleDeleteSubtask = async () => {
         try {
             await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
+            
+            setLocalSubtasks(prev => prev.filter(s => s.id !== itemToDeleteId));
+            
             setIsDeleteSubtaskModalOpen(false);
-        }
-        catch (error) {
+        } catch (error) {
             console.error("Error deleting subtask:", error);
         }
         setIsDeleteSubtaskModalOpen(false);
@@ -411,7 +421,21 @@ export const usePlanification = () => {
      */
     const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
-            await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
+            const newSubtaskId = await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
+            
+            const newSubtask: ISubtask = {
+                ...subtask,
+                id: newSubtaskId,
+                taskId: selectedTaskId!,
+                status: {
+                    id: 1,
+                    name: "NO iniciada",
+                    percentage: 0,
+                }
+            };
+            
+            setLocalSubtasks(prev => [...prev, newSubtask]);
+            
             setIsPopupSubtaskOpen(false);
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
@@ -426,6 +450,11 @@ export const usePlanification = () => {
     const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
             await valleySubtaskForm.handleUpdateSubtask(subtask, selectedTaskId!, selectedSubtask);
+            
+            setLocalSubtasks(prev => prev.map(s => 
+                s.id === selectedSubtask?.id ? {...subtask, id: selectedSubtask.id, taskId: selectedTaskId!} : s
+            ));
+            
             setIsPopupSubtaskOpen(false);
         } catch (error) {
             console.error("Error in handleUpdateSubtask:", error);
@@ -483,6 +512,7 @@ export const usePlanification = () => {
         handleFilterByProcess,
         handleUploadPlanification,
         handleCreateComplianceManager,
+        localSubtasks,
         selectedTask,
         isPopupOpen,
         isPopupPlanificationOpen,
