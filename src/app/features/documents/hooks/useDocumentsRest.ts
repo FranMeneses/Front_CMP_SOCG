@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { IDocument } from '@/app/models/IDocuments';
 import { useDocumentsGraph } from './useDocumentsGraph';
 import { FormData as DocumentFormData } from '../hooks/useDocumentForms';
+import { UploadResponse } from '@/app/models/IAxios';
 
 export const useDocumentsRest = () => {
     const [documents, setDocuments] = useState<IDocument[]>([]);
@@ -28,7 +29,7 @@ export const useDocumentsRest = () => {
             fileFormData.append('documentType', formData.documentType.toString());
             fileFormData.append('taskId', formData.task.toString());
 
-            const response = await axios.post('http://localhost:4000/documents/upload', fileFormData, {
+            const response = await axios.post<UploadResponse>('http://localhost:4000/documents/upload', fileFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -82,7 +83,7 @@ export const useDocumentsRest = () => {
                     filename = filenameMatch[1];
                 }
             }
-            const url = window.URL.createObjectURL(new Blob([response.data], { 
+            const url = window.URL.createObjectURL(new Blob([response.data as BlobPart], { 
                 type: contentType 
             }));
             

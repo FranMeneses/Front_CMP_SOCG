@@ -13,6 +13,7 @@ export const GET_ALL_HISTORIES = gql`
       faenaId
       solpedMemoSap
       hesHemSap
+      beneficiaryId
       process {
         id
         name
@@ -25,10 +26,24 @@ export const GET_ALL_HISTORIES = gql`
         id
         name
       }
+      beneficiary {
+        id
+        legalName
+        rut
+      }
+      documents {
+        id
+        historyId
+        fileName
+        documentTypeId
+        path
+        uploadDate
+      }
     }
   }
 `;
- // Query para obtener un historial por ID
+
+// Query para obtener un historial por ID
 export const GET_HISTORY = gql`
   query GetHistory($id: ID!) {
     history(id: $id) {
@@ -41,6 +56,7 @@ export const GET_HISTORY = gql`
       faenaId
       solpedMemoSap
       hesHemSap
+      beneficiaryId
       process {
         id
         name
@@ -53,6 +69,11 @@ export const GET_HISTORY = gql`
         id
         name
       }
+      beneficiary {
+        id
+        legalName
+        rut
+      }
       documents {
         id
         historyId
@@ -60,10 +81,6 @@ export const GET_HISTORY = gql`
         documentTypeId
         path
         uploadDate
-        documentType {
-          id_tipo_documento
-          tipo_documento
-        }
       }
     }
   }
@@ -77,9 +94,14 @@ export const GET_HISTORIES_BY_PROCESS = gql`
       name
       finalDate
       totalExpense
+      beneficiaryId
       process {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
       }
     }
   }
@@ -98,6 +120,7 @@ export const GET_HISTORIES_BY_VALLEY = gql`
       faenaId
       solpedMemoSap
       hesHemSap
+      beneficiaryId
       process {
         id
         name
@@ -109,6 +132,10 @@ export const GET_HISTORIES_BY_VALLEY = gql`
       faena {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
       }
     }
   }
@@ -127,6 +154,7 @@ export const GET_HISTORIES_BY_FAENA = gql`
       faenaId
       solpedMemoSap
       hesHemSap
+      beneficiaryId
       process {
         id
         name
@@ -138,6 +166,53 @@ export const GET_HISTORIES_BY_FAENA = gql`
       faena {
         id
         name
+      }
+      beneficiary {
+        id
+        legalName
+      }
+    }
+  }
+`;
+
+// Query para obtener historiales por ID de beneficiario
+export const GET_HISTORIES_BY_BENEFICIARY = gql`
+  query GetHistoriesByBeneficiary($beneficiaryId: ID!) {
+    historiesByBeneficiary(beneficiaryId: $beneficiaryId) {
+      id
+      name
+      processId
+      finalDate
+      totalExpense
+      valleyId
+      faenaId
+      solpedMemoSap
+      hesHemSap
+      beneficiaryId
+      process {
+        id
+        name
+      }
+      valley {
+        id
+        name
+      }
+      faena {
+        id
+        name
+      }
+      beneficiary {
+        id
+        legalName
+        rut
+      }
+      documents {
+        id
+        historyId
+        fileName
+        documentTypeId
+        path
+        uploadDate
       }
     }
   }

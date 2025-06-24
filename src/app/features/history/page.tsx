@@ -80,7 +80,7 @@ export default function ComplianceHistory() {
             </div>
 
             {isModalOpen && (
-                <Modal onClose={closeHistoryModal} isOpen={isModalOpen}>
+                <Modal onClose={closeHistoryModal} isOpen={isModalOpen} showCloseButton={false}>
                     <HistoryForm
                         historyData={selectedHistory ?? undefined}
                         onClose={closeHistoryModal}

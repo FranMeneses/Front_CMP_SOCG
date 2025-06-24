@@ -21,6 +21,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
     faenas,
     dropdownItems,
     isFormValid,
+    error,
     handleInputChange,
     handleComplianceChange,
     handleSave,
@@ -139,10 +140,13 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             isInModal={true}
             selectedValue={infoTask?.task?.statusId ? dropdownItems.state[infoTask.task.statusId - 1] : undefined}
             data-test-id="task-state-dropdown"
-            disabled={isManager || 
-                      formState.state === "En Cumplimiento" || 
-                      infoTask?.task?.statusId === dropdownItems.state.findIndex((state: string) => state === "En Cumplimiento") + 1}
+            disabled={
+              isManager || 
+              formState.state === "En Cumplimiento" || 
+              infoTask?.task?.statusId === dropdownItems.state.findIndex((state: string) => state === "En Cumplimiento") + 1
+            }
           />
+          {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
         </div>
       )}
       {details && (

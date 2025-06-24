@@ -18,6 +18,7 @@ export const useHistory = () => {
 
     const openHistoryModal = (history: IHistory) => {
         setSelectedHistory(history);
+        console.log("Selected History:", history);
         setIsModalOpen(true);
     };
 

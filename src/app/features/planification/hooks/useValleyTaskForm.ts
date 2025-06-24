@@ -16,6 +16,7 @@ import { IBeneficiary } from "@/app/models/IBeneficiary";
 export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
     
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
+    const [error, setError] = useState<string | null>(null);
     const [updateTask] = useMutation(UPDATE_TASK);
     const [updateRegistry] = useMutation(UPDATE_REGISTRY);
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
@@ -354,14 +355,46 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     }, [Faenas]);
 
     /**
+     * Función para validar la transición de estado de una tarea
+     * @description Verifica si la transición de estado es válida según las reglas definidas
+     * @param currentState Estado actual de la tarea
+     * @param newState Nuevo estado al que se quiere cambiar
+     * @return Booleano que indica si la transición es válida
+     */
+    const isValidStateTransition = useCallback((currentState: string | number, newState: string) => {
+        // Verificar si el estado actual es "En Proceso" (ya sea por nombre o por ID)
+        const isCurrentStateInProcess = 
+            currentState === "En Proceso" || 
+            (typeof currentState === 'number' && states.find((s: ITaskStatus) => s.id === currentState)?.name === "En Proceso");
+        
+        // Si el estado actual es "En Proceso", verificar que no cambie a estados no permitidos
+        if (isCurrentStateInProcess && ["NO iniciada", "En Espera", "En Cumplimiento"].includes(newState)) {
+            return false;
+        }
+        
+        return true;
+    }, [states]);
+    
+
+    /**
      * Función para manejar los cambios en los campos del formulario
      * @description Actualiza el estado del formulario cuando un campo cambia
      * @param field Nombre del campo que cambió
      * @param value Nuevo valor del campo
      */
-    const handleInputChange = useCallback((field: string, value: string) => {
-        setFormState((prev) => ({ ...prev, [field]: value }));
-    }, []);
+    const handleInputChange = useCallback((field: string, value: string | number | boolean) => {
+        if (field === "state") {
+            const newState = value as string;
+            if (!isValidStateTransition(formState.state, newState)) {
+                const currentState = typeof formState.state === 'number' ? states.find((s: ITaskStatus) => s.id === formState.state)?.name : formState.state;
+                setError(`No se permite cambiar de '${currentState}' a '${newState}'`);
+                return;
+            }
+        setError(null);
+    }
+    
+    setFormState((prev) => ({ ...prev, [field]: value }));
+    }, [formState, isValidStateTransition]);
 
     /**
      * Hook para manejar el estado del compliance
@@ -512,6 +545,9 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      * @returns Booleano que indica si el formulario es válido
      */
     const isFormValid = useMemo(() => {
+        // Si hay un error de validación, el formulario no es válido
+        if (error) return false;
+        
         if (!isEditing) {
             return Boolean(
                 formState.name && 
@@ -535,13 +571,15 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 formState.risk
             );
         }
-    }, [formState, isEditing]);
+    }, [formState, isEditing, error]); 
 
     return {
         formState,
         faenas,
         dropdownItems,
         isFormValid,
+        error,
+        isValidStateTransition,
         handleInputChange,
         handleComplianceChange,
         handleSave,

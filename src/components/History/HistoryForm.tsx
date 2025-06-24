@@ -1,5 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { IHistory } from "@/app/models/IHistory";
+import { useDocumentsRest } from "@/app/features/documents/hooks/useDocumentsRest";
+import { Clipboard, FileText, Info, User2Icon } from "lucide-react";
 
 interface HistoryFormProps {
     historyData?: IHistory;
@@ -7,6 +9,7 @@ interface HistoryFormProps {
 }
 
 export default function HistoryForm({ historyData, onClose }: HistoryFormProps) {
+    const { handleDownload } = useDocumentsRest();
     
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('es-CL', {
@@ -17,85 +20,156 @@ export default function HistoryForm({ historyData, onClose }: HistoryFormProps) 
 
     const formatDate = (dateString: string) => {
         if (!dateString) return 'No definida';
-        return new Date(dateString).toLocaleDateString('es-CL', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        
+        const [year, month, day] = dateString.split('T')[0].split('-');
+        
+        const months = [
+            'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+            'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+        ];
+        
+        const monthIndex = parseInt(month, 10) - 1;
+        const dayNum = parseInt(day, 10);
+        const yearNum = parseInt(year, 10);
+        
+        return `${dayNum} de ${months[monthIndex]} de ${yearNum}`;
     };
 
     return (
-        <div className='font-[Helvetica]' data-test-id="history-form">
-            <h2 className="text-lg font-semibold mb-4">
-                Detalle del Histórico
-            </h2>
-            
-            <div className="form-field">
-                <label className="form-label">Nombre</label>
-                <div className="form-display-field">
-                    {historyData?.name || 'No disponible'}
-                </div>
+        <div className="p-5 max-w-2xl mx-auto" data-test-id="history-form">
+            <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-800">
+                    Detalle del Histórico
+                </h2>
             </div>
             
-            <div className="form-field">
-                <label className="form-label">Proceso</label>
-                <div className="form-display-field">
-                    {historyData?.process?.name || 'No disponible'}
+            <div className="space-y-6">
+                {/* Información Básica */}
+                <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                        <Info className="h-4 w-4 mr-2"/>
+                        Información General
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-500">Nombre</label>
+                            <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                {historyData?.name || 'No disponible'}
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-500">Proceso</label>
+                            <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                {historyData?.process?.name || 'No disponible'}
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-500">Fecha de Término</label>
+                            <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                {historyData?.finalDate ? formatDate(historyData.finalDate) : 'No definida'}
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-500">Gastos Totales</label>
+                            <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                {historyData?.totalExpense ? formatCurrency(historyData.totalExpense) : '$0 USD'}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div className="form-field">
-                <label className="form-label">Fecha de Término</label>
-                <div className="form-display-field">
-                    {historyData?.finalDate ? formatDate(historyData.finalDate) : 'No definida'}
+                
+                {/* Información SAP */}
+                <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                        <Clipboard className="h-4 w-4 mr-2"/>
+                        Información SAP
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-500">SOLPED / MEMO</label>
+                            <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                {historyData?.solpedMemoSap || 'No disponible'}
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-500">HES / HEM</label>
+                            <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                {historyData?.hesHemSap || 'No disponible'}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
-            <div className="form-field">
-                <label className="form-label">Gastos Totales</label>
-                <div className="form-display-field">
-                    {historyData?.totalExpense ? formatCurrency(historyData.totalExpense) : '$0 USD'}
+                
+                {/* Beneficiario */}
+                <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                        <User2Icon className="h-4 w-4 mr-2"/>
+                        Beneficiario
+                    </h3>
+                    
+                    {historyData?.beneficiary ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-xs text-gray-500">Nombre Legal</label>
+                                <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                    {historyData.beneficiary.legalName || 'No disponible'}
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-1">
+                                <label className="text-xs text-gray-500">RUT</label>
+                                <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                                    {historyData.beneficiary.rut || 'No disponible'}
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                            No disponible
+                        </div>
+                    )}
                 </div>
-            </div>
-            
-            <div className="form-field">
-                <label className="form-label">SOLPED / MEMO</label>
-                <div className="form-display-field">
-                    {historyData?.solpedMemoSap || 'No disponible'}
-                </div>
-            </div>
-            
-            <div className="form-field">
-                <label className="form-label">HES / HEM</label>
-                <div className="form-display-field">
-                    {historyData?.hesHemSap || 'No disponible'}
-                </div>
-            </div>
-            
-            <div className="form-field">
-                <label className="form-label">Documentos Asociados</label>
-                <div className="form-display-field">
+                
+                {/* Documentos */}
+                <div className="bg-gray-50 p-4 rounded-md">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                        <FileText className="h-4 w-4 mr-2"/>
+                        Documentos Asociados
+                    </h3>
+                    
                     {historyData?.documents && historyData.documents.length > 0 ? (
                         <div className="space-y-2">
                             {historyData.documents.map((doc, index) => (
-                                <div key={index} className="flex items-center space-x-2">
-                                    <span className="text-sm text-blue-600 hover:text-blue-800 cursor-pointer">
-                                        📄 {doc.fileName}
-                                    </span>
+                                <div key={index} className="bg-white border border-gray-200 rounded p-2 flex justify-between items-center">
+                                    <span className="text-sm">{doc.fileName}</span>
+                                    <button 
+                                        onClick={() => handleDownload(doc.id)}
+                                        className="text-blue-600 hover:text-blue-800 text-sm"
+                                    >
+                                        Descargar
+                                    </button>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        'No hay documentos asociados'
+                        <div className="bg-white border border-gray-200 rounded p-2 text-sm">
+                            No hay documentos asociados
+                        </div>
                     )}
                 </div>
             </div>
             
-            <div className="flex justify-end space-x-2 mt-6">
+            <div className="flex justify-end mt-6">
                 <Button
                     variant="secondary"
                     onClick={onClose}
-                    className="bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                    className="bg-[#0068D1] hover:bg-[#0056A3] cursor-pointer text-white"
                     data-test-id="close-button"
                 >
                     Cerrar

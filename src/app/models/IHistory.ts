@@ -1,3 +1,4 @@
+import { IBeneficiary } from "./IBeneficiary";
 import { ITipoDocumento } from "./IDocuments";
 import { IFaena } from "./IFaena";
 import { IProcess } from "./IProcess";
@@ -18,6 +19,7 @@ export interface IHistory {
   valley?: IValley;
   faena?: IFaena;
   documents?: IHistoryDoc[];
+  beneficiary?: IBeneficiary;
 }
 
 export interface IHistoryDoc {

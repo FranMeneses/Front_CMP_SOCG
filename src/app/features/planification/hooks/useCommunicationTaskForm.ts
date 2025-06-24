@@ -12,11 +12,15 @@ export const useCommunicationTaskForm = (
     userRole?: string
 ) => {
 
+    const [error, setError] = useState<string | null>(null);
+
+    const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
+    const {data: processesData} = useQuery(GET_ALL_PROCESSES);
+
     const [getTask] = useLazyQuery(GET_TASK);
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
-    const {data: taskStateData} = useQuery(GET_TASK_STATUSES);
-    const {data: processesData} = useQuery(GET_ALL_PROCESSES);
+
 
     const status = taskStateData?.taskStatuses || [];
     const processes = processesData?.processes || [];
@@ -160,14 +164,61 @@ export const useCommunicationTaskForm = (
 
 
     /**
+     * Función para validar la transición de estado de una tarea
+     * @description Verifica si la transición de estado es válida según las reglas definidas
+     * @param currentState Estado actual de la tarea
+     * @param newState Nuevo estado al que se quiere cambiar
+     * @return Booleano que indica si la transición es válida
+     */
+    const isValidStateTransition = useCallback((currentState: string | number, newState: string | number) => {
+        if (userRole === "encargado cumplimiento") {
+            return true;
+        }
+        
+        const getCurrentStateName = (state: string | number) => {
+            if (typeof state === 'number') {
+                return status.find((s: ITaskStatus) => s.id === state)?.name || "";
+            }
+            return state as string;
+        };
+
+        const currentStateName = getCurrentStateName(currentState);
+        const newStateName = getCurrentStateName(newState);
+        
+        if (currentStateName === "En Proceso") {
+            if (["NO iniciada", "En Espera", "En Cumplimiento"].includes(newStateName)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }, [status, userRole]);
+
+    /**
      * Función para manejar los cambios en los campos del formulario
      * @param field Campo del formulario que se está actualizando
      * @param value Nuevo valor para el campo del formulario
      * @description Actualiza el estado del formulario con el nuevo valor del campo especificado
      */
-    const handleInputChange = useCallback((field: string, value: string) => {
-        setFormState((prev) => ({ ...prev, [field]: value }));
-    }, []);
+    const handleInputChange = useCallback((field: string, value: any) => {
+        if (field === 'statusId') {
+            const newStateId = typeof value === 'string' 
+                ? status.findIndex((s: ITaskStatus) => s.name === value) + 1
+                : value;
+            
+            if (!isValidStateTransition(formState.statusId, newStateId)) {
+                const currentStateName = status.find((s: ITaskStatus) => s.id === formState.statusId)?.name || "estado actual";
+                const newStateName = status.find((s: ITaskStatus) => s.id === newStateId)?.name || "nuevo estado";
+                
+                setError(`No se permite cambiar de "${currentStateName}" a "${newStateName}"`);
+                return;
+            }
+            
+            setError(null);
+        }
+        
+        setFormState(prev => ({ ...prev, [field]: value }));
+    }, [formState, status, isValidStateTransition]);
 
 
     /**
@@ -225,10 +276,28 @@ export const useCommunicationTaskForm = (
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";
     
-    const isFormValid = formState.name && 
-                       formState.valleyId && 
-                       formState.processId && 
-                       formState.applies !== null
+    /**
+     * Hook para determinar si el formulario es válido
+     * @description Verifica si todos los campos obligatorios del formulario están completos
+     */
+    const isFormValid = useMemo(() => {
+        if (error) return false;
+        
+        if (isEditing) {
+            return Boolean(
+                formState.name && 
+                formState.valleyId && 
+                formState.processId
+            );
+        } else {
+            return Boolean(
+                formState.name && 
+                formState.valleyId && 
+                formState.processId && 
+                formState.applies !== null
+            );
+        }
+    }, [formState, isEditing, error]); 
 
     return {
         formState,
@@ -236,6 +305,7 @@ export const useCommunicationTaskForm = (
         processes,
         saveButtonText,
         isFormValid,
+        error,
         handleInputChange,
         handleSave,
         handleGetTask,

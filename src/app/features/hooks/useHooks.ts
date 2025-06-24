@@ -16,7 +16,7 @@ export function useHooks() {
     */
     const valleyIdByRole = useMemo(() => {
         return {
-            "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
+            "encargado elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
             "encargado copiapó": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
             "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.id || 2,
             "Admin": valleys?.find(v => v.name === "Transversal")?.id || 4,
@@ -28,7 +28,7 @@ export function useHooks() {
 
     const processByRole = useMemo(() => {
         return {
-            "encargado valle elqui": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
+            "encargado elqui": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
             "encargado copiapó": processes?.find(p => p.name === "Relacionamiento VC")?.id || 1,
             "encargado huasco": processes?.find(p => p.name === "Relacionamiento VH")?.id || 2,
             "jefe elqui": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
@@ -42,7 +42,7 @@ export function useHooks() {
     */
     const valleyNamesByRole = useMemo(() => {
         return {
-            "encargado valle elqui": valleys?.find(v => v.name === "Valle del Elqui")?.name || "Valle del Elqui",
+            "encargado elqui": valleys?.find(v => v.name === "Valle del Elqui")?.name || "Valle del Elqui",
             "encargado copiapó": valleys?.find(v => v.name === "Valle de Copiapó")?.name || "Valle de Copiapó",
             "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.name || "Valle del Huasco",
             "Admin": valleys?.find(v => v.name === "Transversal")?.name || "Transversal",
@@ -165,7 +165,7 @@ export function useHooks() {
             case "encargado comunicaciones":
                 router.push("/features/planification");
                 break;
-            case "encargado valle elqui":
+            case "encargado elqui":
                 router.push("/features/planification");
                 break;
             case "encargado copiapó":
@@ -194,7 +194,7 @@ export function useHooks() {
      * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
      * @returns 
      */
-    const isValleyManager = userRole === "encargado valle elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "superintendente de relacionamiento" || userRole === 'jefe elqui' || userRole === 'jefe copiapó' || userRole === 'jefe huasco';
+    const isValleyManager = userRole === "encargado elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "superintendente de relacionamiento" || userRole === 'jefe elqui' || userRole === 'jefe copiapó' || userRole === 'jefe huasco';
     
     const isCommunicationsManager = userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos" || userRole === "superintendente de comunicaciones";
 

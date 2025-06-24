@@ -26,7 +26,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento", "jefe huasco", "jefe copiapó", "jefe elqui"]
+      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento", "jefe huasco", "jefe copiapó", "jefe elqui"]
     },
     {
       title: "Compliance",
@@ -50,7 +50,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","encargado comunicaciones", "superintendente de relacionamiento", "superintendente de comunicaciones", "jefe huasco", "jefe copiapó", "jefe elqui"]
+      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","encargado comunicaciones", "superintendente de relacionamiento", "superintendente de comunicaciones", "jefe huasco", "jefe copiapó", "jefe elqui"]
     },
     {
       title: "Beneficiarios",
@@ -58,7 +58,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","jefe huasco", "jefe copiapó", "jefe elqui", "encargado comunicaciones"]
+      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","jefe huasco", "jefe copiapó", "jefe elqui", "encargado comunicaciones"]
     },
     {
       title: "Programación",
@@ -74,7 +74,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
-      admitedRoles: ["encargado valle elqui", "encargado copiapó", "encargado huasco"]
+      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco"]
     },
     {
       title: "Resumen",

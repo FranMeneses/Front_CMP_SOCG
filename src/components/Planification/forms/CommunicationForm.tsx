@@ -14,18 +14,26 @@ interface CommunicationFormProps {
 
 export default function CommunicationForm({ 
     onSave, 
-    onCancel, 
     isEditing = false, 
     selectedTask,
-    userRole
+    userRole,
+    onCancel, 
 }: CommunicationFormProps) {
 
-    const { formState, dropdownItems, saveButtonText, isFormValid, handleSave, handleInputChange, handleComplianceChange } = useCommunicationTaskForm(
-        onSave, 
-        isEditing, 
-        selectedTask,
-        userRole
-    );
+    const { formState, 
+            dropdownItems, 
+            saveButtonText, 
+            isFormValid, 
+            error,
+            handleSave, 
+            handleInputChange, 
+            handleComplianceChange 
+        } = useCommunicationTaskForm(
+            onSave, 
+            isEditing, 
+            selectedTask,
+            userRole
+        );
 
     const { valleys, isManager } = useHooks();
     
@@ -109,10 +117,11 @@ export default function CommunicationForm({
                             items={dropdownItems.statuses} 
                             onSelect={(value) => handleInputChange('statusId', value)}
                             selectedValue={dropdownItems.statuses[selectedTask?.statusId ? selectedTask.statusId - 1 : 0]}
-                            data-test-id="communication-faena-dropdown"
+                            data-test-id="communication-status-dropdown"
                             disabled={isManager || selectedTask?.status?.name === "En Cumplimiento" || selectedTask?.statusId === dropdownItems.statuses.findIndex((state: string) => state === "En Cumplimiento") + 1}
                         />
-                    </div>  
+                        {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+                    </div>
                     
                     <div className="form-field">
                         <label className="form-label">Presupuesto (USD)</label>
