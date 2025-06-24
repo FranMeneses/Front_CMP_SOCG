@@ -506,10 +506,42 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         return faena ? faena.name : "";
     }, [Faenas]);
 
+    /**
+     * Hook para validar el formulario
+     * @description Utiliza useMemo para calcular si el formulario es válido según los campos requeridos
+     * @returns Booleano que indica si el formulario es válido
+     */
+    const isFormValid = useMemo(() => {
+        if (!isEditing) {
+            return Boolean(
+                formState.name && 
+                formState.origin && 
+                formState.investment && 
+                formState.type && 
+                formState.scope && 
+                formState.interaction && 
+                formState.risk && 
+                formState.faena && 
+                formState.compliance !== undefined
+            );
+        } else {
+            return Boolean(
+                formState.name && 
+                formState.origin && 
+                formState.investment && 
+                formState.type && 
+                formState.scope && 
+                formState.interaction && 
+                formState.risk
+            );
+        }
+    }, [formState, isEditing]);
+
     return {
         formState,
         faenas,
         dropdownItems,
+        isFormValid,
         handleInputChange,
         handleComplianceChange,
         handleSave,

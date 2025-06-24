@@ -20,6 +20,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
     formState,
     faenas,
     dropdownItems,
+    isFormValid,
     handleInputChange,
     handleComplianceChange,
     handleSave,
@@ -221,7 +222,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
           variant="default"
           onClick={handleSave}
           className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer disabled:cursor-default"
-          disabled={!formState.name || !formState.origin || !formState.type || !formState.scope || !formState.interaction || !formState.faena}
+          disabled={!isFormValid}
           data-test-id="save-button"
         >
           Guardar
