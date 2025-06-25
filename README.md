@@ -79,3 +79,6 @@ Se han realizado las siguientes modificaciones para que la tabla de subtareas se
 - ✅ Actualización automática del contador de subtareas
 - ✅ Actualización automática de los detalles de las tareas
 - ✅ Manejo de errores mejorado
+
+###
+-HOLA
