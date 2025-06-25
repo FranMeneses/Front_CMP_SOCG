@@ -10,10 +10,13 @@ COPY tsconfig.json ./
 # Instalar dependencias
 RUN npm ci
 
+# IMPORTANTE: Definir la variable ANTES de copiar el código y compilar
+ENV NEXT_PUBLIC_API_URL="http://host.docker.internal:4000"
+
 # Copiar el resto del código fuente
 COPY . .
 
-# Construir la aplicación
+# Construir la aplicación (ahora con la variable ENV disponible)
 RUN npm run build
 
 # Etapa de producción
@@ -24,18 +27,17 @@ WORKDIR /app
 # Configurar variables de entorno
 ENV NODE_ENV=production
 ENV PORT=8080
-# Apuntar al host local (tu máquina) usando host.docker.internal
+# Definir para referencia, aunque ya no tendrá efecto en el código compilado
 ENV NEXT_PUBLIC_API_URL="http://host.docker.internal:4000"
 
 # Copiar archivos necesarios desde la etapa de construcción
 COPY --from=builder /app/package.json ./
-# Asegúrate de que este archivo exista, o cambia la extensión según corresponda
-COPY --from=builder /app/next.config.ts ./  
+COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Exponer el puerto que Azure Container Apps espera
+# Exponer el puerto
 EXPOSE 8080
 
 # Comando para iniciar la aplicación
