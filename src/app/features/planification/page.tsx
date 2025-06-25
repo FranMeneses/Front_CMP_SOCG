@@ -71,26 +71,6 @@ export default function Planification() {
                             </div>
                             <TasksTable
                             key={`tasks-table-${detailedTasks.length}-${subtasksToUse.length}-${JSON.stringify(detailedTasks.map((t: ITaskDetails) => t.id))}-${JSON.stringify(subtasksToUse.map((s: ISubtask) => s.id))}`}
-                            tasks={detailedTasks.slice().sort((a: ITaskDetails, b: ITaskDetails) => {
-                                const aCompleted = a.status?.name === 'Completada';
-                                const bCompleted = b.status?.name === 'Completada';
-                                const aCanceled = a.status?.name === 'Cancelada';
-                                const bCanceled = b.status?.name === 'Cancelada';
-                                    
-                                if (a.endDate && a.endDate !== '-' && (b.endDate === '-' || !b.endDate)) return -1;
-                                if (b.endDate && b.endDate !== '-' && (a.endDate === '-' || !a.endDate)) return 1;
-                                    
-                                if (a.endDate && a.endDate !== '-' && b.endDate && b.endDate !== '-') 
-                                    return a.endDate.localeCompare(b.endDate);
-                                    
-                                if (aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
-                                if (!aCompleted && bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
-                                    
-                                if (aCanceled && !bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
-                                if (!aCanceled && bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
-                                    
-                                    return 0;
-                            })}
                             subtasks={subtasksToUse}
                             taskStates={taskState}
                             onFilterClick={handleFilterClick}

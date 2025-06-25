@@ -24,7 +24,7 @@ export const useDocumentsRest = () => {
             fileFormData.append('documentType', formData.documentType.toString());
             fileFormData.append('taskId', formData.task.toString());
 
-            const response = await axios.post<UploadResponse>('http://localhost:4000/documents/upload', fileFormData, {
+            const response = await axios.post<UploadResponse>(`${process.env.NEXT_PUBLIC_API_URL}/documents/upload`, fileFormData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -62,7 +62,7 @@ export const useDocumentsRest = () => {
      */
     const handleDownload = async (documentId: string) => {
         try {
-            const response = await axios.get(`http://localhost:4000/documents/download/${documentId}`, {
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/documents/download/${documentId}`, {
                 responseType: 'blob', 
             });
 
