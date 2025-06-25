@@ -4,7 +4,12 @@ import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, G
 import { IPriority, ISubtask, ISubtasksStatus } from "@/app/models/ISubtasks";
 import { SubtasksInitialValues, ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 
-export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) => void, subtask?: ISubtask, onSuccess?: () => void) => {
+export const useValleySubtasksForm = (
+    onSave: (subtask: ExtendedSubtaskValues) => void, 
+    subtask?: ISubtask, 
+    onSuccess?: () => void,
+    updateTaskDetailsAfterChange?: (taskId: string) => Promise<boolean> 
+) => {
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
     const [dateError, setDateError] = useState<string>("");
 
@@ -158,12 +163,20 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      */
     const handleDeleteSubtask = async (subtaskId: string) => {
         try {
+            const subtaskInfo = await handleGetSubtask(subtaskId);
+            const taskId = subtaskInfo?.taskId;
+            
             const { data } = await deleteSubtask({
                 variables: { id: subtaskId },
             });
             if (!data?.removeSubtask?.id) {
                 throw new Error("Subtask deletion failed: ID is undefined.");
             }
+            
+            if (updateTaskDetailsAfterChange && taskId) {
+                await updateTaskDetailsAfterChange(taskId);
+            }
+            
             if (onSuccess) {
                 onSuccess();
             }
@@ -200,6 +213,11 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             if (!data?.createSubtask?.id) {
                 throw new Error("Subtask creation failed: ID is undefined.");
             }
+            
+            if (updateTaskDetailsAfterChange && subtask.taskId) {
+                await updateTaskDetailsAfterChange(subtask.taskId);
+            }
+            
             if (onSuccess) {
                 onSuccess();
             }
@@ -239,6 +257,11 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
             if (!data?.updateSubtask?.id) {
                 throw new Error("Subtask update failed: ID is undefined.");
             }
+            
+            if (updateTaskDetailsAfterChange && subtask.taskId) {
+                await updateTaskDetailsAfterChange(subtask.taskId);
+            }
+            
             if (onSuccess) {
                 onSuccess();
             }

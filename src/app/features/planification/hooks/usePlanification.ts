@@ -36,13 +36,6 @@ export const usePlanification = () => {
     const dummyInfoTask = () => {}; 
     const dummyTask = () => {}; 
     const dummySubtask = () => {}; 
-
-    const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
-    const valleySubtaskForm = useValleySubtasksForm(dummySubtask, undefined, async () => {
-        // Callback que se ejecuta cuando se completa exitosamente una operación de subtarea
-        await refetch();
-    });
-    const communicationTaskForm = useCommunicationTaskForm(dummyTask);
    
     const {
         data,
@@ -53,12 +46,24 @@ export const usePlanification = () => {
         taskState,
         activeFilter,
         refetch,
+        updateTaskDetailsAfterSubtaskChange, 
         getRemainingDays,
         getRemainingSubtaskDays,
         formatDate,
         handleFilterClick,
         handleFilterByProcess,
     } = useTasksData(currentValleyId ?? undefined, userRole);
+
+    const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
+    const valleySubtaskForm = useValleySubtasksForm(
+        dummySubtask, 
+        undefined, 
+        async () => {
+            await refetch();
+        },
+        updateTaskDetailsAfterSubtaskChange 
+    );
+    const communicationTaskForm = useCommunicationTaskForm(dummyTask);
     
     const [createTask] = useMutation(CREATE_TASK);
     const [updateTask] = useMutation(UPDATE_TASK);
@@ -273,6 +278,8 @@ export const usePlanification = () => {
             
             setLocalSubtasks(prev => prev.filter(s => s.id !== itemToDeleteId));
             
+            await refetch();
+            
             setIsDeleteSubtaskModalOpen(false);
         } catch (error) {
             console.error("Error deleting subtask:", error);
@@ -433,6 +440,8 @@ export const usePlanification = () => {
             
             setLocalSubtasks(prev => [...prev, newSubtask]);
             
+            await refetch();
+            
             setIsPopupSubtaskOpen(false);
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
@@ -448,9 +457,13 @@ export const usePlanification = () => {
         try {
             await valleySubtaskForm.handleUpdateSubtask(subtask);
             
+            // Actualizar el estado local de subtareas inmediatamente para la UI
             setLocalSubtasks(prev => prev.map(s => 
                 s.id === selectedSubtask?.id ? {...subtask, id: selectedSubtask.id, taskId: selectedTaskId!} : s
             ));
+            
+            // Refrescar explícitamente para asegurar que detailedTasks se actualiza
+            await refetch();
             
             setIsPopupSubtaskOpen(false);
         } catch (error) {

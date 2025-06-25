@@ -184,6 +184,11 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const error = shouldUseProcessQuery ? valleyQueryError : allTasksQueryError;
   const mainQueryLoading = shouldUseProcessQuery ? valleyQueryLoading : allTasksQueryLoading;
   
+  /**
+   * Función para refrescar las tareas
+   * @description Maneja la lógica de refresco de tareas según el rol del usuario y el estado de los procesos
+   * @returns 
+   */
   const refetch = async () => {
     if (isCommunicationsRole) {
       try {
@@ -205,14 +210,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       }
     } else {
       try {
-        // Refetch de las consultas principales
         if (shouldUseProcessQuery) {
           await refetchValleyTasks();
         } else {
           await refetchAllTasks();
         }
         
-        // Refetch de las subtareas si hay tareas
         if (tasks && tasks.length > 0 && !isCommunicationsRole) {
           const allSubtasks = await Promise.all(
             tasks.map(async (task: ITask) => {
@@ -226,7 +229,6 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
           setSubtasks(flattenedSubtasks);
         }
         
-        // Refetch de los detalles de las tareas
         if (tasks && tasks.length > 0) {
           const processedTasks = await loadTasksWithDetails();
           setDetailedTasks(processedTasks);
@@ -240,6 +242,45 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     }
   };
   
+  /**
+   * Función para actualizar los detalles de una tarea después de un cambio en sus subtareas
+   * @description Actualiza los detalles de una tarea específica cuando sus subtareas han cambiado
+   * @param taskId ID de la tarea cuyos detalles deben actualizarse
+   * @returns Promise<boolean> que indica si la actualización fue exitosa
+   */
+  const updateTaskDetailsAfterSubtaskChange = async (taskId: string) => {
+      try {
+          const { data: subtaskData } = await getSubtasks({
+              variables: { id: taskId },
+          });
+          
+          const updatedSubtasks = subtaskData?.taskSubtasks || [];
+          
+          setSubtasks(prev => {
+              const filteredSubtasks = prev.filter(subtask => subtask.taskId !== taskId);
+              return [...filteredSubtasks, ...updatedSubtasks];
+          });
+          
+          const affectedTask = tasks.find((task: ITask) => task.id === taskId);
+          
+          if (affectedTask) {
+              const updatedTask = await processTasksWithDetails([affectedTask]);
+              
+              setDetailedTasks(prev => {
+                  const updatedTasks = prev.map(task => 
+                      task.id === taskId ? updatedTask[0] : task
+                  );
+                  return updatedTasks;
+              });
+          }
+          
+          return true;
+      } catch (error) {
+          console.error("Error updating task details after subtask change:", error);
+          return false;
+      }
+  };
+  
   const states = taskStateData?.taskStatuses || [];
   const taskState = states.map((s: ITaskStatus) => s.name);
 
@@ -248,6 +289,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
                   loadingRelationshipTasks;
 
 
+  /**
+   * Función para cargar las tareas de los procesos de comunicación al inicio
+   * @description Carga las tareas de los procesos de comunicación al inicio si el usuario es superintendente de comunicación o encargado de comunicaciones
+   */
   useEffect(() => {
     const loadInitialCommunicationTasks = async () => {
       if (isCommunicationsRole) {
@@ -282,7 +327,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         }
       }
     };
-const loadInitialRelationshipTasks = async () => {
+
+  /**
+  * Función para cargar las tareas de los procesos de relación al inicio
+  * @description Carga las tareas de los procesos de relación al inicio si el usuario es superintendente de relación
+  */
+  const loadInitialRelationshipTasks = async () => {
       if (isRelationshipSuperintendent) {
         try {
           setLoadingRelationshipTasks(true);
@@ -685,13 +735,14 @@ const loadInitialRelationshipTasks = async () => {
     taskState,
     activeFilter,
     allProcesses,
+    isCommunicationsRole,
     refetch,
+    updateTaskDetailsAfterSubtaskChange,
     handleFilterByProcess,
     getRemainingDays,
     getRemainingSubtaskDays,
     formatDate,
     handleFilterClick,
     setActiveFilter,
-    isCommunicationsRole
   };
 };

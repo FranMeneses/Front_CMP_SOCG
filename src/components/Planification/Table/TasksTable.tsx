@@ -14,7 +14,6 @@ import { ITaskForm } from "@/app/models/ICommunicationsForm";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 
 interface TasksTableProps {
-    tasks: ITaskDetails[];
     subtasks: ISubtask[];
     taskStates?: string[];  
     onFilterClick?: (filter: string) => void;  
@@ -22,7 +21,6 @@ interface TasksTableProps {
 }
 
 const TasksTable: React.FC<TasksTableProps> = ({ 
-    tasks, 
     subtasks,
     taskStates,
 }) => {
@@ -58,6 +56,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         isDeleteSubtaskModalOpen,
         allProcesses,
         localSubtasks,
+        detailedTasks,
 
         handleFilterByProcess,
         setIsDeleteTaskModalOpen,
@@ -77,6 +76,29 @@ const TasksTable: React.FC<TasksTableProps> = ({
     } = usePlanification();
 
     const { currentValleyName, userRole } = useHooks();
+
+        const sortedDetailedTasks = React.useMemo(() => {
+        return [...detailedTasks].sort((a: ITaskDetails, b: ITaskDetails) => {
+            const aCompleted = a.status?.name === 'Completada';
+            const bCompleted = b.status?.name === 'Completada';
+            const aCanceled = a.status?.name === 'Cancelada';
+            const bCanceled = b.status?.name === 'Cancelada';
+                
+            if (a.endDate && a.endDate !== '-' && (b.endDate === '-' || !b.endDate)) return -1;
+            if (b.endDate && b.endDate !== '-' && (a.endDate === '-' || !a.endDate)) return 1;
+                
+            if (a.endDate && a.endDate !== '-' && b.endDate && b.endDate !== '-') 
+                return a.endDate.localeCompare(b.endDate);
+                
+            if (aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
+            if (!aCompleted && bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
+                
+            if (aCanceled && !bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
+            if (!aCanceled && bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
+                
+            return 0;
+        });
+    }, [detailedTasks]);
     
     const { 
         filteredTasks, 
@@ -86,14 +108,13 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleProcessFilterChange,
         handleStatusFilterChange,
         handleLateFilterClick
-    } = useTaskFilters(tasks, allProcesses, handleFilterByProcess);
+    } = useTaskFilters(sortedDetailedTasks, allProcesses, handleFilterByProcess);
 
     const actualTaskState = taskStates || taskState;
     const handleLocalFilterClick = (filter: string) => {
         handleStatusFilterChange(filter);
     };
 
-    // Adaptador para comunicaciones
     const saveCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
         return handleSaveCommunication(task as ITask);
     };
@@ -102,7 +123,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
         return handleUpdateCommunication(task as ITask);
     };
 
-    // Adaptadores para subtareas
     const updateSubtaskAdapter = (subtask: ExtendedSubtaskValues) => {
         const convertedSubtask: ISubtask = {
             id: selectedSubtask?.id || '',
