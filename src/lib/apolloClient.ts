@@ -1,7 +1,7 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 
 const httpLink = createHttpLink({
-  uri: `${process.env.NODE_ENV}/graphql`,
+  uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
 });
 
 const cache = new InMemoryCache({
