@@ -26,7 +26,7 @@ export const usePlanificationRest = () => {
             const formData = new FormData();
             formData.append('file', file);
             
-            await axios.post('http://localhost:4000/etl/upload', formData, {
+            await axios.post(`${process.env.NODE_ENV}/etl/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
