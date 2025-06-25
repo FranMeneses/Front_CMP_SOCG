@@ -24,12 +24,13 @@ WORKDIR /app
 # Configurar variables de entorno
 ENV NODE_ENV=production
 ENV PORT=8080
-# La URL del backend se pasará como variable de entorno en tiempo de ejecución
-ENV NEXT_PUBLIC_API_URL="localhost:4000"
+# Apuntar al host local (tu máquina) usando host.docker.internal
+ENV NEXT_PUBLIC_API_URL="http://host.docker.internal:4000"
 
 # Copiar archivos necesarios desde la etapa de construcción
 COPY --from=builder /app/package.json ./
-COPY --from=builder /app/next.config.js ./
+# Asegúrate de que este archivo exista, o cambia la extensión según corresponda
+COPY --from=builder /app/next.config.ts ./  
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static

@@ -7,7 +7,7 @@ import { IComplianceForm } from '@/app/models/ICompliance';
 interface ComplianceModalsProps {     
     isComplianceModalOpen: boolean;
     setIsComplianceModalOpen: (isOpen: boolean) => void;
-    handleUpdateCompliance: (compliance: IComplianceForm) => void;
+    handleUpdateCompliance: (compliance: Partial<IComplianceForm>) => void;
     handleCancelCompliance: () => void;
     currentValleyName: string | null;
     userRole: string;

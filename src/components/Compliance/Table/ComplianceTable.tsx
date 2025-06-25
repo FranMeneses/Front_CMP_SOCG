@@ -5,7 +5,7 @@ import { useHooks } from "../../../app/features/hooks/useHooks";
 import ComplianceRow from "./ComplianceRow";
 import ComplianceModals from "../ComplianceModalForms";
 import ComplianceFilters from "../ComplianceFilters";
-import { ICompliance } from "@/app/models/ICompliance";
+import { ICompliance, IComplianceForm } from "@/app/models/ICompliance";
 
 interface ComplianceTableProps {
     compliance: ICompliance[];
@@ -20,7 +20,7 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
         setIsComplianceModalOpen,
         selectedCompliance,
         isComplianceModalOpen,
-        handleUpdateCompliance,
+        handleUpdateCompliance, 
         handleCancelCompliance,
         selectedStatusFilter,
         filteredCompliance,
@@ -28,6 +28,24 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
     } = useCompliance();
 
     const { currentValleyName, userRole } = useHooks();
+
+    const handleUpdateComplianceWrapper = (partialCompliance: Partial<IComplianceForm>) => {
+        if (selectedCompliance) {
+            const fullCompliance = {
+                ...selectedCompliance,
+                ...partialCompliance,
+                id: selectedCompliance.id,
+                task: selectedCompliance.task,
+                statusId: partialCompliance.statusId ?? selectedCompliance.statusId,
+                registryId: selectedCompliance.registryId,
+            };
+            
+            handleUpdateCompliance(fullCompliance);
+        } else {
+            console.error("No hay un cumplimiento seleccionado para actualizar");
+        }
+    };
+
 
     return (
         <>
@@ -80,7 +98,7 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
                 isComplianceModalOpen={isComplianceModalOpen}
                 selectedCompliance={selectedCompliance}
                 setIsComplianceModalOpen={setIsComplianceModalOpen}
-                handleUpdateCompliance={handleUpdateCompliance}
+                handleUpdateCompliance={handleUpdateComplianceWrapper}
                 handleCancelCompliance={handleCancelCompliance}
                 currentValleyName={currentValleyName}
                 userRole={userRole}

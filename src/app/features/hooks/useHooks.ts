@@ -6,7 +6,7 @@ import { IProcess } from "@/app/models/IProcess";
 
 export function useHooks() {
     const router = useRouter();
-    const [userRole, setUserRole] = useState<string>("encargado elqui"); 
+    const [userRole, setUserRole] = useState<string>("encargado cumplimiento"); 
     const [currentValley, setCurrentValley] = useState<IValley | null>(null);
     const [currentProcess, setCurrentProcess] = useState<IProcess | null>(null);
     const { valleys, faenas, processes } = useData();

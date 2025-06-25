@@ -181,7 +181,7 @@ export function useReportability() {
               start: subtask.endDate,
               end: subtask.endDate,
               startDate: subtask.startDate,
-              progress: String(subtask.status.percentage),
+              progress: subtask.status.percentage,
               taskId: subtask.taskId,
               status: subtask.status.name,
               valley: handleGetValley(task?.valleyId ?? 5),
