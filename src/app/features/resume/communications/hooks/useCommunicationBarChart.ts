@@ -21,7 +21,6 @@ export const useCommunicationBarChart = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                // Obtener datos en paralelo para mejor performance
                 const [
                     internalResponse,
                     externalResponse,
@@ -77,7 +76,6 @@ export const useCommunicationBarChart = () => {
         fetchData();
     }, [getMonthlyExpenses]);
 
-    // Estructura con datasets separados, cada uno con su propio ID
     const barChartData = {
         labels: ["Comunicaciones Internas", "Comunicaciones Externas", "Asuntos Públicos", "Transversales"],
         datasets: [

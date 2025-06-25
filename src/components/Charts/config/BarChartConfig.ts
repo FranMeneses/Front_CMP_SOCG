@@ -61,7 +61,6 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
 
   const dynamicMax = calculateMaxValue(data);
 
-  // Configuración del tooltip según el modo
   const getTooltipConfig = () => {
     if (tooltipMode === 'show-totals') {
       return {
@@ -79,7 +78,6 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
             const label = tooltipItem.dataset.label || '';
             const value = tooltipItem.parsed.y;
             
-            // Formatear solo con separadores de miles, sin símbolo de moneda
             const formattedValue = new Intl.NumberFormat('es-CL', {
               minimumFractionDigits: 0,
               maximumFractionDigits: 0,
@@ -88,13 +86,11 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
             return `${label}: ${formattedValue}`;
           },
           afterBody: function(tooltipItems: TooltipItem<'bar'>[]) {
-            // Calcular y mostrar el total de todos los valles para esta categoría
             let total = 0;
             tooltipItems.forEach((item: TooltipItem<'bar'>) => {
               total += item.parsed.y || 0;
             });
             
-            // Formatear el total sin símbolo de moneda
             const formattedTotal = new Intl.NumberFormat('es-CL', {
               minimumFractionDigits: 0,
               maximumFractionDigits: 0,
@@ -136,7 +132,6 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
             const label = tooltipItem.dataset.label || '';
             const value = tooltipItem.parsed.y;
             
-            // Mantener formato USD para gastos por departamento
             const formattedValue = new Intl.NumberFormat('es-CL', {
               style: 'currency',
               currency: 'USD',
@@ -162,7 +157,6 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
     }
   };
 
-  // Resto del código...
   return {
     responsive: true,
     maintainAspectRatio: false,
@@ -212,7 +206,6 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
   };
 };
 
-// Configuraciones específicas para cada tipo de gráfico
 export const getBarChartOptionsForDepartments = (data: BarChartData) => {
   return getBarChartOptions(data, 'filter-zeros');
 };
@@ -221,7 +214,6 @@ export const getBarChartOptionsForInvestmentLines = (data: BarChartData) => {
   return getBarChartOptions(data, 'show-totals');
 };
 
-// Plugin para la línea de referencia
 export const referenceLinePlugin = {
   id: 'referenceLine',
   beforeDraw: (chart: Chart) => {

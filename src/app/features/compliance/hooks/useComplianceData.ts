@@ -20,7 +20,6 @@ export const useComplianceData = () => {
   const error = allCompliancesError;
   const mainQueryLoading =  allCompliancesLoading;
   
-  // Modificar refetch para considerar los roles de comunicación
   const refetch = async () => {
     return refetchAllTasks();
   };
@@ -36,7 +35,7 @@ export const useComplianceData = () => {
   useEffect(() => {
     const newTasks = (allCompliancesData?.getAppliedCompliances || []);
     setTasksData(newTasks);
-    setIsInitialLoad(false); // Actualizar isInitialLoad a false después de cargar los datos
+    setIsInitialLoad(false); 
   }, [allCompliancesData]);
 
 

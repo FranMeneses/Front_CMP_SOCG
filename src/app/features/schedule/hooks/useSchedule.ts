@@ -122,7 +122,6 @@ export function useSchedule() {
   const adjustDatesForGantt = (startDate: string, endDate: string) => {
     let adjustedEndDate = endDate;
     
-    // Si la tarea es de 1 día, extender un día para visualización
     if (startDate === endDate) {
       const end = new Date(endDate);
       end.setDate(end.getDate() + 1);

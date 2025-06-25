@@ -23,7 +23,6 @@ export const useTaskFilters = (
      * @returns {Promise<void>}
      */
     const handleProcessFilterChange = async (item: string) => {
-        // Guardamos el filtro de estado actual antes de hacer cambios
         const currentStatusFilter = activeStatusFilter;
         const currentLateFilter = isLateFilterActive;
         
@@ -32,14 +31,12 @@ export const useTaskFilters = (
         if (item === "Todos los procesos") {
             setSelectedProcess(null);
             
-            // Si había un filtro de estado activo, lo aplicamos a todas las tareas
             if (currentStatusFilter) {
                 const filteredByStatus = tasks.filter(task => 
                     task.status?.name === currentStatusFilter
                 );
                 setFilteredTasks(filteredByStatus);
             } else if (currentLateFilter) {
-                // Si había filtro de tareas atrasadas, lo aplicamos
                 const currentDate = new Date();
                 const delayedTasks = tasks.filter(task => {
                     if (!task.endDate) return false;
@@ -63,14 +60,12 @@ export const useTaskFilters = (
             
             const processTasks = await handleFilterByProcess(Number(process.id)) || [];
             
-            // Si había un filtro de estado activo, lo aplicamos a las tareas del nuevo proceso
             if (currentStatusFilter) {
                 const filteredByStatus = processTasks.filter(task => 
                     task.status?.name === currentStatusFilter
                 );
                 setFilteredTasks(filteredByStatus);
             } else if (currentLateFilter) {
-                // Si había filtro de tareas atrasadas, lo aplicamos al nuevo proceso
                 const currentDate = new Date();
                 const delayedTasks = processTasks.filter(task => {
                     if (!task.endDate) return false;
@@ -157,9 +152,7 @@ const handleStatusFilterChange = async (statusName: string) => {
         }
     } else {
         setActiveStatusFilter(statusName);
-        
-        // Si hay un proceso seleccionado, obtenemos TODAS las tareas de ese proceso
-        // en lugar de usar las tareas ya filtradas
+
         if (selectedProcess) {
             const processTasks = await handleFilterByProcess(selectedProcess.id) || [];
             const filteredByStatus = processTasks.filter(task => 
@@ -167,7 +160,6 @@ const handleStatusFilterChange = async (statusName: string) => {
             );
             setFilteredTasks(filteredByStatus);
         } else {
-            // Si no hay proceso seleccionado, usamos todas las tareas
             const filteredByStatus = tasks.filter(task => 
                 task.status?.name === statusName
             );

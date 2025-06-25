@@ -42,7 +42,6 @@ const SmallCalendar: React.FC<SmallCalendarProps> = ({ month, year, events }) =>
         const [yearStr, monthStr, dayStr] = dateStr.split('-');
         eventDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1, parseInt(dayStr));
       } else {
-        // Si no es string, asumimos que es una fecha o podemos convertirlo
         eventDate = new Date(event.start);
       }
       

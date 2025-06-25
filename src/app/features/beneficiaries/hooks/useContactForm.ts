@@ -90,7 +90,6 @@ export const useContactForm = ({ initialValues, selectedBeneficiaryId, onSave }:
             setEmailError("");
         }
         
-        // Validar confirmación si ya hay valor
         if (emailConfirm && value !== emailConfirm) {
             setEmailConfirmError("Los emails no coinciden");
         } else {
@@ -131,7 +130,6 @@ export const useContactForm = ({ initialValues, selectedBeneficiaryId, onSave }:
                 setPhoneError("");
             }
             
-            // Validar confirmación si ya hay valor
             if (phoneConfirm && formatted !== phoneConfirm) {
                 setPhoneConfirmError("Los teléfonos no coinciden");
             } else {

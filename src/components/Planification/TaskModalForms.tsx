@@ -102,7 +102,6 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     };
 
     const renderTaskCreationModal = () => {
-        // Para encargado de cumplimiento, mostrar selección de tipo primero
         if (userRole === 'encargado cumplimiento' && !isEditingCommunication) {
             if (!selectedTaskType) {
                 return (
@@ -133,7 +132,6 @@ const TaskModals: React.FC<TaskModalsProps> = ({
             }
         }
 
-        // Para casos de edición
         if (isEditingCommunication) {
             return (
                 <CommunicationForm
@@ -146,7 +144,6 @@ const TaskModals: React.FC<TaskModalsProps> = ({
             );
         }
 
-        // Para communications manager
         if (isCommunicationsManager) {
             return (
                 <CommunicationForm

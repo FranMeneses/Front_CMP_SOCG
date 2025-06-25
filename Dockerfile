@@ -11,7 +11,7 @@ COPY tsconfig.json ./
 RUN npm ci
 
 # IMPORTANTE: Definir la variable ANTES de copiar el código y compilar
-ENV NEXT_PUBLIC_API_URL="https://cmpappback--0000028.graymoss-4852b028.brazilsouth.azurecontainerapps.io"
+ENV NEXT_PUBLIC_API_URL="https://cmpappback.graymoss-4852b028.brazilsouth.azurecontainerapps.io"
 
 # Copiar el resto del código fuente
 COPY . .
@@ -28,7 +28,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
 # Definir para referencia, aunque ya no tendrá efecto en el código compilado
-ENV NEXT_PUBLIC_API_URL="https://cmpappback--0000028.graymoss-4852b028.brazilsouth.azurecontainerapps.io"
+ENV NEXT_PUBLIC_API_URL="https://cmpappback.graymoss-4852b028.brazilsouth.azurecontainerapps.io"
 
 # Copiar archivos necesarios desde la etapa de construcción
 COPY --from=builder /app/package.json ./

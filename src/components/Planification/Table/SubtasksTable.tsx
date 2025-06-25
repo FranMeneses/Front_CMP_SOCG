@@ -26,27 +26,22 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
   setIsPopupSubtaskOpen,
   userRole
 }) => {
-  // Mantener un estado local para animaciones y transiciones suaves
   const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
   const [animatingRowIds, setAnimatingRowIds] = useState<Record<string, string>>({});
   
-  // Actualizar subtareas locales cuando cambian las props
   useEffect(() => {
     const filtered = subtasks.filter(subtask => subtask.taskId === taskId);
     
-    // Identificar nuevas subtareas para animarlas
     const currentIds = new Set(localSubtasks.map(s => s.id));
     const newSubtasks = filtered.filter(s => !currentIds.has(s.id));
     
     if (newSubtasks.length > 0) {
-      // Marcar nuevas subtareas para animación
       const newAnimations: Record<string, string> = {};
       newSubtasks.forEach(s => {
         newAnimations[s.id] = 'new';
       });
       setAnimatingRowIds(newAnimations);
       
-      // Limpiar animaciones después de un tiempo
       setTimeout(() => {
         setAnimatingRowIds({});
       }, 1000);
