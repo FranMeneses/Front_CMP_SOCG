@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
-import { useHooks } from "../../hooks/useHooks";
 import { ITask } from "@/app/models/ITasks";
 import { useComplianceData } from "./useComplianceData";
 import { useComplianceForm } from "./useComplianceForm";
@@ -9,7 +8,6 @@ import { UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 import { UPDATE_TASK } from "@/app/api/tasks";
 
 export const useCompliance = () => {
-    const { currentValleyId, userRole } = useHooks();
     
     const [isComplianceModalOpen, setIsComplianceModalOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -33,7 +31,7 @@ export const useCompliance = () => {
         error,
         activeFilter,
         refetch,
-    } = useComplianceData(currentValleyId ?? undefined, userRole);
+    } = useComplianceData();
     
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
     const [updateRegistry] = useMutation(UPDATE_REGISTRY);

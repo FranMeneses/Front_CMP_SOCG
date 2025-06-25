@@ -418,7 +418,7 @@ export const usePlanification = () => {
      */
     const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
-            const newSubtaskId = await valleySubtaskForm.handleCreateSubtask(subtask, selectedTaskId!);
+            const newSubtaskId = await valleySubtaskForm.handleCreateSubtask(subtask);
             
             const newSubtask: ISubtask = {
                 ...subtask,

@@ -3,23 +3,17 @@ import { Button } from "@/components/ui/button";
 import { FileUploadButton } from "./FileUploadButton";
 import { useDocumentForms } from "@/app/features/documents/hooks/useDocumentForms";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { FormData as DocumentFormData } from '@/app/features/documents/hooks/useDocumentForms';
 
-interface DocumentFormData {
-  documentType?: string;  
-  task?: string;          
-  file: File | null;
-}
-
-
-interface CommunicationFormProps {
-    onSave: (formData: DocumentFormData) => void;
+interface DocumentFormProps {
+    onSave: (formData: DocumentFormData) => void | Promise<void>;
     onCancel: () => void;
 }
 
-export default function CommunicationForm({ 
+export default function DocumentForm({ 
     onSave, 
     onCancel, 
-}: CommunicationFormProps) {
+}: DocumentFormProps) {
     const {
         formData,
         isFormValid,
