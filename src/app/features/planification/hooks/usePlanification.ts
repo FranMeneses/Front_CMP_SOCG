@@ -457,12 +457,10 @@ export const usePlanification = () => {
         try {
             await valleySubtaskForm.handleUpdateSubtask(subtask);
             
-            // Actualizar el estado local de subtareas inmediatamente para la UI
             setLocalSubtasks(prev => prev.map(s => 
                 s.id === selectedSubtask?.id ? {...subtask, id: selectedSubtask.id, taskId: selectedTaskId!} : s
             ));
             
-            // Refrescar explícitamente para asegurar que detailedTasks se actualiza
             await refetch();
             
             setIsPopupSubtaskOpen(false);

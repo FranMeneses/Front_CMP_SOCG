@@ -6,6 +6,9 @@ import ResumeRelationship from "./relationship/page";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 export default function Resume() {
     const { userRole } = useHooks();

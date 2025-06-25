@@ -31,7 +31,6 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
     useImperativeHandle(ref, () => ({
       scrollToToday: () => {
         setTimeout(() => {
-          // Buscar el contenedor de scroll horizontal del Gantt
           const ganttContainer = ganttRef.current?.querySelector('.gantt-container') as HTMLElement;
           const chartArea = ganttRef.current?.querySelector('.chart') as HTMLElement;
           const scrollContainer = containerRef.current?.querySelector('.overflow-x-auto') as HTMLElement;
@@ -46,11 +45,9 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
           const today = new Date();
           today.setHours(0, 0, 0, 0);
           
-          // Enfoque 1: Buscar marcador visual del día actual
           const todayMarker = ganttRef.current?.querySelector('.today-highlight, .today, [data-today]') as HTMLElement;
           
           if (todayMarker) {
-            // Si encontramos el marcador del día actual, hacer scroll hacia él
             const containerRect = targetContainer.getBoundingClientRect();
             const todayRect = todayMarker.getBoundingClientRect();
             
@@ -64,11 +61,9 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
             return;
           }
 
-          // Enfoque 2: Buscar visualmente las barras de tareas y encontrar la fecha más cercana a hoy
           const allBarElements = ganttRef.current?.querySelectorAll('.bar-wrapper') || [];
           if (allBarElements.length > 0) {
             try {
-              // Intentar encontrar la barra más cercana a la fecha actual
               const todayTime = today.getTime();
               let closestBar: HTMLElement | null = null;
               let minDistance = Infinity;
@@ -85,13 +80,11 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
                 
                 if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) continue;
                 
-                // Si la fecha actual está dentro del rango de la tarea, esta es la mejor candidata
                 if (todayTime >= startDate.getTime() && todayTime <= endDate.getTime()) {
                   closestBar = barElement as HTMLElement;
                   break;
                 }
                 
-                // Sino, buscamos la tarea con la fecha más cercana a hoy
                 const startDistance = Math.abs(startDate.getTime() - todayTime);
                 const endDistance = Math.abs(endDate.getTime() - todayTime);
                 const minTaskDistance = Math.min(startDistance, endDistance);
@@ -120,9 +113,7 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
             }
           }
 
-          // Enfoque 3: Cálculo ajustado basado en fechas
           try {
-            // Validar y filtrar fechas inválidas
             const validSubtasks = subtasks.filter(task => {
               const startDate = new Date(task.start);
               const endDate = new Date(task.end);
@@ -142,7 +133,6 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
             minDate.setHours(0, 0, 0, 0);
             maxDate.setHours(0, 0, 0, 0);
             
-            // Si la fecha de hoy está fuera del rango, ubicamos en el extremo más cercano
             if (today < minDate || today > maxDate) {
               const targetScroll = today < minDate ? 0 : targetContainer.scrollWidth - targetContainer.clientWidth;
               targetContainer.scrollTo({
@@ -152,34 +142,26 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
               return;
             }
             
-            // Buscar la mejor visualización para la fecha actual
-            // Primero, encontrar el elemento visual que mejor representa la fecha actual
             let bestMatch = null;
             let minDateDiff = Infinity;
             
-            // Elementos que representan fechas en el gráfico (header cells)
             const dateCells = ganttRef.current?.querySelectorAll('.date-header, .lower-text, .upper-text') || [];
             
             for (const cell of dateCells) {
               const dateText = cell.textContent;
               if (!dateText) continue;
               
-              // Intentar extraer la fecha del texto
               try {
-                // Esto es un ejemplo - ajustar según el formato de fecha mostrado en el gráfico
                 const dateParts = dateText.split(/[/-]/);
                 if (dateParts.length < 2) continue;
                 
-                // Crear un objeto de fecha aproximado basado en el texto
                 const cellDate = new Date();
                 
-                // Ajustar según el formato de frappe-gantt (mes/día o día/mes)
                 if (dateParts.length >= 2) {
-                  cellDate.setMonth(parseInt(dateParts[0]) - 1);  // 0-indexed
+                  cellDate.setMonth(parseInt(dateParts[0]) - 1);  
                   cellDate.setDate(parseInt(dateParts[1]));
                 }
                 
-                // Si hay año especificado
                 if (dateParts.length >= 3) {
                   cellDate.setFullYear(parseInt(dateParts[2]));
                 }
@@ -194,7 +176,6 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
               }
             }
             
-            // Si encontramos una celda que representa una fecha cercana a hoy
             if (bestMatch) {
               const containerRect = targetContainer.getBoundingClientRect();
               const cellRect = bestMatch.getBoundingClientRect();
@@ -208,25 +189,20 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
               return;
             }
             
-            // Como último recurso, usar el cálculo matemático (pero más preciso)
             const totalDuration = maxDate.getTime() - minDate.getTime();
             if (totalDuration <= 0) return;
             
             const elapsedDuration = today.getTime() - minDate.getTime();
             const scrollPercentage = elapsedDuration / totalDuration;
             
-            // Asegurar que el porcentaje esté entre 0 y 1
             const clampedPercentage = Math.max(0, Math.min(1, scrollPercentage));
             
-            // Usar el ancho del contenido interno en lugar del scrollWidth
             const chartWidth = ganttRef.current?.querySelector('.chart')?.scrollWidth || targetContainer.scrollWidth;
             const viewportWidth = targetContainer.clientWidth;
             
-            // Ajustar para centrar
             const scrollableWidth = Math.max(0, chartWidth - viewportWidth);
             const targetScroll = scrollableWidth * clampedPercentage;
             
-            // Centrar la posición
             const finalPosition = Math.max(0, Math.min(scrollableWidth, targetScroll - (viewportWidth / 2)));
             
             targetContainer.scrollTo({
@@ -236,7 +212,7 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
           } catch (error) {
             console.error("Error calculando la posición de scroll:", error);
           }
-        }, 800); // Aumentar delay para asegurar renderizado completo
+        }, 800); 
       }
     }));
 
@@ -245,13 +221,11 @@ const GanttChart = forwardRef<GanttChartRef, GanttChartProps>(
 
       ganttRef.current.innerHTML = "";
 
-      // Usar una altura más generosa para mostrar todas las tareas
       const baseHeight = 150; // Altura para headers y padding
       const taskHeight = 50;   // Altura por tarea (más generosa)
       const calculatedHeight = baseHeight + (subtasks.length * taskHeight);
       const minHeight = 500;   // Altura mínima más alta
       
-      // No limitar la altura máxima, que crezca según el contenido
       const ganttHeight = Math.max(minHeight, calculatedHeight);
 
       const ganttChart = new Gantt(ganttRef.current, subtasks, {

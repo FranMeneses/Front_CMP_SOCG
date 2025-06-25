@@ -151,7 +151,7 @@ export default function ResumeRelationship() {
           </div>
           
           {/* Plan de trabajo Huasco */}
-          <div className="flex flex-col p-4 border-r border-gray-400 lg:border-r lg:last:border-r-0 border-t border-gray-400 lg:border-t-0">
+          <div className="flex flex-col p-4 border-r border-gray-400 lg:border-r lg:last:border-r-0 border-t lg:border-t-0">
             <div className="w-full h-64 lg:h-80 xl:h-96">
               <PieChart
                 data={HuascoData}

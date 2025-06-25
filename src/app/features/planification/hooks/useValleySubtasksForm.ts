@@ -108,7 +108,7 @@ export const useValleySubtasksForm = (
      * @returns true si las fechas son válidas
      */
     const validateDates = (startDate: string, endDate: string): boolean => {
-        if (!startDate || !endDate) return true; // No validar si alguna fecha está vacía
+        if (!startDate || !endDate) return true; 
         
         const start = new Date(startDate);
         const end = new Date(endDate);
@@ -365,7 +365,6 @@ export const useValleySubtasksForm = (
             [field]: value
         }));
 
-        // Validar fechas cuando se cambie startDate o endDate
         if (field === "startDate") {
             validateDates(value, subtaskFormState.endDate);
         } else if (field === "endDate") {

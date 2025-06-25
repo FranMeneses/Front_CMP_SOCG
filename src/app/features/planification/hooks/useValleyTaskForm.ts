@@ -361,12 +361,10 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      * @return Booleano que indica si la transición es válida
      */
     const isValidStateTransition = useCallback((currentState: string | number, newState: string) => {
-        // Verificar si el estado actual es "En Proceso" (ya sea por nombre o por ID)
         const isCurrentStateInProcess = 
             currentState === "En Proceso" || 
             (typeof currentState === 'number' && states.find((s: ITaskStatus) => s.id === currentState)?.name === "En Proceso");
         
-        // Si el estado actual es "En Proceso", verificar que no cambie a estados no permitidos
         if (isCurrentStateInProcess && ["NO iniciada", "En Espera", "En Cumplimiento"].includes(newState)) {
             return false;
         }
@@ -544,7 +542,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
      * @returns Booleano que indica si el formulario es válido
      */
     const isFormValid = useMemo(() => {
-        // Si hay un error de validación, el formulario no es válido
         if (error) return false;
         
         if (!isEditing) {
