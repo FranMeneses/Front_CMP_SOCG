@@ -7,7 +7,6 @@ import { ITask } from "@/app/models/ITasks";
 export function useResume() {
     
     const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
-    const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
     const [tasksData, setTasksData] = useState<ITask[]>([]);  
     const [copiapoTasks, setCopiapoTasks] = useState<ITask[]>([]);
@@ -21,7 +20,6 @@ export function useResume() {
     const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState<number>(0);
 
     const [budgetLoading, setBudgetLoading] = useState<boolean>(true);
-    const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
     const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
 
     const [formattedBudget, setFormattedBudget] = useState<string>("");
@@ -273,9 +271,9 @@ export function useResume() {
         loading,
         budgetLoading,
         tasksData,
-        isSidebarOpen,
         selectedLegend,
-        selectedTaskId,
+        yearlyBudgetTotal,
+        yearlyExpensesTotal,
         formattedBudget,
         formattedExpenses,
         CopiapoData,

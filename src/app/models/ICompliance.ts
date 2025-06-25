@@ -45,6 +45,20 @@ export interface IComplianceSolped {
     registry: IComplianceRegistry;
 };
 
+export interface ComplianceFormState extends Partial<IComplianceForm> {
+    hasMemo?: boolean; 
+    hasSolped?: boolean;
+    hasHem?: boolean;
+    hasHes?: boolean;
+    provider?: string;
+    cartaAporteFile?: File | null;
+    minutaFile?: File | null;
+    memoAmount?: string | number;
+    solpedCECO?: number;
+    solpedAccount?: number; 
+    solpedAmount?: string | number;
+}
+
 export interface IComplianceForm {
     id: string;
     task: ITask;

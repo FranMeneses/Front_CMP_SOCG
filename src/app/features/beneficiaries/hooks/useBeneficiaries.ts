@@ -15,7 +15,7 @@ export const useBeneficiaries = () => {
     const [isEditContactModalOpen, setIsEditContactModalOpen] = useState<boolean>(false);
 
     const { data, loading: queryLoading, refetch } = useQuery(GET_BENEFICIARIES);
-    const [getBeneficiary, { data: beneficiaryData, loading }] = useLazyQuery(GET_BENEFICIARY);
+    const [getBeneficiary] = useLazyQuery(GET_BENEFICIARY);
     const [createContact] = useMutation(CREATE_CONTACT);
     const [createBeneficiary] = useMutation(CREATE_BENEFICIARY);
     const [updateContact] = useMutation(UPDATE_CONTACT);
@@ -139,7 +139,7 @@ export const useBeneficiaries = () => {
     
             const { id, name, position, email, phone } = contact;
     
-            const { data } = await updateContact({
+            await updateContact({
                 variables: {
                     id,
                     input: {
@@ -169,7 +169,7 @@ export const useBeneficiaries = () => {
         try {
             const { legalName, rut, address, entityType, representative, hasLegalPersonality } = updatedBeneficiary;
     
-            const { data } = await updateBeneficiary({
+            await updateBeneficiary({
                 variables: {
                     id: beneficiaryId,
                     input: {
@@ -184,7 +184,6 @@ export const useBeneficiaries = () => {
             });
     
             setIsEditModalOpen(false);
-            const updatedBeneficiaryData = data.updateBeneficiary;
 
             await refetch();
     

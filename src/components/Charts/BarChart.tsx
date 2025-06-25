@@ -15,7 +15,6 @@ type BarChartType = 'departments' | 'investment-lines';
 const BarChart = ({
     data,
     selectedLegend,
-    onLegendClick,
     chartType = 'departments',
   }: {
     data: BarChartData;

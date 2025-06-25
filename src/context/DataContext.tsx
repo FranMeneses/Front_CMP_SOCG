@@ -1,6 +1,6 @@
 'use client'
 import React, { createContext, useContext } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, ApolloError } from '@apollo/client';
 import { GET_ALL_FAENAS, GET_ALL_PROCESSES, GET_ALL_VALLEYS } from '@/app/api/tasks';
 import { IValley } from '@/app/models/IValleys';
 import { IFaena } from '@/app/models/IFaena';
@@ -13,9 +13,9 @@ interface DataContextType {
   loadingValleys: boolean;
   loadingFaenas: boolean;
   loadingProcesses: boolean;
-  errorValleys: any;
-  errorFaenas: any;
-  errorProcesses: any;
+  errorValleys: ApolloError | undefined;
+  errorFaenas: ApolloError | undefined;
+  errorProcesses: ApolloError | undefined;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);

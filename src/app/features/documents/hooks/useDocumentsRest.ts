@@ -1,14 +1,9 @@
 import axios from 'axios';
-import { useState } from 'react';
-import { IDocument } from '@/app/models/IDocuments';
 import { useDocumentsGraph } from './useDocumentsGraph';
 import { FormData as DocumentFormData } from '../hooks/useDocumentForms';
 import { UploadResponse } from '@/app/models/IAxios';
 
 export const useDocumentsRest = () => {
-    const [documents, setDocuments] = useState<IDocument[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
 
     const { handleUploadDocument } = useDocumentsGraph();
 
@@ -101,5 +96,5 @@ export const useDocumentsRest = () => {
         }
     };
 
-    return { documents, loading, error, handleUpload, handleDownload };
+    return { handleUpload, handleDownload };
 }

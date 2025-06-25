@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDocumentsRest } from "./useDocumentsRest";
 import { FormData as DocumentFormData } from './useDocumentForms';
 import { IDocumentList } from "@/app/models/IDocuments";
@@ -16,7 +16,6 @@ export function useDocumentsPage() {
     const { handleUpload } = useDocumentsRest();
     const { 
         fetchDocumentsByType, 
-        documentsWithTasks,
         enrichDocumentsWithTasksAndSubtasks
     } = useDocumentsGraph();
     

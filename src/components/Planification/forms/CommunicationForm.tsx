@@ -3,9 +3,10 @@ import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { useCommunicationTaskForm } from "@/app/features/planification/hooks/useCommunicationTaskForm";
 import { ITask } from "@/app/models/ITasks";
+import { ITaskForm } from "@/app/models/ICommunicationsForm";
 
 interface CommunicationFormProps {
-    onSave: any;
+    onSave: (task: Partial<ITaskForm>) => void;
     onCancel: () => void;
     isEditing?: boolean;
     selectedTask?: ITask;

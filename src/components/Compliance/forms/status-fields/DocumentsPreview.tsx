@@ -1,11 +1,11 @@
 import { useDocumentsRest } from "@/app/features/documents/hooks/useDocumentsRest";
-import { IComplianceSolped, IComplianceMemo } from "@/app/models/ICompliance";
+import { IComplianceSolped, IComplianceMemo, ComplianceFormState } from "@/app/models/ICompliance";
 import { IDocumentList } from "@/app/models/IDocuments";
 
 interface DocumentPreviewProps {
     cartaData?: IDocumentList;
     minutaData?: IDocumentList;
-    formState?: any;
+    formState?: ComplianceFormState;
     compact?: boolean;
     solpedData?: IComplianceSolped;  
     memoData?: IComplianceMemo;      

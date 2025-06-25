@@ -18,7 +18,6 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
         handleSeeInformation, 
         handleOnTaskClick,
         setIsComplianceModalOpen,
-        activeFilter: hookActiveFilter,
         selectedCompliance,
         isComplianceModalOpen,
         handleUpdateCompliance,

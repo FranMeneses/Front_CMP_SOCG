@@ -8,9 +8,6 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
     const [subtasksInitialValues, setSubtasksInitialValues] = useState<SubtasksInitialValues | undefined>(undefined);
     const [dateError, setDateError] = useState<string>("");
 
-    const [beneficiariesMap, setBeneficiariesMap] = useState<Record<string, string>>({});
-    const [beneficiariesIdToNameMap, setBeneficiariesIdToNameMap] = useState<Record<string, string>>({});
-
     const [createSubtask] = useMutation(CREATE_SUBTASK, {
         update(cache, { data: { createSubtask } }) {
             try {
@@ -184,19 +181,19 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      * @param selectedTaskId ID de la tarea a la que se asociará la subtarea
      * @returns 
      */
-    const handleCreateSubtask = async (subtask: ISubtask, selectedTaskId: string) => {
+    const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
             const { data } = await createSubtask({
                 variables: {
                     input: {
-                        taskId: selectedTaskId,
+                        taskId: subtask.taskId,
                         name: subtask.name,
                         description: subtask.description,
                         budget: subtask.budget,
                         startDate: subtask.startDate,
                         endDate: subtask.endDate,
                         statusId: 1,
-                        priorityId: subtask.priority,
+                        priorityId: subtask.priorityId,
                     },
                 },
             });
@@ -218,26 +215,24 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
      * Función para actualizar una subtarea existente
      * @description Maneja la actualización de una subtarea específica utilizando su ID
      * @param subtask Objeto que contiene los detalles actualizados de la subtarea
-     * @param selectedTaskId ID de la tarea a la que se asociará la subtarea
-     * @param selectedSubtask Objeto que representa la subtarea seleccionada para actualizar
      * @returns 
      */
-    const handleUpdateSubtask = async (subtask: ISubtask, selectedTaskId: string, selectedSubtask: ISubtask | null) => {
+    const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
             const { data } = await updateSubtask({
                 variables: {
-                    id: selectedSubtask?.id,
+                    id: subtask.id,
                     input: {
-                        taskId: selectedTaskId,
+                        taskId: subtask.taskId,
                         name: subtask.name,
                         description: subtask.description,
                         budget: subtask.budget,
                         expense: subtask.expense,
                         startDate: subtask.startDate,
                         endDate: subtask.endDate,
-                        statusId: subtask.finalDate ? 4 : subtask.status,
-                        priorityId: subtask.priority,
-                        finalDate: subtask.finalDate ? subtask.finalDate : null,
+                        statusId: subtask.statusId ?? subtask.status,
+                        priorityId: subtask.priorityId,
+                        finalDate: subtask.finalDate === "" ? undefined : subtask.finalDate,
                     },
                 },
             });
@@ -313,7 +308,7 @@ export const useValleySubtasksForm = (onSave: (subtask: ExtendedSubtaskValues) =
         if (priority.length > 0 && state.length > 0 && subtask) {
             fetchSubtaskInitialValues();
         }
-    }, [subtask, beneficiariesIdToNameMap, priority, state]);
+    }, [subtask, priority, state]);
 
     /**
      * Hook para manejar los cambios en los campos del formulario de subtareas

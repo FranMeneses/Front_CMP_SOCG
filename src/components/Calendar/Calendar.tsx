@@ -8,6 +8,7 @@ import { useState } from "react";
 import Modal from "../Modal";
 import CalendarForm from "@/components/Reportability/CalendarForm";
 import { IEvent } from "@/app/models/ICalendar";
+import { EventClickArg, DatesSetArg } from '@fullcalendar/core';
 
 interface CalendarComponentProps {
   calendarView: string;
@@ -18,12 +19,12 @@ interface CalendarComponentProps {
 const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMonthChange }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null); 
-  const [currentMonth, setCurrentMonth] = useState<{year: number, month: number}>(() => {
+  const [, setCurrentMonth] = useState<{year: number, month: number}>(() => {
     const now = new Date();
     return {year: now.getFullYear(), month: now.getMonth() + 1};
   });
 
-  const handleDatesSet = (info: any) => {
+  const handleDatesSet = (info: DatesSetArg) => {
     const start = new Date(info.start);
     const end = new Date(info.end);
     
@@ -39,13 +40,14 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMo
     }
   };
 
-  const handleEventClick = (info: any) => {
+  const handleEventClick = (info: EventClickArg) => {
     const [datePart] = info.event.startStr.split('T');
     const [year, month, day] = datePart.split('-');
     
     const formattedStar = `${day}/${month}/${year}`;
 
-    const [startDatePart] = info.event.extendedProps.startDate.split('T');
+    const startDateProp = info.event.extendedProps.startDate;
+    const [startDatePart] = startDateProp.split('T');
     const [startYear, startMonth, startDay] = startDatePart.split('-');
     const formattedStartDate = `${startDay}/${startMonth}/${startYear}`;
 
@@ -97,9 +99,9 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMo
       {isModalOpen && selectedEvent && (
         <Modal 
           onClose={closeModal} 
-          isOpen={isModalOpen} 
-          children={<CalendarForm selectedEvent={selectedEvent} />}
+          isOpen={isModalOpen}
         >
+          <CalendarForm selectedEvent={selectedEvent} />
         </Modal>
       )}
     </>

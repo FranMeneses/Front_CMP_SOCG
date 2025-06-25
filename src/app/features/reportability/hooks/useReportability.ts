@@ -23,9 +23,9 @@ export function useReportability() {
 
   const { isValleyManager, isCommunicationsManager, userRole, currentProcess } = useHooks();
 
-  const [ GetProcessesSubtask, { loading: processSubtasksLoading }] = useLazyQuery(SUBTASKS_BY_PROCESS);
+  const [ GetProcessesSubtask] = useLazyQuery(SUBTASKS_BY_PROCESS);
   const [ getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK);
-  const { data: processesData, loading: processesLoading } = useQuery(GET_ALL_PROCESSES);
+  const { data: processesData} = useQuery(GET_ALL_PROCESSES);
   const [eventsLoading, setEventsLoading] = useState(true);
 
   const { valleys, faenas } = useData();

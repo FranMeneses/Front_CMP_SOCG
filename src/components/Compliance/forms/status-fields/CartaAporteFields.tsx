@@ -1,6 +1,12 @@
 import { FileUploadButton } from "@/components/Documents/FileUploadButton";
+import { IComplianceForm } from "@/app/models/ICompliance";
+
+interface ComplianceFormState extends Partial<IComplianceForm> {
+    cartaAporteFile: File | null;
+}
+
 interface CartaAporteFieldsProps {
-    formState: any;
+    formState: ComplianceFormState;
     handleCartaAporteChange: (file: File) => void;
 }
 

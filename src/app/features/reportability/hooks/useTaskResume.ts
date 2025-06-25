@@ -4,6 +4,7 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { useCallback, useEffect, useState } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { ITask } from "@/app/models/ITasks";
+import { IProcess } from "@/app/models/IProcess";
 
 export function useTaskResume() {
     const [GetSubtasksByMonthYearAndProcess, 
@@ -36,7 +37,7 @@ export function useTaskResume() {
      */
     const handleGetTasksPercentage = useCallback(async () => {
         if (!taskData?.tasksByProcess || !Array.isArray(taskData.tasksByProcess)) {
-            console.log("No task data available or invalid format");
+            console.error("No task data available or invalid format");
             return;
         }
 
@@ -118,7 +119,7 @@ export function useTaskResume() {
      * @param processes - Lista de procesos.
      * @returns Número total de subtareas completadas.
      */
-    const handleGetTotalSubtasksByMonthYear = useCallback(async (month: string, year: number, processes: any[]) => {
+    const handleGetTotalSubtasksByMonthYear = useCallback(async (month: string, year: number, processes: IProcess[]) => {
         if (!month || !year || !Array.isArray(processes) || processes.length === 0) {
             console.warn("Invalid parameters for total subtasks:", { month, year, processesLength: processes?.length });
             return 0;

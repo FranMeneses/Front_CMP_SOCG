@@ -9,17 +9,17 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         subtasks: {
-          merge(existing = [], incoming) {
+          merge(_, incoming) {
             return incoming;
           },
         },
         tasks: {
-          merge(existing = [], incoming) {
+          merge(_, incoming) {
             return incoming;
           },
         },
         tasksByProcess: {
-          merge(existing = [], incoming) {
+          merge(_, incoming) {
             return incoming;
           },
         },

@@ -4,9 +4,12 @@ import { ITask, ITaskStatus } from "@/app/models/ITasks";
 import { GET_ALL_PROCESSES, GET_TASK, GET_TASK_STATUSES, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE } from "@/app/api/tasks";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { IProcess } from "@/app/models/IProcess";
+import { ITaskForm } from "@/app/models/ICommunicationsForm";
+
+type FormFieldValue = string | number | boolean | null;
 
 export const useCommunicationTaskForm = (
-    onSave: any, 
+    onSave: (task: Partial<ITaskForm>) => void, 
     isEditing?: boolean,
     selectedTask?: ITask,
     userRole?: string
@@ -38,7 +41,7 @@ export const useCommunicationTaskForm = (
      * Estado del formulario
      * @description Maneja el estado del formulario para la creación o edición de tareas
      */
-    const [formState, setFormState] = useState({
+    const [formState, setFormState] = useState<ITaskForm>({
         name: "",
         description: "",
         valleyId: "",
@@ -47,7 +50,7 @@ export const useCommunicationTaskForm = (
         statusId: 0,
         budget: 0,
         expense: 0,
-        applies: null as boolean | null,
+        applies: null,
     });
 
     /**
@@ -200,11 +203,11 @@ export const useCommunicationTaskForm = (
      * @param value Nuevo valor para el campo del formulario
      * @description Actualiza el estado del formulario con el nuevo valor del campo especificado
      */
-    const handleInputChange = useCallback((field: string, value: any) => {
+    const handleInputChange = useCallback((field: keyof ITaskForm, value: FormFieldValue) => {
         if (field === 'statusId') {
             const newStateId = typeof value === 'string' 
                 ? status.findIndex((s: ITaskStatus) => s.name === value) + 1
-                : value;
+                : Number(value);
             
             if (!isValidStateTransition(formState.statusId, newStateId)) {
                 const currentStateName = status.find((s: ITaskStatus) => s.id === formState.statusId)?.name || "estado actual";

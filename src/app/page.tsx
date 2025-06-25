@@ -14,7 +14,7 @@ export default function Home() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     setIsButtonDisabled(true);
-    setTimeout(e => {
+    setTimeout(() => {
       setIsButtonDisabled(false);
     }, 5000, e);
     handleLoginRedirect('gerente');

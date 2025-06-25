@@ -18,8 +18,8 @@ export function useCommunicationResume() {
     const [yearlyExpensesTotal, setYearlyExpensesTotal] = useState(0);
     
     
-    const [ getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
-    const [ getSubtasks, { data: subtasksData, loading: subtasksLoading } ]= useLazyQuery(GET_TASK_SUBTASKS);
+    const [getTasksByProcess] = useLazyQuery(GET_TASKS_BY_PROCESS);
+    const [getSubtasks]= useLazyQuery(GET_TASK_SUBTASKS);
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
     const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS);
 
@@ -226,6 +226,8 @@ export function useCommunicationResume() {
     subtasks,
     formattedBudget,
     formattedExpenses,
-    loading
+    loading,
+    yearlyBudgetTotal,
+    yearlyExpensesTotal,
   };
 };

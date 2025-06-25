@@ -1,14 +1,14 @@
 import { IDocumentList } from "@/app/models/IDocuments";
 import DocumentPreview from "./DocumentsPreview";
-import { IComplianceMemo, IComplianceSolped } from "@/app/models/ICompliance";
+import { ComplianceFormState, IComplianceMemo, IComplianceSolped } from "@/app/models/ICompliance";
 
 interface HemHesFieldsProps {
-    formState: any;
+    formState: ComplianceFormState;
     cartaData?: IDocumentList;
     minutaData?: IDocumentList;
     memoData?: IComplianceMemo;
     solpedData?: IComplianceSolped; 
-    handleInputChange: (field: string, value: any) => void;
+    handleInputChange: (field: keyof ComplianceFormState, value: boolean | string) => void;
 }
 
 export default function HemHesFields({ 
@@ -21,7 +21,19 @@ export default function HemHesFields({
 }: HemHesFieldsProps) {
     return (
         <>
-            <DocumentPreview cartaData={cartaData} minutaData={minutaData} formState={formState} memoData={memoData} solpedData={solpedData}/>
+            <DocumentPreview 
+                cartaData={cartaData} 
+                minutaData={minutaData} 
+                formState={{
+                    ...formState,
+                    hasMemo: formState.hasMemo ?? false,
+                    hasHem: formState.hasHem ?? false,
+                    hasHes: formState.hasHes ?? false,
+                    hasSolped: formState.hasSolped ?? false
+                }} 
+                memoData={memoData} 
+                solpedData={solpedData}
+            />
             
             <div className="mb-4 p-3 bg-gray-50 rounded-md">
                 <h3 className="text-sm font-medium mb-2">HEM / HES</h3>

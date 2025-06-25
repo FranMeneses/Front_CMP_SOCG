@@ -18,7 +18,6 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   selectedTaskId,
   subtasks,
   onTaskClick,
-  userRole,
 }) => {
 
   const { getColor, formatDate, calculateRemainingDays, getWidth, taskProgressMap } = useDynamicTable(tasks);

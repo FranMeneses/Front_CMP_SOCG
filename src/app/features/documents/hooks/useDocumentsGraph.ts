@@ -1,8 +1,6 @@
 import { CREATE_DOCUMENT, DELETE_DOCUMENT, GET_DOCUMENTS, GET_DOCUMENTS_BY_TYPE } from "@/app/api/documents";
-import { GET_SUBTASK } from "@/app/api/subtasks";
 import { GET_TASK } from "@/app/api/tasks";
-import { IDocument, IDocumentInput, IDocumentList } from "@/app/models/IDocuments";
-import { ISubtask } from "@/app/models/ISubtasks";
+import { IDocumentInput, IDocumentList } from "@/app/models/IDocuments";
 import { ITask } from "@/app/models/ITasks";
 import { useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
@@ -11,12 +9,11 @@ export function useDocumentsGraph() {
     const [documentsWithTasks, setDocumentsWithTasks] = useState<IDocumentList[]>([]);
     const [tasksLoaded, setTasksLoaded] = useState(false);
     
-    const { data: documentsData, loading: documentLoading, error, refetch } = useQuery(GET_DOCUMENTS, {
+    const { data: documentsData, loading: documentLoading, refetch } = useQuery(GET_DOCUMENTS, {
         fetchPolicy: 'network-only'
     });
     const [getDocumentsByType, { 
         loading: isLoadingByType, 
-        data: documentsByType 
     }] = useLazyQuery(GET_DOCUMENTS_BY_TYPE);
 
     const [createDocument] = useMutation(CREATE_DOCUMENT);
@@ -24,13 +21,7 @@ export function useDocumentsGraph() {
 
     const [getTaskDocuments, {
         loading: isLoadingTaskDocuments,
-        data: taskDocumentsData,}
-    ] = useLazyQuery(GET_TASK);
-
-    const [getSubtaskDocuments, {
-        loading: isLoadingSubtaskDocuments,
-        data: subtaskDocumentsData,
-    }] = useLazyQuery(GET_SUBTASK);
+    }] = useLazyQuery(GET_TASK);
 
     /**
      * Crea metadata en la base de datos
@@ -91,23 +82,6 @@ export function useDocumentsGraph() {
     };
 
     /**
-     * Obtiene la subtarea asociada a un documento
-     * @param idSubtarea ID de la subtarea
-     * @return Subtarea asociada al documento
-     */
-    const fetchSubtaskDocuments = async (idSubtarea: string) => {
-        try {
-            const response = await getSubtaskDocuments({ 
-                variables: { id: idSubtarea } 
-            });
-            return response.data?.subtask || null;
-        } catch (error) {
-            console.error("Error fetching subtask documents:", error);
-            return null;
-        }
-    };
-
-    /**
      * Función para eliminar un documento
      * @param idDocumento ID del documento a eliminar
      */
@@ -145,24 +119,8 @@ export function useDocumentsGraph() {
                 }
                 return doc;
             });
-        
-        const promisesSubtask = updatedDocuments
-            .filter((doc) => doc.id_subtarea)
-            .map(async (doc) => {
-                if (!doc.id_subtarea) return doc;
-                const subtask: ISubtask = await fetchSubtaskDocuments(doc.id_subtarea);
-                if (subtask) {
-                    doc.subtarea = subtask;
-                }
-                const task: ITask = await fetchTaskDocuments(doc.subtarea?.taskId || '');
-                if (task) {
-                    doc.tarea = task;
-                }
-                return doc;
-            });
 
         await Promise.all(promises);
-        await Promise.all(promisesSubtask);
         
         return updatedDocuments;
     };

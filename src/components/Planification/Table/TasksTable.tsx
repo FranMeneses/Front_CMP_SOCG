@@ -3,13 +3,16 @@ import React from "react";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { usePlanification } from "@/app/features/planification/hooks/usePlanification";
 import { useHooks } from "@/app/features/hooks/useHooks";
-import { ITaskDetails } from "@/app/models/ITasks";
+import { ITask, ITaskDetails } from "@/app/models/ITasks";
 import TaskRow from "./TaskRow";
 import SubtasksTable from "./SubtasksTable";
 import TaskFilters from "./TaskFilters";
 import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
 import { useTaskFilters } from "@/app/features/planification/hooks/useTaskFilters";
+import { ITaskForm } from "@/app/models/ICommunicationsForm";
+import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
+
 interface TasksTableProps {
     tasks: ITaskDetails[];
     subtasks: ISubtask[];
@@ -22,10 +25,8 @@ const TasksTable: React.FC<TasksTableProps> = ({
     tasks, 
     subtasks,
     taskStates,
-    activeFilter: propActiveFilter
 }) => {
     const { 
-
         getRemainingDays,
         getRemainingSubtaskDays,
         formatDate,
@@ -42,12 +43,10 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCancelSubtask,
         handleSaveTask,
         setIsCommunicationModalOpen,
-        setIsPopupPlanificationOpen ,
-        handleFilterClick: hookHandleFilterClick,
+        setIsPopupPlanificationOpen,
 
         isPopupOpen, 
         isPopupPlanificationOpen,
-        activeFilter: hookActiveFilter,
         isPopupSubtaskOpen,
         selectedInfoTask,
         selectedTask,
@@ -89,10 +88,59 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleLateFilterClick
     } = useTaskFilters(tasks, allProcesses, handleFilterByProcess);
 
-    const actualActiveFilter = propActiveFilter !== undefined ? propActiveFilter : hookActiveFilter;
     const actualTaskState = taskStates || taskState;
     const handleLocalFilterClick = (filter: string) => {
         handleStatusFilterChange(filter);
+    };
+
+    // Adaptador para comunicaciones
+    const saveCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
+        return handleSaveCommunication(task as ITask);
+    };
+
+    const updateCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
+        return handleUpdateCommunication(task as ITask);
+    };
+
+    // Adaptadores para subtareas
+    const updateSubtaskAdapter = (subtask: ExtendedSubtaskValues) => {
+        const convertedSubtask: ISubtask = {
+            id: selectedSubtask?.id || '',
+            taskId: expandedRow || '',
+            name: subtask.name || '',
+            description: subtask.description || '',
+            budget: Number(subtask.budget) || 0,
+            expense: Number(subtask.expense) || 0,
+            startDate: subtask.startDate || '',
+            endDate: subtask.endDate || '',
+            finalDate: subtask.finalDate || '',
+            statusId: Number(subtask.status) || 1,
+            priorityId: Number(subtask.priority) || 1,
+            status: { id: Number(subtask.status) || 1, name: '', percentage: 0 },
+            priority: { id: Number(subtask.priority) || 1, name: '' }
+        };
+        
+        return handleUpdateSubtask(convertedSubtask);
+    };
+
+    const createSubtaskAdapter = (subtask: ExtendedSubtaskValues) => {
+        const convertedSubtask: ISubtask = {
+            id: '',
+            taskId: expandedRow || '',
+            name: subtask.name || '',
+            description: subtask.description || '',
+            budget: Number(subtask.budget) || 0,
+            expense: Number(subtask.expense) || 0,
+            startDate: subtask.startDate || '',
+            endDate: subtask.endDate || '',
+            finalDate: subtask.finalDate || '',
+            statusId: Number(subtask.status) || 1,
+            priorityId: Number(subtask.priority) || 1,
+            status: { id: Number(subtask.status) || 1, name: '', percentage: 0 },
+            priority: { id: Number(subtask.priority) || 1, name: '' }
+        };
+        
+        return handleCreateSubtask(convertedSubtask);
     };
 
     const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subtasks;
@@ -169,7 +217,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 </div>
             </div>
             
-            
             <TaskModals
                 isPopupOpen={isPopupOpen}
                 setIsPopupOpen={setIsPopupOpen}
@@ -182,15 +229,15 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
                 selectedSubtask={selectedSubtask}
                 handleCancelSubtask={handleCancelSubtask}
-                handleUpdateSubtask={handleUpdateSubtask}
-                handleCreateSubtask={handleCreateSubtask}
+                handleUpdateSubtask={updateSubtaskAdapter}
+                handleCreateSubtask={createSubtaskAdapter}
                 selectedTaskId={expandedRow}
                 
                 isCommunicationModalOpen={isCommunicationModalOpen}
                 selectedTask={selectedTask}
                 setIsCommunicationModalOpen={setIsCommunicationModalOpen}
-                handleSaveCommunication={handleSaveCommunication}
-                handleUpdateCommunication={handleUpdateCommunication}
+                handleSaveCommunication={saveCommunicationAdapter}
+                handleUpdateCommunication={updateCommunicationAdapter}
                 handleCancelCommunication={handleCancelCommunication}
                 
                 isDeleteTaskModalOpen={isDeleteTaskModalOpen}

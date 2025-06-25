@@ -10,6 +10,8 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { IInfoTask, ITask } from '@/app/models/ITasks';
 import { Task } from '@/app/models/ITaskForm';
 import { useHooks } from '@/app/features/hooks/useHooks';
+import { ITaskForm } from '@/app/models/ICommunicationsForm';
+import { ExtendedSubtaskValues } from '@/app/models/ISubtaskForm';
 
 interface TaskModalsProps {
     isPopupOpen: boolean;
@@ -23,14 +25,14 @@ interface TaskModalsProps {
     setIsPopupSubtaskOpen: (isOpen: boolean) => void;
     selectedSubtask: ISubtask | null;
     handleCancelSubtask: () => void;
-    handleUpdateSubtask: (subtask: ISubtask) => void;
-    handleCreateSubtask: (subtask: ISubtask) => void;
+    handleUpdateSubtask: (subtask: ExtendedSubtaskValues) => void;
+    handleCreateSubtask: (subtask: ExtendedSubtaskValues) => void;
     selectedTaskId: string | null;
     
     isCommunicationModalOpen: boolean;
     setIsCommunicationModalOpen: (isOpen: boolean) => void;
-    handleSaveCommunication: (task: ITask) => void;
-    handleUpdateCommunication: (task: ITask) => void;
+    handleSaveCommunication: (task: Partial<ITaskForm> | ITask) => void | Promise<void>;
+    handleUpdateCommunication: (task: Partial<ITaskForm> | ITask) => void | Promise<void>;
     handleCancelCommunication: () => void;
 
     isDeleteTaskModalOpen: boolean;
@@ -50,20 +52,16 @@ interface TaskModalsProps {
 
 const TaskModals: React.FC<TaskModalsProps> = ({
     isPopupOpen,
-    setIsPopupOpen,
     selectedInfoTask,
     handleCancel,
     handleUpdateTask,
     handleSaveTask,
     isPopupSubtaskOpen,
-    setIsPopupSubtaskOpen,
     selectedSubtask,
     handleCancelSubtask,
     handleUpdateSubtask,
     handleCreateSubtask,
-    selectedTaskId,
     isCommunicationModalOpen,
-    setIsCommunicationModalOpen,
     handleSaveCommunication,
     handleUpdateCommunication,
     handleCancelCommunication,

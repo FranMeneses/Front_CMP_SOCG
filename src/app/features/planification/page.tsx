@@ -6,6 +6,8 @@ import TasksTable from "@/components/Planification/Table/TasksTable";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";
 import Image from "next/image";
+import { ITaskDetails } from "@/app/models/ITasks";
+import { ISubtask } from "@/app/models/ISubtasks";
 
 export default function Planification() {
     const {
@@ -68,8 +70,8 @@ export default function Planification() {
                                 <h1 className="text-3xl font-bold">Planificación</h1>
                             </div>
                             <TasksTable
-                            key={`tasks-table-${detailedTasks.length}-${subtasksToUse.length}-${JSON.stringify(detailedTasks.map((t: any) => t.id))}-${JSON.stringify(subtasksToUse.map((s: any) => s.id))}`}
-                            tasks={detailedTasks.slice().sort((a: any, b: any) => {
+                            key={`tasks-table-${detailedTasks.length}-${subtasksToUse.length}-${JSON.stringify(detailedTasks.map((t: ITaskDetails) => t.id))}-${JSON.stringify(subtasksToUse.map((s: ISubtask) => s.id))}`}
+                            tasks={detailedTasks.slice().sort((a: ITaskDetails, b: ITaskDetails) => {
                                 const aCompleted = a.status?.name === 'Completada';
                                 const bCompleted = b.status?.name === 'Completada';
                                 const aCanceled = a.status?.name === 'Cancelada';

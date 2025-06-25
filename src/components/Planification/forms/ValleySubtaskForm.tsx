@@ -3,9 +3,10 @@ import { useValleySubtasksForm } from "@/app/features/planification/hooks/useVal
 import DropdownMenu from "@/components/Dropdown";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { useHooks } from "@/app/features/hooks/useHooks";
+import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 
 interface ValleySubtaskFormProps {
-    onSave: any;
+    onSave: (subtask: ExtendedSubtaskValues) => void;
     onCancel: () => void;
     isEditing?: boolean;
     valley: string;

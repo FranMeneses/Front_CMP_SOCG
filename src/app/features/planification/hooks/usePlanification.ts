@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
@@ -9,9 +9,8 @@ import { useValleyTaskForm } from "./useValleyTaskForm";
 import { useValleySubtasksForm } from "./useValleySubtasksForm";
 import { useTasksData } from "./useTaskData";
 import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
-import { Task, TaskDetails } from "@/app/models/ITaskForm";
-import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
-import { ITaskForm } from "@/app/models/ICommunicationsForm";
+import { Task } from "@/app/models/ITaskForm";
+
 import { CREATE_COMPLIANCE, CREATE_REGISTRY, GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
 export const usePlanification = () => {
@@ -21,7 +20,6 @@ export const usePlanification = () => {
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
     const [isPopupPlanificationOpen, setIsPopupPlanificationOpen] = useState<boolean>(false);
     const [isCommunicationModalOpen, setIsCommunicationModalOpen] = useState<boolean>(false);
-    const [isComplianceManagerModalOpen, setIsComplianceManagerModalOpen] = useState<boolean>(false);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
     const [selectedTask, setSelectedTask] = useState<ITask | undefined>(undefined);
     const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -35,9 +33,9 @@ export const usePlanification = () => {
 
     const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
     
-    const dummyInfoTask = (task: TaskDetails) => {}; 
-    const dummyTask = (task: ITaskForm) => {}; 
-    const dummySubtask = (subtask: ExtendedSubtaskValues) => {}; 
+    const dummyInfoTask = () => {}; 
+    const dummyTask = () => {}; 
+    const dummySubtask = () => {}; 
 
     const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
     const valleySubtaskForm = useValleySubtasksForm(dummySubtask, undefined, async () => {
@@ -136,7 +134,7 @@ export const usePlanification = () => {
                     },
                 },
             });
-            const { data: registryData } = await createRegistry({
+            await createRegistry({
                 variables: {
                     input: {
                         complianceId: complianceData.create.id,
@@ -180,7 +178,6 @@ export const usePlanification = () => {
                             taskId: data.updateTask.id,
                         },
                     });
-                    console.log("Compliance Data:", complianceData.data.getTaskCompliance);
                     if (complianceData.data?.getTaskCompliance) {
                         const complianceId = complianceData.data.getTaskCompliance.id
                         await updateRegistry({
@@ -309,7 +306,7 @@ export const usePlanification = () => {
                 throw new Error("Task creation failed: ID is undefined.");
             }
 
-            const { data: infoData } = await createInfoTask({
+            await createInfoTask({
                 variables: {
                     input: {
                         taskId: data.createTask.id,
@@ -330,7 +327,7 @@ export const usePlanification = () => {
                     },
                 },
             });
-            const { data: registryData } = await createRegistry({
+            await createRegistry({
                 variables: {
                     input: {
                         complianceId: complianceData.create.id,
@@ -449,7 +446,7 @@ export const usePlanification = () => {
      */
     const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
-            await valleySubtaskForm.handleUpdateSubtask(subtask, selectedTaskId!, selectedSubtask);
+            await valleySubtaskForm.handleUpdateSubtask(subtask);
             
             setLocalSubtasks(prev => prev.map(s => 
                 s.id === selectedSubtask?.id ? {...subtask, id: selectedSubtask.id, taskId: selectedTaskId!} : s
@@ -533,7 +530,6 @@ export const usePlanification = () => {
         expandedRow,
         taskState,
         activeFilter,
-        isComplianceManagerModalOpen,
         allProcesses: useTasksData(currentValleyId ?? undefined, userRole).allProcesses,
     };
 };

@@ -1,9 +1,10 @@
 import { FileUploadButton } from "@/components/Documents/FileUploadButton";
 import { IDocumentList } from "@/app/models/IDocuments";
+import { ComplianceFormState } from "@/app/models/ICompliance";
 import DocumentPreview from "./DocumentsPreview";
 
 interface MinutaFieldsProps {
-    formState: any;
+    formState: ComplianceFormState;
     cartaData?: IDocumentList;
     handleMinutaChange: (file: File) => void;
 }
@@ -11,7 +12,7 @@ interface MinutaFieldsProps {
 export default function MinutaFields({ formState, cartaData, handleMinutaChange }: MinutaFieldsProps) {
     return (
         <>
-            <DocumentPreview cartaData={cartaData} />
+            <DocumentPreview cartaData={cartaData} formState={formState} />
             
             <div className="mb-4">
                 <label className="block text-sm font-medium mb-1">Subir Minuta</label>

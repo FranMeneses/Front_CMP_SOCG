@@ -3,7 +3,6 @@ import { useMutation } from "@apollo/client";
 import { useHooks } from "../../hooks/useHooks";
 import { ITask } from "@/app/models/ITasks";
 import { useComplianceData } from "./useComplianceData";
-import { ITaskForm } from "@/app/models/ICommunicationsForm";
 import { useComplianceForm } from "./useComplianceForm";
 import { IComplianceForm } from "@/app/models/ICompliance";
 import { UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
@@ -24,7 +23,7 @@ export const useCompliance = () => {
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
     const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>('Todos');
 
-    const dummyTask = (task: ITaskForm) => {}; 
+    const dummyTask = () => {}; 
 
     const complianceForm = useComplianceForm(dummyTask);
    
@@ -56,7 +55,7 @@ export const useCompliance = () => {
     const handleUpdateCompliance = async (compliance: IComplianceForm) => {
         if (compliance.statusId === 2 && compliance.cartaAporte === undefined) {
             try {
-                const { data } = await updateCompliance({
+                await updateCompliance({
                     variables: {
                         id: selectedCompliance?.id,
                         input: {
@@ -72,7 +71,7 @@ export const useCompliance = () => {
         }
         else if (compliance.statusId === 6) {
             try {
-                const { data: registryData } = await updateRegistry({
+                await updateRegistry({
                     variables: {
                         id: compliance.registryId,
                         input: {
@@ -88,7 +87,7 @@ export const useCompliance = () => {
                     }
                 })
                 try {
-                    const { data } = await updateCompliance({
+                    await updateCompliance({
                         variables: {
                             id: selectedCompliance?.id,
                             input: {
@@ -101,7 +100,7 @@ export const useCompliance = () => {
                     console.error("Error updating compliance", error);
                 }
                 try {
-                    const { data: taskData } = await updateTask({
+                    await updateTask({
                         variables: {
                             id: selectedCompliance?.task.id,
                             input: {
@@ -119,7 +118,7 @@ export const useCompliance = () => {
         }
         else {
             try {
-                const { data: registryData } = await updateRegistry({
+                await updateRegistry({
                     variables: {
                         id: compliance.registryId,
                         input: {
@@ -135,7 +134,7 @@ export const useCompliance = () => {
                     }
                 })
                 try {
-                    const { data } = await updateCompliance({
+                    await updateCompliance({
                         variables: {
                             id: selectedCompliance?.id,
                             input: {
@@ -186,7 +185,7 @@ export const useCompliance = () => {
      * @param taskId ID del compliance
      * @param userRole Rol del usuario
      */
-    const handleSeeInformation = async (complianceId: string, userRole: string) => {
+    const handleSeeInformation = async (complianceId: string ) => {
         setSelectedTaskId(complianceId);
             try {
                 const taskInfo = await complianceForm.handleGetCompliance(complianceId);

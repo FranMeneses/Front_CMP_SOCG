@@ -25,10 +25,11 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=8080
 # La URL del backend se pasará como variable de entorno en tiempo de ejecución
-ENV NEXT_PUBLIC_API_URL=""
+ENV NEXT_PUBLIC_API_URL="localhost:4000"
 
 # Copiar archivos necesarios desde la etapa de construcción
-COPY --from=builder /app/next.config.ts ./
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
@@ -37,4 +38,4 @@ COPY --from=builder /app/.next/static ./.next/static
 EXPOSE 8080
 
 # Comando para iniciar la aplicación
-CMD ["node", "server.js"] 
+CMD ["node", "server.js"]

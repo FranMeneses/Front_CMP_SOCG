@@ -1,4 +1,4 @@
 export interface IProcess {
-    id: string;
+    id: number;
     name: string;
 }

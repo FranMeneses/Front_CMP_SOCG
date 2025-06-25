@@ -3,7 +3,7 @@ import { useLazyQuery } from "@apollo/client";
 import { useCallback } from "react";
 
 export function useCalendarForms() {
-    const [getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK);
+    const [getTask] = useLazyQuery(GET_TASK);
 
     /**
      * Función para obtener el nombre de una tarea por su ID.

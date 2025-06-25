@@ -6,14 +6,13 @@ import { IInteraction, IInvestment, IOrigin, IRisk, IScope, IType } from "@/app/
 import { GET_TASK_STATUSES, GET_TASK, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, UPDATE_TASK, DELETE_TASK } from "@/app/api/tasks";
 import { IInfoTask, ITaskStatus } from "@/app/models/ITasks";
 import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
-import { ISubtask } from "@/app/models/ISubtasks";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
 import { GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
 import { IBeneficiary } from "@/app/models/IBeneficiary";
 
-export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask, subtask?: ISubtask) => {
+export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:string, isEditing?:boolean, infoTask?:IInfoTask) => {
     
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
@@ -199,7 +198,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 const { data: complianceData } = await getCompliance({
                     variables: { taskId: selectedTaskId },
                 });
-                const { data: registryUpdateData } = await updateRegistry({
+                await updateRegistry({
                     variables: {
                         id: complianceData?.getTaskCompliance.registries?.[0]?.id,
                         input: {
@@ -207,7 +206,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                         },
                     },
                 });
-                const {data: complianceUpdateData} = await updateCompliance({
+                await updateCompliance({
                     variables: {
                         id: complianceData?.getTaskCompliance.id,
                         input: {
@@ -217,7 +216,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 });
             };
 
-            const { data: infoData } = await updateInfoTask({
+            await updateInfoTask({
                 variables: {
                     id: selectedInfoTask?.id,
                     input: {

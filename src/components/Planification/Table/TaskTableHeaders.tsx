@@ -31,7 +31,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     handleUploadPlanification,
     handleCreateComplianceManager,
 }) => {
-    const { isCommunicationsManager, isValleyManager, isManager } = useHooks();
+    const { isCommunicationsManager, isManager } = useHooks();
 
     const getFilteredProcesses = () => {
         const defaultProcesses = [...PROCESS_FILTERS.DEFAULT];

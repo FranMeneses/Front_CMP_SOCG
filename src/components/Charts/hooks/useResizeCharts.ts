@@ -1,6 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, RefObject } from "react";
 
-export const useResizeCharts = (chartRef: React.RefObject<any>) => {
+interface Resizable {
+  resize: () => void;
+}
+
+export const useResizeCharts = <T extends Resizable>(chartRef: RefObject<T | null>) => {
     useEffect(() => {
         const handleResize = () => {
             if (chartRef.current) {

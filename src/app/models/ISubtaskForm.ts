@@ -14,11 +14,10 @@ export interface ExtendedSubtaskValues {
     expense?: number;
     status?: number;
     priority?: number;
-    
     name?: string;
     description?: string;
     startDate?: string;
     endDate?: string;
-    finishDate?: string;
+    finalDate?: string;
     state?: string;
 }

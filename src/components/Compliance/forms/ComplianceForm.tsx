@@ -12,7 +12,7 @@ import HemHesFields from "./status-fields/HEMHESFields";
 import ComplianceSummary from "./status-fields/ComplianceSummary";
 
 interface ComplianceFormProps {
-    onSave: any;
+    onSave: (compliance: Partial<IComplianceForm>) => void;
     onCancel: () => void;
     isEditing?: boolean;
     selectedCompliance?: IComplianceForm;
@@ -24,7 +24,6 @@ export default function ComplianceForm({
     onCancel, 
     isEditing = false, 
     selectedCompliance,
-    userRole
 }: ComplianceFormProps) {
     const { 
         dropdownItems, 
@@ -42,7 +41,6 @@ export default function ComplianceForm({
         onSave, 
         isEditing, 
         selectedCompliance,
-        userRole
     );
 
     const [documents, setDocuments] = useState({
@@ -188,7 +186,7 @@ export default function ComplianceForm({
                         onSelect={(value) => handleInputChange('statusId', value)}
                         isInModal={true}
                         selectedValue={selectedCompliance?.status ? dropdownItems.statuses.find((status:string) => status === selectedCompliance.status.name) : ""}
-                        disabled={formState.statusId > 1}
+                        disabled={formState.statusId? formState.statusId > 1 : false}
                         data-test-id="compliance-status-dropdown" 
                     />
                 </div>
@@ -212,12 +210,12 @@ export default function ComplianceForm({
                     className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
-                    {formState.statusId >= 2 && formState.statusId < 6 ? 
+                    {formState.statusId !== undefined && formState.statusId >= 2 && formState.statusId < 6 ? 
                         "Guardar y Avanzar" : saveButtonText}
                 </Button>
             </div>
 
-            {formState.statusId >= 2 && formState.statusId < 6 && (
+            {formState.statusId !== undefined && formState.statusId >= 2 && formState.statusId < 6 && (
                 <div className="text-xs text-blue-600 mt-1">
                     Al guardar, avanzará automáticamente al siguiente estado.
                 </div>

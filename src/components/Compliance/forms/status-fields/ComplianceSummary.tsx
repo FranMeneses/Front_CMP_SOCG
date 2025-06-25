@@ -1,9 +1,9 @@
 import { useDocumentsRest } from "@/app/features/documents/hooks/useDocumentsRest";
-import { IComplianceSolped, IComplianceMemo } from "@/app/models/ICompliance";
+import { ComplianceFormState, IComplianceSolped, IComplianceMemo } from "@/app/models/ICompliance";
 import { IDocumentList } from "@/app/models/IDocuments";
 
 interface ComplianceSummaryProps {
-    formState: any;
+    formState: ComplianceFormState;
     cartaData?: IDocumentList;
     minutaData?: IDocumentList;
     solpedData?: IComplianceSolped;
@@ -66,8 +66,8 @@ export default function ComplianceSummary({
                         </li>
                     )}
                     
-                    {formState.hasHem && <span>HEM registrada</span>}
-                    {formState.hasHes && <span>HES registrada</span>}
+                    {formState.hasHem && <li><span className="font-medium">HEM registrada</span></li>}
+                    {formState.hasHes && <li><span className="font-medium">HES registrada</span></li>}
                     
                     {formState.provider && (
                         <li className="flex items-center gap-1">

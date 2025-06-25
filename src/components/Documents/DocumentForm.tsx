@@ -4,8 +4,15 @@ import { FileUploadButton } from "./FileUploadButton";
 import { useDocumentForms } from "@/app/features/documents/hooks/useDocumentForms";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
+interface DocumentFormData {
+  documentType?: string;  
+  task?: string;          
+  file: File | null;
+}
+
+
 interface CommunicationFormProps {
-    onSave: (formData: any) => void;
+    onSave: (formData: DocumentFormData) => void;
     onCancel: () => void;
 }
 
@@ -27,7 +34,7 @@ export default function CommunicationForm({
 
     const handleSubmit = () => {
         if (isFormValid) {
-            onSave(formData); 
+            onSave(formData as DocumentFormData); 
         }
     };
 
@@ -38,7 +45,6 @@ export default function CommunicationForm({
             </div>
         );
     }
-
     return (
         <div className="font-[Helvetica]" data-test-id="communication-form">
             <div className="mb-4">

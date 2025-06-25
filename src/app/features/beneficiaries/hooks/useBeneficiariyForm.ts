@@ -29,9 +29,9 @@ export const useBeneficiaryForm = ({ initialValues, onSave }: UseBeneficiaryForm
      * @returns RUT formateado.
      */
     const formatRUT = (value: string): string => {
-        let rut = value.replace(/[^0-9kK]/g, '');
+        const rut = value.replace(/[^0-9kK]/g, '');
         let rutNumber = rut.slice(0, -1);
-        let dv = rut.slice(-1).toUpperCase();
+        const dv = rut.slice(-1).toUpperCase();
         
         if (rutNumber.length > 6) {
             rutNumber = rutNumber.slice(0, -6) + '.' + rutNumber.slice(-6, -3) + '.' + rutNumber.slice(-3);
@@ -53,8 +53,8 @@ export const useBeneficiaryForm = ({ initialValues, onSave }: UseBeneficiaryForm
         
         if (rut.length < 2) return false;
         
-        let rutNumber = rut.slice(0, -1);
-        let dv = rut.slice(-1).toUpperCase();
+        const rutNumber = rut.slice(0, -1);
+        const dv = rut.slice(-1).toUpperCase();
         
         let suma = 0;
         let multiplicador = 2;

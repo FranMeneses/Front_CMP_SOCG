@@ -10,7 +10,7 @@ export function useSchedule() {
   const { currentProcess } = useHooks();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
-  const [getTaskSubtasks, { loading: getTaskSubtasksLoading }] = useLazyQuery(GET_TASK_SUBTASKS, {
+  const [getTaskSubtasks] = useLazyQuery(GET_TASK_SUBTASKS, {
     fetchPolicy: "network-only",
   });
   const [isLoading, setIsLoading] = useState(true); 
@@ -20,7 +20,7 @@ export function useSchedule() {
     skip: !currentProcess,
   });
 
-  const [getTask, { loading: taskLoading }] = useLazyQuery(GET_TASK, {
+  const [getTask] = useLazyQuery(GET_TASK, {
     fetchPolicy: "network-only",
   });
   

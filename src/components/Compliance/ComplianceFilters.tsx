@@ -11,12 +11,11 @@ interface ComplianceFiltersProps {
 }
 
 const ComplianceFilters: React.FC<ComplianceFiltersProps> = ({
-  compliance,
   selectedStatus,
   onStatusChange
 }) => {
     
-    const { data: StatusData, loading: StatusLoading, error: StatusError } = useQuery(GET_COMPLIANCE_STATUSES);
+    const { data: StatusData } = useQuery(GET_COMPLIANCE_STATUSES);
 
     const statuses = StatusData.getAllComplianceStatuses.map((status: IComplianceStatus) => status.name);
 

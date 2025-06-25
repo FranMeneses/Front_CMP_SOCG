@@ -1,5 +1,5 @@
 import { ChartOptions } from "chart.js";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartDataLabels, { Context as DataLabelsContext } from 'chartjs-plugin-datalabels';
 
 export const PieChartOptions: ChartOptions<'doughnut'> = {
     animation: {
@@ -19,10 +19,11 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
             style: 'italic',
           },
         },
-        onHover: (_event) => {
-          const target = _event.native?.target as HTMLElement;
+        onHover: function(this, event) {
+          const nativeEvent = event.native as Event | null;
+          const target = nativeEvent?.target as HTMLElement | null;
           if (target) {
-              target.style.cursor = 'pointer';
+            target.style.cursor = 'pointer';
           }
         },
       },
@@ -46,15 +47,17 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
         },
       },
       datalabels: {
-        display: (context: any) => {
-          return context.parsed !== 0;
+        display: (context: DataLabelsContext) => {
+          const data = (context.dataset?.data ?? []) as Array<number | null | undefined>;
+          const value = data[context.dataIndex];
+          return typeof value === 'number' && value !== 0;
         },
         color: '#000',
         font: {
           size: 12,
           weight: 'bold',
         },
-        formatter: (value: number, context: any) => {
+        formatter: (value: number) => {
           return value.toString();
         },
         anchor: 'end',
@@ -71,11 +74,11 @@ export const PieChartOptions: ChartOptions<'doughnut'> = {
           right: 6,
         },
         listeners: {
-          enter: function(context: any) {
-            context.chart.draw();
+          enter: function(context: DataLabelsContext) {
+            return context.chart.draw();
           },
-          leave: function(context: any) {
-            context.chart.draw();
+          leave: function(context: DataLabelsContext) {
+            return context.chart.draw();
           }
         }
       },

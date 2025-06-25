@@ -1,12 +1,13 @@
 import { IDocumentList } from "@/app/models/IDocuments";
 import DocumentPreview from "./DocumentsPreview";
-import { useState, useEffect } from "react";
+import { ComplianceFormState } from "@/app/models/ICompliance";
+
 
 interface MemorandumFieldsProps {
-    formState: any;
+    formState: ComplianceFormState;
     cartaData?: IDocumentList;
     minutaData?: IDocumentList;
-    handleInputChange: (field: string, value: any) => void;
+    handleInputChange: (field: keyof ComplianceFormState, value: string | number | boolean) => void;
 }
 
 export default function MemorandumFields({ 
@@ -84,7 +85,7 @@ export default function MemorandumFields({
 
     return (
         <>
-            <DocumentPreview cartaData={cartaData} minutaData={minutaData}/>
+            <DocumentPreview cartaData={cartaData} minutaData={minutaData} formState={formState}/>
             
             <div className="mb-4 p-3 bg-gray-50 rounded-md">
                 <h3 className="text-sm font-medium mb-2">MEMORANDUM y/o SOLPED</h3>

@@ -2,11 +2,12 @@
 import { useHooks } from "@/app/features/hooks/useHooks";
 import { useValleyTaskForm } from "@/app/features/planification/hooks/useValleyTaskForm";
 import { IInfoTask } from "@/app/models/ITasks";
+import { TaskDetails } from "@/app/models/ITaskForm";
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 
 interface ValleyTaskFormProps {
-  onSave: any;
+  onSave: (task: TaskDetails) => void;
   onCancel: () => void;
   details?: boolean;
   isEditing?: boolean;

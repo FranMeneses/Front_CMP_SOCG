@@ -10,33 +10,28 @@ import { FormData } from "../../documents/hooks/useDocumentForms";
 import { CREATE_SOLPED, GET_REGISTRY_SOLPED } from "@/app/api/solped";
 import { CREATE_MEMO, GET_REGISTRY_MEMO } from "@/app/api/memo";
 
+interface ComplianceFormState extends Partial<IComplianceForm> {
+    name: string;
+    description: string;
+    valleyId: string;
+    faenaId: string;
+    processId: string;
+    cartaAporteFile: File | null;
+    minutaFile: File | null;
+    memoAmount?: number;
+    solpedCECO?: number;
+    solpedAccount?: number;
+    solpedAmount?: number;
+}
+
+type FormFieldValue = string | number | boolean | File | null | undefined;
+
 export const useComplianceForm = (
-    onSave: any,
+    onSave: (compliance: Partial<IComplianceForm>) => void,
     isEditing?: boolean,
     selectedCompliance?: IComplianceForm,
-    userRole?: string
 ) => {
-    const [formState, setFormState] = useState<{
-        name: string;
-        description: string;
-        valleyId: string;
-        faenaId: string;
-        processId: string;
-        statusId: number;
-        cartaAporte: boolean;
-        cartaAporteFile: File | null;
-        minuta: boolean;
-        minutaFile: File | null;
-        hasMemo: boolean;
-        hasSolped: boolean;
-        hasHem: boolean;
-        hasHes: boolean;
-        provider: string;
-        memoAmount?: number;
-        solpedCECO?: number;
-        solpedAccount?: number;
-        solpedAmount?: number;
-    }>({
+    const [formState, setFormState] = useState<ComplianceFormState>({
         name: "",
         description: "",
         valleyId: "",
@@ -84,7 +79,7 @@ export const useComplianceForm = (
      */
     const handleGetCarta = async () => {
         try {
-            const tipo = documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "";
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "";
             const { data } = await getDocument({
                 variables: {
                     taskId: selectedCompliance?.task.id || "",
@@ -94,7 +89,7 @@ export const useComplianceForm = (
             return data.documentByTaskAndType;
         }
         catch (error) {
-            console.error("Error fetching document:", error);
+            console.error("Error al obtener carta de aporte:", error);
             return null;
         }
     };
@@ -299,10 +294,10 @@ export const useComplianceForm = (
 
     /**
      * Función que maneja el cambio de los campos del formulario.
-     * @param {string} field - Nombre del campo que se está modificando.
-     * @param {any} value - Nuevo valor para el campo.
+     * @param field - Nombre del campo que se está modificando
+     * @param value - Nuevo valor para el campo
      */
-    const handleInputChange = (field: string, value: any) => {
+    const handleInputChange = (field: keyof ComplianceFormState, value: FormFieldValue) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -321,7 +316,7 @@ export const useComplianceForm = (
 
         let nextStatusId = formState.statusId;
         
-        if (formState.statusId >= 2 && formState.statusId < 6) {
+        if (formState.statusId ? formState.statusId >= 2 && formState.statusId < 6 : 0) {
             if (
                 (formState.statusId === 2 && formState.cartaAporteFile) ||
                 (formState.statusId === 3 && formState.minutaFile) ||
@@ -370,7 +365,7 @@ export const useComplianceForm = (
             handleUploadFile(document);
         }
         if (formState.hasMemo && formState.statusId === 4) {
-            let value = Number(formState.memoAmount);
+            const value = Number(formState.memoAmount);
             const memoData = {
                 registryId: registry[0]?.id || "",
                 value: value,
@@ -378,9 +373,9 @@ export const useComplianceForm = (
             handleCreateMemo(memoData);
         }
         if (formState.hasSolped && formState.statusId === 4) {
-            let value = Number(formState.solpedAmount);
-            let ceco = Number(formState.solpedCECO);
-            let account = Number(formState.solpedAccount);
+            const value = Number(formState.solpedAmount);
+            const ceco = Number(formState.solpedCECO);
+            const account = Number(formState.solpedAccount);
             const solpedData = {
                 registryId: registry[0]?.id || "",
                 ceco: ceco,

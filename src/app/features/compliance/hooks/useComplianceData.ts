@@ -1,19 +1,13 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_APPLIED_COMPLIANCES } from "@/app/api/compliance";
-import { TaskDetails } from "@/app/models/ITaskForm";
 import { ICompliance } from "@/app/models/ICompliance";
 
-export const useComplianceData = (currentValleyId: number | undefined, userRole:string) => {
+export const useComplianceData = () => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [tasksData, setTasksData] = useState<ICompliance[]>([]);
 
-  const [isLoadingSubtasks, setIsLoadingSubtasks] = useState<boolean>(false);
-  const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
-
-
-  const dummyTask = (task: TaskDetails) => {};
 
   const { 
     data: allCompliancesData, 
@@ -32,8 +26,7 @@ export const useComplianceData = (currentValleyId: number | undefined, userRole:
   };
   
 
-  const loading = mainQueryLoading || isLoadingSubtasks || isLoadingTaskDetails || 
-                  isInitialLoad 
+  const loading = mainQueryLoading || isInitialLoad 
 
 
   /**
@@ -54,6 +47,7 @@ export const useComplianceData = (currentValleyId: number | undefined, userRole:
     loading,
     error,
     activeFilter,
+    tasksData,
     refetch,
     setActiveFilter,
   };

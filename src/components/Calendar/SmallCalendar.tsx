@@ -1,9 +1,10 @@
 import React from 'react';
+import { IEvent } from '@/app/models/ICalendar';
 
 interface SmallCalendarProps {
   month: number;
   year: number;
-  events: any[];
+  events: IEvent[]; 
 }
 
 const SmallCalendar: React.FC<SmallCalendarProps> = ({ month, year, events }) => {
@@ -34,13 +35,14 @@ const SmallCalendar: React.FC<SmallCalendarProps> = ({ month, year, events }) =>
   
   for (let day = 1; day <= daysInMonth; day++) {
     const hasEvents = events.some(event => {
-      let eventDate;
+      let eventDate: Date;
       
       if (typeof event.start === 'string') {
         const dateStr = event.start.split('T')[0]; 
         const [yearStr, monthStr, dayStr] = dateStr.split('-');
         eventDate = new Date(parseInt(yearStr), parseInt(monthStr) - 1, parseInt(dayStr));
       } else {
+        // Si no es string, asumimos que es una fecha o podemos convertirlo
         eventDate = new Date(event.start);
       }
       

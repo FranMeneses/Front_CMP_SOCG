@@ -21,12 +21,12 @@ export function useDocumentForms() {
     
     const { isValleyManager, currentProcess } = useHooks();
 
-    const {data: tasksData, loading: isLoadingTask, error: taskError} = useQuery(GET_TASKS, {
+    const {data: tasksData, loading: isLoadingTask} = useQuery(GET_TASKS, {
         skip: isValleyManager,
     });
-    const {data: documentTypesData, loading: isLoadingDocumentsTypes, error: documentsTypesError} = useQuery(GET_ALL_DOCUMENT_TYPES);
+    const {data: documentTypesData, loading: isLoadingDocumentsTypes} = useQuery(GET_ALL_DOCUMENT_TYPES);
 
-    const {data: processTaskData, loading: isLoadingProcessTask, error: processTaskError} = useQuery(GET_TASKS_BY_PROCESS, {
+    const {data: processTaskData, loading: isLoadingProcessTask} = useQuery(GET_TASKS_BY_PROCESS, {
         variables: { processId: currentProcess?.id },
         skip: !isValleyManager,
     });

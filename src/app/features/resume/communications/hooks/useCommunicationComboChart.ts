@@ -2,9 +2,8 @@ import { GET_PROCESS_MONTHLY_BUDGETS, GET_PROCESS_MONTHLY_EXPENSES } from "@/app
 import { ITaskBudget, ITaskExpense } from "@/app/models/ITasks";
 import { Months } from "@/constants/months";
 import { CommunicationsColors } from "@/constants/colors";
-import { useData } from "@/context/DataContext";
 import { useLazyQuery } from "@apollo/client/react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
 export function useCommunicationComboChart() {
   const [getMonthlyBudgets] = useLazyQuery(GET_PROCESS_MONTHLY_BUDGETS);
