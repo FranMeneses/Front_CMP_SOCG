@@ -37,12 +37,12 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       admitedRoles: ["encargado cumplimiento"]
     },    
     {
-      title: "Compliance Histórico",
+      title: "Histórial",
       href: "/features/history",
       displayHref: "/history",
       icon: History,
       isActive: pathname === "/features/history",
-      admitedRoles: ["encargado cumplimiento"]
+      admitedRoles: ["encargado cumplimiento", "superintendente de relacionamiento", "superintendente de comunicaciones", "gerente"]
     },
     {
       title: "Planificación",

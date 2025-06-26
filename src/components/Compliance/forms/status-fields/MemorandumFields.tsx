@@ -45,7 +45,8 @@ export default function MemorandumFields({
                     <div className="mb-2">
                         <label className="block text-xs font-medium mb-1">CECO</label>
                         <input
-                            type="text"
+                            type="number"
+                            min={0}
                             value={formState.solpedCECO || ''}
                             onChange={(e) => handleInputChange('solpedCECO', e.target.value)}
                             className="w-full border rounded px-3 py-2 text-xs"
@@ -55,7 +56,8 @@ export default function MemorandumFields({
                     <div className="mb-2">
                         <label className="block text-xs font-medium mb-1">Cuenta</label>
                         <input
-                            type="text"
+                            type="number"
+                            min={0}
                             value={formState.solpedAccount || ''}
                             onChange={(e) => handleInputChange('solpedAccount', e.target.value)}
                             className="w-full border rounded px-3 py-2 text-xs"
@@ -71,6 +73,19 @@ export default function MemorandumFields({
                                 min={0}
                                 value={formState.solpedAmount || ''}
                                 onChange={(e) => handleInputChange('solpedAmount', e.target.value)}
+                                className="w-full border rounded px-3 py-2 text-xs"
+                                placeholder="Ingrese el monto asociado a la SOLPED"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-xs font-medium mb-1">Número de SOLPED</label>
+                        <div className="flex items-center">
+                            <input
+                                type="number"
+                                min={0}
+                                value={formState.solpedMemoSap || ''}
+                                onChange={(e) => handleInputChange('solpedMemoSap', e.target.value)}
                                 className="w-full border rounded px-3 py-2 text-xs"
                                 placeholder="Ingrese el monto asociado a la SOLPED"
                             />

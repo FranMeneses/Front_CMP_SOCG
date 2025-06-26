@@ -30,10 +30,18 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
   const [animatingRowIds, setAnimatingRowIds] = useState<Record<string, string>>({});
   
   useEffect(() => {
+    const subtasksMap = new Map();
+    
     const filtered = subtasks.filter(subtask => subtask.taskId === taskId);
     
+    filtered.forEach(subtask => {
+      subtasksMap.set(subtask.id, subtask);
+    });
+    
+    const uniqueSubtasks = Array.from(subtasksMap.values());
+    
     const currentIds = new Set(localSubtasks.map(s => s.id));
-    const newSubtasks = filtered.filter(s => !currentIds.has(s.id));
+    const newSubtasks = uniqueSubtasks.filter(s => !currentIds.has(s.id));
     
     if (newSubtasks.length > 0) {
       const newAnimations: Record<string, string> = {};
@@ -47,7 +55,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
       }, 1000);
     }
     
-    setLocalSubtasks(filtered);
+    setLocalSubtasks(uniqueSubtasks);
   }, [subtasks, taskId]);
   
   const handleDelete = (id: string) => {

@@ -51,6 +51,8 @@ export const useComplianceForm = (
         solpedAccount: undefined,
         solpedCECO: undefined,
         solpedAmount: undefined,
+        solpedMemoSap: undefined,
+        hesHemSap: undefined,
     });
 
     const {data: complianceStatusData } = useQuery(GET_COMPLIANCE_STATUSES);
@@ -168,11 +170,11 @@ export const useComplianceForm = (
         try {
             const { data } = await createSolped({
                 variables: {
-                    input : {
+                    input: {
                         registryId: solpedData.registryId,
-                        ceco: solpedData.ceco,
-                        account: solpedData.account,
-                        value: solpedData.value,
+                        ceco: Number(solpedData.ceco),
+                        account: Number(solpedData.account),
+                        value: Number(solpedData.value),
                     }
                 }
             });
@@ -285,6 +287,8 @@ export const useComplianceForm = (
                 minutaFile: null,
                 hasMemo: selectedCompliance.hasMemo || false,
                 hasSolped: selectedCompliance.hasSolped || false,
+                solpedMemoSap: selectedCompliance.solpedMemoSap || undefined,
+                hesHemSap: selectedCompliance.hesHemSap || undefined,
                 hasHem: selectedCompliance.hasHem || false,
                 hasHes: selectedCompliance.hasHes || false,
                 provider: selectedCompliance.provider || "",
@@ -320,9 +324,14 @@ export const useComplianceForm = (
             if (
                 (formState.statusId === 2 && formState.cartaAporteFile) ||
                 (formState.statusId === 3 && formState.minutaFile) ||
-                (formState.statusId === 4 && (formState.hasMemo || formState.hasSolped)) ||
                 (formState.statusId === 5 && (formState.hasHem || formState.hasHes) && formState.provider)
             ) {
+                nextStatusId = formState.statusId + 1;
+            }
+            else if (formState.statusId === 4 && formState.hasMemo) {
+                nextStatusId = formState.statusId + 2; 
+            }
+            else if (formState.statusId === 4 && formState.hasSolped) {
                 nextStatusId = formState.statusId + 1;
             }
         }
@@ -336,7 +345,6 @@ export const useComplianceForm = (
                 processId: formState.processId ? parseInt(formState.processId) : null,
             },
             statusId: nextStatusId,
-            applies: true, 
             cartaAporte: formState.cartaAporte || false,
             minuta: formState.minuta || false,
             hasMemo: formState.hasMemo || false,
@@ -364,14 +372,20 @@ export const useComplianceForm = (
             };
             handleUploadFile(document);
         }
+        
         if (formState.hasMemo && formState.statusId === 4) {
             const value = Number(formState.memoAmount);
             const memoData = {
                 registryId: registry[0]?.id || "",
                 value: value,
             };
-            handleCreateMemo(memoData);
+            await handleCreateMemo(memoData);
+            compliance = {
+                ...compliance,
+                endDate: new Date().toISOString(),
+            };
         }
+
         if (formState.hasSolped && formState.statusId === 4) {
             const value = Number(formState.solpedAmount);
             const ceco = Number(formState.solpedCECO);
@@ -382,12 +396,19 @@ export const useComplianceForm = (
                 account: account,
                 value: value,
             };
-            handleCreateSolped(solpedData);
+            await handleCreateSolped(solpedData);
+            compliance = {
+                ...compliance,
+                solpedMemoSap: Number(formState.solpedMemoSap) || 0,
+            };
+            
         }
+
         if (formState.statusId === 5) {
             compliance = {
                 ...compliance,
                 endDate: new Date().toISOString(),
+                hesHemSap: Number(formState.hesHemSap) || 0,
             };
         }
         onSave(compliance);

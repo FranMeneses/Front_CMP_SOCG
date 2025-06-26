@@ -65,6 +65,23 @@ export default function HemHesFields({
                             <span className="ml-2 text-xs">HES</span>
                         </label>
                     </div>
+                    { (formState.hasHem || formState.hasHes) && (
+                        <div>
+                            <label className="block text-xs font-medium mb-1">
+                                Número de {formState.hasHem ? "HEM" : "HES" }
+                            </label>
+                            <div className="flex items-center">
+                                <input
+                                    type="number"
+                                    min={0}
+                                    value={formState.hesHemSap || ''}
+                                    onChange={(e) => handleInputChange('hesHemSap', e.target.value)}
+                                    className="w-full border rounded px-3 py-2 text-xs"
+                                    placeholder="Ingrese el número asociado a SAP"
+                                />
+                            </div>
+                        </div>
+                    )}                    
                 </div>
                 <div className="mb-3">
                     <label className="block text-xs font-medium mb-1">Proveedor</label>

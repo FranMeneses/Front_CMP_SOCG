@@ -186,7 +186,7 @@ export default function ComplianceForm({
                         onSelect={(value) => handleInputChange('statusId', value)}
                         isInModal={true}
                         selectedValue={selectedCompliance?.status ? dropdownItems.statuses.find((status:string) => status === selectedCompliance.status.name) : ""}
-                        disabled={formState.statusId? formState.statusId > 1 : false}
+                        disabled={true}
                         data-test-id="compliance-status-dropdown" 
                     />
                 </div>

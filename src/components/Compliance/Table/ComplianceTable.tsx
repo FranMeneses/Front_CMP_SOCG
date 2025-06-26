@@ -37,9 +37,8 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
                 id: selectedCompliance.id,
                 task: selectedCompliance.task,
                 statusId: partialCompliance.statusId ?? selectedCompliance.statusId,
-                registryId: selectedCompliance.registryId,
+                registryId: selectedCompliance.registries?.[0]?.id,
             };
-            
             handleUpdateCompliance(fullCompliance);
         } else {
             console.error("No hay un cumplimiento seleccionado para actualizar");

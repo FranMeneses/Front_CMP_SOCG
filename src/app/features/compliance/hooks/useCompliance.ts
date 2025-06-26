@@ -51,23 +51,7 @@ export const useCompliance = () => {
      * @param compliance Cumplimiento de la tarea a actualizar
      */
     const handleUpdateCompliance = async (compliance: IComplianceForm) => {
-        if (compliance.statusId === 2 && compliance.cartaAporte === undefined) {
-            try {
-                await updateCompliance({
-                    variables: {
-                        id: selectedCompliance?.id,
-                        input: {
-                            taskId: selectedCompliance?.task.id,
-                            statusId: compliance.statusId,
-                        }
-                    }
-                })
-            }
-            catch (error) {
-                console.error("Error updating compliance task:", error);
-            }
-        }
-        else if (compliance.statusId === 6) {
+        if (compliance.statusId === 6) {
             try {
                 await updateRegistry({
                     variables: {
@@ -81,6 +65,8 @@ export const useCompliance = () => {
                             es_solped: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasSolped : undefined,
                             es_memo: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasMemo : undefined,
                             endDate: (compliance.endDate) ? compliance.endDate : undefined,
+                            solpedMemoSap: (compliance.hasSolped || compliance.hasMemo) ? compliance.solpedMemoSap : undefined,
+                            hesHemSap: (compliance.hasHem || compliance.hasHes) ? compliance.hesHemSap : undefined,
                         }
                     }
                 })
@@ -128,6 +114,8 @@ export const useCompliance = () => {
                             es_solped: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasSolped : undefined,
                             es_memo: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasMemo : undefined,
                             endDate: (compliance.endDate) ? compliance.endDate : undefined,
+                            solpedMemoSap: (compliance.hasSolped || compliance.hasMemo) ? compliance.solpedMemoSap : undefined,
+                            hesHemSap: (compliance.hasHem || compliance.hasHes) ? compliance.hesHemSap : undefined,
                         }
                     }
                 })
@@ -199,6 +187,8 @@ export const useCompliance = () => {
                             hasHem: taskRegistry[0].hem || false,
                             hasHes: taskRegistry[0].hes || false,
                             provider: taskRegistry[0].provider || "",
+                            hesHemSap: taskRegistry[0].hesHemSap || 0,
+                            solpedMemoSap: taskRegistry[0].solpedMemoSap || 0,
                         };
                         setSelectedCompliance(complianceWithRegistry);
                         setIsComplianceModalOpen(true);
