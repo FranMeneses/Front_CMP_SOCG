@@ -11,11 +11,17 @@ export const useTaskFilters = (
     const [filteredTasks, setFilteredTasks] = useState(tasks);
     const [activeStatusFilter, setActiveStatusFilter] = useState<string | null>(null);
     const [isLateFilterActive, setIsLateFilterActive] = useState<boolean>(false);
-
+    const [processTasksCache, setProcessTasksCache] = useState<ITaskDetails[]>([]);
     
+    /**
+     * Hook para inicializar el estado de las tareas filtradas cuando no hay filtros activos.
+     * @description Si no hay filtros activos, se inicializa el estado de las tareas filtradas con todas las tareas disponibles.
+     */
     useEffect(() => {
-        setFilteredTasks(tasks);
-    }, [tasks]);
+        if (!activeStatusFilter && !isLateFilterActive) {
+            setFilteredTasks(tasks);
+        }
+    }, [tasks, activeStatusFilter, isLateFilterActive]);
     
     /**
      * Función para manejar el cambio de filtro de procesos.
@@ -23,150 +29,116 @@ export const useTaskFilters = (
      * @returns {Promise<void>}
      */
     const handleProcessFilterChange = async (item: string) => {
-        const currentStatusFilter = activeStatusFilter;
-        const currentLateFilter = isLateFilterActive;
-        
-        setIsLateFilterActive(false);
-        
-        if (item === "Todos los procesos") {
-            setSelectedProcess(null);
+        try {
+            setActiveStatusFilter(null);
+            setIsLateFilterActive(false);
             
-            if (currentStatusFilter) {
-                const filteredByStatus = tasks.filter(task => 
-                    task.status?.name === currentStatusFilter
-                );
-                setFilteredTasks(filteredByStatus);
-            } else if (currentLateFilter) {
-                const currentDate = new Date();
-                const delayedTasks = tasks.filter(task => {
-                    if (!task.endDate) return false;
-                    const endDate = new Date(task.endDate);
-                    return endDate < currentDate && 
-                        task.status?.name !== "Completada" && 
-                        task.status?.name !== "Cancelada";
-                });
-                setFilteredTasks(delayedTasks);
-                setIsLateFilterActive(true);
-            } else {
-                setFilteredTasks(tasks);
+            if (item === "Todos los procesos") {
+                setSelectedProcess(null);
+                
+                const allTasks = await handleFilterByProcess(0) || [];
+                setProcessTasksCache(allTasks); 
+                
+                setFilteredTasks(allTasks); 
+                return;
             }
-            return;
-        }
-        
-        const process = allProcesses.find((p: IProcess) => p.name === item);
-        
-        if (process) {
-            setSelectedProcess({id: Number(process.id), name: process.name});
             
-            const processTasks = await handleFilterByProcess(Number(process.id)) || [];
+            const process = allProcesses.find((p: IProcess) => p.name === item);
             
-            if (currentStatusFilter) {
-                const filteredByStatus = processTasks.filter(task => 
-                    task.status?.name === currentStatusFilter
-                );
-                setFilteredTasks(filteredByStatus);
-            } else if (currentLateFilter) {
-                const currentDate = new Date();
-                const delayedTasks = processTasks.filter(task => {
-                    if (!task.endDate) return false;
-                    const endDate = new Date(task.endDate);
-                    return endDate < currentDate && 
-                        task.status?.name !== "Completada" && 
-                        task.status?.name !== "Cancelada";
-                });
-                setFilteredTasks(delayedTasks);
-                setIsLateFilterActive(true);
-            } else {
-                setFilteredTasks(processTasks);
+            if (process) {
+                setSelectedProcess({id: Number(process.id), name: process.name});
+                
+                const processTasks = await handleFilterByProcess(Number(process.id)) || [];
+                setProcessTasksCache(processTasks); 
+                
+                setFilteredTasks(processTasks); 
             }
+        } catch (error) {
+            console.error("Error filtering by process:", error);
         }
     };
 
     /**
      * Función para manejar el clic en el filtro de tareas atrasadas.
      * @description Filtra las tareas que están atrasadas (fecha de finalización pasada y no completadas).
-     * @returns {void}
+     * @returns {Promise<void>}
      */
-    const handleLateFilterClick = () => {
-        setIsLateFilterActive(!isLateFilterActive);
-        
-        if (!isLateFilterActive) {
-            const currentDate = new Date();
+    const handleLateFilterClick = async () => {
+        try {
+            const newLateFilterState = !isLateFilterActive;
+            setIsLateFilterActive(newLateFilterState);
             
-            const tasksToFilter = selectedProcess 
-                ? filteredTasks 
-                : tasks;       
+            const tasksToFilter = processTasksCache.length > 0 
+                ? [...processTasksCache] 
+                : selectedProcess 
+                    ? await handleFilterByProcess(selectedProcess.id) || [] 
+                    : await handleFilterByProcess(0) || [];
             
-            const delayedTasks = tasksToFilter.filter(task => {
-                if (!task.endDate) return false;
-                
-                const endDate = new Date(task.endDate);
-                return endDate < currentDate && 
-                    task.status?.name !== "Completada" && 
-                    task.status?.name !== "Cancelada";
-            });
+            let result = [...tasksToFilter];
             
-            setFilteredTasks(delayedTasks);
-        } else {
-            if (selectedProcess) {
-                handleFilterByProcess(selectedProcess.id).then(processTasks => {
-                    if (activeStatusFilter) {
-                        const filteredByStatus = (processTasks || []).filter(task => 
-                            task.status?.name === activeStatusFilter
-                        );
-                        setFilteredTasks(filteredByStatus);
-                    } else {
-                        setFilteredTasks(processTasks || []);
-                    }
-                });
-            } else {
-                if (activeStatusFilter) {
-                    const filteredByStatus = tasks.filter(task => 
-                        task.status?.name === activeStatusFilter
-                    );
-                    setFilteredTasks(filteredByStatus);
-                } else {
-                    setFilteredTasks(tasks);
-                }
+            if (activeStatusFilter) {
+                result = result.filter(task => 
+                    task.status?.name === activeStatusFilter
+                );
             }
+            
+            if (newLateFilterState) {
+                const currentDate = new Date();
+                result = result.filter(task => {
+                    if (!task.endDate) return false;
+                    const endDate = new Date(task.endDate);
+                    return endDate < currentDate && 
+                        task.status?.name !== "Completada" && 
+                        task.status?.name !== "Cancelada";
+                });
+            }
+            
+            setFilteredTasks(result);
+        } catch (error) {
+            console.error("Error in handleLateFilterClick:", error);
         }
     };
 
-/**
- * Función para manejar el cambio de filtro por estado.
- * @description Filtra las tareas por el estado seleccionado.
- * @param statusName Nombre del estado por el que se desea filtrar las tareas.
- */
-const handleStatusFilterChange = async (statusName: string) => {
-    
-    setIsLateFilterActive(false);
-        
-    if (activeStatusFilter === statusName) {
-        setActiveStatusFilter(null);
-        
-        if (selectedProcess) {
-            const processTasks = await handleFilterByProcess(selectedProcess.id);
-            setFilteredTasks(processTasks || []);
-        } else {
-            setFilteredTasks(tasks);
+    /**
+     * Función para manejar el cambio de filtro por estado.
+     * @description Filtra las tareas por el estado seleccionado.
+     * @param statusName Nombre del estado por el que se desea filtrar las tareas.
+     */
+    const handleStatusFilterChange = async (statusName: string) => {
+        try {
+            const newStatusFilter = activeStatusFilter === statusName ? null : statusName;
+            setActiveStatusFilter(newStatusFilter);
+            
+            const tasksToFilter = processTasksCache.length > 0 
+                ? [...processTasksCache] 
+                : selectedProcess 
+                    ? await handleFilterByProcess(selectedProcess.id) || [] 
+                    : await handleFilterByProcess(0) || [];
+            
+            let result = [...tasksToFilter];
+            
+            if (newStatusFilter) {
+                result = result.filter(task => 
+                    task.status?.name === newStatusFilter
+                );
+            }
+            
+            if (isLateFilterActive) {
+                const currentDate = new Date();
+                result = result.filter(task => {
+                    if (!task.endDate) return false;
+                    const endDate = new Date(task.endDate);
+                    return endDate < currentDate && 
+                        task.status?.name !== "Completada" && 
+                        task.status?.name !== "Cancelada";
+                });
+            }
+            
+            setFilteredTasks(result);
+        } catch (error) {
+            console.error("Error filtering by status:", error);
         }
-    } else {
-        setActiveStatusFilter(statusName);
-
-        if (selectedProcess) {
-            const processTasks = await handleFilterByProcess(selectedProcess.id) || [];
-            const filteredByStatus = processTasks.filter(task => 
-                task.status?.name === statusName
-            );
-            setFilteredTasks(filteredByStatus);
-        } else {
-            const filteredByStatus = tasks.filter(task => 
-                task.status?.name === statusName
-            );
-            setFilteredTasks(filteredByStatus);
-        }
-    }
-};
+    };
 
     return {
         filteredTasks,
