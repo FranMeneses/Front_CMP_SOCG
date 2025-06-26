@@ -145,6 +145,8 @@ export const GET_ALL_REGISTRIES = gql`
       minuta
       es_solped
       es_memo
+      solpedMemoSap
+      hesHemSap
       memos {
         id
         value
@@ -173,6 +175,8 @@ export const GET_REGISTRY_BY_ID = gql`
       minuta
       es_solped
       es_memo
+      solpedMemoSap
+      hesHemSap
       memos {
         id
         value
@@ -201,6 +205,8 @@ export const GET_COMPLIANCE_REGISTRIES = gql`
       minuta
       es_solped
       es_memo
+      solpedMemoSap
+      hesHemSap
       memos {
         id
         value
@@ -229,6 +235,8 @@ export const CREATE_REGISTRY = gql`
       minuta
       es_solped
       es_memo
+      solpedMemoSap
+      hesHemSap
     }
   }
 `;
@@ -247,6 +255,8 @@ export const UPDATE_REGISTRY = gql`
       minuta
       es_solped
       es_memo
+      solpedMemoSap
+      hesHemSap
     }
   }
 `;

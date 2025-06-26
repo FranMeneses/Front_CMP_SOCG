@@ -4,7 +4,6 @@ export interface ICompliance {
     id: string;
     taskId: string;
     statusId: number;
-    applies: boolean;
     task: ITask;
     status: IComplianceStatus;
     registries: IComplianceRegistry[];
@@ -24,6 +23,12 @@ export interface IComplianceRegistry {
     provider: string;
     startDate: string;
     endDate: string;
+    carta: boolean;
+    minuta: boolean;
+    es_solped: boolean;
+    es_memo: boolean;
+    solpedMemoSap: number;
+    hesHemSap: number;
     compliance: ICompliance;
     memos: IComplianceMemo[];
     solpeds: IComplianceSolped[];
@@ -63,7 +68,6 @@ export interface IComplianceForm {
     id: string;
     task: ITask;
     statusId: number;
-    applies: boolean;
     status: IComplianceStatus;
     cartaAporte: boolean;
     minuta: boolean;
@@ -71,6 +75,8 @@ export interface IComplianceForm {
     hasSolped: boolean;
     hasHem: boolean;
     hasHes: boolean;
+    solpedMemoSap: number;
+    hesHemSap: number;
     provider: string;
     registryId?: string;
     endDate?: string;
