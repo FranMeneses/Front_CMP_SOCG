@@ -99,7 +99,7 @@ export function useReportability() {
           return "#000000";
       }
     }
-    else if (userRole === "encargado cumplimiento") {
+    else if (userRole === "Encargado Cumplimiento" || userRole === 'Admin') {
       switch (id) {
         case 1:
           return ValleyColors[0]; // Valle Copiapó
@@ -187,7 +187,7 @@ export function useReportability() {
               valley: handleGetValley(task?.valleyId ?? 5),
               process: processes.find((p: IProcess) => Number(p.id) === task?.processId)?.name || "Proceso desconocido",
               faena: handleGetFaena(task?.faenaId ?? 11),
-              color: handleGetColor(isCommunicationsManager ? (task?.processId ?? 8) : userRole === "encargado cumplimiento" ? (task.processId ?? 8) : (task?.valleyId ?? 5)),
+              color: handleGetColor(isCommunicationsManager ? (task?.processId ?? 8) : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? (task.processId ?? 8) : (task?.valleyId ?? 5)),
               allDay: true,
             };
           } catch (err) {
@@ -224,9 +224,9 @@ export function useReportability() {
   const fetchAllProcessesSubtasks = async () => {
     const targetProcessIds: number[] = isCommunicationsManager
       ? [4, 5, 6, 7]
-      : (isValleyManager && userRole === 'superintendente de relacionamiento')
+      : (isValleyManager && userRole === 'Superintendente Relacionamiento')
       ? [1, 2, 3]
-      : (isValleyManager && userRole !== 'superintendente de relacionamiento')
+      : (isValleyManager && userRole !== 'Superintendente Relacionamiento')
       ? [Number(currentProcess?.id)]
       : [1, 2, 3, 4, 5, 6, 7];
 
@@ -256,7 +256,7 @@ export function useReportability() {
   const handleDropdownSelect = async (item: string) => {
     setSelectedItem(item);
 
-    if ((userRole === "encargado comunicaciones" || userRole === "encargado asuntos públicos")) {
+    if ((userRole === "Encargado Comunicaciones" || userRole === "Encargado Asuntos Públicos")) {
       if (item === "Transversales") {
         const allSubtasks = await fetchAllProcessesSubtasks();
         setSubtasks(allSubtasks);

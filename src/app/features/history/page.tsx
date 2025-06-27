@@ -21,7 +21,7 @@ export default function ComplianceHistory() {
         closeHistoryModal
     } = useHistory();
 
-    const { userRole } = useHooks();
+    const { userRole, handleLogout } = useHooks();
 
     if (historyLoading) {
         return (
@@ -51,7 +51,7 @@ export default function ComplianceHistory() {
                         }`}
                         data-test-id="sidebar"
                     >
-                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
                     </aside>
                 )}
                 <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">

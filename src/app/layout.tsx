@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ApolloProviderWrapper from "@/components/ApolloProviderWrapper";
 import { DataProvider } from "@/context/DataContext";
+import AuthProvider from "@/components/AuthProvider"; // <-- Importa tu AuthProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,9 @@ export default function RootLayout({
       >
         <ApolloProviderWrapper>
           <DataProvider>
-            {children}
+            <AuthProvider>
+              {children}
+            </AuthProvider>
           </DataProvider>
         </ApolloProviderWrapper>
       </body>

@@ -12,7 +12,7 @@ import Image from "next/image";
 
 export default function Schedule() {
   const { loading, isSidebarOpen, toggleSidebar, subtasks } = useSchedule();
-  const { userRole } = useHooks();
+  const { userRole, handleLogout } = useHooks();
   const [viewMode, setViewMode] = useState<"Day" | "Week" | "Month">("Day");
   const ganttRef = useRef<GanttChartRef>(null);
 
@@ -36,7 +36,7 @@ export default function Schedule() {
               className="w-[220px] border-r bg-white flex-shrink-0"
               data-test-id="sidebar"
             >
-              <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+              <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
             </aside>
           )}
           <main className="flex-1 bg-[#F2F2F2] font-[Helvetica] flex flex-col overflow-hidden px-8 lg:px-12 xl:px-16 py-6">

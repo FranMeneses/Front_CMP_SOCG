@@ -22,16 +22,16 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
-  const isCommunicationsRole = userRole.toLowerCase() === "encargado comunicaciones" ||
-                               userRole.toLowerCase() === "superintendente de comunicaciones" || 
-                               userRole.toLowerCase() === "encargado asuntos públicos";
+  const isCommunicationsRole = userRole.toLowerCase() === "Encargado Comunicaciones" ||
+                               userRole.toLowerCase() === "Superintendente Comunicaciones" || 
+                               userRole.toLowerCase() === "Encargado Asuntos Públicos";
 
-  const isRelationshipSuperintendent = userRole.toLowerCase() === "superintendente de relacionamiento";
+  const isRelationshipSuperintendent = userRole.toLowerCase() === "Superintendente Relacionamiento";
   
   const [loadingCommunicationTasks, setLoadingCommunicationTasks] = useState(isCommunicationsRole);
   const [loadingRelationshipTasks, setLoadingRelationshipTasks] = useState(isRelationshipSuperintendent);
 
-  const validRoles = ["encargado copiapó", "encargado huasco", "encargado elqui", "encargado comunicaciones", "encargado asuntos públicos","jefe copiapó", "jefe huasco", "jefe elqui"];
+  const validRoles = ["encargado copiapó", "encargado huasco", "encargado elqui", "Encargado Comunicaciones", "Encargado Asuntos Públicos","Jefe Relacionamiento VC", "Jefe Relacionamiento VH", "Jefe Relacionamiento VE"];
 
   /**
    * Función para cargar las tareas de los procesos de comunicación
@@ -101,19 +101,19 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     switch(userRole) {
       case "encargado copiapó":
         return 1;
-      case "jefe copiapó":
+      case "Jefe Relacionamiento VC":
         return 1;
       case "encargado huasco":
         return 2;
-      case "jefe huasco":
+      case "Jefe Relacionamiento VH":
         return 2;
       case "encargado elqui":
         return 3;
-      case "jefe elqui":
+      case "Jefe Relacionamiento VE":
         return 3;
-      case "encargado comunicaciones":
+      case "Encargado Comunicaciones":
         return 4;
-      case "encargado asuntos públicos":
+      case "Encargado Asuntos Públicos":
         return 5;
       default:
         return 6;

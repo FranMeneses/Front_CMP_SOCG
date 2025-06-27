@@ -22,7 +22,7 @@ export default function Planification() {
         activeFilter,      
     } = usePlanification();
 
-    const { userRole } = useHooks();
+    const { userRole, handleLogout } = useHooks();
 
     const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subTasks;    
 
@@ -54,7 +54,7 @@ export default function Planification() {
                         }`}
                         data-test-id="sidebar"
                     >
-                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
                     </aside>
                 )}
                 <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">

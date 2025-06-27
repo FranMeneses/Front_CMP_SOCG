@@ -1,4 +1,4 @@
-import { GET_TASK_SUBTASKS } from "@/app/api/tasks";
+import { GET_TASK_SUBTASKS, GET_TASKS } from "@/app/api/tasks";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
@@ -7,17 +7,24 @@ import { GET_TASK, GET_TASKS_BY_PROCESS } from "@/app/api/tasks";
 import { ITask } from "@/app/models/ITasks";
 
 export function useSchedule() {
-  const { currentProcess } = useHooks();
+  const { currentProcess, userRole } = useHooks();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
   const [getTaskSubtasks] = useLazyQuery(GET_TASK_SUBTASKS, {
     fetchPolicy: "network-only",
   });
+
   const [isLoading, setIsLoading] = useState(true); 
-  
+
+  const shoulUseSkipQuery = userRole === 'Admin';
+
   const { data, loading: queryLoading, error } = useQuery(GET_TASKS_BY_PROCESS, {
     variables: { processId: currentProcess?.id },
-    skip: !currentProcess,
+    skip: shoulUseSkipQuery,
+  });
+
+  const { data: allTasksData, loading: allTasksLoading, error: allTasksDataError } = useQuery(GET_TASKS, {
+    skip: !shoulUseSkipQuery,
   });
 
   const [getTask] = useLazyQuery(GET_TASK, {
@@ -37,11 +44,15 @@ export function useSchedule() {
    */
   useEffect(() => {
     const processData = async () => {
-      if (data?.tasksByProcess && data.tasksByProcess.length > 0) {
+      const tasksToProcess = userRole === 'Admin' 
+        ? allTasksData?.tasks 
+        : data?.tasksByProcess;
+      
+      if (tasksToProcess && tasksToProcess.length > 0) {
         setProcessingTasks(true);
         
         try {
-          const subtaskPromises = data.tasksByProcess.map(async (task:ITask) => {
+          const subtaskPromises = tasksToProcess.map(async (task:ITask) => {
             try {
               const { data: subtaskData } = await getTaskSubtasks({
                 variables: { id: task.id }
@@ -64,25 +75,30 @@ export function useSchedule() {
         } finally {
           setProcessingTasks(false);
         }
-      } else if (error) {
-        console.error("Error fetching tasks:", error);
-        setProcessingTasks(false);
       } else {
+        const relevantError = userRole === 'Admin' ? allTasksDataError : error;
+        if (relevantError) {
+          console.error("Error fetching tasks:", relevantError);
+        }
         setSubtasks([]);
         setProcessingTasks(false);
       }
     };
 
-    if (!queryLoading && data) {
+    const isDataReady = userRole === 'Admin' 
+      ? !allTasksLoading && allTasksData 
+      : !queryLoading && data;
+
+    if (isDataReady) {
       processData();
     }
-  }, [data, error, queryLoading, getTaskSubtasks]);
+  }, [data, error, queryLoading, getTaskSubtasks, userRole, allTasksData, allTasksLoading, allTasksDataError]);
 
   /**
    * Actualiza el estado de carga basado en el estado de la consulta y las tareas en procesamiento.
    */
   useEffect(() => {
-    setIsLoading(queryLoading || processingTasks);
+    setIsLoading(queryLoading || processingTasks || allTasksLoading);
   }, [queryLoading, processingTasks]);
   
   /**

@@ -75,7 +75,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCreateComplianceManager,
     } = usePlanification();
 
-    const { currentValleyName, userRole } = useHooks();
+    const { currentValley, userRole } = useHooks();
 
         const sortedDetailedTasks = React.useMemo(() => {
         return [...detailedTasks].sort((a: ITaskDetails, b: ITaskDetails) => {
@@ -270,7 +270,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 isPopupPlanificationOpen={isPopupPlanificationOpen}
                 setIsPopupPlanificationOpen={setIsPopupPlanificationOpen}
                 
-                currentValleyName={currentValleyName}
+                currentValleyName={currentValley?.name}
                 userRole={userRole}
             />
         </div>

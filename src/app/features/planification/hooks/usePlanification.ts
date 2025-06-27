@@ -14,7 +14,7 @@ import { Task } from "@/app/models/ITaskForm";
 import { CREATE_COMPLIANCE, CREATE_REGISTRY, GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
 
 export const usePlanification = () => {
-    const { currentValleyId, isValleyManager, isCommunicationsManager, userRole } = useHooks();
+    const { currentValley, isValleyManager, isCommunicationsManager, userRole } = useHooks();
     
     const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
     const [isPopupSubtaskOpen, setIsPopupSubtaskOpen] = useState<boolean>(false);
@@ -52,9 +52,9 @@ export const usePlanification = () => {
         formatDate,
         handleFilterClick,
         handleFilterByProcess,
-    } = useTasksData(currentValleyId ?? undefined, userRole);
+    } = useTasksData(currentValley?.id ?? undefined, userRole);
 
-    const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValleyId?.toString() || "");
+    const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValley?.id.toString() || "");
     const valleySubtaskForm = useValleySubtasksForm(
         dummySubtask, 
         undefined, 
@@ -107,7 +107,7 @@ export const usePlanification = () => {
      * @description Abre el modal de comunicación para crear una tarea de cumplimiento
      */
     const handleCreateComplianceManager = () => {
-        if (userRole === "encargado cumplimiento") {
+        if (userRole === "Encargado Cumplimiento" || userRole === 'Admin') {
             setIsCommunicationModalOpen(true); 
         }
     };
@@ -384,7 +384,7 @@ export const usePlanification = () => {
                 console.error("Error handling task information:", error);
             }
         }
-        else if (isCommunicationsManager || userRole === "encargado cumplimiento") {
+        else if (isCommunicationsManager || userRole === "Encargado Cumplimiento" || userRole === "Admin") {
             try {
                 const taskInfo = await communicationTaskForm.handleGetTask(taskId);
                 if (taskInfo) {
@@ -541,6 +541,6 @@ export const usePlanification = () => {
         expandedRow,
         taskState,
         activeFilter,
-        allProcesses: useTasksData(currentValleyId ?? undefined, userRole).allProcesses,
+        allProcesses: useTasksData(currentValley?.id ?? undefined, userRole).allProcesses,
     };
 };

@@ -22,7 +22,7 @@ const ComplianceRow: React.FC<ComplianceRowProps> = ({
   return (
     <tr className='font-[Helvetica] hover:bg-gray-50 transition-colors duration-200 border-b border-gray-200'>
       <td
-        className={`px-4 py-2 text-left text-black font-semibold border-r border-gray-200 ${userRole.toLowerCase() === "encargado cumplimiento" ? "" : "cursor-pointer"}`}
+        className={`px-4 py-2 text-left text-black font-semibold border-r border-gray-200 ${(userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? "" : "cursor-pointer"}`}
         onClick={() => handleOnTaskClick(compliance.id ?? '')}
       >
         {compliance.task.name.toUpperCase()}

@@ -15,7 +15,7 @@ export default function Compliance() {
         data
     } = useCompliance();
 
-    const { userRole } = useHooks();
+    const { userRole, handleLogout } = useHooks();
 
     if (loading) {
         return (
@@ -45,7 +45,7 @@ export default function Compliance() {
                         }`}
                         data-test-id="sidebar"
                     >
-                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
                     </aside>
                 )}
                 <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">

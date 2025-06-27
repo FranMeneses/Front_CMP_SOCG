@@ -35,7 +35,7 @@ export default function TaskResume({
         
         const subtasksData: Record<string, number> = {};
 
-        if (userRole === 'jefe huasco' || userRole === 'jefe copiapó' || userRole === 'jefe elqui') {
+        if (userRole === 'Jefe Relacionamiento VH' || userRole === 'Jefe Relacionamiento VC' || userRole === 'Jefe Relacionamiento VE') {
             if (currentProcess?.id) {
                 try {
                     const count = await handleGetSubtasksByMonthYearAndProcess(month, Number(currentProcess.id), year);
@@ -97,7 +97,7 @@ export default function TaskResume({
 
     return (
     <div className="mt-4 border-t pt-4 font-[Helvetica]">
-        {(isManager || userRole === "encargado cumplimiento") && (
+        {(isManager || userRole === "Encargado Cumplimiento" || userRole === 'Admin') && (
             <div className="mb-6">
                 <h3 className="text-xl font-bold mb-3">Resumen de tareas</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -137,7 +137,7 @@ export default function TaskResume({
                     <p className="text-2xl font-bold">{totalSubtasks}</p>
                 </div>
                 <div className="border p-3 rounded shadow-sm">
-                    {(userRole != "jefe huasco" && userRole != "jefe copiapó" && userRole != "jefe elqui") ? (
+                    {(userRole != "Jefe Relacionamiento VH" && userRole != "Jefe Relacionamiento VC" && userRole != "Jefe Relacionamiento VE") ? (
                         <>
                             <p className="text-sm text-gray-500">Distribución por valle</p>
                             <div className="text-sm mt-1">

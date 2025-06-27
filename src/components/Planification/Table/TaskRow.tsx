@@ -63,7 +63,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
           className="cursor-pointer mr-4"
           onClick={() => handleSeeInformation(task.id ?? '', userRole)}
         />
-        {userRole === 'encargado cumplimiento' && (
+        { userRole === 'Admin' && (
           <Trash
               size={20}
               color="#082C4B"

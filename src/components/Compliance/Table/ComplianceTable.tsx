@@ -27,7 +27,7 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
         handleStatusFilterChange,
     } = useCompliance();
 
-    const { currentValleyName, userRole } = useHooks();
+    const { currentValley, userRole } = useHooks();
 
     const handleUpdateComplianceWrapper = (partialCompliance: Partial<IComplianceForm>) => {
         if (selectedCompliance) {
@@ -99,7 +99,7 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
                 setIsComplianceModalOpen={setIsComplianceModalOpen}
                 handleUpdateCompliance={handleUpdateComplianceWrapper}
                 handleCancelCompliance={handleCancelCompliance}
-                currentValleyName={currentValleyName}
+                currentValleyName={currentValley?.name}
                 userRole={userRole}
             />
         </>

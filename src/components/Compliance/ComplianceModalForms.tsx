@@ -9,7 +9,7 @@ interface ComplianceModalsProps {
     setIsComplianceModalOpen: (isOpen: boolean) => void;
     handleUpdateCompliance: (compliance: Partial<IComplianceForm>) => void;
     handleCancelCompliance: () => void;
-    currentValleyName: string | null;
+    currentValleyName: string | undefined;
     userRole: string;
     selectedTask?: ITask | undefined; 
     selectedCompliance?: IComplianceForm | undefined;
@@ -28,7 +28,7 @@ const ComplianceModals: React.FC<ComplianceModalsProps> = ({
 
     return (
     <>
-        {userRole === "encargado cumplimiento" && (
+        { (userRole === "Encargado Cumplimiento" || userRole === 'Admin') && (
             <Modal isOpen={isComplianceModalOpen} onClose={() => setIsComplianceModalOpen(false)}>
             <ComplianceForm
                 onCancel={handleCancelCompliance}
