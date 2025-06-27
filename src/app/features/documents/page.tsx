@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 
 export default function Documents() {
-    const { userRole } = useHooks();
+    const { userRole, handleLogout } = useHooks();
     const { documentsWithTasks, isLoading, tasksLoaded } = useDocumentsGraph();
     const { 
         isSidebarOpen, 
@@ -69,7 +69,7 @@ export default function Documents() {
                                 : ""
                         }`}
                     >
-                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+                        <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
                     </aside>
                 )}
                 <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">

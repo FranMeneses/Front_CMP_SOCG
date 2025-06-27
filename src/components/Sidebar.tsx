@@ -10,11 +10,11 @@ import { useState } from 'react';
 interface SidebarProps {
   onNavClick?: () => void;
   userRole: string;
+  handleLogout: () => void;
 }
 
-export function Sidebar({ onNavClick, userRole }: SidebarProps) {
+export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
   const pathname = usePathname();
-  const router = useRouter();
 
   const [isDisabled, setIsDisabled] = useState(false); 
 
@@ -26,7 +26,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento", "jefe huasco", "jefe copiapó", "jefe elqui"]
+      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco", "Encargado Cumplimiento", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "Compliance",
@@ -34,7 +34,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/compliance",
       icon: Clipboard,
       isActive: pathname === "/features/compliance",
-      admitedRoles: ["encargado cumplimiento"]
+      admitedRoles: ["Admin","Encargado Cumplimiento"]
     },    
     {
       title: "Histórial",
@@ -42,7 +42,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/history",
       icon: History,
       isActive: pathname === "/features/history",
-      admitedRoles: ["encargado cumplimiento", "superintendente de relacionamiento", "superintendente de comunicaciones", "gerente"]
+      admitedRoles: ["Admin","Encargado Cumplimiento", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Gerente"]
     },
     {
       title: "Planificación",
@@ -50,7 +50,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","encargado comunicaciones", "superintendente de relacionamiento", "superintendente de comunicaciones", "jefe huasco", "jefe copiapó", "jefe elqui"]
+      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco", "Encargado Cumplimiento","Encargado Comunicaciones", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "Beneficiarios",
@@ -58,7 +58,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco", "encargado cumplimiento","jefe huasco", "jefe copiapó", "jefe elqui", "encargado comunicaciones"]
+      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
       title: "Programación",
@@ -66,7 +66,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
-      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento","jefe huasco", "jefe copiapó", "jefe elqui", "encargado comunicaciones"]
+      admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
       title: "Plan de trabajo",
@@ -74,7 +74,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
-      admitedRoles: ["encargado elqui", "encargado copiapó", "encargado huasco"]
+      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco"]
     },
     {
       title: "Resumen",
@@ -82,7 +82,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
       displayHref: "/resume",
       icon: ChartPie,
       isActive: pathname === "/features/resume",
-      admitedRoles: ["gerente", "superintendente de relacionamiento", "superintendente de comunicaciones", "encargado cumplimiento"]
+      admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento"]
     }
   ];
 
@@ -116,10 +116,7 @@ export function Sidebar({ onNavClick, userRole }: SidebarProps) {
           variant="ghost"
           size="sm"
           className="justify-start cursor-pointer"
-          onClick={() => {
-            setIsDisabled(true); 
-            router.push('/');
-          }}
+          onClick={() => handleLogout()}
           disabled={isDisabled} 
           data-test-id="sidebar-logout"
         >

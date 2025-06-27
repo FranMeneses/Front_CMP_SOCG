@@ -124,7 +124,7 @@ const BeneficiariesTable: React.FC = () => {
                                         data-test-id="edit-representative-button"
                                         color="#082C4B"
                                     />
-                                    { userRole === "encargado cumplimiento" && (
+                                    { userRole === "Admin" && (
                                         <Trash
                                             size={20}
                                             color="#082C4B"
@@ -150,7 +150,7 @@ const BeneficiariesTable: React.FC = () => {
                                                             data-test-id="edit-contact-button"
                                                             color="#082C4B"
                                                         />
-                                                        { userRole === "encargado cumplimiento" && (
+                                                        { userRole === "Admin" && (
                                                             <Trash
                                                                 size={20}
                                                                 className="cursor-pointer ml-2"

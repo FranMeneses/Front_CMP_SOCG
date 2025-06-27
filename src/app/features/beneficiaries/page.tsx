@@ -21,7 +21,7 @@ export default function Beneficiaries() {
     handleAddBeneficiary,
   } = useBeneficiaries();
 
-  const { userRole } = useHooks();
+  const { userRole, handleLogout } = useHooks();
 
   if (beneficiariesLoading) {
     return (
@@ -50,7 +50,7 @@ export default function Beneficiaries() {
                 : ""
             }`}
           >
-            <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+            <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
           </aside>
         )}
         <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
@@ -68,7 +68,7 @@ export default function Beneficiaries() {
               
               <div className="p-4 border-b border-gray-200">
                 <div className="flex justify-end items-center gap-4">
-                  {userRole === "encargado cumplimiento" && (
+                  { (userRole === "Encargado Cumplimiento" || userRole === 'Admin') && (
                     <Button
                       onClick={() => setIsPopupOpen(true)}
                       className="bg-[#0068D1] hover:bg-[#0056A3] text-white flex items-center gap-1"

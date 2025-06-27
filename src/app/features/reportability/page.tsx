@@ -34,7 +34,7 @@ export default function Reportability() {
     filteredProcessesCommunications
   } = useReportability();
 
-  const { userRole, isCommunicationsManager, isManager } = useHooks();
+  const { userRole, isCommunicationsManager, isManager, handleLogout} = useHooks();
   
   const [isLoading, setIsLoading] = useState(true);
   const [month, setMonth] = useState<string>();
@@ -78,7 +78,7 @@ export default function Reportability() {
               }`}
               data-test-id="sidebar"
             >
-              <Sidebar userRole={userRole} onNavClick={toggleSidebar} />
+              <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
             </aside>
           )}
           <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
@@ -93,11 +93,11 @@ export default function Reportability() {
                   />
                   <h1 className="text-3xl font-bold">Programación de Actividades</h1>
                 </div>
-                {(isManager || userRole === "encargado cumplimiento" || isCommunicationsManager) && (
+                {(isManager || userRole === "Encargado Cumplimiento" || isCommunicationsManager || userRole === "Admin") && (
                   <div className="mt-4">
                     <DropdownMenu
                       buttonText={"Transversales"}
-                      items={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? filteredProcessesNames : ValleysProcessesName}
+                      items={isCommunicationsManager ? filteredProcessesNames : (userRole === "Encargado Cumplimiento" || userRole === 'Admin')? filteredProcessesNames : ValleysProcessesName}
                       onSelect={(item) => handleDropdownSelect(item)}
                       data-test-id="dropdown-menu"
                     />
@@ -107,7 +107,7 @@ export default function Reportability() {
               
               {/* Layout principal */}
               <div className="flex flex-col lg:flex-row gap-6">
-                {(isManager || userRole === "encargado cumplimiento" || isCommunicationsManager) && (
+                {(isManager || userRole === "Encargado Cumplimiento" || isCommunicationsManager || userRole === 'Admin') && (
                   <div className="w-full lg:w-72 bg-white rounded-lg shadow">
                     <SmallCalendar 
                       month={nextMonth.getMonth()}
@@ -120,8 +120,8 @@ export default function Reportability() {
                         {isCommunicationsManager ? 'Procesos' : 'Valles'}
                       </h2>
                       <Legend 
-                        valley={isCommunicationsManager ? filteredProcessesNames : userRole === "encargado cumplimiento" ? ProcessesNames : ValleysProcessesName.filter((process:string) => process !== "Transversales")} 
-                        valleyColors={isCommunicationsManager ? CommunicationsColors : userRole === "encargado cumplimiento" ? AllColors: ValleyColors} 
+                        valley={isCommunicationsManager ? filteredProcessesNames : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? ProcessesNames : ValleysProcessesName.filter((process:string) => process !== "Transversales")} 
+                        valleyColors={isCommunicationsManager ? CommunicationsColors : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? AllColors: ValleyColors} 
                       />
                     </div>
                   </div>
@@ -142,10 +142,10 @@ export default function Reportability() {
                     <div className="bg-white p-4 rounded-lg shadow"> 
                       <TaskResume 
                         calendarEvents={calendarEvents}
-                        valleys={userRole === "encargado cumplimiento" ? filteredProcesses : isCommunicationsManager ? filteredProcessesCommunications : ValleysProcesses.filter((process:IProcess) => process.name !== "Transversales")} 
+                        valleys={ (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? filteredProcesses : isCommunicationsManager ? filteredProcessesCommunications : ValleysProcesses.filter((process:IProcess) => process.name !== "Transversales")} 
                         selectedValley={selectedItem}
-                        valleyNames={userRole === "encargado cumplimiento" ? ProcessesNames : isCommunicationsManager ? filteredProcessesNames : ValleysProcessesName.filter((process:IProcess) => process.name !== "Transversales")}
-                        ValleyColors={userRole === "encargado cumplimiento" ? AllColors : isCommunicationsManager ? CommunicationsColors : ValleyColors}
+                        valleyNames={ (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? ProcessesNames : isCommunicationsManager ? filteredProcessesNames : ValleysProcessesName.filter((process:IProcess) => process.name !== "Transversales")}
+                        ValleyColors={ (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? AllColors : isCommunicationsManager ? CommunicationsColors : ValleyColors}
                         month={month || ""}
                         year={year || 0}
                       />

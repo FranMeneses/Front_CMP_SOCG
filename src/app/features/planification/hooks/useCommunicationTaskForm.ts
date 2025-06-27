@@ -33,7 +33,7 @@ export const useCommunicationTaskForm = (
     .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name))
     .map((p: IProcess) => p.name);
     const processName = processes.map((p: IProcess) => p.name);
-    const isPublicAffair = userRole === "encargado asuntos públicos" 
+    const isPublicAffair = userRole === "Encargado Asuntos Públicos" 
 
     const { valleysName, faenasName, valleys } = useHooks();
 
@@ -174,7 +174,7 @@ export const useCommunicationTaskForm = (
      * @return Booleano que indica si la transición es válida
      */
     const isValidStateTransition = useCallback((currentState: string | number, newState: string | number) => {
-        if (userRole === "encargado cumplimiento") {
+        if (userRole === "Encargado Cumplimiento" || userRole === "Admin") {
             return true;
         }
         
@@ -252,7 +252,7 @@ export const useCommunicationTaskForm = (
             newTask = {
                 ...formState,
                 statusId: Number(formState.statusId) ? Number(formState.statusId) : taskStatuses.findIndex((s: string | number) => s === formState.statusId) + 1,
-                processId: isPublicAffair ? 5 : userRole === 'encargado cumplimiento' ? processes.findIndex((p:IProcess) => p.name === formState.processId) + 1 : 4,
+                processId: isPublicAffair ? 5 : (userRole === 'Encargado Cumplimiento' || userRole === 'Admin') ? processes.findIndex((p:IProcess) => p.name === formState.processId) + 1 : 4,
             }
         }
         onSave(newTask);
@@ -274,7 +274,7 @@ export const useCommunicationTaskForm = (
 
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
-        processes: userRole === 'encargado cumplimiento' ? processName : filteredProcessesNames || [],
+        processes: (userRole === 'Encargado Cumplimiento' || userRole === 'Admin') ? processName : filteredProcessesNames || [],
     }), [taskStatuses]);
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";

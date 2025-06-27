@@ -44,7 +44,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             return [...defaultProcesses, ...communicationProcesses];
         } 
         
-        if (userRole.toLowerCase() === "superintendente de relacionamiento") {
+        if (userRole.toLowerCase() === "Superintendente Relacionamiento") {
             const relationshipProcesses = allProcesses
                 .filter((p: IProcess) => PROCESS_FILTERS.RELATIONSHIP.includes(p.name))
                 .map((p: IProcess) => p.name);
@@ -59,7 +59,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     };
 
     const renderProcessDropdown = () => {
-        if (isManager || isCommunicationsManager || userRole === "encargado cumplimiento") {
+        if (isManager || isCommunicationsManager || userRole === "Encargado Cumplimiento" || userRole === 'Admin') {
             const filteredProcesses = getFilteredProcesses();
 
             return (
@@ -80,7 +80,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     };
 
     const handleAddButtonClick = () => {
-        if (userRole === "encargado cumplimiento") {
+        if (userRole === "Admin") {
             handleCreateComplianceManager?.();
         } else if (isCommunicationsManager) {
             handleCreateTask();
@@ -93,7 +93,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                 {renderProcessDropdown()}
             </div>
             <div className=' flex flex-row gap-2'>
-                 {((isCommunicationsManager || userRole === "encargado cumplimiento") && !isManager) && (
+                 {((isCommunicationsManager || userRole === "Admin") && !isManager) && (
                 <Button 
                     onClick={handleAddButtonClick}
                     className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"
@@ -101,7 +101,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                     <Plus size={16} /> Añadir
                 </Button>
             )}
-            {((userRole === "encargado cumplimiento") && !isManager) && (
+            {((userRole === "Admin") && !isManager) && (
                 <Button 
                     onClick={handleUploadPlanification}
                     className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"

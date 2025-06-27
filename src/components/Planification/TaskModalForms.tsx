@@ -45,7 +45,7 @@ interface TaskModalsProps {
     isPopupPlanificationOpen?: boolean;
     setIsPopupPlanificationOpen?: (isOpen: boolean) => void;
 
-    currentValleyName: string | null;
+    currentValleyName: string | undefined;
     userRole: string;
     selectedTask?: ITask | undefined; 
 }
@@ -102,7 +102,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
     };
 
     const renderTaskCreationModal = () => {
-        if (userRole === 'encargado cumplimiento' && !isEditingCommunication) {
+        if ((userRole === "Encargado Cumplimiento" || userRole === 'Admin') && !isEditingCommunication) {
             if (!selectedTaskType) {
                 return (
                     <TaskTypeSelectionForm
@@ -208,7 +208,7 @@ const TaskModals: React.FC<TaskModalsProps> = ({
             </Modal>
                 
             {/* Communication/Task Selection Modal */}
-            {(isCommunicationsManager || userRole === 'encargado cumplimiento') && (
+            {(isCommunicationsManager || userRole === 'Encargado Cumplimiento' || userRole === 'Admin') && (
                 <Modal isOpen={isCommunicationModalOpen} onClose={handleCancelCommunication}>
                     {renderTaskCreationModal()}
                 </Modal>
