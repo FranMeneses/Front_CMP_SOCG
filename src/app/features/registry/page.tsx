@@ -141,7 +141,7 @@ export default function Home() {
               ¿Ya tienes cuenta?{" "}
               <Button
                 variant={"link"}
-                className={`text-[#0e70e8] hover:text-[#08203d] transition duration-200 hover:underline p-0`}
+                className={`text-[#0e70e8] hover:text-[#08203d] transition duration-200 hover:underline p-0 cursor-pointer`}
                 onClick={() => window.location.href = '/'}
               >
                 Inicia sesión

@@ -70,16 +70,14 @@ export function useHooks() {
                     }
                 }
             });
-            console.log("Login data:", data);
             if (data.login) {
                 const { access_token, user } = data.login;
-                console.log("Login successful:", user);
-                
                 localStorage.setItem("token", access_token);
                 localStorage.setItem("user", JSON.stringify(user));
-                localStorage.setItem("rol", user.rol.nombre); 
-                
-                console.log("Setting userRole in state after login:", user.rol.nombre);
+                localStorage.setItem("rol", user.rol.nombre);
+
+                document.cookie = `token=${access_token}; path=/;`;
+
                 setUserRole(user.rol.nombre);
                 handleLoginRedirect(user.rol.nombre);
             }
@@ -108,15 +106,11 @@ export function useHooks() {
             });
 
             if (data.createUser) {
-                const { access_token, user } = data.createUser;
-                
-                localStorage.setItem("token", access_token);
-                localStorage.setItem("user", JSON.stringify(user));
-                localStorage.setItem("rol", user.rol.nombre); 
-                
-                console.log("Setting userRole in state after register:", user.rol.nombre);
-                setUserRole(user.rol.nombre); 
-                handleLoginRedirect(user.rol.nombre);
+                const input = {
+                    email: data.createUser.email,
+                    password: data.createUser.password
+                };
+                handleLogin(input);
             }
         } catch (error) {
             console.error("Error during registration:", error);
@@ -284,6 +278,7 @@ export function useHooks() {
         localStorage.removeItem("user");
         localStorage.removeItem("rol");
         setUserRole("");
+        document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
         router.push("/");
     };
 
