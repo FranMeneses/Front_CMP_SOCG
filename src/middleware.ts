@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Rutas que no requieren autenticación
-const publicRoutes = ['/', '/register'];
+const publicRoutes = ['/', '/features/registry', '/features/forgotPassword'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -10,10 +9,7 @@ export function middleware(request: NextRequest) {
                 request.headers.get('authorization')?.split(' ')[1] || 
                 '';
                 
-  // Verificar si es una ruta pública
   if (publicRoutes.some(route => pathname === route)) {
-    // Si el usuario ya está autenticado y trata de acceder a una ruta pública, permitir el acceso normal
-    // La lógica de redirección se manejará del lado del cliente
     return NextResponse.next();
   }
   
@@ -28,9 +24,6 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
   
-  // Para rutas privadas, verificar el token
-  // Nota: Aquí no verificamos la validez del token (expiración, etc.)
-  // porque esa lógica ya la manejas en el cliente
   if (!token && !pathname.startsWith('/_next') && !pathname.includes('.')) {
     const loginUrl = new URL('/', request.url);
     return NextResponse.redirect(loginUrl);
@@ -39,9 +32,9 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Configurar en qué rutas se ejecuta el middleware
 export const config = {
   matcher: [
     '/features/:path*',
+    '/:path*',
   ],
 };
