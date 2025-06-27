@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react';
-import { IRegisterInput, IRol } from "@/app/models/IAuth";
+import { IRegisterInput } from "@/app/models/IAuth";
 import { useHooks } from '../../hooks/useHooks';
-import { useQuery } from '@apollo/client';
-import { GET_ROLES } from '@/app/api/Auth';
 
 interface IRegistryForm extends IRegisterInput {
   confirmPassword: string;
@@ -15,19 +13,13 @@ export function useFormRegistry() {
         password: "",
         confirmPassword: "",
         full_name: "",
-        id_rol: 0,
-        organization: "",
+        id_rol: 11,
+        organization: " ",
     });
 
     const [passwordMatch, setPasswordMatch] = useState<boolean>(true);
     const [emailValid, setEmailValid] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    
-    const {data: dataRoles} = useQuery(GET_ROLES);
-
-    const roles = dataRoles?.roles || [];
-
-    const rolesOptions = roles.map((rol: IRol) => rol.nombre);
 
     const { handleRegister: registerUser } = useHooks();
     
@@ -61,13 +53,6 @@ export function useFormRegistry() {
         if (errorMessage) {
             setErrorMessage(null);
         }
-    };
-    
-    const handleRoleSelect = (roleId: number) => {
-        setFormState({
-            ...formState,
-            id_rol: roleId
-        });
     };
     
     const validateForm = (): boolean => {
@@ -112,10 +97,6 @@ export function useFormRegistry() {
         }
     };
 
-    const dropdownItems = useMemo(() => ({
-        roles: rolesOptions || [],
-    }), [rolesOptions]);
-
     const isFormValid = useMemo(() => {
         return !!(formState.email && validateEmail(formState.email) && 
                 formState.password && formState.full_name && 
@@ -129,11 +110,8 @@ export function useFormRegistry() {
         emailValid,
         isSubmitting,
         errorMessage,
-        dropdownItems,
         isFormValid,
-        roles,
         handleInputChange,
-        handleRoleSelect,
         handleRegister
     };
 }

@@ -83,7 +83,7 @@ export function useHooks() {
             }
         } catch (error) {
             console.error("Error during login:", error);
-            throw new Error("Login failed. Please check your credentials.");
+            throw new Error("Error al iniciar sesión.");
         }
     };
 

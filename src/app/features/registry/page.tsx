@@ -1,21 +1,16 @@
 'use client';
 import { Button } from "@/components/ui/button";
 import { useFormRegistry } from "./hooks/useFormRegistry";
-import DropdownMenu from "@/components/Dropdown";
-import { IRol } from "@/app/models/IAuth";
 
 export default function Home() {
   const {
     formState,
     passwordMatch,
     emailValid,
-    dropdownItems,
     isFormValid,
     isSubmitting,
     errorMessage,
-    roles,
     handleInputChange,
-    handleRoleSelect,
     handleRegister
   } = useFormRegistry();
 
@@ -103,24 +98,6 @@ export default function Home() {
             {!passwordMatch && formState.confirmPassword && (
               <p className="text-red-500 text-sm -mt-2">Las contraseñas no coinciden</p>
             )}
-            
-            <DropdownMenu
-              buttonText="Seleccionar Rol"
-              items={dropdownItems.roles}
-              onSelect={(roleId) => handleRoleSelect(Number(roleId))}
-              isInModal={true}
-              selectedValue={roles.find((role:IRol) => role.id_rol === formState.id_rol)?.nombre || "Seleccionar Rol"}
-            />
-            
-            <input
-              type="text"
-              name="organization"
-              placeholder="Organización"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:border-[#153C6C]"
-              value={formState.organization}
-              onChange={handleInputChange}
-              data-test-id="register-organization"
-            />
             
             <Button
               className={`py-2 rounded-lg transition duration-200 ${
