@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ResumeCommunications from "./communications/page";
 import ResumeRelationship from "./relationship/page";
 import { Button } from "@/components/ui/button";

@@ -23,7 +23,7 @@ export function useFormRegistry() {
     const [emailValid, setEmailValid] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     
-    const {data: dataRoles, error: errorRoles} = useQuery(GET_ROLES);
+    const {data: dataRoles} = useQuery(GET_ROLES);
 
     const roles = dataRoles?.roles || [];
 
@@ -101,6 +101,7 @@ export function useFormRegistry() {
         
         try {
             setIsSubmitting(true);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { confirmPassword, ...registerData } = formState;
             await registerUser(registerData);
         } catch (error) {
