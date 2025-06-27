@@ -123,9 +123,9 @@ export function useHooks() {
     */
     const valleyIdByRole = useMemo(() => {
         return {
-            "encargado elqui": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
-            "encargado copiapó": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
-            "encargado huasco": valleys?.find(v => v.name === "Valle del Huasco")?.id || 2,
+            "Jefe Relacionamiento VE": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
+            "Jefe Relacionamiento VC": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
+            "Jefe Relacionamiento VH": valleys?.find(v => v.name === "Valle del Huasco")?.id || 2,
             "Admin": valleys?.find(v => v.name === "Transversal")?.id || 4,
             "Encargado Comunicaciones": valleys?.find(v => v.name === "Transversal")?.id || 4,
             "Encargado Asuntos Públicos": valleys?.find(v => v.name === "Transversal")?.id || 4,
@@ -135,9 +135,6 @@ export function useHooks() {
 
     const processByRole = useMemo(() => {
         return {
-            "encargado elqui": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
-            "encargado copiapó": processes?.find(p => p.name === "Relacionamiento VC")?.id || 1,
-            "encargado huasco": processes?.find(p => p.name === "Relacionamiento VH")?.id || 2,
             "Jefe Relacionamiento VE": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
             "Jefe Relacionamiento VC": processes?.find(p => p.name === "Relacionamiento VC")?.id || 1,
             "Jefe Relacionamiento VH": processes?.find(p => p.name === "Relacionamiento VH")?.id || 2,
@@ -235,15 +232,6 @@ export function useHooks() {
                 router.push("/features/planification");
                 break;
             case "Encargado Comunicaciones":
-                router.push("/features/planification");
-                break;
-            case "encargado elqui":
-                router.push("/features/planification");
-                break;
-            case "encargado copiapó":
-                router.push("/features/planification");
-                break;
-            case "encargado huasco":
                 router.push("/features/planification");
                 break;
             case "Jefe Relacionamiento VE":

@@ -33,3 +33,7 @@ export interface ILoginInput {
     email: string;
     password: string;
 }
+
+export interface IJwtPayload {
+  exp: number;
+}

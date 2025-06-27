@@ -1,8 +1,9 @@
 'use client';
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useHooks } from "./features/hooks/useHooks";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function Home() {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
@@ -13,6 +14,13 @@ export default function Home() {
 
   const { handleLogin } = useHooks();
   const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/features/resume");
+    }
+  }, [isAuthenticated, router]);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -56,8 +64,7 @@ export default function Home() {
     } catch (error) {
       console.error("Error de inicio de sesión:", error);
       setErrorMessage(error instanceof Error ? error.message : "Error al iniciar sesión. Verifique sus credenciales.");
-    } finally {
-      setIsButtonDisabled(false);
+      setIsButtonDisabled(false); 
     }
   };
 
@@ -118,12 +125,12 @@ export default function Home() {
             
             <Button
               className={`py-2 rounded-lg transition duration-200 ${
-                isButtonDisabled 
+                isButtonDisabled || isAuthenticated || isLoading
                   ? "bg-gray-400 cursor-not-allowed" 
                   : "bg-[#153C6C] hover:bg-[#0e2c56] cursor-pointer"
               } text-white`}
               type="submit"
-              disabled={isButtonDisabled}
+              disabled={isButtonDisabled || isAuthenticated || isLoading}
               data-test-id="login-button"
             >
               {isButtonDisabled ? "Procesando..." : "Iniciar sesión"}

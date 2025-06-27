@@ -3,8 +3,8 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useHooks } from '@/app/features/hooks/useHooks';
 import { jwtDecode } from 'jwt-decode';
+import { IJwtPayload } from '@/app/models/IAuth';
 
-// Definir el tipo para el contexto de autenticación
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -23,10 +23,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Usamos tu hook existente que ya maneja login/logout
   const { userRole } = useHooks();
 
-  // Función para verificar la autenticación
   const checkAuth = () => {
     if (typeof window === 'undefined') return false;
     
@@ -38,12 +36,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
 
-      // Verificar validez del token
-      const decoded = jwtDecode(token) as any;
+      const decoded = jwtDecode(token) as IJwtPayload;
       const currentTime = Date.now() / 1000;
       
       if (decoded.exp && decoded.exp < currentTime) {
-        // Token expirado
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('rol');
@@ -51,7 +47,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         return false;
       }
       
-      // Token válido
       setIsAuthenticated(true);
       return true;
     } catch (error) {
@@ -64,7 +59,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Verificar autenticación al cargar y cuando cambie el rol de usuario
   useEffect(() => {
     setIsLoading(true);
     const isValid = checkAuth();
