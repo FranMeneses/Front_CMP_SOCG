@@ -276,7 +276,7 @@ export function useHooks() {
                 router.push("/features/planification");
                 break;
             default:
-                router.push("/features/documents");
+                router.push("/features/noAccess");
                 break;
         }
     };
