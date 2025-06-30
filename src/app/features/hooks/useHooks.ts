@@ -3,9 +3,14 @@ import { useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
 import { IValley } from "@/app/models/IValleys";
 import { IProcess } from "@/app/models/IProcess";
-import { useMutation } from "@apollo/client";
-import { REGISTER, LOGIN } from "@/app/api/Auth";
-import { ILoginInput, IRegisterInput } from "@/app/models/IAuth";
+import { useMutation, useQuery } from "@apollo/client";
+import { REGISTER, LOGIN, REQUEST_PASSWORD_RESET, RESET_PASSWORD, VALIDATE_RESET_TOKEN } from "@/app/api/Auth";
+import { 
+    ILoginInput, 
+    IRegisterInput, 
+    IRequestPasswordResetInput, 
+    IResetPasswordInput 
+} from "@/app/models/IAuth";
 
 export function useHooks() {
     const router = useRouter();
@@ -24,6 +29,8 @@ export function useHooks() {
     
     const [login] = useMutation(LOGIN);
     const [register] = useMutation(REGISTER);
+    const [requestPasswordReset] = useMutation(REQUEST_PASSWORD_RESET);
+    const [resetPassword] = useMutation(RESET_PASSWORD);
 
     useEffect(() => {
         const syncRoleFromStorage = () => {
@@ -157,6 +164,94 @@ export function useHooks() {
                 throw new Error("Error de conexión. Verifique su conexión a internet.");
             } else {
                 throw new Error("Error al registrar usuario. Intente nuevamente.");
+            }
+        }
+    };
+
+    /**
+     * Función para solicitar recuperación de contraseña.
+     * @description Envía una solicitud de recuperación de contraseña al backend
+     * @param input Objeto de entrada que contiene el email y URL del frontend
+     */
+    const handleRequestPasswordReset = async (input: IRequestPasswordResetInput) => {
+        try {
+            const { data } = await requestPasswordReset({
+                variables: {
+                    input: {
+                        email: input.email,
+                        frontendUrl: input.frontendUrl
+                    }
+                }
+            });
+            
+            if (data?.requestPasswordReset) {
+                return data.requestPasswordReset;
+            }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error("Error during password reset request:", error);
+            
+            // Manejar diferentes tipos de errores
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                const graphQLError = error.graphQLErrors[0];
+                if (graphQLError.message.includes("Usuario no encontrado")) {
+                    throw new Error("No se encontró una cuenta con este email.");
+                } else if (graphQLError.message.includes("Usuario desactivado")) {
+                    throw new Error("Su cuenta ha sido desactivada. Contacte al administrador.");
+                } else if (graphQLError.message.includes("Email service not configured")) {
+                    throw new Error("El servicio de email no está configurado. Contacte al administrador.");
+                } else {
+                    throw new Error(graphQLError.message);
+                }
+            } else if (error.networkError) {
+                throw new Error("Error de conexión. Verifique su conexión a internet.");
+            } else {
+                throw new Error("Error al procesar la solicitud. Intente nuevamente.");
+            }
+        }
+    };
+
+    /**
+     * Función para restablecer contraseña con token.
+     * @description Restablece la contraseña del usuario usando el token recibido por email
+     * @param input Objeto de entrada que contiene el token y nueva contraseña
+     */
+    const handleResetPassword = async (input: IResetPasswordInput) => {
+        try {
+            const { data } = await resetPassword({
+                variables: {
+                    input: {
+                        token: input.token,
+                        newPassword: input.newPassword
+                    }
+                }
+            });
+            
+            if (data?.resetPassword) {
+                return data.resetPassword;
+            }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error("Error during password reset:", error);
+            
+            // Manejar diferentes tipos de errores
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                const graphQLError = error.graphQLErrors[0];
+                if (graphQLError.message.includes("Token inválido")) {
+                    throw new Error("El enlace de recuperación no es válido.");
+                } else if (graphQLError.message.includes("Token ya utilizado")) {
+                    throw new Error("Este enlace de recuperación ya ha sido utilizado.");
+                } else if (graphQLError.message.includes("Token expirado")) {
+                    throw new Error("El enlace de recuperación ha expirado. Solicite uno nuevo.");
+                } else if (graphQLError.message.includes("Usuario desactivado")) {
+                    throw new Error("Su cuenta ha sido desactivada. Contacte al administrador.");
+                } else {
+                    throw new Error(graphQLError.message);
+                }
+            } else if (error.networkError) {
+                throw new Error("Error de conexión. Verifique su conexión a internet.");
+            } else {
+                throw new Error("Error al cambiar la contraseña. Intente nuevamente.");
             }
         }
     };
@@ -325,6 +420,8 @@ export function useHooks() {
         processes,
         handleLogin,
         handleRegister,
+        handleRequestPasswordReset,
+        handleResetPassword,
         handleLoginRedirect,
         handleLogout, 
         setCurrentValley: handleSetCurrentValley,

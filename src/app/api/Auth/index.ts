@@ -190,3 +190,31 @@ export const ACTIVATE_USER = gql`
     }
   }
 `;
+
+// Password Reset Mutations and Queries
+export const REQUEST_PASSWORD_RESET = gql`
+  mutation RequestPasswordReset($input: RequestPasswordResetInput!) {
+    requestPasswordReset(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation ResetPassword($input: ResetPasswordInput!) {
+    resetPassword(input: $input) {
+      success
+      message
+    }
+  }
+`;
+
+export const VALIDATE_RESET_TOKEN = gql`
+  query ValidateResetToken($token: String!) {
+    validateResetToken(token: $token) {
+      valid
+      message
+    }
+  }
+`;

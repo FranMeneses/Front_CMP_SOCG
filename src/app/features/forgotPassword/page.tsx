@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useHooks } from "../hooks/useHooks";
 
 export default function ForgotPassword() {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
@@ -11,6 +12,7 @@ export default function ForgotPassword() {
   const [emailValid, setEmailValid] = useState<boolean>(true);
   
   const router = useRouter();
+  const { handleRequestPasswordReset } = useHooks();
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -50,9 +52,23 @@ export default function ForgotPassword() {
 
     try {
       setIsButtonDisabled(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setSuccessMessage("Se ha enviado un enlace de recuperación a su correo electrónico");
-      setEmail("");
+      setErrorMessage(null);
+      setSuccessMessage(null);
+
+      // Obtener la URL base del frontend
+      const frontendUrl = window.location.origin;
+      
+      const response = await handleRequestPasswordReset({
+        email: email,
+        frontendUrl: frontendUrl
+      });
+
+      if (response?.success) {
+        setSuccessMessage(response.message);
+        setEmail("");
+      } else {
+        setErrorMessage("Error al procesar la solicitud. Intente más tarde.");
+      }
     } catch (error) {
       console.error("Error al enviar correo de recuperación:", error);
       setErrorMessage(error instanceof Error ? error.message : "Error al procesar la solicitud. Intente más tarde.");
