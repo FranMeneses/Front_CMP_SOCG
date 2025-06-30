@@ -68,7 +68,7 @@ export function useUsers() {
     return {
         usersLoading,
         isSidebarOpen,
-        usersData,
+        usersData: usersData || { users: [] },
         isModalOpen,
         selectedUser,
         openUserModal,

@@ -70,7 +70,7 @@ export default function UsersPage() {
 
                             <div className="p-4">
                                 <UserTable
-                                    users={usersData.users}
+                                    users={usersData?.users || []}
                                     onEditUser={openUserModal}
                                     data-test-id="users-table"
                                 />
