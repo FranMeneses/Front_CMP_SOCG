@@ -8,18 +8,26 @@ export function useUsers() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
 
+    const getAuthToken = () => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem("token") || '';
+        }
+        return '';
+    };
+
     const { data: usersData, loading: usersLoading } = useQuery(GET_USERS, {
         context: {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getAuthToken()}`,
             },
-        }
+        },
+        skip: typeof window === 'undefined'
     });
 
     const [updateUser] = useMutation(UPDATE_USER, {
         context: {
             headers:{
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${getAuthToken()}`,
             }
         }
     })
