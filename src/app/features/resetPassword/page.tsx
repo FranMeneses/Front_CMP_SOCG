@@ -1,12 +1,12 @@
 'use client';
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useHooks } from "../hooks/useHooks";
 import { useQuery } from "@apollo/client";
 import { VALIDATE_RESET_TOKEN } from "@/app/api/Auth";
 
-export default function ResetPassword() {
+function ResetPasswordContent() {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -278,5 +278,41 @@ export default function ResetPassword() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 h-screen">
+      <div className="relative h-full w-full">
+        <video
+          className="absolute top-0 left-0 w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+        >
+          <source src="/LoginBg1.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <div className="hidden md:flex bg-[#153C6C] items-center justify-center flex-col relative font-[Helvetica]">
+        <div className="flex flex-col w-3/5 h-3/4 items-center bg-white rounded-lg shadow-lg p-8">
+          <h1 className="text-3xl font-bold mb-4 text-zinc-900 text-center">
+            Cargando...
+          </h1>
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#153C6C]"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 } 
