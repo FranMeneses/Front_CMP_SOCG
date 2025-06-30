@@ -73,28 +73,6 @@ interface GanttChartProps {
       };
     }, [viewMode, subtasks, getTaskDetails]);
 
-    useEffect(() => {
-      const container = ganttRef.current?.parentElement;
-      if (!container) return;
-
-      // Función para traducir el botón
-      const translateTodayBtn = () => {
-        const todayBtn = document.querySelector('.gantt-today-btn');
-        if (todayBtn && todayBtn.textContent !== "Hoy") {
-          todayBtn.textContent = "Hoy";
-        }
-      };
-
-      // Observa cambios en el DOM del contenedor
-      const observer = new MutationObserver(translateTodayBtn);
-      observer.observe(container, { childList: true, subtree: true });
-
-      // Traduce inmediatamente si ya existe
-      translateTodayBtn();
-
-      return () => observer.disconnect();
-    }, [subtasks, viewMode]);
-
     const closePopup = () => {
       setSelectedSubtask(null);
       setTaskDetails(undefined);
