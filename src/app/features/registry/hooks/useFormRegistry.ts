@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { IRegisterInput } from "@/app/models/IAuth";
 import { useHooks } from '../../hooks/useHooks';
 
-interface IRegistryForm extends IRegisterInput {
+interface IRegistryForm extends Omit<IRegisterInput, 'id_rol'> {
   confirmPassword: string;
 }
 
@@ -13,8 +13,7 @@ export function useFormRegistry() {
         password: "",
         confirmPassword: "",
         full_name: "",
-        id_rol: 11,
-        organization: " ",
+        organization: "",
     });
 
     const [passwordMatch, setPasswordMatch] = useState<boolean>(true);
@@ -57,7 +56,7 @@ export function useFormRegistry() {
     
     const validateForm = (): boolean => {
         if (!formState.email || !formState.password || !formState.full_name || 
-            !formState.confirmPassword || formState.id_rol === 0 || !formState.organization) {
+            !formState.confirmPassword) {
             setErrorMessage("Por favor complete todos los campos obligatorios");
             return false;
         }
@@ -88,6 +87,10 @@ export function useFormRegistry() {
             setIsSubmitting(true);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { confirmPassword, ...registerData } = formState;
+            
+            // No enviamos id_rol para que el backend use su lógica automática:
+            // - Primer usuario = Admin (rol 1)
+            // - Resto de usuarios = Usuario básico (rol 11)
             await registerUser(registerData);
         } catch (error) {
             console.error("Registration error:", error);
@@ -100,8 +103,7 @@ export function useFormRegistry() {
     const isFormValid = useMemo(() => {
         return !!(formState.email && validateEmail(formState.email) && 
                 formState.password && formState.full_name && 
-                formState.confirmPassword && formState.id_rol !== 0 && 
-                formState.organization && passwordMatch);
+                formState.confirmPassword && passwordMatch);
     }, [formState, passwordMatch]);
 
     return {
