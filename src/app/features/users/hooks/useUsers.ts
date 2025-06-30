@@ -38,10 +38,17 @@ export function useUsers() {
     
     const handleUpdateUser = async (userInput: IUpdateUserInput) => {
         try {
+            console.log("Updating user with input:", userInput);
             await updateUser({
                 variables: {
                     id: selectedUser?.id_usuario,
-                    input: userInput
+                    updateUserInput: {
+                        full_name: userInput.full_name,
+                        email: userInput.email,
+                        id_rol: userInput.id_rol,
+                        organization: userInput.organization,
+                        is_active: userInput.is_active !== undefined ? userInput.is_active : true,
+                    }
                 },
                 refetchQueries: [{ query: GET_USERS }],
             });
