@@ -4,15 +4,15 @@ export interface IRol {
 }
 
 export interface IUser {
-    id_usuario: number;
+    id_usuario: string;
     email: string;
     full_name: string;
     id_rol: number;
-    organization: string;
+    organization?: string;
     is_active: boolean;
     created_at: Date;
     updated_at: Date;
-    last_login: Date;
+    last_login?: Date;
     rol: IRol;
 }
 
@@ -25,8 +25,8 @@ export interface IRegisterInput {
     email: string;
     password: string;
     full_name: string;
-    id_rol: number;
-    organization: string;
+    id_rol?: number;
+    organization?: string;
 }
 
 export interface ILoginInput {
@@ -35,5 +35,19 @@ export interface ILoginInput {
 }
 
 export interface IJwtPayload {
-  exp: number;
+    exp: number;
+    sub: string;
+    email: string;
+    rol: string;
+    id_rol: number;
+    iat?: number;
+}
+
+export interface IUpdateUserInput {
+    email?: string;
+    password?: string;
+    full_name?: string;
+    id_rol?: number;
+    organization?: string;
+    is_active?: boolean;
 }

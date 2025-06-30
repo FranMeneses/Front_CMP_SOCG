@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
-import { IRegisterInput, IRol } from "@/app/models/IAuth";
+import { IRegisterInput } from "@/app/models/IAuth";
 import { useHooks } from '../../hooks/useHooks';
-import { useQuery } from '@apollo/client';
-import { GET_ROLES } from '@/app/api/Auth';
 
-interface IRegistryForm extends IRegisterInput {
+interface IRegistryForm extends Omit<IRegisterInput, 'id_rol'> {
   confirmPassword: string;
 }
 
@@ -15,19 +13,12 @@ export function useFormRegistry() {
         password: "",
         confirmPassword: "",
         full_name: "",
-        id_rol: 0,
         organization: "",
     });
 
     const [passwordMatch, setPasswordMatch] = useState<boolean>(true);
     const [emailValid, setEmailValid] = useState<boolean>(true);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    
-    const {data: dataRoles} = useQuery(GET_ROLES);
-
-    const roles = dataRoles?.roles || [];
-
-    const rolesOptions = roles.map((rol: IRol) => rol.nombre);
 
     const { handleRegister: registerUser } = useHooks();
     
@@ -63,16 +54,9 @@ export function useFormRegistry() {
         }
     };
     
-    const handleRoleSelect = (roleId: number) => {
-        setFormState({
-            ...formState,
-            id_rol: roleId
-        });
-    };
-    
     const validateForm = (): boolean => {
         if (!formState.email || !formState.password || !formState.full_name || 
-            !formState.confirmPassword || formState.id_rol === 0 || !formState.organization) {
+            !formState.confirmPassword) {
             setErrorMessage("Por favor complete todos los campos obligatorios");
             return false;
         }
@@ -103,6 +87,10 @@ export function useFormRegistry() {
             setIsSubmitting(true);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { confirmPassword, ...registerData } = formState;
+            
+            // No enviamos id_rol para que el backend use su lógica automática:
+            // - Primer usuario = Admin (rol 1)
+            // - Resto de usuarios = Usuario básico (rol 11)
             await registerUser(registerData);
         } catch (error) {
             console.error("Registration error:", error);
@@ -112,15 +100,10 @@ export function useFormRegistry() {
         }
     };
 
-    const dropdownItems = useMemo(() => ({
-        roles: rolesOptions || [],
-    }), [rolesOptions]);
-
     const isFormValid = useMemo(() => {
         return !!(formState.email && validateEmail(formState.email) && 
                 formState.password && formState.full_name && 
-                formState.confirmPassword && formState.id_rol !== 0 && 
-                formState.organization && passwordMatch);
+                formState.confirmPassword && passwordMatch);
     }, [formState, passwordMatch]);
 
     return {
@@ -129,11 +112,8 @@ export function useFormRegistry() {
         emailValid,
         isSubmitting,
         errorMessage,
-        dropdownItems,
         isFormValid,
-        roles,
         handleInputChange,
-        handleRoleSelect,
         handleRegister
     };
 }

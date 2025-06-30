@@ -31,7 +31,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [loadingCommunicationTasks, setLoadingCommunicationTasks] = useState(isCommunicationsRole);
   const [loadingRelationshipTasks, setLoadingRelationshipTasks] = useState(isRelationshipSuperintendent);
 
-  const validRoles = ["encargado copiapó", "encargado huasco", "encargado elqui", "Encargado Comunicaciones", "Encargado Asuntos Públicos","Jefe Relacionamiento VC", "Jefe Relacionamiento VH", "Jefe Relacionamiento VE"];
+  const validRoles = ["Encargado Comunicaciones", "Encargado Asuntos Públicos","Jefe Relacionamiento VC", "Jefe Relacionamiento VH", "Jefe Relacionamiento VE"];
 
   /**
    * Función para cargar las tareas de los procesos de comunicación
@@ -99,16 +99,10 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
    */
   const getCurrentProcessId = (userRole: string) => {
     switch(userRole) {
-      case "encargado copiapó":
-        return 1;
       case "Jefe Relacionamiento VC":
         return 1;
-      case "encargado huasco":
-        return 2;
       case "Jefe Relacionamiento VH":
         return 2;
-      case "encargado elqui":
-        return 3;
       case "Jefe Relacionamiento VE":
         return 3;
       case "Encargado Comunicaciones":

@@ -5,6 +5,7 @@ import { IInfoTask } from "@/app/models/ITasks";
 import { TaskDetails } from "@/app/models/ITaskForm";
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
+import { Info, Clipboard, FileText } from "lucide-react";
 
 interface ValleyTaskFormProps {
   onSave: (task: TaskDetails) => void;
@@ -16,7 +17,6 @@ interface ValleyTaskFormProps {
 }
 
 export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, details, infoTask }: ValleyTaskFormProps) {
-
   const {
     formState,
     faenas,
@@ -33,188 +33,233 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
   const { isManager, userRole } = useHooks();
 
   return (
-    <div className='font-[Helvetica]' data-test-id="task-form">
-      <h2 className="text-lg font-semibold mb-4">
-        {isEditing ? "Editar Tarea" : "Nueva Tarea"}
-      </h2>
-      <div className="mb-4 truncate">
-        <label className="block text-sm font-medium mb-1">Nombre</label>
-        <input
-          type="text"
-          value={formState.name}
-          onChange={(e) => handleInputChange("name", e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          data-test-id="task-title-input"
-          disabled={isManager}
-          required
-        />
+    <div className="p-5 max-w-2xl mx-auto font-[Helvetica]" data-test-id="task-form">
+      <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-100">
+        <h2 className="text-lg font-semibold text-gray-800">
+          {isEditing ? "Editar Tarea" : "Nueva Tarea"}
+        </h2>
       </div>
-      <div className="mb-4 truncate">
-        <label className="block text-sm font-medium mb-1">Descripción</label>
-        <input
-          type="text"
-          value={formState.description}
-          onChange={(e) => handleInputChange("description", e.target.value)}
-          className="w-full border rounded px-3 py-2"
-          data-test-id="task-title-input"
-          disabled={isManager}
-        />
-      </div>
-      <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1 required">Origen</label>
-        <DropdownMenu
-          items={dropdownItems.origin}
-          onSelect={(value) => handleInputChange("origin", value)}
-          buttonText="Seleccione Origen"
-          selectedValue={infoTask?.originId ? dropdownItems.origin[infoTask.originId - 1] : undefined}
-          isInModal={true}
-          disabled={isManager || (isEditing && userRole != "Admin")}
-        />
-      </div>
-      <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1 required">Inversión</label>
-        <DropdownMenu
-          buttonText="Seleccione Inversión"
-          items={dropdownItems.investment}
-          onSelect={(value) => handleInputChange("investment", value)}
-          isInModal={true}
-          selectedValue={infoTask?.investmentId !== undefined ? dropdownItems.investment[infoTask.investmentId - 1] : undefined}
-          data-test-id="task-investment-dropdown"
-          disabled={isManager || (isEditing && userRole != "Admin")}
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1 required">Tipo de Iniciativa</label>
-        <DropdownMenu
-          buttonText="Seleccione Tipo de Iniciativa"
-          items={dropdownItems.type}
-          onSelect={(value) => handleInputChange("type", value)}
-          isInModal={true}
-          selectedValue={infoTask?.typeId ? dropdownItems.type[infoTask.typeId - 1] : undefined}
-          data-test-id="task-type-dropdown"
-          disabled={isManager || (isEditing && userRole != "Admin")}
-        />
-      </div>
-      <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1 required">Alcance de Iniciativa</label>
-        <DropdownMenu
-          buttonText="Seleccione Alcance"
-          items={dropdownItems.scope}
-          onSelect={(value) => handleInputChange("scope", value)}
-          isInModal={true}
-          selectedValue={infoTask?.scopeId !== undefined ? dropdownItems.scope[infoTask.scopeId - 1] : undefined}
-          data-test-id="task-scope-dropdown"
-          disabled={isManager || (isEditing && userRole != "Admin")}
-        />
-      </div>
-      <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1 required">Interacción</label>
-        <DropdownMenu
-          buttonText="Seleccione Interacción"
-          items={dropdownItems.interaction}
-          onSelect={(value) => handleInputChange("interaction", value)}
-          isInModal={true}
-          selectedValue={infoTask?.interactionId !== undefined ? dropdownItems.interaction[infoTask.interactionId - 1] : undefined}
-          data-test-id="task-interaction-dropdown"
-          disabled={isManager || (isEditing && userRole != "Admin")}
-        />
-      </div>
-      <div className="mb-4 ">
-        <label className="block text-sm font-medium mb-1 required">¿Compliance?</label>
-        <DropdownMenu
-          buttonText="Seleccione Compliance"
-          items={["Si", "No"]}
-          onSelect={(value) => handleComplianceChange(value === "Si" ? true : false)}
-          isInModal={true}
-          selectedValue={infoTask ? (infoTask.task?.applies ? "Si" : "No") : undefined}
-          data-test-id="task-compliance-dropdown"
-          disabled={isEditing ? true : false}
-        />
-      </div>
-      {isEditing && (
-        <div className="mb-4 ">
-          <label className="block text-sm font-medium mb-1 required">Estado</label>
-          <DropdownMenu
-            buttonText="Seleccione Estado"
-            items={dropdownItems.state}
-            onSelect={(value) => handleInputChange("state", value)}
-            isInModal={true}
-            selectedValue={infoTask?.task?.statusId ? dropdownItems.state[infoTask.task.statusId - 1] : undefined}
-            data-test-id="task-state-dropdown"
-            disabled={
-              isManager || 
-              formState.state === "En Cumplimiento" || 
-              infoTask?.task?.statusId === dropdownItems.state.findIndex((state: string) => state === "En Cumplimiento") + 1
-            }
-          />
-          {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+
+      <div className="space-y-6">
+        {/* Información General */}
+        <div className="bg-gray-50 p-4 rounded-md">
+          <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+            <Info className="h-4 w-4 mr-2" />
+            Información General
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Nombre</label>
+              <input
+                type="text"
+                value={formState.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                className="form-input"
+                data-test-id="task-title-input"
+                disabled={isManager}
+                required
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500">Descripción</label>
+              <input
+                type="text"
+                value={formState.description}
+                onChange={(e) => handleInputChange("description", e.target.value)}
+                className="form-input"
+                data-test-id="task-description-input"
+                disabled={isManager}
+              />
+            </div>
+          </div>
         </div>
-      )}
-      {details && (
-        <>
-          <div className="mb-4 truncate">
-            <label className="block text-sm font-medium mb-1">Presupuesto (USD)</label>
-            <input
-              type="number"
-              min={0}
-              value={formState.budget}
-              onChange={(e) => handleInputChange("budget", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-              disabled= {true}
-              data-test-id="task-budget-input"
-            />
+
+        {/* Proceso y Ubicación */}
+        <div className="bg-gray-50 p-4 rounded-md">
+          <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+            <Clipboard className="h-4 w-4 mr-2" />
+            Proceso y Ubicación
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Faena</label>
+              <DropdownMenu
+                buttonText="Seleccionar faena"
+                items={faenas}
+                onSelect={(value) => handleInputChange("faena", value)}
+                isInModal={true}
+                disabled={isEditing ? true : false}
+                selectedValue={selectedFaenaName}
+                data-test-id="task-faena-dropdown"
+              />
+            </div>
           </div>
-          <div className="mb-4 truncate">
-            <label className="block text-sm font-medium mb-1">Gasto (USD)</label>
-            <input
-              type="number"
-              min={0}
-              value={formState.expenses}
-              onChange={(e) => handleInputChange("expenses", e.target.value)}
-              className="w-full border rounded px-3 py-2"
-              disabled= {true}
-              data-test-id="task-expenses-input"
-            />
+        </div>
+
+        {/* Información Tarea */}
+        <div className="bg-gray-50 p-4 rounded-md">
+          <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+            <FileText className="h-4 w-4 mr-2" />
+            Información Tarea
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Origen */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Origen</label>
+              <DropdownMenu
+                items={dropdownItems.origin}
+                onSelect={(value) => handleInputChange("origin", value)}
+                buttonText="Seleccione Origen"
+                selectedValue={infoTask?.originId ? dropdownItems.origin[infoTask.originId - 1] : undefined}
+                isInModal={true}
+                disabled={isManager || (isEditing && userRole != "Admin")}
+              />
+            </div>
+            {/* Inversión */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Inversión</label>
+              <DropdownMenu
+                buttonText="Seleccione Inversión"
+                items={dropdownItems.investment}
+                onSelect={(value) => handleInputChange("investment", value)}
+                isInModal={true}
+                selectedValue={infoTask?.investmentId !== undefined ? dropdownItems.investment[infoTask.investmentId - 1] : undefined}
+                data-test-id="task-investment-dropdown"
+                disabled={isManager || (isEditing && userRole != "Admin")}
+              />
+            </div>
+            {/* Tipo de Iniciativa */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Tipo de Iniciativa</label>
+              <DropdownMenu
+                buttonText="Seleccione Tipo de Iniciativa"
+                items={dropdownItems.type}
+                onSelect={(value) => handleInputChange("type", value)}
+                isInModal={true}
+                selectedValue={infoTask?.typeId ? dropdownItems.type[infoTask.typeId - 1] : undefined}
+                data-test-id="task-type-dropdown"
+                disabled={isManager || (isEditing && userRole != "Admin")}
+              />
+            </div>
+            {/* Alcance de Iniciativa */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Alcance de Iniciativa</label>
+              <DropdownMenu
+                buttonText="Seleccione Alcance"
+                items={dropdownItems.scope}
+                onSelect={(value) => handleInputChange("scope", value)}
+                isInModal={true}
+                selectedValue={infoTask?.scopeId !== undefined ? dropdownItems.scope[infoTask.scopeId - 1] : undefined}
+                data-test-id="task-scope-dropdown"
+                disabled={isManager || (isEditing && userRole != "Admin")}
+              />
+            </div>
+            {/* Interacción */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Interacción</label>
+              <DropdownMenu
+                buttonText="Seleccione Interacción"
+                items={dropdownItems.interaction}
+                onSelect={(value) => handleInputChange("interaction", value)}
+                isInModal={true}
+                selectedValue={infoTask?.interactionId !== undefined ? dropdownItems.interaction[infoTask.interactionId - 1] : undefined}
+                data-test-id="task-interaction-dropdown"
+                disabled={isManager || (isEditing && userRole != "Admin")}
+              />
+            </div>
+            {/* Riesgo */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Riesgo</label>
+              <DropdownMenu
+                buttonText="Seleccionar el riesgo"
+                items={dropdownItems.risk}
+                onSelect={(value) => handleInputChange("risk", value)}
+                isInModal={true}
+                selectedValue={infoTask?.riskId !== undefined ? dropdownItems.risk[infoTask.riskId - 1] : undefined}
+                data-test-id="task-risk-dropdown"
+                disabled={isManager || (isEditing && userRole != "Admin")}
+              />
+            </div>
+            {/* Beneficiario */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">Beneficiario</label>
+              <DropdownMenu
+                buttonText="Seleccionar beneficiario"
+                items={dropdownItems.beneficiaries}
+                onSelect={(value) => handleInputChange("beneficiary", value)}
+                isInModal={true}
+                disabled={isManager || (isEditing && userRole != "Admin")}
+                selectedValue={infoTask?.task?.beneficiary?.legalName ? dropdownItems.beneficiaries.find(infoTask?.task?.beneficiary.legalName) : undefined}
+                data-test-id="task-beneficiary-dropdown"
+              />
+            </div>
+            {/* Compliance */}
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500 required">¿Compliance?</label>
+              <DropdownMenu
+                buttonText="Seleccione Compliance"
+                items={["Si", "No"]}
+                onSelect={(value) => handleComplianceChange(value === "Si" ? true : false)}
+                isInModal={true}
+                selectedValue={infoTask ? (infoTask.task?.applies ? "Si" : "No") : undefined}
+                data-test-id="task-compliance-dropdown"
+                disabled={isEditing ? true : false}
+              />
+            </div>
+            {/* Estado */}
+            {isEditing && (
+              <div className="space-y-1">
+                <label className="text-xs text-gray-500 required">Estado</label>
+                <DropdownMenu
+                  buttonText="Seleccione Estado"
+                  items={dropdownItems.state}
+                  onSelect={(value) => handleInputChange("state", value)}
+                  isInModal={true}
+                  selectedValue={infoTask?.task?.statusId ? dropdownItems.state[infoTask.task.statusId - 1] : undefined}
+                  data-test-id="task-state-dropdown"
+                  disabled={
+                    isManager ||
+                    formState.state === "En Cumplimiento" ||
+                    infoTask?.task?.statusId === dropdownItems.state.findIndex((state: string) => state === "En Cumplimiento") + 1
+                  }
+                />
+                {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+              </div>
+            )}
+            {/* Presupuesto y Gastos */}
+            {details && (
+              <>
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-500">Presupuesto (USD)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={formState.budget}
+                    onChange={(e) => handleInputChange("budget", e.target.value)}
+                    className="form-input"
+                    disabled={true}
+                    data-test-id="task-budget-input"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-gray-500">Gasto (USD)</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={formState.expenses}
+                    onChange={(e) => handleInputChange("expenses", e.target.value)}
+                    className="form-input"
+                    disabled={true}
+                    data-test-id="task-expenses-input"
+                  />
+                </div>
+              </>
+            )}
           </div>
-        </>
-      )}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1 required">Riesgo</label>
-        <DropdownMenu
-          buttonText="Seleccionar el riesgo"
-          items={dropdownItems.risk}
-          onSelect={(value) => handleInputChange("risk", value)}
-          isInModal={true}
-          selectedValue={infoTask?.riskId !== undefined ? dropdownItems.risk[infoTask.riskId - 1] : undefined}
-          data-test-id="task-risk-dropdown"
-          disabled={isManager || (isEditing && userRole != "Admin")}
-        />
+        </div>
       </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1 required">Faena</label>
-        <DropdownMenu
-          buttonText="Seleccionar faena"
-          items={faenas}
-          onSelect={(value) => handleInputChange("faena", value)}
-          isInModal={true}
-          disabled = {isEditing ? true : false}
-          selectedValue={selectedFaenaName}
-          data-test-id="task-faena-dropdown"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1 required">Beneficiario</label>
-        <DropdownMenu
-          buttonText="Seleccionar beneficiario"
-          items={dropdownItems.beneficiaries}
-          onSelect={(value) => handleInputChange("beneficiary", value)}
-          isInModal={true}
-          disabled={isManager || (isEditing && userRole != "Admin")}
-          selectedValue={infoTask?.task?.beneficiary?.legalName ? dropdownItems.beneficiaries.find(infoTask?.task?.beneficiary.legalName) : undefined}
-          data-test-id="task-beneficiary-dropdown"
-        />
-      </div>
-      <div className="flex justify-end space-x-2">
+
+      <div className="flex justify-end mt-6 space-x-2">
         <Button
           variant="secondary"
           onClick={onCancel}

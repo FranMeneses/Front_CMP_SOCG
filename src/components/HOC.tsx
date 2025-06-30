@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from './AuthProvider';
-import LoadingSpinner from './LoadingSpinner'; // Necesitarás crear este componente
+import LoadingSpinner from './LoadingSpinner'; 
 
 export default function withAuth<P>(Component: React.ComponentType<P>) {
   return function ProtectedRoute(props: React.PropsWithChildren<P>) {
@@ -13,7 +13,6 @@ export default function withAuth<P>(Component: React.ComponentType<P>) {
     useEffect(() => {
       if (!isLoading && !isAuthenticated) {
         router.replace('/');
-        console.log('Redirigiendo a la página de inicio porque no está autenticado');
       }
     }, [isAuthenticated, isLoading, router]);
 

@@ -4,7 +4,7 @@ import { useData } from "@/context/DataContext";
 import { IValley } from "@/app/models/IValleys";
 import { IProcess } from "@/app/models/IProcess";
 import { useMutation } from "@apollo/client";
-import { CREATE_USER, LOGIN } from "@/app/api/Auth";
+import { REGISTER, LOGIN } from "@/app/api/Auth";
 import { ILoginInput, IRegisterInput } from "@/app/models/IAuth";
 
 export function useHooks() {
@@ -13,7 +13,6 @@ export function useHooks() {
     const [userRole, setUserRole] = useState<string>(() => {
         if (typeof window !== 'undefined') {
             const storedRole = localStorage.getItem("rol");
-            console.log("Initial userRole from localStorage:", storedRole);
             return storedRole || "";
         }
         return "";
@@ -23,15 +22,14 @@ export function useHooks() {
     const [currentProcess, setCurrentProcess] = useState<IProcess | null>(null);
     const { valleys, faenas, processes } = useData();
     
-    const [login] = useMutation(LOGIN)
-    const [register] = useMutation(CREATE_USER);
+    const [login] = useMutation(LOGIN);
+    const [register] = useMutation(REGISTER);
 
     useEffect(() => {
         const syncRoleFromStorage = () => {
             if (typeof window !== 'undefined') {
                 const storedRole = localStorage.getItem("rol");
                 if (storedRole && storedRole !== userRole) {
-                    console.log("Syncing userRole from localStorage:", storedRole);
                     setUserRole(storedRole);
                 }
             }
@@ -41,7 +39,6 @@ export function useHooks() {
         
         const handleStorageChange = (event: StorageEvent) => {
             if (event.key === "rol") {
-                console.log("Storage event detected for rol:", event.newValue);
                 if (event.newValue && event.newValue !== userRole) {
                     setUserRole(event.newValue);
                 }
@@ -53,11 +50,11 @@ export function useHooks() {
         return () => {
             window.removeEventListener('storage', handleStorageChange);
         };
-    }, [userRole]); 
+    }, [userRole]);
 
     /**
      * Función para manejar el inicio de sesión del usuario.
-     * @description Inicia sesión al usuario y redirige a la página correspondiente según su
+     * @description Inicia sesión al usuario y redirige a la página correspondiente según su rol
      * @param input Objeto de entrada que contiene las credenciales del usuario
      */
     const handleLogin = async (input: ILoginInput) => {
@@ -70,51 +67,97 @@ export function useHooks() {
                     }
                 }
             });
-            if (data.login) {
+            
+            if (data?.login) {
                 const { access_token, user } = data.login;
+                
+                // Guardar información de autenticación
                 localStorage.setItem("token", access_token);
                 localStorage.setItem("user", JSON.stringify(user));
                 localStorage.setItem("rol", user.rol.nombre);
 
-                document.cookie = `token=${access_token}; path=/;`;
+                // Configurar cookie para middleware
+                document.cookie = `token=${access_token}; path=/; max-age=86400`; // 24 horas
 
                 setUserRole(user.rol.nombre);
                 handleLoginRedirect(user.rol.nombre);
             }
-        } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             console.error("Error during login:", error);
-            throw new Error("Login failed. Please check your credentials.");
+            
+            // Manejar diferentes tipos de errores
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                const graphQLError = error.graphQLErrors[0];
+                if (graphQLError.message.includes("Credenciales inválidas")) {
+                    throw new Error("Email o contraseña incorrectos.");
+                } else if (graphQLError.message.includes("Usuario desactivado")) {
+                    throw new Error("Su cuenta ha sido desactivada. Contacte al administrador.");
+                } else {
+                    throw new Error(graphQLError.message);
+                }
+            } else if (error.networkError) {
+                throw new Error("Error de conexión. Verifique su conexión a internet.");
+            } else {
+                throw new Error("Error al iniciar sesión. Intente nuevamente.");
+            }
         }
     };
 
     /**
      * Función para manejar el registro de un nuevo usuario.
-     * @description Registra un nuevo usuario y redirige al usuario a la página correspondiente
-     * @param input Objeto de entrada que contiene los datos del nuevo usuario
+     * @description Registra un nuevo usuario en el sistema y lo autentica automáticamente
+     * @param input Datos del usuario a registrar
      */
     const handleRegister = async (input: IRegisterInput) => {
         try {
             const { data } = await register({
                 variables: {
-                    createUserInput: {
+                    registerInput: {
                         email: input.email,
                         password: input.password,
                         full_name: input.full_name,
-                        id_rol: input.id_rol
+                        organization: input.organization
+                        // No enviamos id_rol - se asigna automáticamente
                     }
                 }
             });
+            
+            if (data?.register) {
+                const { access_token, user } = data.register;
+                
+                // Auto-login después del registro exitoso
+                localStorage.setItem("token", access_token);
+                localStorage.setItem("user", JSON.stringify(user));
+                localStorage.setItem("rol", user.rol.nombre);
 
-            if (data.createUser) {
-                const input = {
-                    email: data.createUser.email,
-                    password: data.createUser.password
-                };
-                handleLogin(input);
+                // Configurar cookie para middleware
+                document.cookie = `token=${access_token}; path=/; max-age=86400`; // 24 horas
+
+                setUserRole(user.rol.nombre);
+                handleLoginRedirect(user.rol.nombre);
+                
+                return user;
             }
-        } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             console.error("Error during registration:", error);
-            throw new Error("Registration failed. Please try again.");
+            
+            // Manejar diferentes tipos de errores
+            if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+                const graphQLError = error.graphQLErrors[0];
+                if (graphQLError.message.includes("El email ya está registrado")) {
+                    throw new Error("Este email ya está registrado. Intente con otro email.");
+                } else if (graphQLError.message.includes("El email proporcionado no es válido")) {
+                    throw new Error("El email proporcionado no es válido o no existe.");
+                } else {
+                    throw new Error(graphQLError.message);
+                }
+            } else if (error.networkError) {
+                throw new Error("Error de conexión. Verifique su conexión a internet.");
+            } else {
+                throw new Error("Error al registrar usuario. Intente nuevamente.");
+            }
         }
     };
 
@@ -163,8 +206,15 @@ export function useHooks() {
         }
     }, [processes, userRole, processByRole, currentProcess]);
 
-    const valleysName = valleys?.map((valley) => valley.name) || [];
-    const faenasName = faenas?.map((faena) => faena.name) || [];
+    const valleysName = useMemo(() => {
+        if (!valleys) return [];
+        return valleys.map(valley => valley.name);
+    }, [valleys]);
+
+    const faenasName = useMemo(() => {
+        if (!faenas) return [];
+        return faenas.map(faena => faena.name);
+    }, [faenas]);
 
     /**
      *  Manejo de los nombres de los valles
@@ -188,19 +238,19 @@ export function useHooks() {
     };
 
     const handleSetCurrentProcess = (processNameOrObject: string | IProcess) => {
-    if (!processes) return;
+        if (!processes) return;
 
-    let newProcess: IProcess | undefined;
+        let newProcess: IProcess | undefined;
 
-    if (typeof processNameOrObject === 'string') {
-        newProcess = processes.find(p => p.name === processNameOrObject);
-    } else {
-        newProcess = processNameOrObject;
-    }
+        if (typeof processNameOrObject === 'string') {
+            newProcess = processes.find(p => p.name === processNameOrObject);
+        } else {
+            newProcess = processNameOrObject;
+        }
 
-    if (newProcess) {
-        setCurrentProcess(newProcess);
-    }
+        if (newProcess) {
+            setCurrentProcess(newProcess);
+        }
     };
 
 
@@ -210,36 +260,18 @@ export function useHooks() {
      * @param role Rol del usuario para redirigir a la página correspondiente
      */
     const handleLoginRedirect = (role: string) => {
-        console.log("Redirecting user with role:", role);
         switch (role) {
             case "Gerente":
-                router.push("/features/resume");
-                break;
             case "Admin":
-                console.log("Redirecting Admin to /features/resume");
-                router.push("/features/resume");
-                break;
             case "Superintendente Relacionamiento":
-                router.push("/features/resume");
-                break;
             case "Superintendente Comunicaciones":
-                router.push("/features/resume");
-                break;
             case "Encargado Cumplimiento":
                 router.push("/features/resume");
                 break;
             case "Encargado Asuntos Públicos":
-                router.push("/features/planification");
-                break;
             case "Encargado Comunicaciones":
-                router.push("/features/planification");
-                break;
             case "Jefe Relacionamiento VE":
-                router.push("/features/planification");
-                break;
             case "Jefe Relacionamiento VC":
-                router.push("/features/planification");
-                break;
             case "Jefe Relacionamiento VH":
                 router.push("/features/planification");
                 break;
@@ -254,19 +286,28 @@ export function useHooks() {
      * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
      * @returns 
      */
-    const isValleyManager = userRole === "encargado elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "Superintendente Relacionamiento" || userRole === 'Jefe Relacionamiento VE' || userRole === 'Jefe Relacionamiento VC' || userRole === 'Jefe Relacionamiento VH';
+    const isValleyManager = userRole === "Superintendente Relacionamiento" || userRole === 'Jefe Relacionamiento VE' || userRole === 'Jefe Relacionamiento VC' || userRole === 'Jefe Relacionamiento VH';
     
     const isCommunicationsManager = userRole === "Encargado Comunicaciones" || userRole === "Encargado Asuntos Públicos" || userRole === "Superintendente Comunicaciones";
 
     const isManager = userRole === 'Gerente' || userRole === 'Superintendente Relacionamiento' || userRole === 'Superintendente Comunicaciones';
     
-
+    /**
+     * Función para cerrar sesión.
+     */
     const handleLogout = () => {
+        // Limpiar localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("rol");
-        setUserRole("");
+        
+        // Limpiar cookie
         document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        
+        // Resetear estado
+        setUserRole("");
+        
+        // Redirigir al login
         router.push("/");
     };
 

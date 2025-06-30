@@ -10,6 +10,7 @@ import MinutaFields from "./status-fields/MinutaFields";
 import MemorandumFields from "./status-fields/MemorandumFields";
 import HemHesFields from "./status-fields/HEMHESFields";
 import ComplianceSummary from "./status-fields/ComplianceSummary";
+import { Info } from "lucide-react";
 
 interface ComplianceFormProps {
     onSave: (compliance: Partial<IComplianceForm>) => void;
@@ -151,50 +152,58 @@ export default function ComplianceForm({
 
     return (
         <div data-test-id="compliance-form" className="max-h-[70vh] overflow-y-auto font-[Helvetica]">
-            <h2 className="text-lg font-semibold mb-4">Compliance</h2>
-            
-            <div className="space-y-4 mb-6">
-                <div className="truncate">
-                    <label className="block text-sm font-medium mb-1">Iniciativa</label>
-                    <input
-                        type="text"
-                        value={formState.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                        className="w-full border rounded px-3 py-2"
-                        data-test-id="compliance-name-input"
-                        disabled={true} 
-                    />
-                </div>
+            <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-800">
+                    Compliance
+                </h2>
+            </div>
 
-                <div className="truncate">
-                    <label className="block text-sm font-medium mb-1">Descripción</label>
-                    <input
-                        type="text"
-                        value={formState.description}
-                        onChange={(e) => handleInputChange('description', e.target.value)}
-                        className="w-full border rounded px-3 py-2"
-                        data-test-id="compliance-description-input"
-                        disabled={true} 
-                    />
-                </div>
-
-                <div>
-                    <label className="block text-sm font-medium mb-1">Estado</label>
-                    <DropdownMenu
-                        buttonText="Seleccionar Estado"
-                        items={dropdownItems.statuses}
-                        onSelect={(value) => handleInputChange('statusId', value)}
-                        isInModal={true}
-                        selectedValue={selectedCompliance?.status ? dropdownItems.statuses.find((status:string) => status === selectedCompliance.status.name) : ""}
-                        disabled={true}
-                        data-test-id="compliance-status-dropdown" 
-                    />
+            <div className="bg-gray-50 p-4 rounded-md mb-6 border border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                    <Info className="h-4 w-4 mr-2" />
+                    Información General
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <label className="block text-xs font-medium mb-1">Iniciativa</label>
+                        <input
+                            type="text"
+                            value={formState.name}
+                            onChange={(e) => handleInputChange('name', e.target.value)}
+                            className="form-input"
+                            data-test-id="compliance-name-input"
+                            disabled={true}
+                        />
+                    </div>
+                    <div className="space-y-1">
+                        <label className="block text-xs font-medium mb-1">Descripción</label>
+                        <input
+                            type="text"
+                            value={formState.description}
+                            onChange={(e) => handleInputChange('description', e.target.value)}
+                            className="form-input"
+                            data-test-id="compliance-description-input"
+                            disabled={true}
+                        />
+                    </div>
+                    <div className="space-y-1 col-span-2">
+                        <label className="block text-xs font-medium mb-1">Estado</label>
+                        <DropdownMenu
+                            buttonText="Seleccionar Estado"
+                            items={dropdownItems.statuses}
+                            onSelect={(value) => handleInputChange('statusId', value)}
+                            isInModal={true}
+                            selectedValue={selectedCompliance?.status ? dropdownItems.statuses.find((status:string) => status === selectedCompliance.status.name) : ""}
+                            disabled={true}
+                            data-test-id="compliance-status-dropdown"
+                        />
+                    </div>
                 </div>
             </div>
-            
+
             {renderAdditionalFields()}
             
-            <div className="flex justify-end space-x-2">
+            <div className="flex justify-end space-x-2 mt-2">
                 <Button
                     variant="secondary"
                     onClick={onCancel}
@@ -203,16 +212,27 @@ export default function ComplianceForm({
                 >
                     Cancelar
                 </Button>
-                <Button
-                    variant="default"
-                    onClick={handleSave}
-                    disabled={!isFormValid()}
-                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
-                    data-test-id="save-button"
-                >
-                    {formState.statusId !== undefined && formState.statusId >= 2 && formState.statusId < 6 ? 
-                        "Guardar y Avanzar" : saveButtonText}
-                </Button>
+                {formState.statusId && formState.statusId < 6 && (
+                    <Button
+                        variant="default"
+                        onClick={handleSave}
+                        disabled={!isFormValid()}
+                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
+                        data-test-id="save-button"
+                    >
+                        {formState.statusId >= 2 && formState.statusId < 6 ? "Guardar y Avanzar" : saveButtonText}
+                    </Button>
+                )}
+                {formState.statusId === 6 && (
+                    <Button
+                        variant="default"
+                        onClick={onCancel}
+                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white"
+                        data-test-id="close-button"
+                    >
+                        Cerrar
+                    </Button>
+                )}
             </div>
 
             {formState.statusId !== undefined && formState.statusId >= 2 && formState.statusId < 6 && (
