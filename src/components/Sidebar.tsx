@@ -1,5 +1,5 @@
 'use client';
-import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard, History  } from 'lucide-react';
+import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard, History, UserCheck  } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco", "Encargado Cumplimiento", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
+      admitedRoles: ["Admin", "Encargado Cumplimiento", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "Compliance",
@@ -49,7 +49,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco", "Encargado Cumplimiento","Encargado Comunicaciones", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
+      admitedRoles: ["Admin", "Encargado Cumplimiento","Encargado Comunicaciones", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "Beneficiarios",
@@ -57,7 +57,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
+      admitedRoles: ["Admin", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
       title: "Programación",
@@ -73,7 +73,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/schedule",
       icon: CalendarRange,
       isActive: pathname === "/features/schedule",
-      admitedRoles: ["Admin","encargado elqui", "encargado copiapó", "encargado huasco"]
+      admitedRoles: ["Admin","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "Resumen",
@@ -82,7 +82,15 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       icon: ChartPie,
       isActive: pathname === "/features/resume",
       admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento"]
-    }
+    },
+    {
+      title: "Usuarios",
+      href: "/features/users",
+      displayHref: "/users",
+      icon: UserCheck,
+      isActive: pathname === "/features/users",
+      admitedRoles: ["Admin"]
+    },
   ];
 
   const filteredNavItems = navItems.filter(item => item.admitedRoles.includes(userRole));

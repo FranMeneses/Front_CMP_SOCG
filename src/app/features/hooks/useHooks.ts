@@ -13,7 +13,6 @@ export function useHooks() {
     const [userRole, setUserRole] = useState<string>(() => {
         if (typeof window !== 'undefined') {
             const storedRole = localStorage.getItem("rol");
-            console.log("Initial userRole from localStorage:", storedRole);
             return storedRole || "";
         }
         return "";
@@ -31,7 +30,6 @@ export function useHooks() {
             if (typeof window !== 'undefined') {
                 const storedRole = localStorage.getItem("rol");
                 if (storedRole && storedRole !== userRole) {
-                    console.log("Syncing userRole from localStorage:", storedRole);
                     setUserRole(storedRole);
                 }
             }
@@ -41,7 +39,6 @@ export function useHooks() {
         
         const handleStorageChange = (event: StorageEvent) => {
             if (event.key === "rol") {
-                console.log("Storage event detected for rol:", event.newValue);
                 if (event.newValue && event.newValue !== userRole) {
                     setUserRole(event.newValue);
                 }
@@ -210,13 +207,11 @@ export function useHooks() {
      * @param role Rol del usuario para redirigir a la página correspondiente
      */
     const handleLoginRedirect = (role: string) => {
-        console.log("Redirecting user with role:", role);
         switch (role) {
             case "Gerente":
                 router.push("/features/resume");
                 break;
             case "Admin":
-                console.log("Redirecting Admin to /features/resume");
                 router.push("/features/resume");
                 break;
             case "Superintendente Relacionamiento":
@@ -254,13 +249,12 @@ export function useHooks() {
      * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
      * @returns 
      */
-    const isValleyManager = userRole === "encargado elqui" || userRole === "encargado copiapó" || userRole === "encargado huasco" || userRole === "Superintendente Relacionamiento" || userRole === 'Jefe Relacionamiento VE' || userRole === 'Jefe Relacionamiento VC' || userRole === 'Jefe Relacionamiento VH';
+    const isValleyManager = userRole === "Superintendente Relacionamiento" || userRole === 'Jefe Relacionamiento VE' || userRole === 'Jefe Relacionamiento VC' || userRole === 'Jefe Relacionamiento VH';
     
     const isCommunicationsManager = userRole === "Encargado Comunicaciones" || userRole === "Encargado Asuntos Públicos" || userRole === "Superintendente Comunicaciones";
 
     const isManager = userRole === 'Gerente' || userRole === 'Superintendente Relacionamiento' || userRole === 'Superintendente Comunicaciones';
     
-
     const handleLogout = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");

@@ -37,3 +37,11 @@ export interface ILoginInput {
 export interface IJwtPayload {
   exp: number;
 }
+
+export interface IUpdateUserInput {
+    email?: string;
+    full_name?: string;
+    id_rol?: number;
+    organization?: string;
+    is_active?: boolean;
+}
