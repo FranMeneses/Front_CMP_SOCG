@@ -149,6 +149,7 @@ const BeneficiariesTable: React.FC = () => {
                                                             onClick={() => handleEditContact(contact)} 
                                                             data-test-id="edit-contact-button"
                                                             color="#082C4B"
+                                                            size={20}
                                                         />
                                                         { userRole === "Admin" && (
                                                             <Trash
@@ -186,7 +187,6 @@ const BeneficiariesTable: React.FC = () => {
                 onClose={() => setIsPopupOpen(false)}
                 data-test-id="add-contact-modal"
             >
-                <h2 className="text-lg font-bold mb-4">Añadir Contacto</h2>
                 <ContactForm
                     onSave={handleAddContact} 
                     selectedBeneficiaryId={selectedBeneficiaryId}
@@ -203,7 +203,6 @@ const BeneficiariesTable: React.FC = () => {
                 }}
                 data-test-id="edit-contact-modal"
             >
-                <h2 className="text-lg font-bold mb-4">Editar Contacto</h2>
                 {selectedContact && (
                 <ContactForm
                         initialValues={selectedContact}
@@ -228,7 +227,6 @@ const BeneficiariesTable: React.FC = () => {
             >
                 {selectedBeneficiary && (
                     <div className="p-4">
-                        <h2 className="text-lg font-bold mb-4">Editar Beneficiario</h2>
                         <BeneficiariesForm
                             initialValues={selectedBeneficiary} 
                             onSave={(updatedBeneficiary) => {

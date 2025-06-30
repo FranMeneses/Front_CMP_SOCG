@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useCalendarForms } from "../../app/features/reportability/hooks/useCalendarForms"
+import { Info } from "lucide-react";
 
 interface CalendarEvent {
   selectedEvent: {
@@ -37,15 +38,27 @@ export default function CalendarForm({ selectedEvent }: CalendarEvent) {
     }, [selectedEvent.taskId, handleGetTaskName]);
 
     return (
-        <div className="items-center justify-center p-4 font-[Helvetica]">
-            <h2 className="text-2xl font-semibold text-center justify-center">{selectedEvent.title}</h2>
-            <p className="mb-2"><strong>Valle:</strong> {selectedEvent.valley}</p>
-            <p className="mb-2"><strong>Fecha de inicio:</strong> {selectedEvent.startDate}</p>
-            <p className="mb-2"><strong>Fecha de fin:</strong> {selectedEvent.start}</p>
-            <p className="mb-2"><strong>Estado:</strong> {selectedEvent.status}</p>
-            <p className="mb-2"><strong>Tarea:</strong> {taskName}</p>
-            <p className="mb-2"><strong>Progreso:</strong> {selectedEvent.progress}%</p>
-            <p className="mb-2"><strong>Faena:</strong> {selectedEvent.faena}</p>
+        <div className="max-w-2xl mx-auto font-[Helvetica]">
+            <div className="bg-gray-50 p-8 rounded-md border border-gray-200 mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                    <Info className="h-5 w-5 mr-2" />
+                    Detalle del Evento
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Título:</span> <span className="text-sm">{selectedEvent.title}</span></p>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Valle:</span> <span className="text-sm">{selectedEvent.valley}</span></p>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Faena:</span> <span className="text-sm">{selectedEvent.faena}</span></p>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Estado:</span> <span className="text-sm">{selectedEvent.status}</span></p>
+                    </div>
+                    <div>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Fecha de inicio:</span> <span className="text-sm">{selectedEvent.startDate}</span></p>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Fecha de fin:</span> <span className="text-sm">{selectedEvent.start}</span></p>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Progreso:</span> <span className="text-sm">{selectedEvent.progress}%</span></p>
+                        <p className="mb-2"><span className="font-medium text-xs text-gray-500">Tarea:</span> <span className="text-sm">{taskName}</span></p>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

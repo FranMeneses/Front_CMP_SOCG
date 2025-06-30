@@ -1,6 +1,7 @@
 import { useDocumentsRest } from "@/app/features/documents/hooks/useDocumentsRest";
 import { ComplianceFormState, IComplianceSolped, IComplianceMemo } from "@/app/models/ICompliance";
 import { IDocumentList } from "@/app/models/IDocuments";
+import { Info, FileText, Clipboard } from "lucide-react";
 
 interface ComplianceSummaryProps {
     formState: ComplianceFormState;
@@ -21,61 +22,98 @@ export default function ComplianceSummary({
     const { handleDownload } = useDocumentsRest();
     
     return (
-        <div className="mb-4 p-3 bg-green-50 rounded-md border border-green-200">
-            <h3 className="text-sm font-medium mb-2 text-green-700">Compliance Completado</h3>
-            <p className="text-xs text-green-600">Todos los documentos y registros han sido procesados correctamente.</p>
-            
-            <div className="mt-3 text-xs">
-                <h4 className="font-medium mb-1">Resumen:</h4>
-                <ul className="list-disc pl-5 space-y-1">
-                    <li className="flex items-center gap-1">
-                        <span className="font-medium">Carta Aporte:</span>
-                        <span 
-                        onClick={cartaData?.id_documento ? () => handleDownload(cartaData.id_documento) : undefined}
-                        className="text-blue-600 cursor-pointer">{cartaData?.nombre_archivo}</span>
-                    </li>
-                    <li className="flex items-center gap-1">
-                        <span className="font-medium">Minuta:</span>
-                        <span
-                            onClick={minutaData?.id_documento ? () => handleDownload(minutaData.id_documento) : undefined}
-                            className="text-blue-600 cursor-pointer">{minutaData?.nombre_archivo}
-                        </span>
-                    </li>
-                    
-                    {formState.hasMemo && (
-                        <li>
-                            <div className="font-medium">MEMORANDUM registrado</div>
-                            {memoData && (
-                                <div className="ml-2 text-gray-600">
-                                    Valor: ${memoData.value.toLocaleString()}
-                                </div>
-                            )}
-                        </li>
-                    )}
-                    
-                    {formState.hasSolped && (
-                        <li>
-                            <div className="font-medium">SOLPED registrada</div>
-                            {solpedData && (
-                                <div className="ml-2 grid grid-cols-1 gap-1 text-gray-600">
-                                    <span>CECO: {solpedData.ceco}</span>
-                                    <span>Cuenta: {solpedData.account}</span>
-                                    <span>Valor: ${solpedData.value.toLocaleString()}</span>
-                                </div>
-                            )}
-                        </li>
-                    )}
-                    
-                    {formState.hasHem && <li><span className="font-medium">HEM registrada</span></li>}
-                    {formState.hasHes && <li><span className="font-medium">HES registrada</span></li>}
-                    
-                    {formState.provider && (
+        <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
+            <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                <Info className="h-4 w-4 mr-2" />
+                Compliance Completado
+            </h3>
+            <p className="text-xs text-green-700 mb-4">
+                Todos los documentos y registros han sido procesados correctamente.
+            </p>
+            <div className="space-y-4">
+                {/* Documentos */}
+                <div>
+                    <h4 className="font-medium text-xs mb-2 flex items-center">
+                        <FileText className="h-4 w-4 mr-1" />
+                        Documentos
+                    </h4>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
                         <li className="flex items-center gap-1">
-                            <span className="font-medium">Proveedor:</span>
-                            <span>{formState.provider}</span>
+                            <span className="font-medium">Carta Aporte:</span>
+                            {cartaData?.nombre_archivo ? (
+                                <span
+                                    onClick={cartaData.id_documento ? () => handleDownload(cartaData.id_documento) : undefined}
+                                    className="text-blue-600 cursor-pointer hover:underline"
+                                >
+                                    {cartaData.nombre_archivo}
+                                </span>
+                            ) : (
+                                <span className="text-gray-400">No disponible</span>
+                            )}
                         </li>
-                    )}
-                </ul>
+                        <li className="flex items-center gap-1">
+                            <span className="font-medium">Minuta:</span>
+                            {minutaData?.nombre_archivo ? (
+                                <span
+                                    onClick={minutaData.id_documento ? () => handleDownload(minutaData.id_documento) : undefined}
+                                    className="text-blue-600 cursor-pointer hover:underline"
+                                >
+                                    {minutaData.nombre_archivo}
+                                </span>
+                            ) : (
+                                <span className="text-gray-400">No disponible</span>
+                            )}
+                        </li>
+                    </ul>
+                </div>
+                {/* Memorandum y Solped */}
+                {(formState.hasMemo || formState.hasSolped) && (
+                    <div>
+                        <h4 className="font-medium text-xs mb-2 flex items-center">
+                            <Clipboard className="h-4 w-4 mr-1" />
+                            Memorandum y/o SOLPED
+                        </h4>
+                        <ul className="list-disc pl-5 space-y-1 text-xs">
+                            {formState.hasMemo && (
+                                <li>
+                                    <span className="font-medium">MEMORANDUM registrado</span>
+                                    {memoData && (
+                                        <span className="ml-2 text-gray-600">
+                                            Valor: ${memoData.value.toLocaleString()}
+                                        </span>
+                                    )}
+                                </li>
+                            )}
+                            {formState.hasSolped && (
+                                <li>
+                                    <span className="font-medium">SOLPED registrada</span>
+                                    {solpedData && (
+                                        <span className="ml-2 text-gray-600">
+                                            CECO: {solpedData.ceco} | Cuenta: {solpedData.account} | Valor: ${solpedData.value.toLocaleString()}
+                                        </span>
+                                    )}
+                                </li>
+                            )}
+                        </ul>
+                    </div>
+                )}
+                {/* HEM/HES y Proveedor */}
+                <div>
+                    <h4 className="font-medium text-xs mb-2 flex items-center">
+                        <FileText className="h-4 w-4 mr-1" />
+                        Otros
+                    </h4>
+                    <ul className="list-disc pl-5 space-y-1 text-xs">
+                        {formState.hasHem && <li><span className="font-medium">HEM registrada</span></li>}
+                        {formState.hasHes && <li><span className="font-medium">HES registrada</span></li>}
+                        {formState.provider && (
+                            <li className="flex items-center gap-1">
+                                <span className="font-medium">Proveedor:</span>
+                                <span>{formState.provider}</span>
+                            </li>
+                        )}
+                    </ul>
+                </div>
             </div>
         </div>
     );

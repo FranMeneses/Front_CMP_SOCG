@@ -36,7 +36,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Encargado Cumplimiento"]
     },    
     {
-      title: "Histórial",
+      title: "Historial",
       href: "/features/history",
       displayHref: "/history",
       icon: History,

@@ -5,6 +5,7 @@ import { useDocumentsRest } from '@/app/features/documents/hooks/useDocumentsRes
 import { Trash } from 'lucide-react';
 import { useDocumentsGraph } from '@/app/features/documents/hooks/useDocumentsGraph';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal';
+import Image from 'next/image';
 
 interface DocumentTableProps {
   documents: IDocumentList[];
@@ -55,10 +56,11 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                   <tr key={index} className="hover:bg-gray-50 border-b border-gray-200">
                     <td className="px-4 py-3 border-r border-gray-200">
                       <div className="flex items-center justify-center">
-                        <img
+                        <Image
                           src="/pdfIcon.png"
                           alt="PDF Icon"
-                          className="w-6 h-6"
+                          width={24}
+                          height={24}
                         />
                       </div>
                     </td>

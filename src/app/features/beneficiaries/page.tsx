@@ -91,7 +91,6 @@ export default function Beneficiaries() {
         onClose={() => setIsPopupOpen(false)}
       >
         <div className="p-4">
-          <h2 className="text-lg font-bold mb-4">Añadir Beneficiario</h2>
           <BeneficiariesForm
             onSave={(beneficiary) => {
               handleAddBeneficiary(beneficiary);

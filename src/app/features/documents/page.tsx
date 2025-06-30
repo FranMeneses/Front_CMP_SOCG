@@ -118,9 +118,6 @@ export default function Documents() {
             </div>
             
             <Modal isOpen={isFormOpen} onClose={() => setIsFormOpen(false)}>
-                <div className="mb-4">
-                    <h2 className="text-xl font-semibold">Añadir nuevo documento</h2>
-                </div>
                 <DocumentForm 
                     onSave={handleUploadFile}
                     onCancel={() => setIsFormOpen(false)}

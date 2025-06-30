@@ -1,7 +1,7 @@
 import { IDocumentList } from "@/app/models/IDocuments";
 import DocumentPreview from "./DocumentsPreview";
 import { ComplianceFormState } from "@/app/models/ICompliance";
-
+import { Clipboard } from "lucide-react";
 
 interface MemorandumFieldsProps {
     formState: ComplianceFormState;
@@ -99,45 +99,43 @@ export default function MemorandumFields({
     };
 
     return (
-        <>
+        <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
+            <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                <Clipboard className="h-4 w-4 mr-2" />
+                MEMORANDUM y/o SOLPED
+            </h3>
             <DocumentPreview cartaData={cartaData} minutaData={minutaData} formState={formState}/>
-            
-            <div className="mb-4 p-3 bg-gray-50 rounded-md">
-                <h3 className="text-sm font-medium mb-2">MEMORANDUM y/o SOLPED</h3>
-                
-                <div className="mb-3">
-                    <label className="block text-xs font-medium mb-1">Tipo de documento</label>
-                    <div className="flex space-x-4">
-                        <label className="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                checked={formState.hasMemo}
-                                onChange={() => {
-                                    handleInputChange('hasMemo', !formState.hasMemo);
-                                    if (!formState.hasMemo) handleInputChange('hasSolped', false);
-                                }}
-                                className="form-checkbox h-4 w-4"
-                            />
-                            <span className="ml-2 text-xs">MEMORANDUM</span>
-                        </label>
-                        <label className="inline-flex items-center">
-                            <input
-                                type="checkbox"
-                                checked={formState.hasSolped}
-                                onChange={() => {
-                                    handleInputChange('hasSolped', !formState.hasSolped);
-                                    if (!formState.hasSolped) handleInputChange('hasMemo', false);
-                                }}
-                                className="form-checkbox h-4 w-4"
-                            />
-                            <span className="ml-2 text-xs">SOLPED</span>
-                        </label>
-                    </div>
+            <div className="mb-3">
+                <label className="block text-xs font-medium mb-1">Tipo de documento</label>
+                <div className="flex space-x-4">
+                    <label className="inline-flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={formState.hasMemo}
+                            onChange={() => {
+                                handleInputChange('hasMemo', !formState.hasMemo);
+                                if (!formState.hasMemo) handleInputChange('hasSolped', false);
+                            }}
+                            className="form-checkbox h-4 w-4"
+                        />
+                        <span className="ml-2 text-xs">MEMORANDUM</span>
+                    </label>
+                    <label className="inline-flex items-center">
+                        <input
+                            type="checkbox"
+                            checked={formState.hasSolped}
+                            onChange={() => {
+                                handleInputChange('hasSolped', !formState.hasSolped);
+                                if (!formState.hasSolped) handleInputChange('hasMemo', false);
+                            }}
+                            className="form-checkbox h-4 w-4"
+                        />
+                        <span className="ml-2 text-xs">SOLPED</span>
+                    </label>
                 </div>
-                
-                {/* Formulario dinámico según selección */}
-                {renderSpecificForm()}
-            </div>   
-        </>
+            </div>
+            {/* Formulario dinámico según selección */}
+            {renderSpecificForm()}
+        </div>
     );
 }
