@@ -30,13 +30,19 @@ export default function DropdownMenu({
     }
   }, [selectedValue]);
 
-  const toggleDropdown = () => {
+  const toggleDropdown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (!disabled) { 
       setIsOpen(!isOpen);
     }
   };
 
-  const handleSelect = (item: string) => {
+  const handleSelect = (item: string, e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!disabled) {
       setSelectedItem(item); 
       onSelect(item); 
@@ -65,9 +71,10 @@ export default function DropdownMenu({
       <div className={`${isInModal ? 'z-[1050]' : 'z-[50]'} font-[Helvetica]`}> 
         <Button
           variant="outline"
-          onClick={toggleDropdown}
+          onClick={(e) => toggleDropdown(e)}
           className={`cursor-pointer w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={disabled}
+          type="button"
         >
           {selectedItem || buttonText} 
           <span className="ml-auto mt-1">
@@ -86,7 +93,7 @@ export default function DropdownMenu({
             {items.map((item, index) => (
               <li
                 key={index}
-                onClick={() => handleSelect(item)}
+                onClick={(e) => handleSelect(item, e)}
                 className={`p-2 hover:bg-gray-100 cursor-pointer ${
                   disabled ? 'cursor-not-allowed text-gray-400' : ''
                 }`} 

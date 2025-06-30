@@ -15,9 +15,31 @@ const ComplianceFilters: React.FC<ComplianceFiltersProps> = ({
   onStatusChange
 }) => {
     
-    const { data: StatusData } = useQuery(GET_COMPLIANCE_STATUSES);
+    const { data: StatusData, loading, error } = useQuery(GET_COMPLIANCE_STATUSES);
 
-    const statuses = StatusData.getAllComplianceStatuses.map((status: IComplianceStatus) => status.name);
+    // Manejar estados de carga y error
+    if (loading) {
+        return (
+            <div className="mb-4 p-4 bg-white rounded-lg">
+                <div className="flex flex-wrap gap-2 items-center">
+                    <div className="animate-pulse bg-gray-200 h-10 w-24 rounded-md"></div>
+                    <div className="animate-pulse bg-gray-200 h-10 w-32 rounded-md"></div>
+                    <div className="animate-pulse bg-gray-200 h-10 w-28 rounded-md"></div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-red-600">Error al cargar los estados de cumplimiento</p>
+            </div>
+        );
+    }
+
+    // Verificar que StatusData existe y tiene la propiedad esperada
+    const statuses = StatusData?.getAllComplianceStatuses?.map((status: IComplianceStatus) => status.name) || [];
 
     const handleStatusClick = (status: string) => {
         if (selectedStatus === status) {
