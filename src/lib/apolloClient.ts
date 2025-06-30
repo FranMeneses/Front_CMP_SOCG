@@ -23,7 +23,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 // Link para manejar errores de autenticación
-const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path, extensions }) => {
       console.error(`GraphQL error: Message: ${message}, Location: ${locations}, Path: ${path}`);

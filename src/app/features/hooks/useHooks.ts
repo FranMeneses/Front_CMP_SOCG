@@ -82,6 +82,7 @@ export function useHooks() {
                 setUserRole(user.rol.nombre);
                 handleLoginRedirect(user.rol.nombre);
             }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error during login:", error);
             
@@ -138,6 +139,7 @@ export function useHooks() {
                 
                 return user;
             }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error during registration:", error);
             
