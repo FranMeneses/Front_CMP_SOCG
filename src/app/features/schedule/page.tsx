@@ -1,26 +1,18 @@
 'use client';
-import GanttChart, { GanttChartRef } from "@/components/Charts/Gantt/GanttChart";
+import GanttChart from "@/components/Charts/Gantt/GanttChart";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import DropdownMenu from "@/components/Dropdown";
-import { Button } from "@/components/ui/button";
 import { useSchedule } from "./hooks/useSchedule";
 import { useHooks } from "../hooks/useHooks";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 
 export default function Schedule() {
   const { loading, isSidebarOpen, toggleSidebar, subtasks } = useSchedule();
   const { userRole, handleLogout } = useHooks();
   const [viewMode, setViewMode] = useState<"Day" | "Week" | "Month">("Day");
-  const ganttRef = useRef<GanttChartRef>(null);
-
-  const handleTodayClick = () => {
-    if (ganttRef.current) {
-      ganttRef.current.scrollToToday();
-    } 
-  };
 
   return (
     <div className="h-screen w-full bg-[#F2F2F2] flex flex-col">
@@ -65,19 +57,11 @@ export default function Schedule() {
                         }}
                       />
                     </div>
-                    <Button 
-                      onClick={handleTodayClick}
-                      variant="outline"
-                      className="text-sm"
-                    >
-                      Hoy
-                    </Button>
                   </div>
                 </div>
                 
                 <div className="flex-1 min-h-0">
                   <GanttChart 
-                    ref={ganttRef}
                     subtasks={subtasks} 
                     viewMode={viewMode}
                     data-test-id="gantt-chart"
