@@ -3,8 +3,8 @@ import { useRouter } from "next/navigation";
 import { useData } from "@/context/DataContext";
 import { IValley } from "@/app/models/IValleys";
 import { IProcess } from "@/app/models/IProcess";
-import { useMutation, useQuery } from "@apollo/client";
-import { REGISTER, LOGIN, REQUEST_PASSWORD_RESET, RESET_PASSWORD, VALIDATE_RESET_TOKEN } from "@/app/api/Auth";
+import { useMutation } from "@apollo/client";
+import { REGISTER, LOGIN, REQUEST_PASSWORD_RESET, RESET_PASSWORD } from "@/app/api/Auth";
 import { 
     ILoginInput, 
     IRegisterInput, 
