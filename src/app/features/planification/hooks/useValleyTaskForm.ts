@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { IValley } from "@/app/models/IValleys";
 import { GET_ALL_RISKS, GET_ALL_ORIGINS, GET_ALL_INVESTMENTS, GET_ALL_INTERACTIONS, GET_ALL_SCOPES, GET_ALL_TYPES, GET_TASK_INFO } from "@/app/api/infoTask";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { IInteraction, IInvestment, IOrigin, IRisk, IScope, IType } from "@/app/models/IInfoTask";
-import { GET_TASK_STATUSES, GET_TASK, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, UPDATE_TASK, DELETE_TASK } from "@/app/api/tasks";
+import { GET_TASK_STATUSES, GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, UPDATE_TASK, DELETE_TASK } from "@/app/api/tasks";
 import { IInfoTask, ITaskStatus } from "@/app/models/ITasks";
 import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
@@ -24,11 +23,10 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     
     const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
     const [getTaskExpenses] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
-    const [getTask] = useLazyQuery(GET_TASK);
     const [getInfoTask] = useLazyQuery(GET_TASK_INFO);
     const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
 
-    const {valleysName: valleyNames, faenasName: faenaNames, faenas: Faenas} = useHooks();
+    const {valleysName: valleyNames} = useHooks();
 
     const {data: riskData} = useQuery(GET_ALL_RISKS);
     const {data: originData} = useQuery(GET_ALL_ORIGINS);
@@ -148,30 +146,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     };
 
     /**
-     * Función para obtener el ID de la faena asociada a una tarea por su ID
-     * @description Maneja la obtención del ID de la faena asociada a una tarea específica utilizando su ID
-     * @param taskId ID de la tarea para obtener el ID de la faena
-     * @returns 
-     */
-    const handleGetTaskFaena = async (taskId: string) => {
-        try {
-            const { data: taskData } = await getTask({
-                variables: { id: taskId },
-                fetchPolicy: 'network-only',
-            });
-            if (taskData) {
-                return taskData.task.faenaId;
-            } else {
-                console.warn("No data found for the given task ID:", taskId);
-                return null;
-            }
-        } catch (error) {
-            console.error("Error fetching task:", error);
-            return null;
-        }
-    };
-
-    /**
      * Función para actualizar una tarea y su información asociada
      * @description Maneja la actualización de una tarea y su información asociada utilizando los datos proporcionados
      * @param task Detalles de la tarea a actualizar
@@ -284,7 +258,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
           try {
             const budget = await handleGetTaskBudget(infoTask.taskId);
             const expenses = await handleGetTaskExpenses(infoTask.taskId);
-            const faena = await handleGetTaskFaena(infoTask.taskId);
 
             setInitialValues({
               name: infoTask.task.name || "",
@@ -298,7 +271,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
               state: typeof infoTask.task.statusId === "number" ? infoTask.task.statusId : undefined,
               budget: budget || "",
               expenses: expenses || "",
-              faena: faena || "",
               beneficiary: typeof infoTask.task.beneficiaryId === "string" ? infoTask.task.beneficiaryId : undefined,
               compliance: infoTask.task.applies ?? undefined, 
             });
@@ -450,18 +422,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk, taskBeneficiaries, valleyNames]);
 
     /**
-     * Función para obtener el nombre de una faena por su ID
-     * @description Busca el nombre de la faena en la lista de faenas utilizando su ID
-     * @param id ID de la faena
-     * @returns Nombre de la faena o cadena vacía si no se encuentra
-     */
-    const getFaenaNameById = useCallback((id: string | number) => {
-        if (!id || !Faenas) return "";
-        const faena = Faenas.find(f => (f.id || "").toString() === id.toString());
-        return faena ? faena.name : "";
-    }, [Faenas]);
-
-    /**
      * Hook para validar el formulario
      * @description Utiliza useMemo para calcular si el formulario es válido según los campos requeridos
      * @returns Booleano que indica si el formulario es válido
@@ -502,11 +462,9 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         handleInputChange,
         handleComplianceChange,
         handleSave,
-        getFaenaNameById,
         handleGetTaskBudget,
         handleGetTaskExpenses,
         handleGetInfoTask,
-        handleGetTaskFaena,
         handleUpdateTask,
         handleDeleteTask
     };

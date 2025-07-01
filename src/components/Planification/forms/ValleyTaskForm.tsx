@@ -25,12 +25,6 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
     handleInputChange,
     handleComplianceChange,
     handleSave,
-    handleGetTaskBudget,
-    handleGetTaskExpenses,
-    handleGetInfoTask,
-    handleGetTaskFaena,
-    handleUpdateTask,
-    handleDeleteTask,
   } = useValleyTaskForm(onSave, valley, isEditing, infoTask);
 
   const { isManager, userRole } = useHooks();
