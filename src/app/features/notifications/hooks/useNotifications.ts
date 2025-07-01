@@ -8,8 +8,7 @@ import {
 } from "@/app/api/notifications";
 import { 
     INotification, 
-    ICreateNotificationInput, 
-    INotificationResponse 
+    ICreateNotificationInput
 } from "@/app/models/INotifications";
 
 export function useNotifications() {
