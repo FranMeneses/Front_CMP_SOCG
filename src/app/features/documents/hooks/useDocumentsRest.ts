@@ -71,15 +71,11 @@ export const useDocumentsRest = () => {
             const contentDisposition = response.headers['content-disposition'];
             let filename = `document-${documentId}`;
 
-            console.log(contentDisposition);
-            
             if (contentDisposition) {
-                // Primero intenta con filename*=
                 let filenameMatch = contentDisposition.match(/filename\*=UTF-8''(.+)/);
                 if (filenameMatch && filenameMatch.length >= 2) {
                     filename = decodeURIComponent(filenameMatch[1]);
                 } else {
-                    // Si no, intenta con filename="..."
                     filenameMatch = contentDisposition.match(/filename="(.+)"/);
                     if (filenameMatch && filenameMatch.length >= 2) {
                         filename = filenameMatch[1];
