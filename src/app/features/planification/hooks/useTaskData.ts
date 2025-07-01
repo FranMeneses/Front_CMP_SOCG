@@ -205,9 +205,9 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     } else {
       try {
         if (shouldUseProcessQuery) {
-          await refetchValleyTasks();
+          const result = await refetchValleyTasks({ fetchPolicy: 'network-only' });
         } else {
-          await refetchAllTasks();
+          const result = await refetchAllTasks({ fetchPolicy: 'network-only' });
         }
         
         if (tasks && tasks.length > 0 && !isCommunicationsRole) {
@@ -226,6 +226,8 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         if (tasks && tasks.length > 0) {
           const processedTasks = await loadTasksWithDetails();
           setDetailedTasks(processedTasks);
+        } else {
+          setDetailedTasks([]);
         }
         
         return { data: { tasksByProcess: tasks || [] } };

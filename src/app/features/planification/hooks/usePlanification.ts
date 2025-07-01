@@ -33,6 +33,8 @@ export const usePlanification = () => {
 
     const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
     
+    const [isDeletingTask, setIsDeletingTask] = useState(false);
+    
     const dummyInfoTask = () => {}; 
     const dummyTask = () => {}; 
     const dummySubtask = () => {}; 
@@ -76,6 +78,8 @@ export const usePlanification = () => {
     useEffect(() => {
         if (subTasks && subTasks.length > 0) {
             setLocalSubtasks(subTasks);
+        } else {
+            setLocalSubtasks([]);
         }
     }, [subTasks]);
 
@@ -542,5 +546,6 @@ export const usePlanification = () => {
         taskState,
         activeFilter,
         allProcesses: useTasksData(currentValley?.id ?? undefined, userRole).allProcesses,
+        isDeletingTask,
     };
 };

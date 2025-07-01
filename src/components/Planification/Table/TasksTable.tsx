@@ -56,7 +56,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
         isDeleteSubtaskModalOpen,
         allProcesses,
         localSubtasks,
-        detailedTasks,
 
         handleFilterByProcess,
         setIsDeleteTaskModalOpen,
@@ -73,11 +72,12 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCancelCommunication,
 
         handleCreateComplianceManager,
+        detailedTasks,
     } = usePlanification();
 
     const { currentValley, userRole } = useHooks();
 
-        const sortedDetailedTasks = React.useMemo(() => {
+    const sortedDetailedTasks = React.useMemo(() => {
         return [...detailedTasks].sort((a: ITaskDetails, b: ITaskDetails) => {
             const aCompleted = a.status?.name === 'Completada';
             const bCompleted = b.status?.name === 'Completada';
@@ -202,36 +202,44 @@ const TasksTable: React.FC<TasksTableProps> = ({
                             </tr>
                         </thead>
                         <tbody className="bg-white text-xs truncate divide-y divide-gray-200">
-                            {filteredTasks.map((task) => (
-                                <React.Fragment key={task.id}>
-                                    <TaskRow 
-                                        task={task}
-                                        formatDate={formatDate}
-                                        getRemainingDays={getRemainingDays}
-                                        handleOnTaskClick={handleOnTaskClick}
-                                        handleSeeInformation={handleSeeInformation}
-                                        setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
-                                        setItemToDeleteId={setItemToDeleteId}
-                                        userRole={userRole}
-                                    />
-                                    
-                                    {expandedRow === task.id && (
-                                        <tr>
-                                            <SubtasksTable 
-                                                subtasks={subtasksToUse}
-                                                taskId={task.id || ''}
-                                                formatDate={formatDate}
-                                                getRemainingSubtaskDays={getRemainingSubtaskDays}
-                                                handleGetSubtask={handleGetSubtask}
-                                                setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
-                                                setItemToDeleteId={setItemToDeleteId}
-                                                setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
-                                                userRole={userRole}
-                                            />
-                                        </tr>
-                                    )}
-                                </React.Fragment>
-                            ))}
+                            {filteredTasks.length === 0 ? (
+                                <tr>
+                                    <td colSpan={9} className="py-8 text-center text-gray-400 font-medium">
+                                        No hay tareas registradas.
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredTasks.map((task) => (
+                                    <React.Fragment key={task.id}>
+                                        <TaskRow 
+                                            task={task}
+                                            formatDate={formatDate}
+                                            getRemainingDays={getRemainingDays}
+                                            handleOnTaskClick={handleOnTaskClick}
+                                            handleSeeInformation={handleSeeInformation}
+                                            setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
+                                            setItemToDeleteId={setItemToDeleteId}
+                                            userRole={userRole}
+                                        />
+                                        
+                                        {expandedRow === task.id && (
+                                            <tr>
+                                                <SubtasksTable 
+                                                    subtasks={subtasksToUse}
+                                                    taskId={task.id || ''}
+                                                    formatDate={formatDate}
+                                                    getRemainingSubtaskDays={getRemainingSubtaskDays}
+                                                    handleGetSubtask={handleGetSubtask}
+                                                    setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
+                                                    setItemToDeleteId={setItemToDeleteId}
+                                                    setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
+                                                    userRole={userRole}
+                                                />
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
