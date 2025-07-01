@@ -8,16 +8,16 @@ import { Bell, Plus, RefreshCw, TestTube } from "lucide-react";
 
 export function NotificationTester() {
     const { createNotification, refreshNotifications, isLoading } = useNotifications();
-    const { user } = useAuth();
+    const { userId, isAuthenticated } = useAuth();
     const [isCreating, setIsCreating] = useState(false);
 
     const createTestNotification = async () => {
-        if (!user?.id_usuario) return;
+        if (!userId) return;
         
         setIsCreating(true);
         try {
             await createNotification({
-                id_usuario: user.id_usuario,
+                id_usuario: userId,
                 titulo: "Notificación de Prueba",
                 mensaje: `Esta es una notificación de prueba creada el ${new Date().toLocaleString()}`,
             });
@@ -27,12 +27,12 @@ export function NotificationTester() {
     };
 
     const createUrgentNotification = async () => {
-        if (!user?.id_usuario) return;
+        if (!userId) return;
         
         setIsCreating(true);
         try {
             await createNotification({
-                id_usuario: user.id_usuario,
+                id_usuario: userId,
                 titulo: "🚨 Notificación Urgente",
                 mensaje: "Esta es una notificación urgente que requiere atención inmediata. La tarea asociada vence muy pronto.",
             });
@@ -41,7 +41,7 @@ export function NotificationTester() {
         }
     };
 
-    if (!user) {
+    if (!isAuthenticated || !userId) {
         return null;
     }
 
