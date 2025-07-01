@@ -1,5 +1,5 @@
 'use client';
-import { CalendarRange, CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard, History, UserCheck  } from 'lucide-react';
+import { CalendarFold, FileText, SquareChartGantt, ChartPie, LogOut, UsersRound, Clipboard, History, UserCheck  } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
