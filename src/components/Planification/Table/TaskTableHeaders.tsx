@@ -101,7 +101,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                     <Plus size={16} /> Añadir
                 </Button>
             )}
-            {((userRole === "Admin") && !isManager) && (
+            {((userRole === "Admin" || userRole === "Encargado Cumplimiento") && !isManager) && (
                 <Button 
                     onClick={handleUploadPlanification}
                     className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"

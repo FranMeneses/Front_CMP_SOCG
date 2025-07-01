@@ -89,7 +89,7 @@ const ComplianceFilters: React.FC<ComplianceFiltersProps> = ({
                 onClick={() => handleStatusClick(status)}
                 className={getButtonStyle(status)}
             >
-                {status}
+                {status.toUpperCase()}
             </Button>
             ))}
         </div>
