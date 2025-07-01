@@ -71,7 +71,8 @@ export const useDocumentsRest = () => {
             const contentDisposition = response.headers['content-disposition'];
             let filename = `document-${documentId}`;
 
-
+            console.log(contentDisposition);
+            
             if (contentDisposition) {
                 const filenameMatch = contentDisposition.match(/filename="(.+)"/);
                 if (filenameMatch && filenameMatch.length >= 2) {
