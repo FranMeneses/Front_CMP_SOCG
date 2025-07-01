@@ -274,7 +274,7 @@ export const useCommunicationTaskForm = (
 
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
-        processes: (userRole === 'Encargado Cumplimiento' || userRole === 'Admin') ? processName : filteredProcessesNames || [],
+        processes: filteredProcessesNames || [],
     }), [taskStatuses]);
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";

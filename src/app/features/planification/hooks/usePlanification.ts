@@ -33,7 +33,6 @@ export const usePlanification = () => {
 
     const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
     
-    const [isDeletingTask, setIsDeletingTask] = useState(false);
     
     const dummyInfoTask = () => {}; 
     const dummyTask = () => {}; 
@@ -265,6 +264,9 @@ export const usePlanification = () => {
             await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
             await refetch();
+            if (detailedTasks.length === 1) {
+                setLocalSubtasks([]);
+            }
         } catch (error) {
             console.error("Error deleting task:", error);
         }
@@ -546,6 +548,5 @@ export const usePlanification = () => {
         taskState,
         activeFilter,
         allProcesses: useTasksData(currentValley?.id ?? undefined, userRole).allProcesses,
-        isDeletingTask,
     };
 };

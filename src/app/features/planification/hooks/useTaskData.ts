@@ -205,34 +205,61 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     } else {
       try {
         if (shouldUseProcessQuery) {
-          const result = await refetchValleyTasks({ fetchPolicy: 'network-only' });
+          const { data } = await refetchValleyTasks({ fetchPolicy: 'network-only' });
+          const newTasks = data?.tasksByProcess || [];
+          setTasksData(newTasks);
+          if (newTasks.length > 0 && !isCommunicationsRole) {
+            const allSubtasks = await Promise.all(
+              newTasks.map(async (task: ITask) => {
+                const { data: subtaskData } = await getSubtasks({
+                  variables: { id: task.id },
+                });
+                return subtaskData?.taskSubtasks || [];
+              })
+            );
+            const flattenedSubtasks = allSubtasks.flat();
+            setSubtasks(flattenedSubtasks);
+          } else {
+            setSubtasks([]);
+          }
+          if (newTasks.length > 0) {
+            const processedTasks = await processTasksWithDetails(newTasks);
+            setDetailedTasks(processedTasks);
+          } else {
+            setDetailedTasks([]);
+          }
+          return { data: { tasksByProcess: newTasks } };
         } else {
-          const result = await refetchAllTasks({ fetchPolicy: 'network-only' });
+          const { data } = await refetchAllTasks({ fetchPolicy: 'network-only' });
+          const newTasks = data?.tasks || [];
+          setTasksData(newTasks);
+          if (newTasks.length > 0 && !isCommunicationsRole) {
+            const allSubtasks = await Promise.all(
+              newTasks.map(async (task: ITask) => {
+                const { data: subtaskData } = await getSubtasks({
+                  variables: { id: task.id },
+                });
+                return subtaskData?.taskSubtasks || [];
+              })
+            );
+            const flattenedSubtasks = allSubtasks.flat();
+            setSubtasks(flattenedSubtasks);
+          } else {
+            setSubtasks([]);
+          }
+          if (newTasks.length > 0) {
+            const processedTasks = await processTasksWithDetails(newTasks);
+            setDetailedTasks(processedTasks);
+          } else {
+            setDetailedTasks([]);
+          }
+          return { data: { tasksByProcess: newTasks } };
         }
-        
-        if (tasks && tasks.length > 0 && !isCommunicationsRole) {
-          const allSubtasks = await Promise.all(
-            tasks.map(async (task: ITask) => {
-              const { data: subtaskData } = await getSubtasks({
-                variables: { id: task.id },
-              });
-              return subtaskData?.taskSubtasks || [];
-            })
-          );
-          const flattenedSubtasks = allSubtasks.flat();
-          setSubtasks(flattenedSubtasks);
-        }
-        
-        if (tasks && tasks.length > 0) {
-          const processedTasks = await loadTasksWithDetails();
-          setDetailedTasks(processedTasks);
-        } else {
-          setDetailedTasks([]);
-        }
-        
-        return { data: { tasksByProcess: tasks || [] } };
       } catch (error) {
         console.error("Error refetching data:", error);
+        setTasksData([]);
+        setDetailedTasks([]);
+        setSubtasks([]);
         return { data: { tasksByProcess: [] } };
       }
     }
