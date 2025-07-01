@@ -110,11 +110,16 @@ export default function DocumentForm({
                 <Button
                     variant="default"
                     onClick={handleSubmit}
-                    disabled={!isFormValid}
+                    disabled={!isFormValid || isLoading}
                     className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
-                    Guardar
+                    {isLoading ? (
+                        <span className="flex items-center justify-center gap-2">
+                            <LoadingSpinner />
+                            Guardando...
+                        </span>
+                    ) : 'Guardar'}
                 </Button>
             </div>
         </div>

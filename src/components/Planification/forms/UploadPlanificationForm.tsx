@@ -3,6 +3,7 @@ import { usePlanificationRest } from "@/app/features/planification/hooks/usePlan
 import { Button } from "@/components/ui/button";
 import { FileUploadButton } from "../FileUploadButton";
 import { FileText } from "lucide-react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface UploadPlanificationFormProps {
     onClose?: () => void;
@@ -75,7 +76,12 @@ return (
                     disabled={!file || isLoading}
                     className="flex-1 cursor-pointer bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
                 >
-                    {isLoading ? 'Cargando...' : 'Cargar Archivo'}
+                    {isLoading ? (
+                        <span className="flex items-center justify-center gap-2">
+                            <LoadingSpinner />
+                            Cargando...
+                        </span>
+                    ) : 'Cargar Archivo'}
                 </Button>
                 <Button
                     variant="secondary"
