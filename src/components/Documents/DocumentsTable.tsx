@@ -66,7 +66,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                     </td>
                     <td className="px-4 py-3 text-center border-r border-gray-200 text-blue-900 cursor-pointer" 
                       onClick={() => handleDownload(doc.id_documento)}>
-                      {doc.nombre_archivo ? decodeURIComponent(escape(doc.nombre_archivo)) : 'Sin nombre'}
+                      {doc.nombre_archivo ? doc.nombre_archivo : 'Sin nombre'}
                     </td>
                     <td className="px-4 py-3 text-center border-r border-gray-200 truncate">
                       {doc.fecha_carga ? new Date(doc.fecha_carga).toLocaleDateString() : 'N/A'}
