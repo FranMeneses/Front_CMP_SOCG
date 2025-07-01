@@ -51,3 +51,24 @@ export interface IUpdateUserInput {
     organization?: string;
     is_active?: boolean;
 }
+
+// Password Reset Interfaces
+export interface IRequestPasswordResetInput {
+    email: string;
+    frontendUrl: string;
+}
+
+export interface IResetPasswordInput {
+    token: string;
+    newPassword: string;
+}
+
+export interface IPasswordResetResponse {
+    success: boolean;
+    message: string;
+}
+
+export interface ITokenValidationResponse {
+    valid: boolean;
+    message?: string;
+}
