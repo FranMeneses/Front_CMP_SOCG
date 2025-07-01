@@ -38,7 +38,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
                         handleFilterClick(filter);
                     }}
                 >
-                    {filter}
+                    {filter.toUpperCase()}
                 </Button>
             ))}
             <div className='flex-1'>
@@ -55,7 +55,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
                         {isLateFilterActive && (
                             <Clock/>
                         )}
-                        Tareas atrasadas
+                        TAREAS ATRASADAS
                     </span>
                 </Button>
             </div>

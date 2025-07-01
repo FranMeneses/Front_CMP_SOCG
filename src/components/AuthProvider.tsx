@@ -4,6 +4,7 @@ import { createContext, useContext, ReactNode, useState, useEffect } from 'react
 import { useHooks } from '@/app/features/hooks/useHooks';
 import { jwtDecode } from 'jwt-decode';
 import { IJwtPayload } from '@/app/models/IAuth';
+import { addAuthEventListener, removeAuthEventListener } from '@/lib/authEvents';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -11,6 +12,7 @@ interface AuthContextType {
   userId: string | null;
   userEmail: string | null;
   checkAuth: () => boolean;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -19,6 +21,7 @@ const AuthContext = createContext<AuthContextType>({
   userId: null,
   userEmail: null,
   checkAuth: () => false,
+  logout: () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -30,6 +33,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   
   const { userRole } = useHooks();
+
+  const clearAuthData = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('rol');
+    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    setIsAuthenticated(false);
+    setUserId(null);
+    setUserEmail(null);
+  };
 
   const checkAuth = () => {
     if (typeof window === 'undefined') return false;
@@ -72,14 +85,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const clearAuthData = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('rol');
-    document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    setIsAuthenticated(false);
-    setUserId(null);
-    setUserEmail(null);
+  const logout = () => {
+    clearAuthData();
   };
 
   useEffect(() => {
@@ -98,13 +105,49 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, []);
 
+  // Escuchar cambios en el localStorage para sincronizar con useHooks
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'token' || event.key === 'rol') {
+        if (event.newValue === null) {
+          // Si se eliminó el token o rol, limpiar autenticación
+          clearAuthData();
+        } else {
+          // Si se agregó/modificó, verificar autenticación
+          checkAuth();
+        }
+      }
+    };
+
+    // Función para manejar el evento personalizado de logout
+    const handleCustomLogout = () => {
+      clearAuthData();
+    };
+
+    // Función para manejar el evento personalizado de login
+    const handleCustomLogin = () => {
+      checkAuth();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    addAuthEventListener('LOGOUT', handleCustomLogout);
+    addAuthEventListener('LOGIN', handleCustomLogin);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      removeAuthEventListener('LOGOUT', handleCustomLogout);
+      removeAuthEventListener('LOGIN', handleCustomLogin);
+    };
+  }, []);
+
   return (
     <AuthContext.Provider value={{ 
       isAuthenticated, 
       isLoading,
       userId,
       userEmail,
-      checkAuth
+      checkAuth,
+      logout
     }}>
       {children}
     </AuthContext.Provider>

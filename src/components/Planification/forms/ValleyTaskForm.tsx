@@ -182,7 +182,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             </div>
             {/* Beneficiario */}
             <div className="space-y-1">
-              <label className="text-xs text-gray-500 required">Beneficiario</label>
+              <label className="text-xs text-gray-500">Beneficiario</label>
               <DropdownMenu
                 buttonText="Seleccionar beneficiario"
                 items={dropdownItems.beneficiaries}

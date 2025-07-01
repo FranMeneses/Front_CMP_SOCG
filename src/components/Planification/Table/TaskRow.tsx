@@ -53,7 +53,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
           task.status?.name === "En Cumplimiento" ? "bg-[#B4E0F7] text-[#128CCC] font-medium" :
           "bg-[#EAE9E8] text-gray-800 font-medium"
         }`}>
-          {task.status?.name || "NO iniciada"}
+          {task.status?.name?.toUpperCase() || "NO iniciada"}
         </span>
       </td>
       <td className="px-4 py-2 text-center flex flex-row">

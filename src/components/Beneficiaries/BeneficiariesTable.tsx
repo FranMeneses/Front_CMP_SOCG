@@ -87,7 +87,7 @@ const BeneficiariesTable: React.FC = () => {
                             key={index}
                             className="py-2 text-center text-md font-medium text-gray-700 border-r border-gray-200 last:border-r-0"
                         >
-                            {column}
+                            {column.toUpperCase()}
                         </th>
                     ))}
                 </tr>

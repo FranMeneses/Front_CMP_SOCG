@@ -43,11 +43,11 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
             <thead className="bg-gray-100">
               <tr className="text-sm text-gray-700">
                 <th className='py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200'></th>
-                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Nombre</th>
-                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Fecha</th>
-                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Tipo</th>
+                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">{("Nombre").toUpperCase()}</th>
+                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">{("Fecha de Subida").toUpperCase()}</th>
+                <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">{("Tipo").toUpperCase()}</th>
                 <th className="py-3 text-center text-xs font-medium text-gray-500 border-r border-gray-200">Iniciativa</th>
-                <th className='py-3 text-center text-xs font-medium text-gray-500'></th>
+                <th className='py-3 text-center text-xs font-medium text-gray-500'>{("Acciones").toUpperCase()}</th>
               </tr>
             </thead>
             <tbody className="bg-white text-xs truncate divide-y divide-gray-200">

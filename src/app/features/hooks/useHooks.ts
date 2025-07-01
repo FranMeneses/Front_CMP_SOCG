@@ -61,8 +61,6 @@ export function useHooks() {
 
     /**
      * Función para manejar el inicio de sesión del usuario.
-     * @description Inicia sesión al usuario y redirige a la página correspondiente según su rol
-     * @param input Objeto de entrada que contiene las credenciales del usuario
      */
     const handleLogin = async (input: ILoginInput) => {
         try {
@@ -77,23 +75,16 @@ export function useHooks() {
             
             if (data?.login) {
                 const { access_token, user } = data.login;
-                
-                // Guardar información de autenticación
                 localStorage.setItem("token", access_token);
                 localStorage.setItem("user", JSON.stringify(user));
                 localStorage.setItem("rol", user.rol.nombre);
-
-                // Configurar cookie para middleware
-                document.cookie = `token=${access_token}; path=/; max-age=86400`; // 24 horas
-
+                document.cookie = `token=${access_token}; path=/; max-age=86400`;
                 setUserRole(user.rol.nombre);
                 handleLoginRedirect(user.rol.nombre);
             }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error during login:", error);
-            
-            // Manejar diferentes tipos de errores
             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
                 const graphQLError = error.graphQLErrors[0];
                 if (graphQLError.message.includes("Credenciales inválidas")) {
@@ -113,8 +104,6 @@ export function useHooks() {
 
     /**
      * Función para manejar el registro de un nuevo usuario.
-     * @description Registra un nuevo usuario en el sistema y lo autentica automáticamente
-     * @param input Datos del usuario a registrar
      */
     const handleRegister = async (input: IRegisterInput) => {
         try {
@@ -125,32 +114,23 @@ export function useHooks() {
                         password: input.password,
                         full_name: input.full_name,
                         organization: input.organization
-                        // No enviamos id_rol - se asigna automáticamente
                     }
                 }
             });
             
             if (data?.register) {
                 const { access_token, user } = data.register;
-                
-                // Auto-login después del registro exitoso
                 localStorage.setItem("token", access_token);
                 localStorage.setItem("user", JSON.stringify(user));
                 localStorage.setItem("rol", user.rol.nombre);
-
-                // Configurar cookie para middleware
-                document.cookie = `token=${access_token}; path=/; max-age=86400`; // 24 horas
-
+                document.cookie = `token=${access_token}; path=/; max-age=86400`;
                 setUserRole(user.rol.nombre);
                 handleLoginRedirect(user.rol.nombre);
-                
                 return user;
             }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error during registration:", error);
-            
-            // Manejar diferentes tipos de errores
             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
                 const graphQLError = error.graphQLErrors[0];
                 if (graphQLError.message.includes("El email ya está registrado")) {
@@ -170,8 +150,6 @@ export function useHooks() {
 
     /**
      * Función para solicitar recuperación de contraseña.
-     * @description Envía una solicitud de recuperación de contraseña al backend
-     * @param input Objeto de entrada que contiene el email y URL del frontend
      */
     const handleRequestPasswordReset = async (input: IRequestPasswordResetInput) => {
         try {
@@ -183,15 +161,12 @@ export function useHooks() {
                     }
                 }
             });
-            
             if (data?.requestPasswordReset) {
                 return data.requestPasswordReset;
             }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error during password reset request:", error);
-            
-            // Manejar diferentes tipos de errores
             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
                 const graphQLError = error.graphQLErrors[0];
                 if (graphQLError.message.includes("Usuario no encontrado")) {
@@ -213,8 +188,6 @@ export function useHooks() {
 
     /**
      * Función para restablecer contraseña con token.
-     * @description Restablece la contraseña del usuario usando el token recibido por email
-     * @param input Objeto de entrada que contiene el token y nueva contraseña
      */
     const handleResetPassword = async (input: IResetPasswordInput) => {
         try {
@@ -226,15 +199,12 @@ export function useHooks() {
                     }
                 }
             });
-            
             if (data?.resetPassword) {
                 return data.resetPassword;
             }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error during password reset:", error);
-            
-            // Manejar diferentes tipos de errores
             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
                 const graphQLError = error.graphQLErrors[0];
                 if (graphQLError.message.includes("Token inválido")) {
@@ -257,8 +227,8 @@ export function useHooks() {
     };
 
     /**
-    * Manejo de los IDs de los valles según el rol del usuario
-    */
+     * Manejo de los IDs de los valles según el rol del usuario
+     */
     const valleyIdByRole = useMemo(() => {
         return {
             "Jefe Relacionamiento VE": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
@@ -279,9 +249,6 @@ export function useHooks() {
         };
     }, [processes]);
 
-    /**
-    * Manejo del valle actual según el rol del usuario
-    */
     useEffect(() => {
         if (valleys && valleys.length > 0 && !currentValley) {
             const roleBasedId = valleyIdByRole[userRole as keyof typeof valleyIdByRole];
@@ -290,9 +257,6 @@ export function useHooks() {
         }
     }, [valleys, userRole, valleyIdByRole, currentValley]);
 
-    /**
-    * Manejo del proceso actual según el rol del usuario
-    */
     useEffect(() => {
         if (processes && processes.length > 0 && !currentProcess) {
             const roleBasedProcessId = processByRole[userRole as keyof typeof processByRole];
@@ -311,22 +275,14 @@ export function useHooks() {
         return faenas.map(faena => faena.name);
     }, [faenas]);
 
-    /**
-     *  Manejo de los nombres de los valles
-     * @param valleyNameOrObject 
-     * @returns 
-     */
     const handleSetCurrentValley = (valleyNameOrObject: string | IValley) => {
         if (!valleys) return;
-
         let newValley: IValley | undefined;
-
         if (typeof valleyNameOrObject === 'string') {
             newValley = valleys.find(v => v.name === valleyNameOrObject);
         } else {
             newValley = valleyNameOrObject;
         }
-
         if (newValley) {
             setCurrentValley(newValley);
         }
@@ -334,26 +290,17 @@ export function useHooks() {
 
     const handleSetCurrentProcess = (processNameOrObject: string | IProcess) => {
         if (!processes) return;
-
         let newProcess: IProcess | undefined;
-
         if (typeof processNameOrObject === 'string') {
             newProcess = processes.find(p => p.name === processNameOrObject);
         } else {
             newProcess = processNameOrObject;
         }
-
         if (newProcess) {
             setCurrentProcess(newProcess);
         }
     };
 
-
-    /**
-     * Función para manejar la redirección después del inicio de sesión.
-     * @description Redirige al usuario a la página correspondiente según su rol.
-     * @param role Rol del usuario para redirigir a la página correspondiente
-     */
     const handleLoginRedirect = (role: string) => {
         switch (role) {
             case "Gerente":
@@ -376,33 +323,19 @@ export function useHooks() {
         }
     };
 
-    /**
-     * Verifica si el usuario es un encargado de valle.
-     * @description Esta función verifica si el rol del usuario corresponde a un encargado de valle.
-     * @returns 
-     */
     const isValleyManager = userRole === "Superintendente Relacionamiento" || userRole === 'Jefe Relacionamiento VE' || userRole === 'Jefe Relacionamiento VC' || userRole === 'Jefe Relacionamiento VH';
-    
     const isCommunicationsManager = userRole === "Encargado Comunicaciones" || userRole === "Encargado Asuntos Públicos" || userRole === "Superintendente Comunicaciones";
-
     const isManager = userRole === 'Gerente' || userRole === 'Superintendente Relacionamiento' || userRole === 'Superintendente Comunicaciones';
-    
+
     /**
      * Función para cerrar sesión.
      */
     const handleLogout = () => {
-        // Limpiar localStorage
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("rol");
-        
-        // Limpiar cookie
         document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-        
-        // Resetear estado
         setUserRole("");
-        
-        // Redirigir al login
         router.push("/");
     };
 

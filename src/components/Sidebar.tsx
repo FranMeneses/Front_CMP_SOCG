@@ -20,44 +20,12 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
 
   const navItems = [
     {
-      title: "DOCUMENTOS",
-      href: "/features/documents",
-      displayHref: "/documents",
-      icon: FileText,
-      isActive: pathname === "/features/documents",
-      admitedRoles: ["Admin", "Encargado Cumplimiento", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
-    },
-    {
-      title: "COMPLIANCE",
-      href: "/features/compliance",
-      displayHref: "/compliance",
-      icon: Clipboard,
-      isActive: pathname === "/features/compliance",
-      admitedRoles: ["Admin","Encargado Cumplimiento"]
-    },    
-    {
-      title: "HISTORIAL",
-      href: "/features/history",
-      displayHref: "/history",
-      icon: History,
-      isActive: pathname === "/features/history",
-      admitedRoles: ["Admin","Encargado Cumplimiento", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Gerente"]
-    },
-    {
       title: "PLANIFICACIÓN",
       href: "/features/planification",
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
       admitedRoles: ["Admin", "Encargado Cumplimiento","Encargado Comunicaciones", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
-    },
-    {
-      title: "BENEFICIARIOS",
-      href: "/features/beneficiaries",
-      displayHref: "/beneficiaries",
-      icon: UsersRound,
-      isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["Admin", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
       title: "PROGRAMACIÓN",
@@ -68,12 +36,28 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
-      title: "PLAN DE TRABAJO",
-      href: "/features/schedule",
-      displayHref: "/schedule",
-      icon: CalendarRange,
-      isActive: pathname === "/features/schedule",
-      admitedRoles: ["Admin","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
+      title: "COMPLIANCE",
+      href: "/features/compliance",
+      displayHref: "/compliance",
+      icon: Clipboard,
+      isActive: pathname === "/features/compliance",
+      admitedRoles: ["Admin","Encargado Cumplimiento"]
+    },    
+    {
+      title: "DOCUMENTOS",
+      href: "/features/documents",
+      displayHref: "/documents",
+      icon: FileText,
+      isActive: pathname === "/features/documents",
+      admitedRoles: ["Admin", "Encargado Cumplimiento", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
+    },
+    {
+      title: "BENEFICIARIOS",
+      href: "/features/beneficiaries",
+      displayHref: "/beneficiaries",
+      icon: UsersRound,
+      isActive: pathname === "/features/beneficiaries",
+      admitedRoles: ["Admin", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
       title: "RESUMEN",
@@ -82,6 +66,14 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       icon: ChartPie,
       isActive: pathname === "/features/resume",
       admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento"]
+    },
+    {
+      title: "HISTORIAL",
+      href: "/features/history",
+      displayHref: "/history",
+      icon: History,
+      isActive: pathname === "/features/history",
+      admitedRoles: ["Admin","Encargado Cumplimiento", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Gerente"]
     },
     {
       title: "USUARIOS",

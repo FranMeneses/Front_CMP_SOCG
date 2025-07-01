@@ -12,10 +12,10 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => (
         <table className="w-full">
             <thead className="bg-gray-100">
                 <tr className="text-sm text-gray-700">
-                    <th className="py-2 text-center text-xs font-medium text-gray-500">Nombre</th>
-                    <th className="py-2 text-center text-xs font-medium text-gray-500">Email</th>
-                    <th className="py-2 text-center text-xs font-medium text-gray-500">Rol</th>
-                    <th className="py-2 text-center text-xs font-medium text-gray-500">Estado</th>
+                    <th className="py-2 text-center text-xs font-medium text-gray-500">{("Nombre").toUpperCase()}</th>
+                    <th className="py-2 text-center text-xs font-medium text-gray-500">{("Email").toUpperCase()}</th>
+                    <th className="py-2 text-center text-xs font-medium text-gray-500">{("Rol").toUpperCase()}</th>
+                    <th className="py-2 text-center text-xs font-medium text-gray-500">{("Estado").toUpperCase()}</th>
                     <th className="py-2 text-center text-xs font-medium text-gray-500"></th>
                 </tr>
             </thead>

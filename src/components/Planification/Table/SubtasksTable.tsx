@@ -79,14 +79,14 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
       <table className="w-full text-left">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Nombre</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Presupuesto (USD)</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Gasto (USD)</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Inicio</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha Finalización</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Días Restantes</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Fecha de Término</th>
-            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">Estado</th> 
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Nombre").toUpperCase()}</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Presupuesto (USD)").toUpperCase()}</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Gasto (USD)").toUpperCase()}</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Fecha Inicio").toUpperCase()}</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Fecha Finalización").toUpperCase()}</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Días Restantes").toUpperCase()}</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Fecha de Término").toUpperCase()}</th>
+            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500">{("Estado").toUpperCase()}</th> 
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500"></th>
           </tr>
         </thead>
