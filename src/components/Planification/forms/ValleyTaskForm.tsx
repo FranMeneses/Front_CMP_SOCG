@@ -19,17 +19,20 @@ interface ValleyTaskFormProps {
 export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, details, infoTask }: ValleyTaskFormProps) {
   const {
     formState,
-    faenas,
     dropdownItems,
     isFormValid,
     error,
     handleInputChange,
     handleComplianceChange,
     handleSave,
-    getFaenaNameById,
+    handleGetTaskBudget,
+    handleGetTaskExpenses,
+    handleGetInfoTask,
+    handleGetTaskFaena,
+    handleUpdateTask,
+    handleDeleteTask,
   } = useValleyTaskForm(onSave, valley, isEditing, infoTask);
 
-  const selectedFaenaName = isEditing ? getFaenaNameById(formState.faena) : "";
   const { isManager, userRole } = useHooks();
 
   return (
@@ -81,18 +84,16 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
             Proceso y Ubicación
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs text-gray-500 required">Faena</label>
-              <DropdownMenu
-                buttonText="Seleccionar faena"
-                items={faenas}
-                onSelect={(value) => handleInputChange("faena", value)}
-                isInModal={true}
-                disabled={isEditing ? true : false}
-                selectedValue={selectedFaenaName}
-                data-test-id="task-faena-dropdown"
-              />
-            </div>
+          <div>
+            <label className="text-xs text-gray-500 required">Valle</label>
+            <DropdownMenu
+              buttonText="Seleccionar Valle"
+              items={dropdownItems.valleyNames}
+              onSelect={(value) => handleInputChange("valley", value)}
+              isInModal={true}
+              selectedValue={infoTask?.task.valley?.name? dropdownItems.valleyNames[infoTask.task.valley.id - 1] : undefined}
+            />
+          </div>
           </div>
         </div>
 

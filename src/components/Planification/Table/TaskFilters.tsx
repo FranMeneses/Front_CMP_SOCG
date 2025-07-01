@@ -19,7 +19,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
     handleLateFilterClick
 }) => {
     return (
-        <div className="flex gap-2 mb-4 font-[Helvetica]">
+        <div className="flex flex-wrap gap-2 mb-4 font-[Helvetica]">
             {taskStates.map((filter: string) => (
                 <Button
                     key={filter}
@@ -41,24 +41,22 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
                     {filter.toUpperCase()}
                 </Button>
             ))}
-            <div className='flex-1'>
-                <Button
-                    variant="outline"
-                    className={`px-4 py-2 text-sm rounded-md hover:cursor-pointer ${
-                        isLateFilterActive 
-                            ? "bg-[#EBBAFB] text-[#A914DA] font-medium border-[#EBBAFB]" 
-                            : "bg-white hover:bg-gray-100"
-                    }`}
-                    onClick={handleLateFilterClick}
-                >
-                    <span className="flex items-center">
-                        {isLateFilterActive && (
-                            <Clock/>
-                        )}
-                        TAREAS ATRASADAS
-                    </span>
-                </Button>
-            </div>
+            <Button
+                variant="outline"
+                className={`px-4 py-2 text-sm rounded-md hover:cursor-pointer ${
+                    isLateFilterActive 
+                        ? "bg-[#EBBAFB] text-[#A914DA] font-medium border-[#EBBAFB]" 
+                        : "bg-white hover:bg-gray-100"
+                }`}
+                onClick={handleLateFilterClick}
+            >
+                <span className="flex items-center">
+                    {isLateFilterActive && (
+                        <Clock/>
+                    )}
+                    TAREAS ATRASADAS
+                </span>
+            </Button>
         </div>
     );
 };

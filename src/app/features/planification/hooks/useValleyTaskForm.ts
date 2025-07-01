@@ -255,9 +255,9 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         budget: string | number;
         expenses: string | number;
         risk: string | number;
-        faena: string | number;
         beneficiary: string | number;
         compliance?: boolean;
+        valley: string;
     }>({
         name: initialValues?.name || "",
         description: initialValues?.description || "",
@@ -270,9 +270,9 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         budget: initialValues?.budget || "",
         expenses: initialValues?.expenses || "",
         risk: initialValues?.risk || "",
-        faena: initialValues?.faena || "",
         beneficiary: initialValues?.beneficiary || "",
         compliance: initialValues?.compliance ?? undefined,
+        valley: valley,
     });
 
     /**
@@ -329,30 +329,13 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         budget: initialValues.budget || "",
         expenses: initialValues.expenses || "",
         risk: initialValues.risk || "",
-        faena: initialValues.faena || "",
         beneficiary: initialValues.beneficiary || "",
         compliance: initialValues.compliance ?? false,
+        valley: valley,
         });
     }
     }, [initialValues]); 
     
-    const [faenas, setFaenas] = useState<string[]>([]);
-    const [faenaMap, setFaenaMap] = useState<{ [key: string]: string }>({});
-
-    /**
-     * Hook para establecer el mapa de faenas
-     * @description Utiliza useEffect para crear un mapa de faenas cuando Faenas cambian
-     */
-    useEffect(() => {
-        if (Faenas) {
-            const newFaenaMap: Record<string, number> = {};
-            Faenas.forEach((faena: IValley, index) => {
-                newFaenaMap[faena.name] = faena.id || index + 1;
-            });
-            setFaenaMap(Object.fromEntries(Object.entries(newFaenaMap).map(([key, value]) => [key, value.toString()])));
-        }
-    }, [Faenas]);
-
     /**
      * Función para validar la transición de estado de una tarea
      * @description Verifica si la transición de estado es válida según las reglas definidas
@@ -411,8 +394,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         if (!isEditing) {
             taskDetails = {
                 ...formState,
-                valley: valleyNames.findIndex((v) => v === valley) + 1,
-                faena: formState.faena ? Number(faenaMap[formState.faena]) : null,
+                valley: valleyNames.findIndex((v) => v === formState.valley) + 1,
                 risk: Number(formState.risk) ? Number(formState.risk) : taskRisk.findIndex((r: string | number) => r === formState.risk) + 1,
                 state: Number(formState.state) ? Number(formState.state) : taskState.findIndex((s: string | number) => s === formState.state) + 1,
                 interaction: Number(formState.interaction) ? Number(formState.interaction) : taskInteraction.findIndex((i: string | number) => i === formState.interaction) + 1,
@@ -421,8 +403,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 origin: Number(formState.origin) ? Number(formState.origin) : taskOrigin.findIndex((o: string | number) => o === formState.origin) + 1,
                 investment: Number(formState.investment) ? Number(formState.investment) : taskInvestment.findIndex((i: string | number) => i === formState.investment) + 1,
                 beneficiary: formState.beneficiary ? beneficiaries.find((b: IBeneficiary) => b.legalName === formState.beneficiary).id : null,
-                process: valley === "Valle de Copiapó" ? 1 : valley === "Valle del Huasco" ? 2 : valley === "Valle del Elqui" ? 3 : null,
-                compliance: formState.compliance ?? false,
+                process: formState.valley === "Valle de Copiapó" ? 1 : formState.valley === "Valle del Huasco" ? 2 : formState.valley === "Valle del Elqui" ? 3 : null,                compliance: formState.compliance ?? false,
             };
         } else {
             taskDetails = {
@@ -450,68 +431,11 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             budget: "",
             expenses: "",
             risk: "",
-            faena: "",
             beneficiary: "",
             compliance: undefined,
+            valley: valley,
         });
-        setFaenas([]);
-    }, [formState, onSave, faenaMap]);
-
-    /**
-     * Función para manejar la selección de un valle
-     * @description Actualiza las faenas disponibles según el valle seleccionado
-     * @param valleyName Nombre del valle seleccionado
-     */
-    const handleValleySelect = useCallback((valleyName: string) => {
-        if (!faenaNames || faenaNames.length === 0) {
-            setFaenas([]);
-            return;
-        }
-
-        switch (valleyName) {
-            case "Valle de Copiapó":
-                const copiapoFaenas = faenaNames.slice(0, Math.min(3, faenaNames.length));
-                if (faenaNames.length > 9) {
-                    copiapoFaenas.push(faenaNames[9]);
-                }
-                setFaenas(copiapoFaenas);
-                break;
-            case "Valle del Huasco":
-                if (faenaNames.length > 3) {
-                    const huascoFaenas = faenaNames.slice(3, Math.min(6, faenaNames.length));
-                    if (faenaNames.length > 9) {
-                        huascoFaenas.push(faenaNames[9]);
-                    }
-                    setFaenas(huascoFaenas);
-                }
-                break;
-            case "Valle del Elqui":
-                if (faenaNames.length > 6) {
-                    const elquiFaenas = faenaNames.slice(6, Math.min(9, faenaNames.length));
-                    if (faenaNames.length > 9) {
-                        elquiFaenas.push(faenaNames[9]);
-                    }
-                    setFaenas(elquiFaenas);
-                }  
-                break;
-            case "Transversal":
-                if (faenaNames.length > 9) {
-                    setFaenas(faenaNames.slice(9, faenaNames.length));
-                }
-                break;
-            default:
-                setFaenas([]);
-                break;
-        }
-    }, [faenaNames]);
-
-    /**
-     * Hook para manejar la selección del valle
-     * @description Utiliza useEffect para llamar a handleValleySelect cuando el valle cambia
-     */
-    useEffect(() => {
-        handleValleySelect(valley);
-    },[valley]);
+    }, [formState, onSave]);
 
     const dropdownItems = useMemo(() => ({
         origin: taskOrigin || [],
@@ -521,8 +445,9 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         investment: taskInvestment || [],
         state: taskState || [],
         risk: taskRisk || [],
-        beneficiaries: taskBeneficiaries || []
-    }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk, taskBeneficiaries]);
+        beneficiaries: taskBeneficiaries || [],
+        valleyNames: valleyNames.filter((v) => v !== "Transversal") || []
+    }), [taskOrigin, taskType, taskScope, taskInteraction, taskState, taskRisk, taskBeneficiaries, valleyNames]);
 
     /**
      * Función para obtener el nombre de una faena por su ID
@@ -553,7 +478,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                 formState.scope && 
                 formState.interaction && 
                 formState.risk && 
-                formState.faena && 
                 formState.compliance !== undefined
             );
         } else {
@@ -571,7 +495,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
 
     return {
         formState,
-        faenas,
         dropdownItems,
         isFormValid,
         error,
@@ -585,6 +508,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         handleGetInfoTask,
         handleGetTaskFaena,
         handleUpdateTask,
-        handleDeleteTask,
+        handleDeleteTask
     };
 };

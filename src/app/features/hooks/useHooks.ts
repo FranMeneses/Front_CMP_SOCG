@@ -234,10 +234,8 @@ export function useHooks() {
             "Jefe Relacionamiento VE": valleys?.find(v => v.name === "Valle del Elqui")?.id || 3,
             "Jefe Relacionamiento VC": valleys?.find(v => v.name === "Valle de Copiapó")?.id || 1,
             "Jefe Relacionamiento VH": valleys?.find(v => v.name === "Valle del Huasco")?.id || 2,
-            "Admin": valleys?.find(v => v.name === "Transversal")?.id || 4,
             "Encargado Comunicaciones": valleys?.find(v => v.name === "Transversal")?.id || 4,
             "Encargado Asuntos Públicos": valleys?.find(v => v.name === "Transversal")?.id || 4,
-            "Encargado Cumplimiento": valleys?.find(v => v.name === "Transversal")?.id || 4,
         };
     }, [valleys]);
 
