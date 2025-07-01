@@ -54,7 +54,7 @@ export default function ResumeRelationship() {
           width={95}
           height={95}
         />
-        <h1 className="text-3xl font-bold">Resumen Relacionamiento</h1>
+        <h1 className="text-3xl font-bold">RESUMEN RELACIONAMIENTO</h1>
       </div>
       {/* Tarjetas de métricas */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-shrink-0">
@@ -62,7 +62,7 @@ export default function ResumeRelationship() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{tasksData.length || 0}</p>
-              <h3 className="text-white font-medium text-sm lg:text-lg">Iniciativas en desarrollo</h3>
+              <h3 className="text-white font-medium text-sm lg:text-lg">INICIATIVAS EN DESARROLLO</h3>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function ResumeRelationship() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{formattedBudget} USD</p>
-              <h3 className="text-white font-medium text-sm lg:text-lg">Presupuesto Total</h3>
+              <h3 className="text-white font-medium text-sm lg:text-lg">PRESUPUESTO TOTAL</h3>
             </div>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function ResumeRelationship() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{formattedExpenses} USD</p>
-              <h3 className="text-white font-medium text-sm lg:text-lg">Gasto Total</h3>
+              <h3 className="text-white font-medium text-sm lg:text-lg">GASTO TOTAL</h3>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@ export default function ResumeRelationship() {
       {/* Gráficos Pie y Bar  */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-w-0">
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">Iniciativas por Departamento</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">INICIATIVAS POR DEPARTAMENTO</h2>
           <div className="w-full h-80 lg:h-96 flex justify-center items-center">
             <div className="w-full max-w-md h-full">
               <PieChart
@@ -117,7 +117,7 @@ export default function ResumeRelationship() {
           </div>
         </div>
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">Tareas por línea de Inversión</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">TAREAS POR LÍNEA DE INVERSIÓN</h2>
           <div className="w-full h-80 lg:h-96">
             <BarChart
               chartType="investment-lines"
@@ -132,7 +132,7 @@ export default function ResumeRelationship() {
 
       {/* Planes de trabajo por valles */}
       <div className="bg-white p-4 rounded-lg shadow min-w-0">
-        <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-6">Avance plan de trabajo valles</h2>
+        <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-6">AVANCE PLAN DE TRABAJO VALLES</h2>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           {/* Plan de trabajo Copiapó */}
@@ -143,7 +143,7 @@ export default function ResumeRelationship() {
                 selectedLegend={""}
                 onLegendClick={handleLegendClick}
                 data-test-id="pie-chart-copiapo"
-                title="Plan de trabajo Copiapó"
+                title="PLAN DE TRABAJO COPIAPÓ"
                 titleSize={16}
                 font="Helvetica"
               />
@@ -158,7 +158,7 @@ export default function ResumeRelationship() {
                 selectedLegend={""}
                 onLegendClick={handleLegendClick}
                 data-test-id="pie-chart-huasco"
-                title="Plan de trabajo Huasco"
+                title="PLAN DE TRABAJO HUASCO"
                 titleSize={16}
                 font="Helvetica"
               />
@@ -173,7 +173,7 @@ export default function ResumeRelationship() {
                 selectedLegend={""}
                 onLegendClick={handleLegendClick}
                 data-test-id="pie-chart-elqui"
-                title="Plan de trabajo Elqui"
+                title="PLAN DE TRABAJO ELQUI"
                 titleSize={16}
                 font="Helvetica"
               />

@@ -63,7 +63,7 @@ export default function Beneficiaries() {
                   width={98}
                   height={98}
                 />
-                <h1 className="text-3xl font-bold">Beneficiarios</h1>
+                <h1 className="text-3xl font-bold">BENEFICIARIOS</h1>
               </div>
               
               <div className="p-4 border-b border-gray-200">

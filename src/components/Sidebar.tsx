@@ -20,7 +20,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
 
   const navItems = [
     {
-      title: "Documentos",
+      title: "DOCUMENTOS",
       href: "/features/documents",
       displayHref: "/documents",
       icon: FileText,
@@ -28,7 +28,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin", "Encargado Cumplimiento", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
-      title: "Compliance",
+      title: "COMPLIANCE",
       href: "/features/compliance",
       displayHref: "/compliance",
       icon: Clipboard,
@@ -36,7 +36,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Encargado Cumplimiento"]
     },    
     {
-      title: "Historial",
+      title: "HISTORIAL",
       href: "/features/history",
       displayHref: "/history",
       icon: History,
@@ -44,7 +44,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Encargado Cumplimiento", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Gerente"]
     },
     {
-      title: "Planificación",
+      title: "PLANIFICACIÓN",
       href: "/features/planification",
       displayHref: "/planification",
       icon: SquareChartGantt,
@@ -52,7 +52,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin", "Encargado Cumplimiento","Encargado Comunicaciones", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
-      title: "Beneficiarios",
+      title: "BENEFICIARIOS",
       href: "/features/beneficiaries",
       displayHref: "/beneficiaries",
       icon: UsersRound,
@@ -60,7 +60,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
-      title: "Programación",
+      title: "PROGRAMACIÓN",
       href: "/features/reportability",
       displayHref: "/reportability",
       icon: CalendarFold,
@@ -68,7 +68,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
     },
     {
-      title: "Plan de trabajo",
+      title: "PLAN DE TRABAJO",
       href: "/features/schedule",
       displayHref: "/schedule",
       icon: CalendarRange,
@@ -76,7 +76,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
-      title: "Resumen",
+      title: "RESUMEN",
       href: "/features/resume",
       displayHref: "/resume",
       icon: ChartPie,
@@ -84,7 +84,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento"]
     },
     {
-      title: "Usuarios",
+      title: "USUARIOS",
       href: "/features/users",
       displayHref: "/users",
       icon: UserCheck,
@@ -128,7 +128,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
           data-test-id="sidebar-logout"
         >
           <LogOut className="mr-2 h-6 w-6" />
-          Cerrar Sesión
+          CERRAR SESIÓN
         </Button>
       </div>
     </div>

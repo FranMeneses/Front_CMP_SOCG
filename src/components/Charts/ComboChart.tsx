@@ -55,7 +55,7 @@ const ComboChart = ({
   const comboData: ChartData = {
     labels: data.labels,
     datasets: data.datasets.map(dataset => {
-      const isExpense = dataset.label.includes('Gastos');
+      const isExpense = dataset.label.includes('GASTOS');
       
       const valleyName = isExpense ? dataset.label.replace('Gastos ', '') : dataset.label;
       

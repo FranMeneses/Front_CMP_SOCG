@@ -91,7 +91,7 @@ export default function Reportability() {
                     width={80}
                     height={80}
                   />
-                  <h1 className="text-3xl font-bold">Programación de Actividades</h1>
+                  <h1 className="text-3xl font-bold">PROGRAMACIÓN DE ACTIVIDADES</h1>
                 </div>
                 {(isManager || userRole === "Encargado Cumplimiento" || isCommunicationsManager || userRole === "Admin") && (
                   <div className="mt-4">
@@ -117,7 +117,7 @@ export default function Reportability() {
                     <div className="border-t border-gray-200 mx-3"></div>
                     <div className="p-4">
                       <h2 className="text-sm uppercase text-gray-500 font-medium mb-3">
-                        {isCommunicationsManager ? 'Procesos' : 'Valles'}
+                        {isCommunicationsManager ? 'PROCESOS' : 'VALLES'}
                       </h2>
                       <Legend 
                         valley={isCommunicationsManager ? filteredProcessesNames : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? ProcessesNames : ValleysProcessesName.filter((process:string) => process !== "Transversales")} 

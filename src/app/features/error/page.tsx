@@ -16,7 +16,7 @@ export default function ErrorPage() {
                         priority
                     />
                 </div>
-                <h1 className="text-4xl font-bold text-gray-900 mb-4">Acceso no autorizado</h1>
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">ACCESO NO AUTORIZADO</h1>
                 <p className="text-lg text-gray-700">No tiene acceso al portal, porfavor utilizar correo institucional para ingresar.</p>
                 <Link href="/" className="mt-6 text-[#003f7f] hover:underline">
                     Inicio de sesión

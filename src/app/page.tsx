@@ -84,7 +84,7 @@ export default function Home() {
       <div className="hidden md:flex bg-[#153C6C] items-center justify-center flex-col relative font-[Helvetica]">
         <div className="flex flex-col w-3/5 h-3/4 items-center bg-white rounded-lg shadow-lg p-8">
           <h1 className="text-3xl font-bold mb-4 text-zinc-900 text-center">
-            Bienvenido al sistema de Gestión y Control Gerencia de Gestión de Riesgos y Sostenibilidad
+            BIENVENIDO AL SISTEMA DE GESTIÓN Y CONTROL GERENCIA DE GESTIÓN DE RIESGOS Y SOSTENIBILIDAD
           </h1>
           <h2 className="text-xl text-zinc-600 font-medium mb-4">Ingrese sus datos</h2>
           

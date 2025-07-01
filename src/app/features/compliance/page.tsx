@@ -58,7 +58,7 @@ export default function Compliance() {
                                     width={95}
                                     height={95}
                                 />
-                                <h1 className="text-3xl font-bold">Compliance</h1>
+                                <h1 className="text-3xl font-bold">COMPLIANCE</h1>
                             </div>
                             <ComplianceTable
                                 compliance={data}

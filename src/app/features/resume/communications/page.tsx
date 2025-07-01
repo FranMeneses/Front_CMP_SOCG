@@ -56,7 +56,7 @@ export default function ResumeCommunications() {
           width={95}
           height={95}
         />
-        <h1 className="text-3xl font-bold">Resumen Comunicaciones</h1>
+        <h1 className="text-3xl font-bold">RESUMEN COMUNICACIONES</h1>
       </div>
       {/* Tarjetas de métricas - Actualizadas con el mismo estilo */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 flex-shrink-0">
@@ -64,7 +64,7 @@ export default function ResumeCommunications() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{tasksData?.length || 0}</p>
-              <h3 className="text-white font-medium text-sm lg:text-lg">Iniciativas en desarrollo</h3>
+              <h3 className="text-white font-medium text-sm lg:text-lg">INICIATIVAS EN DESARROLLO</h3>
             </div>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function ResumeCommunications() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{formattedBudget} USD</p>
-              <h3 className="text-white font-medium text-sm lg:text-lg">Presupuesto Total</h3>
+              <h3 className="text-white font-medium text-sm lg:text-lg">PRESUPUESTO TOTAL</h3>
             </div>
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function ResumeCommunications() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{formattedExpenses} USD</p>
-              <h3 className="text-white font-medium text-sm lg:text-lg">Gasto Total</h3>
+              <h3 className="text-white font-medium text-sm lg:text-lg">GASTO TOTAL</h3>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function ResumeCommunications() {
       {/* Gráficos PieChart y BarChart */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-w-0">
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">Iniciativas por Departamento</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">INICIATIVAS POR DEPARTAMENTO</h2>
           <div className="w-full h-80 lg:h-96 flex justify-center items-center">
             <div className="w-full max-w-md h-full">
               <PieChart
@@ -121,7 +121,7 @@ export default function ResumeCommunications() {
 
         {/* BarChart - Tareas por línea de Inversión */}
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">Gastos por Departamentos</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">GASTOS POR DEPARTAMENTOS</h2>
           <div className="w-full h-80 lg:h-96">
             <BarChart
               chartType="departments"
@@ -136,7 +136,7 @@ export default function ResumeCommunications() {
 
       {/* Tabla de tareas */}
       <div className="bg-white p-4 rounded-lg shadow">
-        <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">Detalle de Tareas</h2>
+        <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">DETALLE DE TAREAS</h2>
         <DynamicTable
           tasks={tasksData || []}
           subtasks={subtasks}

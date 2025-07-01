@@ -41,7 +41,7 @@ export default function Schedule() {
                     width={98}
                     height={98}
                   />
-                  <h1 className="text-3xl font-bold">Plan de trabajo</h1>
+                  <h1 className="text-3xl font-bold">PLAN DE TRABAJO</h1>
                 </div>
                 
                 <div className="p-4 border-b border-gray-200 flex-shrink-0">

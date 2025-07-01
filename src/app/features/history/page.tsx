@@ -64,7 +64,7 @@ export default function ComplianceHistory() {
                                     width={100}
                                     height={100}
                                 />
-                                <h1 className="text-3xl font-bold">Compliance Histórico</h1>
+                                <h1 className="text-3xl font-bold">COMPLIANCE HISTÓRICO</h1>
                             </div>
 
                             <div className="p-4">

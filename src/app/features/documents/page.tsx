@@ -82,7 +82,7 @@ export default function Documents() {
                                     width={95}
                                     height={95}
                                 />
-                                <h1 className="text-3xl font-bold">Documentos</h1>
+                                <h1 className="text-3xl font-bold">DOCUMENTOS</h1>
                             </div>
                             
                             <div className="p-4 border-b border-gray-200">

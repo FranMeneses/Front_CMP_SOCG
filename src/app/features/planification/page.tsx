@@ -67,7 +67,7 @@ export default function Planification() {
                                     width={80}
                                     height={80}
                                 />
-                                <h1 className="text-3xl font-bold">Planificación</h1>
+                                <h1 className="text-3xl font-bold">PLANIFICACIÓN</h1>
                             </div>
                             <TasksTable
                             key={`tasks-table-${detailedTasks.length}-${subtasksToUse.length}-${JSON.stringify(detailedTasks.map((t: ITaskDetails) => t.id))}-${JSON.stringify(subtasksToUse.map((s: ISubtask) => s.id))}`}

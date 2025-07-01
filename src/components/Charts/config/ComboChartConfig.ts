@@ -127,7 +127,7 @@ export const ComboChartOptions = ({
       },
       title: {
         display: true,
-        text: `Presupuesto vs Gasto ${new Date().getFullYear()}`,
+        text: `PRESUPUESTO VS GASTO ${new Date().getFullYear()}`,
         color: '#000',
         font: {
           size: isMobile? 12 : 24,
