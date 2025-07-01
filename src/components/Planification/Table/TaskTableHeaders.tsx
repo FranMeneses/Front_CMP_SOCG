@@ -93,7 +93,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                 {renderProcessDropdown()}
             </div>
             <div className=' flex flex-row gap-2'>
-                 {((isCommunicationsManager || userRole === "Admin") && !isManager) && (
+                 {((isCommunicationsManager || userRole === "Admin" || userRole === "Encargado Cumplimiento") && !isManager) && (
                 <Button 
                     onClick={handleAddButtonClick}
                     className="bg-[#0068D1] hover:bg-[#0056a3] text-white flex items-center gap-1 hover:cursor-pointer"

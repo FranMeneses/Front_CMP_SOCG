@@ -24,9 +24,6 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">PROCESO</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">VALLE</th>
                             <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate">FAENA</th>
-                            <th>{("USUARIO").toUpperCase()}</th>
-                            <th>{("ACCION").toUpperCase()}</th>
-                            <th>{("DETALLE").toUpperCase()}</th>
                             <th colSpan={3}/>
                         </tr>
                     </thead>
