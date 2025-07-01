@@ -74,9 +74,16 @@ export const useDocumentsRest = () => {
             console.log(contentDisposition);
             
             if (contentDisposition) {
-                const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                // Primero intenta con filename*=
+                let filenameMatch = contentDisposition.match(/filename\*=UTF-8''(.+)/);
                 if (filenameMatch && filenameMatch.length >= 2) {
-                    filename = filenameMatch[1];
+                    filename = decodeURIComponent(filenameMatch[1]);
+                } else {
+                    // Si no, intenta con filename="..."
+                    filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch && filenameMatch.length >= 2) {
+                        filename = filenameMatch[1];
+                    }
                 }
             }
             const url = window.URL.createObjectURL(new Blob([response.data as BlobPart], { 
