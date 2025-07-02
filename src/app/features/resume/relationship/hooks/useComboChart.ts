@@ -1,7 +1,7 @@
 import { GET_PROCESS_MONTHLY_BUDGETS, GET_PROCESS_MONTHLY_EXPENSES } from "@/app/api/tasks";
 import { ITaskBudget, ITaskExpense } from "@/app/models/ITasks";
 import { Months } from "@/constants/months";
-import { ValleyColors } from "@/constants/colors";
+import { SecondaryValleyColors, ValleyColors } from "@/constants/colors";
 import { useData } from "@/context/DataContext";
 import { useLazyQuery } from "@apollo/client/react";
 import { useState, useEffect, useRef } from "react";
@@ -121,11 +121,27 @@ export function useComboChart() {
           backgroundColor: ValleyColors[0],
         },
         {
+          label: 'Gastos ' + (valleyNames.current[0] || 'Copiapó'),
+          id: 'Valle de Copiapó',
+          data: copiapoExpenses,
+          borderColor: SecondaryValleyColors[0],
+          backgroundColor: SecondaryValleyColors[0],
+          borderDash: [5, 5],
+        },
+        {
           label: valleyNames.current[1] || 'Huasco',
           id: 'Valle del Huasco',
           data: huascoBudget,
           borderColor: ValleyColors[1],
           backgroundColor: ValleyColors[1],
+        },
+        {
+          label: 'Gastos ' + (valleyNames.current[1] || 'Huasco'),
+          id: 'Valle del Huasco',
+          data: huascoExpenses,
+          borderColor: SecondaryValleyColors[1],
+          backgroundColor: SecondaryValleyColors[1],
+          borderDash: [5, 5],
         },
         {
           label: valleyNames.current[2] || 'Elqui',
@@ -135,32 +151,17 @@ export function useComboChart() {
           backgroundColor: ValleyColors[2],
         },
         {
-          label: 'Gastos ' + (valleyNames.current[0] || 'Copiapó'),
-          id: 'Valle de Copiapó',
-          data: copiapoExpenses,
-          borderColor: ValleyColors[0],
-          backgroundColor: ValleyColors[0],
-          borderDash: [5, 5],
-        },
-        {
-          label: 'Gastos ' + (valleyNames.current[1] || 'Huasco'),
-          id: 'Valle del Huasco',
-          data: huascoExpenses,
-          borderColor: ValleyColors[1],
-          backgroundColor: ValleyColors[1],
-          borderDash: [5, 5],
-        },
-        {
           label: 'Gastos ' + (valleyNames.current[2] || 'Elqui'),
           id: 'Valle del Elqui',
           data: elquiExpenses,
-          borderColor: ValleyColors[2],
-          backgroundColor: ValleyColors[2],
+          borderColor: SecondaryValleyColors[2],
+          backgroundColor: SecondaryValleyColors[2],
           borderDash: [5, 5],
         }
       ],
     })
   }, [copiapoBudget, huascoBudget, elquiBudget, copiapoExpenses, huascoExpenses, elquiExpenses]); 
+
 
   return {
     comboChartData,

@@ -46,7 +46,6 @@ export function useUsers() {
     
     const handleUpdateUser = async (userInput: IUpdateUserInput) => {
         try {
-            console.log("Updating user with input:", userInput);
             await updateUser({
                 variables: {
                     id: selectedUser?.id_usuario,

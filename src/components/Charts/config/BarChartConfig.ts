@@ -19,7 +19,7 @@ interface BarChartData {
   datasets: ChartDataset[];
 }
 
-export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode = 'filter-zeros'): ChartOptions<'bar'> => {
+export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode = 'filter-zeros', onLegendClick?: (legend: string) => void): ChartOptions<'bar'> => {
   const calculateMaxValue = (chartData: BarChartData): number => {
     let maxValue = 0;
     
@@ -56,7 +56,7 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
       }
     }
     
-    return maxValue > 0 ? maxValue + 100 : 100;
+    return maxValue > 0 ? maxValue + 10 : 100;
   };
 
   const dynamicMax = calculateMaxValue(data);
@@ -162,7 +162,7 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
     maintainAspectRatio: false,
     scales: {
       x: {
-        stacked: true,
+        stacked: false,
         ticks: {
           stepSize: 10,
         },
@@ -176,7 +176,7 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
         ticks: {
           stepSize: Math.ceil(dynamicMax / 10),
         },
-        stacked: true,
+        stacked: false,
         grid: {
           display: true,
         },
@@ -185,7 +185,17 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
     plugins: {
       tooltip: getTooltipConfig(),
       legend: {
-        display: false,
+        display: true,
+        position: 'top',
+        labels: {
+          font: {
+            size: 14,
+            family: 'Helvetica',
+          },
+        },
+        onClick: onLegendClick
+          ? (_event, legendItem) => onLegendClick(legendItem.text)
+          : undefined,
       },
       title: {
         display: true,
@@ -206,12 +216,12 @@ export const getBarChartOptions = (data: BarChartData, tooltipMode: TooltipMode 
   };
 };
 
-export const getBarChartOptionsForDepartments = (data: BarChartData) => {
-  return getBarChartOptions(data, 'filter-zeros');
+export const getBarChartOptionsForDepartments = (data: BarChartData, onLegendClick?: (legend: string) => void) => {
+  return getBarChartOptions(data, 'filter-zeros', onLegendClick);
 };
 
-export const getBarChartOptionsForInvestmentLines = (data: BarChartData) => {
-  return getBarChartOptions(data, 'show-totals');
+export const getBarChartOptionsForInvestmentLines = (data: BarChartData, onLegendClick?: (legend: string) => void) => {
+  return getBarChartOptions(data, 'show-totals', onLegendClick);
 };
 
 export const referenceLinePlugin = {

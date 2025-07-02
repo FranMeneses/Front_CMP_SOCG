@@ -33,6 +33,9 @@ export const useCommunicationTaskForm = (
     .filter((p: IProcess) => ['Comunicaciones Internas', 'Asuntos Públicos', 'Comunicaciones Externas','Transversales'].includes(p.name))
     .map((p: IProcess) => p.name);
     const isPublicAffair = userRole === "Encargado Asuntos Públicos" 
+    const processNames = processes
+    .filter((p: IProcess) => ['Relacionamiento VH', 'Relacionamiento VE', 'Relacionamiento VC'].includes(p.name))
+    .map((p: IProcess) => p.name);
 
     const { valleysName, faenasName, valleys } = useHooks();
 
@@ -274,6 +277,7 @@ export const useCommunicationTaskForm = (
     const dropdownItems = useMemo(() => ({
         statuses: taskStatuses || [],
         processes: filteredProcessesNames || [],
+        relationshipProcesses: processNames || []
     }), [taskStatuses]);
 
     const saveButtonText = isEditing ? "Actualizar" : "Guardar";

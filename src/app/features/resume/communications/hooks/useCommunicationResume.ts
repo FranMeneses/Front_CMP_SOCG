@@ -4,11 +4,10 @@ import { ITask } from "@/app/models/ITasks";
 import { Months } from "@/constants/months";
 import { useLazyQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
+import { useQuery } from '@tanstack/react-query';
 
 export function useCommunicationResume() {
-    const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState(false);
     const [budgetLoading, setBudgetLoading] = useState(false);
-    const [tasksData, setTasksData] = useState<ITask[]>([]);    
     const [subtasks, setSubtasks] = useState<ISubtask[]>([]);
     const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
     const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
@@ -23,6 +22,26 @@ export function useCommunicationResume() {
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
     const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS);
 
+    // Reemplazar useEffect de carga de tareas por React Query
+    const {
+      data: tasksDataQuery = [],
+      isLoading: isLoadingTaskDetailsQuery,
+    } = useQuery({
+      queryKey: ['communications-tasks'],
+      queryFn: async () => {
+        const communicationProcessIds = [4, 5, 6, 7]; 
+        const allTasks: ITask[] = [];
+        for (const processId of communicationProcessIds) {
+          const { data } = await getTasksByProcess({
+            variables: { processId },
+          });
+          const processTasks = data?.tasksByProcess || [];
+          allTasks.push(...processTasks);
+        }
+        return allTasks;
+      },
+      staleTime: 1000 * 60 * 10, // 10 minutos
+    });
 
     /**
      * Función para manejar el clic en una leyenda del gráfico.
@@ -71,33 +90,6 @@ export function useCommunicationResume() {
         }
     };
 
-    /**
-     * Función para cargar las tareas de los procesos de comunicación.
-     * @description Realiza una consulta para obtener las tareas de los procesos de comunicación y las almacena en el estado.
-     */
-    const loadCommunicationProcessesTasks = async () => {
-      const communicationProcessIds = [4, 5, 6, 7]; 
-      const allTasks: ITask[] = [];
-            
-      setIsLoadingTaskDetails(true);
-            
-      try {
-        for (const processId of communicationProcessIds) {
-          const { data } = await getTasksByProcess({
-            variables: { processId },
-          });
-          const processTasks = data?.tasksByProcess || [];
-          allTasks.push(...processTasks);
-        }
-        return allTasks;
-      } catch (error) {
-        console.error("Error loading communication processes tasks:", error);
-        return [];
-      } finally {
-        setIsLoadingTaskDetails(false);
-      }
-    };
-    
     /**
      * Función para calcular los presupuestos anuales de un proceso específico.
      * @description Recorre los meses del año y suma los gastos mensuales de un proceso específico.
@@ -159,25 +151,6 @@ export function useCommunicationResume() {
     };
 
     /**
-     * Hook para cargar las tareas de los procesos de comunicación al montar el componente.
-     * @description Utiliza useEffect para cargar las tareas de los procesos de comunicación al montar el componente.
-     */
-    useEffect(() => {
-      const loadInitialCommunicationTasks = async () => {
-        try {
-          setIsLoadingTaskDetails(true);
-          const communicationTasks = await loadCommunicationProcessesTasks();
-          setTasksData(communicationTasks);
-        } catch (error) {
-          console.error("Error loading initial communication tasks:", error);
-        } finally {
-          setIsLoadingTaskDetails(false);
-        }
-      };
-      loadInitialCommunicationTasks();
-    }, []);
-
-    /**
      * Hook para cargar los datos del presupuesto y gastos anuales.
      * @description Este efecto se ejecuta una vez al montar el componente, cargando los datos del presupuesto y gastos anuales.
      */
@@ -213,21 +186,20 @@ export function useCommunicationResume() {
     loadBudgetData();
     }, []); 
 
-    const loading = isLoadingTaskDetails || budgetLoading;
+    const loading = isLoadingTaskDetailsQuery || budgetLoading;
 
   return {
-    loadCommunicationProcessesTasks,
-    handleLegendClick,
-    handleTaskClick,
-    isLoadingTaskDetails,
-    tasksData,
-    selectedTaskId,
-    selectedLegend,
+    loading,
+    budgetLoading,
+    tasksData: tasksDataQuery,
     subtasks,
+    selectedLegend,
+    selectedTaskId,
     formattedBudget,
     formattedExpenses,
-    loading,
     yearlyBudgetTotal,
     yearlyExpensesTotal,
+    handleLegendClick,
+    handleTaskClick,
   };
 };

@@ -202,6 +202,19 @@ const TasksTable: React.FC<TasksTableProps> = ({
                             </tr>
                         </thead>
                         <tbody className="bg-white text-xs truncate divide-y divide-gray-200">
+                            <tr>
+                                <td className="py-2 px-4 text-left text-sm font-medium text-gray-700 border-r border-gray-200">
+                                    Cantidad de tareas asignadas al proceso: {filteredTasks.length}
+                                </td>
+                                <td className="border-r border-gray-200" />
+                                <td className="border-r border-gray-200" />
+                                <td className="border-r border-gray-200" />
+                                <td className="border-r border-gray-200" />
+                                <td className="border-r border-gray-200" />
+                                <td className="border-r border-gray-200" />
+                                <td className="border-r border-gray-200" />
+                                <td />
+                            </tr>
                             {filteredTasks.length === 0 ? (
                                 <tr>
                                     <td colSpan={9} className="py-8 text-center text-gray-400 font-medium">

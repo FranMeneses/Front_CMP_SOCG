@@ -92,47 +92,54 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
         </thead>
         <tbody className="divide-y divide-[#cacaca]">
           {localSubtasks.length > 0 ? (
-            localSubtasks.map((subtask) => (
-              <tr 
-                key={subtask.id} 
-                className={`${animatingRowIds[subtask.id] ? 'bg-[#f8f8f8] transition-colors duration-1000' : ''}`}
-              >
-                <td className="px-4 py-2">{subtask.name}</td>
-                <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.budget || 0) || "-"}</td>
-                <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.expense || 0) || "-"}</td>
-                <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
-                <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
-                <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>
-                <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
-                <td className="px-4 py-2">
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    subtask.status?.name === "Completada" ? "bg-green-100 text-green-800" : 
-                    subtask.status?.name === "En Proceso" ? "bg-blue-100 text-blue-800" :
-                    subtask.status?.name === "En Espera" ? "bg-yellow-100 text-yellow-800" :
-                    subtask.status?.name === "Cancelada" ? "bg-red-100 text-red-800" :
-                    "bg-gray-100 text-gray-800"
-                  }`}>
-                    {subtask.status?.name || "NO iniciada"}
-                  </span>
-                </td>
-                <td className="px-4 py-2 flex flex-row">
-                  <Pen
-                    size={18}
-                    color="#041e3e"
-                    className="cursor-pointer mr-4"
-                    onClick={() => handleGetSubtask(subtask.id)}
-                  />
-                  { userRole === "Admin" && (
-                    <Trash
-                      size={20}
+            localSubtasks
+              .sort((a, b) => {
+                // Ordenar por fecha de finalización (endDate) ascendente
+                const dateA = new Date(a.endDate).getTime();
+                const dateB = new Date(b.endDate).getTime();
+                return dateA - dateB;
+              })
+              .map((subtask) => (
+                <tr 
+                  key={subtask.id} 
+                  className={`${animatingRowIds[subtask.id] ? 'bg-[#f8f8f8] transition-colors duration-1000' : ''}`}
+                >
+                  <td className="px-4 py-2">{subtask.name}</td>
+                  <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.budget || 0) || "-"}</td>
+                  <td className="px-4 py-2">{Intl.NumberFormat('es-CL', {maximumFractionDigits: 0}).format(subtask.expense || 0) || "-"}</td>
+                  <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
+                  <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
+                  <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>
+                  <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
+                  <td className="px-4 py-2">
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      subtask.status?.name === "Completada" ? "bg-green-100 text-green-800" : 
+                      subtask.status?.name === "En Proceso" ? "bg-blue-100 text-blue-800" :
+                      subtask.status?.name === "En Espera" ? "bg-yellow-100 text-yellow-800" :
+                      subtask.status?.name === "Cancelada" ? "bg-red-100 text-red-800" :
+                      "bg-gray-100 text-gray-800"
+                    }`}>
+                      {subtask.status?.name || "NO iniciada"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 flex flex-row">
+                    <Pen
+                      size={18}
                       color="#041e3e"
-                      className="cursor-pointer"
-                      onClick={() => handleDelete(subtask.id)}
+                      className="cursor-pointer mr-4"
+                      onClick={() => handleGetSubtask(subtask.id)}
                     />
-                  )}
-                </td>
-              </tr>
-            ))
+                    { userRole === "Admin" && (
+                      <Trash
+                        size={20}
+                        color="#041e3e"
+                        className="cursor-pointer"
+                        onClick={() => handleDelete(subtask.id)}
+                      />
+                    )}
+                  </td>
+                </tr>
+              ))
           ) : (
             <tr>
               <td colSpan={9} className="px-4 py-2 text-center text-gray-500">

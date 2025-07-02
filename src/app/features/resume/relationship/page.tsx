@@ -10,8 +10,6 @@ import { useEffect, useState } from "react";
 import ComboChart from "@/components/Charts/ComboChart";
 import Image from "next/image";
 
-// TODO: ARREGLAR BUG VISUAL DE COMBO CHART
-
 export default function ResumeRelationship() {
   const {
     loading: resumeLoading,
@@ -101,7 +99,7 @@ export default function ResumeRelationship() {
       {/* Gráficos Pie y Bar  */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-w-0">
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">INICIATIVAS POR DEPARTAMENTO</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">INICIATIVAS DE RELACIONAMIENTO</h2>
           <div className="w-full h-80 lg:h-96 flex justify-center items-center">
             <div className="w-full max-w-md h-full">
               <PieChart
@@ -117,7 +115,7 @@ export default function ResumeRelationship() {
           </div>
         </div>
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">TAREAS POR LÍNEA DE INVERSIÓN</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">INICIATIVAS POR LÍNEA DE INVERSIÓN</h2>
           <div className="w-full h-80 lg:h-96">
             <BarChart
               chartType="investment-lines"
@@ -132,7 +130,7 @@ export default function ResumeRelationship() {
 
       {/* Planes de trabajo por valles */}
       <div className="bg-white p-4 rounded-lg shadow min-w-0">
-        <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-6">AVANCE PLAN DE TRABAJO VALLES</h2>
+        <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-6">AVANCE PLAN DE TRABAJO</h2>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           {/* Plan de trabajo Copiapó */}

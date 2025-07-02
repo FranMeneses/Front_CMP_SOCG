@@ -62,14 +62,12 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       
       // Verificar si el token ha expirado
       if (decoded.exp && decoded.exp < currentTime) {
-        console.log('Token expirado, limpiando autenticación');
         clearAuthData();
         return false;
       }
       
       // Verificar que el token tenga la estructura correcta
       if (!decoded.sub || !decoded.email) {
-        console.log('Token inválido, falta información requerida');
         clearAuthData();
         return false;
       }

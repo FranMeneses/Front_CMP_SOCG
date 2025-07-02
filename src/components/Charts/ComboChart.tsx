@@ -73,7 +73,7 @@ const ComboChart = ({
         ? data.datasets.find(ds => ds.label === valleyName) 
         : data.datasets.find(ds => ds.label === `Gastos ${dataset.label}`); 
       
-      const baseColor = matchingDataset?.borderColor || dataset.borderColor;
+      const baseColor = dataset.borderColor;
       
     if (isExpense) {
       return {

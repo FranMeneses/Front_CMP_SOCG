@@ -25,7 +25,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/planification",
       icon: SquareChartGantt,
       isActive: pathname === "/features/planification",
-      admitedRoles: ["Admin", "Encargado Cumplimiento","Encargado Comunicaciones", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
+      admitedRoles: ["Admin","Encargado Cumplimiento","Encargado Comunicaciones","Encargado Asuntos Públicos","Superintendente Relacionamiento", "Superintendente Comunicaciones", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "PROGRAMACIÓN",
@@ -33,7 +33,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/reportability",
       icon: CalendarFold,
       isActive: pathname === "/features/reportability",
-      admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
+      admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones","Encargado Asuntos Públicos"]
     },
     {
       title: "COMPLIANCE",
@@ -49,7 +49,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["Admin", "Encargado Cumplimiento", "Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
+      admitedRoles: ["Admin", "Encargado Cumplimiento","Encargado Asuntos Públicos","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "BENEFICIARIOS",
@@ -57,7 +57,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/beneficiaries",
       icon: UsersRound,
       isActive: pathname === "/features/beneficiaries",
-      admitedRoles: ["Admin", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones"]
+      admitedRoles: ["Admin", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE", "Encargado Comunicaciones","Encargado Asuntos Públicos"]
     },
     {
       title: "RESUMEN",

@@ -1,7 +1,6 @@
 import React from 'react';
 import { ZoomIn } from "lucide-react";
 import { ICompliance } from '@/app/models/ICompliance';
-import { useComplianceTable } from '../../../app/features/compliance/hooks/useComplianceTable';
 
 interface ComplianceRowProps {
   compliance: ICompliance;
@@ -17,7 +16,7 @@ const ComplianceRow: React.FC<ComplianceRowProps> = ({
   userRole
 }) => {
 
-  const { handleRemainingDays } = useComplianceTable();
+  // const { handleRemainingDays } = useComplianceTable();
   
   return (
     <tr className='font-[Helvetica] hover:bg-gray-50 transition-colors duration-200 border-b border-gray-200'>
@@ -28,21 +27,21 @@ const ComplianceRow: React.FC<ComplianceRowProps> = ({
         {compliance.task.name.toUpperCase()}
       </td>
       <td className="px-2 py-2 text-center border-r border-gray-200">
-        {compliance.registries[0].startDate ? 
+        {/* {compliance.registries[0].startDate ? 
           new Date(compliance.registries[0].startDate).toLocaleDateString('es-CL', {
             timeZone: 'UTC'
           }) : '-'
-        }
+        } */}
       </td>
       <td className="px-2 py-2 text-center border-r border-gray-200">
-        {compliance.registries[0].endDate ? 
+        {/* {compliance.registries[0].endDate ? 
           new Date(compliance.registries[0].endDate).toLocaleDateString('es-CL', {
             timeZone: 'UTC'
           }) : '-'
-        }
+        } */}
       </td>
       <td className='px-2 py-2 text-center border-r border-gray-200'>
-        {handleRemainingDays(compliance)}
+        {/* {handleRemainingDays(compliance)} */}
       </td>
       <td className="py-2 text-center border-r border-gray-200">
         <span className={`px-2 py-1 rounded-full text-xs ${

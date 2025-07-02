@@ -6,6 +6,12 @@ export const ValleyColors = [
     "#F2C94C",
 ]
 
+export const SecondaryValleyColors = [
+    "#bc8100",
+    "#0e7c00",
+    "#8e0700"
+]
+
 export const ValleyColorsHover = [
     "#BA8100",
     "#10B747",

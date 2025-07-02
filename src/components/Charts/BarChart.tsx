@@ -16,6 +16,7 @@ const BarChart = ({
     data,
     selectedLegend,
     chartType = 'departments',
+    onLegendClick,
   }: {
     data: BarChartData;
     selectedLegend: string | null;
@@ -34,9 +35,11 @@ const BarChart = ({
         : data.datasets, 
     };
 
+    console.log(filteredData);
+
     const chartOptions = chartType === 'investment-lines' 
-      ? getBarChartOptionsForInvestmentLines(filteredData)
-      : getBarChartOptionsForDepartments(filteredData);
+      ? getBarChartOptionsForInvestmentLines(filteredData, onLegendClick)
+      : getBarChartOptionsForDepartments(filteredData, onLegendClick);
   
     return (
       <div className="w-full h-full flex flex-col bg-white font-[Helvetica] overflow-hidden">

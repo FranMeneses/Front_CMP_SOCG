@@ -105,7 +105,13 @@ export default function CommunicationForm({
                             <DropdownMenu
                                 buttonText={"Seleccione el proceso asociado"}
                                 isInModal={true}
-                                items={dropdownItems.processes} 
+                                items={
+                                    !selectedTask || typeof selectedTask.processId !== 'number'
+                                        ? dropdownItems.processes
+                                        : selectedTask.processId > 3
+                                            ? dropdownItems.processes
+                                            : dropdownItems.relationshipProcesses
+                                }
                                 onSelect={(value) => handleInputChange('processId', value)}
                                 selectedValue={isEditing && selectedTask ? formState.processId : ""}
                                 data-test-id="communication-process-dropdown"

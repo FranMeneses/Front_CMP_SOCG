@@ -103,7 +103,7 @@ export default function ResumeCommunications() {
       {/* Gráficos PieChart y BarChart */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-w-0">
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">INICIATIVAS POR DEPARTAMENTO</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">INICIATIVAS DE COMUNICACIONES Y ASUNTOS PÚBLICOS</h2>
           <div className="w-full h-80 lg:h-96 flex justify-center items-center">
             <div className="w-full max-w-md h-full">
               <PieChart
@@ -121,7 +121,7 @@ export default function ResumeCommunications() {
 
         {/* BarChart - Tareas por línea de Inversión */}
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
-          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">GASTOS POR DEPARTAMENTOS</h2>
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">GASTOS POR PROCESOS</h2>
           <div className="w-full h-80 lg:h-96">
             <BarChart
               chartType="departments"

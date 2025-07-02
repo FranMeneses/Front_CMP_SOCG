@@ -92,7 +92,7 @@ const Calendar: React.FC<CalendarComponentProps> = ({ calendarView, events, onMo
         aspectRatio={1.5}
         events={events}
         eventClick={handleEventClick}
-        timeZone="UTC"
+        timeZone="America/Santiago"
         datesSet={handleDatesSet}
       />
 

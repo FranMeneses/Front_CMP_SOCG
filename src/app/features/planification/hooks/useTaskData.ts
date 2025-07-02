@@ -22,16 +22,25 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   const [isLoadingTaskDetails, setIsLoadingTaskDetails] = useState<boolean>(false);
   const [isInitialLoad, setIsInitialLoad] = useState<boolean>(true);
 
-  const isCommunicationsRole = userRole.toLowerCase() === "Encargado Comunicaciones" ||
-                               userRole.toLowerCase() === "Superintendente Comunicaciones" || 
-                               userRole.toLowerCase() === "Encargado Asuntos Públicos";
+  // Normaliza el rol del usuario a minúsculas para todas las comparaciones
+  const normalizedUserRole = userRole.toLowerCase();
 
-  const isRelationshipSuperintendent = userRole.toLowerCase() === "Superintendente Relacionamiento";
+  const isCommunicationsRole = normalizedUserRole === "encargado comunicaciones" ||
+                               normalizedUserRole === "superintendente comunicaciones" || 
+                               normalizedUserRole === "encargado asuntos públicos";
+
+  const isRelationshipSuperintendent = normalizedUserRole === "superintendente relacionamiento";
   
   const [loadingCommunicationTasks, setLoadingCommunicationTasks] = useState(isCommunicationsRole);
   const [loadingRelationshipTasks, setLoadingRelationshipTasks] = useState(isRelationshipSuperintendent);
 
-  const validRoles = ["Encargado Comunicaciones", "Encargado Asuntos Públicos","Jefe Relacionamiento VC", "Jefe Relacionamiento VH", "Jefe Relacionamiento VE"];
+  const validRoles = [
+    "encargado comunicaciones",
+    "encargado asuntos públicos",
+    "jefe relacionamiento vc",
+    "jefe relacionamiento vh",
+    "jefe relacionamiento ve"
+  ];
 
   /**
    * Función para cargar las tareas de los procesos de comunicación
@@ -118,7 +127,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
    * Determina si se debe usar la consulta de procesos
    * @description Verifica si el rol del usuario es uno de los roles válidos para usar la consulta de procesos
    */
-  const shouldUseProcessQuery = validRoles.includes(userRole.toLowerCase());
+  const shouldUseProcessQuery = validRoles.includes(normalizedUserRole);
 
   const dummyTask = () => {};
   const valleyTaskForm = useValleyTaskForm(dummyTask, currentValleyId?.toString() || "");
@@ -517,7 +526,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       const finishDate = new Date(subtask.finalDate);
       const diffTime = end.getTime() - finishDate.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (isNaN(diffDays)) {
+      if (isNaN(diffDays) || !subtask.finalDate ) {
         return "-";
       }
       return diffDays;
