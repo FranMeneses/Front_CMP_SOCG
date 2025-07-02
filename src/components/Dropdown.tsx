@@ -72,7 +72,7 @@ export default function DropdownMenu({
         <Button
           variant="outline"
           onClick={(e) => toggleDropdown(e)}
-          className={`cursor-pointer w-full ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`cursor-pointer w-full whitespace-normal break-words text-left ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={disabled}
           type="button"
         >

@@ -5,6 +5,7 @@ import { useDocumentForms } from "@/app/features/documents/hooks/useDocumentForm
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { FormData as DocumentFormData } from '@/app/features/documents/hooks/useDocumentForms';
 import { Clipboard, FileText } from "lucide-react";
+import { useState } from "react";
 
 interface DocumentFormProps {
     onSave: (formData: DocumentFormData) => void | Promise<void>;
@@ -27,9 +28,26 @@ export default function DocumentForm({
         getTaskText,
     } = useDocumentForms();
 
-    const handleSubmit = () => {
+    const [isUploading, setIsUploading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
+    const handleFileChangeWithUpload = async (file: File) => {
+        setIsUploading(true);
+        try {
+            await handleFileChange(file);
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleSubmit = async () => {
         if (isFormValid) {
-            onSave(formData as DocumentFormData); 
+            setIsSaving(true);
+            try {
+                await onSave(formData as DocumentFormData);
+            } finally {
+                setIsSaving(false);
+            }
         }
     };
 
@@ -41,7 +59,7 @@ export default function DocumentForm({
         );
     }
     return (
-        <div className="p-5 max-w-2xl mx-auto font-[Helvetica]" data-test-id="communication-form">
+        <div className="p-5 max-w-4xl mx-auto font-[Helvetica] overflow-x-auto" data-test-id="communication-form">
             <div className="flex justify-between items-center mb-6 pb-2 border-b border-gray-100">
                 <h2 className="text-lg font-semibold text-gray-800">
                     Nuevo Documento
@@ -88,7 +106,7 @@ export default function DocumentForm({
                         Subir Archivo
                     </h3>
                     <div className="flex items-center">
-                        <FileUploadButton onFileChange={handleFileChange} />
+                        <FileUploadButton onFileChange={handleFileChangeWithUpload} disabled={isUploading} />
                         {formData.file && (
                             <span className="ml-2 text-sm text-gray-600">
                                 {formData.file.name}
@@ -110,11 +128,11 @@ export default function DocumentForm({
                 <Button
                     variant="default"
                     onClick={handleSubmit}
-                    disabled={!isFormValid || isLoading}
+                    disabled={!isFormValid || isLoading || isUploading || isSaving}
                     className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
                     data-test-id="save-button"
                 >
-                    {isLoading ? (
+                    {isLoading || isUploading || isSaving ? (
                         <span className="flex items-center justify-center gap-2">
                             <LoadingSpinner />
                             Guardando...

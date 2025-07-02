@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 
 interface FileUploadButtonProps {
   onFileChange: (file: File) => void;
+  disabled?: boolean;
 }
 
-export const FileUploadButton = ({ onFileChange }: FileUploadButtonProps) => {
+export const FileUploadButton = ({ onFileChange, disabled = false }: FileUploadButtonProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleUpload = () => {
-    if (fileInputRef.current) {
+    if (fileInputRef.current && !disabled) {
       fileInputRef.current.click();
     }
   };
@@ -28,6 +29,7 @@ export const FileUploadButton = ({ onFileChange }: FileUploadButtonProps) => {
         variant="ghost"
         className="cursor-pointer"
         onClick={handleUpload}
+        disabled={disabled}
       >
         <ArrowUpFromLine className="text-black" size={24} />
         <span className="ml-2 font-[Helvetica]">Seleccione archivo</span>

@@ -1,6 +1,7 @@
 import { FileUploadButton } from "@/components/Documents/FileUploadButton";
 import { IComplianceForm } from "@/app/models/ICompliance";
 import { FileText } from "lucide-react";
+import { useState } from "react";
 
 interface ComplianceFormState extends Partial<IComplianceForm> {
     cartaAporteFile: File | null;
@@ -12,6 +13,16 @@ interface CartaAporteFieldsProps {
 }
 
 export default function CartaAporteFields({ formState, handleCartaAporteChange }: CartaAporteFieldsProps) {
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleCartaAporteChangeWithUpload = async (file: File) => {
+        setIsUploading(true);
+        try {
+            await handleCartaAporteChange(file);
+        } finally {
+            setIsUploading(false);
+        }
+    };
     return (
         <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
             <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
@@ -19,7 +30,7 @@ export default function CartaAporteFields({ formState, handleCartaAporteChange }
                 Subir Carta Aporte
             </h3>
             <div className="flex items-center">
-                <FileUploadButton onFileChange={handleCartaAporteChange} />
+                <FileUploadButton onFileChange={handleCartaAporteChangeWithUpload} disabled={isUploading} />
                 {formState.cartaAporteFile && (
                     <span className="ml-2 text-sm text-gray-600">
                         {formState.cartaAporteFile.name}
