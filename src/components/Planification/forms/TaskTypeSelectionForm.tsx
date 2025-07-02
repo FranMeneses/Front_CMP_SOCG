@@ -49,7 +49,7 @@ export default function TaskTypeSelectionForm({ onSelectType, onCancel }: TaskTy
                     variant="default"
                     onClick={handleContinue}
                     disabled={!selectedType}
-                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
+                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                     data-test-id="continue-button"
                 >
                     Continuar

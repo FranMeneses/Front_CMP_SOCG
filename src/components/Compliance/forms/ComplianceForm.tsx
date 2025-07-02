@@ -217,7 +217,7 @@ export default function ComplianceForm({
                         variant="default"
                         onClick={handleSave}
                         disabled={!isFormValid()}
-                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
+                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                         data-test-id="save-button"
                     >
                         {formState.statusId >= 2 && formState.statusId < 6 ? "Guardar y Avanzar" : saveButtonText}
@@ -227,7 +227,7 @@ export default function ComplianceForm({
                     <Button
                         variant="default"
                         onClick={onCancel}
-                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white"
+                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white cursor-pointer"
                         data-test-id="close-button"
                     >
                         Cerrar

@@ -129,7 +129,7 @@ export default function DocumentForm({
                     variant="default"
                     onClick={handleSubmit}
                     disabled={!isFormValid || isLoading || isUploading || isSaving}
-                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
+                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                     data-test-id="save-button"
                 >
                     {isLoading || isUploading || isSaving ? (

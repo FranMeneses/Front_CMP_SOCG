@@ -189,7 +189,7 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                 <Button
                     variant="default"
                     onClick={handleSaveSubtask}
-                    className="bg-[#0d4384] hover:bg-[#112339] text-white disabled:bg-[#747474c6] hover:cursor-pointer"
+                    className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                     disabled={!isFormValid}
                     data-test-id="save-button"
                 >

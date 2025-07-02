@@ -95,7 +95,7 @@ const UserForm: React.FC<UserFormProps> = ({ userData, onSave, onCancel }) => {
                     <Button
                         variant="default"
                         onClick={handleSave}
-                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6]"
+                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                         data-test-id="save-button"
                         type="submit"
                     >
