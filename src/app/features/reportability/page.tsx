@@ -31,7 +31,8 @@ export default function Reportability() {
     ValleysProcessesName,
     filteredProcesses,
     ValleysProcesses,
-    filteredProcessesCommunications
+    filteredProcessesCommunications,
+    filteredCommunicationsProcessesNames
   } = useReportability();
 
   const { userRole, isCommunicationsManager, isManager, handleLogout} = useHooks();
@@ -107,7 +108,7 @@ export default function Reportability() {
                   <div className="mt-4">
                     <DropdownMenu
                       buttonText={"Transversales"}
-                      items={isCommunicationsManager ? filteredProcessesNames : (userRole === "Encargado Cumplimiento" || userRole === 'Admin')? filteredProcessesNames : ValleysProcessesName}
+                      items={isCommunicationsManager ? filteredCommunicationsProcessesNames : (userRole === "Encargado Cumplimiento" || userRole === 'Admin')? filteredProcessesNames : ValleysProcessesName}
                       onSelect={(item) => handleDropdownSelect(item)}
                       data-test-id="dropdown-menu"
                     />
@@ -130,7 +131,7 @@ export default function Reportability() {
                         {isCommunicationsManager ? 'PROCESOS' : 'VALLES'}
                       </h2>
                       <Legend 
-                        valley={isCommunicationsManager ? filteredProcessesNames : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? ProcessesNames : ValleysProcessesName.filter((process:string) => process !== "Transversales")} 
+                        valley={isCommunicationsManager ? filteredCommunicationsProcessesNames : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? ProcessesNames : ValleysProcessesName.filter((process:string) => process !== "Transversales")} 
                         valleyColors={isCommunicationsManager ? CommunicationsColors : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? AllColors: ValleyColors} 
                       />
                     </div>

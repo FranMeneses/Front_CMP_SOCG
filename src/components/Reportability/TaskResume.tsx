@@ -141,14 +141,14 @@ export default function TaskResume({
                         <>
                             <p className="text-sm text-gray-500">Distribución por valle</p>
                             <div className="text-sm mt-1">
-                                {valleys?.filter(valley => valley.name !== "Transversal").map((valley) => {
+                                {valleys?.filter(valley => valley.name !== "Transversal").map((valley, index) => {
                                     const valleyEvents = valleySubtasks[valley.id] ?? 0;
                                     return (
                                         <div key={valley.id} className="flex justify-between items-center mt-1">
                                             <span className="flex items-center">
                                                 <span
                                                     className="inline-block w-3 h-3 rounded-full mr-2"
-                                                    style={{ backgroundColor: ValleyColors?.[valleyNames?.indexOf(valley.name)] || '#888' }}
+                                                    style={{ backgroundColor: ValleyColors[index] }}
                                                 ></span>
                                                 {valley.name}:
                                             </span>
