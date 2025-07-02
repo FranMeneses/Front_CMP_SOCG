@@ -57,6 +57,7 @@ export interface ITaskExpense {
 
 export interface ITaskDetails extends ITask {
     budget: number;
+    expense: number;
     startDate: string;
     endDate: string;
     finishedDate: string;

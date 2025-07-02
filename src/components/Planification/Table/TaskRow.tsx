@@ -37,9 +37,12 @@ const TaskRow: React.FC<TaskRowProps> = ({
       >
         {task.name.toUpperCase()}
       </td>
-      <td className="py-2 text-center border-r border-gray-200">{Intl.NumberFormat('es-CL', {
+      <td className="py-2 px-12 text-center border-r border-gray-200">{Intl.NumberFormat('es-CL', {
             maximumFractionDigits: 0
         }).format(task.budget || 0) || "-"}</td>
+      <td className="py-2 px-6 text-center border-r border-gray-200">{Intl.NumberFormat('es-CL', {
+            maximumFractionDigits: 0
+        }).format(task.expense || 0) || "-"}</td>
       <td className="py-2 px-2 text-center border-r border-gray-200">{task.startDate ? formatDate(task.startDate) : "-"}</td>
       <td className="py-2 px-2 text-center border-r border-gray-200">{task.endDate ? formatDate(task.endDate) : "-"}</td>
       <td className="py-2 text-center border-r border-gray-200">{getRemainingDays(task)}</td>

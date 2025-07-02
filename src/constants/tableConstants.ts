@@ -7,9 +7,10 @@ export const specialistTableColums = [
 
 export const ManagementTableColumns = [
     "Nombre",
-    "Días restantes",
-    "Fecha de Término",
-    "Porcentaje de avance",
+    "Presupuesto (USD)",
+    "Gasto (USD)",
+    "Compliance", //LISTO O EN PROCESO
+    "Estado"
 ]
 
 export const ValleysTasksTableColumns = [

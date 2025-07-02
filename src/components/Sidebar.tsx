@@ -68,6 +68,14 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       admitedRoles: ["Admin","Gerente", "Superintendente Relacionamiento", "Superintendente Comunicaciones", "Encargado Cumplimiento"]
     },
     {
+      title: "RESUMEN DE TAREAS",
+      href: "/features/taskResume",
+      displayHref: "/taskResume",
+      icon: SquareChartGantt,
+      isActive: pathname === "/features/taskResume",
+      admitedRoles: ["Admin", "Gerente"]
+    },
+    {
       title: "HISTORIAL",
       href: "/features/history",
       displayHref: "/history",

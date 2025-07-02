@@ -35,8 +35,6 @@ const BarChart = ({
         : data.datasets, 
     };
 
-    console.log(filteredData);
-
     const chartOptions = chartType === 'investment-lines' 
       ? getBarChartOptionsForInvestmentLines(filteredData, onLegendClick)
       : getBarChartOptionsForDepartments(filteredData, onLegendClick);

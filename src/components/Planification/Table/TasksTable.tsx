@@ -187,12 +187,13 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 />
             </div>
             <div className="p-4">
-                <div className="overflow-x-auto rounded-lg shadow font-[Helvetica] border border-gray-200">
+                <div className="overflow-x-auto overflow-y-auto max-h-[60vh] sticky bottom-0 bg-white z-10 w-full rounded-lg shadow font-[Helvetica] border border-gray-200">
                     <table className="w-full border-collapse">
                         <thead className="bg-gray-100">
                             <tr className="text-sm text-gray-700">
                                 <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">{("Nombre").toUpperCase()}</th>
                                 <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">{("Presupuesto (USD)").toUpperCase()}</th>
+                                <th className="py-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">{("Gasto (USD)").toUpperCase()}</th> 
                                 <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">{("Fecha Inicio").toUpperCase()}</th>
                                 <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">{("Fecha Finalización").toUpperCase()}</th>
                                 <th className="py-2 px-2 text-center text-xs font-medium text-gray-500 truncate border-r border-gray-200">{("Días Restantes").toUpperCase()}</th>

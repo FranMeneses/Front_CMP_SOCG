@@ -1,38 +1,59 @@
-import { useState, useEffect, useCallback } from "react";
-import { useLazyQuery } from "@apollo/client";
-import { GET_TASK_PROGRESS } from "@/app/api/tasks";
+import { useLazyQuery, useQuery } from "@apollo/client";
+import { GET_TASK_TOTAL_BUDGET, GET_TASK_TOTAL_EXPENSE, GET_TASK_PROGRESS } from "@/app/api/tasks";
 import { ITask } from "@/app/models/ITasks";
-import { ISubtask } from "@/app/models/ISubtasks";
+import { GET_TASK_COMPLIANCE } from "@/app/api/compliance";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { GET_ALL_INTERACTIONS, GET_ALL_INVESTMENTS, GET_ALL_ORIGINS, GET_ALL_RISKS, GET_ALL_SCOPES, GET_ALL_TYPES } from "@/app/api/infoTask";
 
 export function useDynamicTable(tasks: ITask[]) {
-    const [taskProgressMap, setTaskProgressMap] = useState<Record<string, number>>({});
+    const [getTaskBudget] = useLazyQuery(GET_TASK_TOTAL_BUDGET);
+    const [getTaskExpense] = useLazyQuery(GET_TASK_TOTAL_EXPENSE);
+    const [getTaskCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
     const [getTaskProgress] = useLazyQuery(GET_TASK_PROGRESS);
+    const [taskProgressMap, setTaskProgressMap] = useState<Record<string, number>>({});
 
-    /**
-     * Función para obtener el progreso de las tareas.
-     * @description Esta función recorre las tareas y obtiene el progreso de cada una, almacenándolo en un mapa.
-     */
+    
+    const {data: riskData} = useQuery(GET_ALL_RISKS);
+    const {data: originData} = useQuery(GET_ALL_ORIGINS);
+    const {data: investmentData} = useQuery(GET_ALL_INVESTMENTS);
+    const {data: interactionData} = useQuery(GET_ALL_INTERACTIONS);
+    const {data: scopeData} = useQuery(GET_ALL_SCOPES);
+    const {data: typeData} = useQuery(GET_ALL_TYPES);
+
+    const risks = riskData?.risks || [];
+    const origins = originData?.origins || [];
+    const investments = investmentData?.investments || [];
+    const interactions = interactionData?.interactions || [];
+    const scopes = scopeData?.scopes || [];
+    const types = typeData?.types || [];
+
+    // Cache en memoria para presupuesto, gasto y compliance
+    const budgetCache = useRef<Record<string, { value: number | null, timestamp: number }>>({});
+    const expenseCache = useRef<Record<string, { value: number | null, timestamp: number }>>({});
+    const complianceCache = useRef<Record<string, { value: string, timestamp: number }>>({});
+    const CACHE_DURATION = 10 * 60 * 1000; // 10 minutos en ms
+
+    const now = () => new Date().getTime();
+
     const fetchTaskProgress = useCallback(async () => {
         const progressMap: Record<string, number> = {};
         for (const task of tasks) {
-            try {
-                const { data } = await getTaskProgress({ variables: { id: task.id } });
-                if (data && data.taskProgress !== undefined) {
-                    if (task.id) {
+            if (task.id) {
+                try {
+                    const { data } = await getTaskProgress({ variables: { id: task.id } });
+                    if (data && data.taskProgress !== undefined) {
                         progressMap[task.id] = data.taskProgress;
+                    } else {
+                        progressMap[task.id] = 0;
                     }
+                } catch {
+                    progressMap[task.id] = 0;
                 }
-            } catch (error) {
-                console.error(`Error fetching progress for task ID: ${task.id}`, error);
             }
         }
         setTaskProgressMap(progressMap);
     }, [tasks, getTaskProgress]);
 
-    /**
-     * Hook para actualizar el progreso de las tareas cuando cambian las tareas.
-     * @description Este efecto se ejecuta cada vez que las tareas cambian, llamando a la función fetchTaskProgress.
-     */
     useEffect(() => {
         if (tasks.length > 0) {
             fetchTaskProgress();
@@ -40,75 +61,102 @@ export function useDynamicTable(tasks: ITask[]) {
     }, [tasks, fetchTaskProgress]);
 
     /**
-     * Función para calcular los días restantes de una subtarea.
-     * @description Esta función calcula los días restantes para completar una subtarea, considerando su fecha de finalización y estado.
-     * @param subtask Subtarea para calcular los días restantes.
-     * @returns 
+     * Función para obtener el presupuesto de una tarea
+     * @param taskId ID de la tarea 
+     * @returns Presupuesto de la tarea como Number
      */
-    const calculateRemainingDays = (subtask: ISubtask) => {
-        const end = new Date(subtask.endDate);
-        if (subtask.status.percentage === 100) {
-            const finishDate = new Date(subtask.finalDate);
-            const startDate = new Date(subtask.startDate);
-            const diffTime = finishDate.getTime() - startDate.getTime(); 
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            return diffDays;
+    const handleGetTaskBudget = async (taskId: string) => {
+        const cached = budgetCache.current[taskId];
+        if (cached && now() - cached.timestamp < CACHE_DURATION) {
+            return cached.value;
         }
-        const today = new Date();
-        const diffTime = end.getTime() - today.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
+        try {
+            const { data: budgetData } = await getTaskBudget({
+                variables: { id: taskId },
+            });
+            const value = budgetData ? budgetData.taskTotalBudget : null;
+            budgetCache.current[taskId] = { value, timestamp: now() };
+            return value;
+        } catch (error) {
+            console.error("Error fetching task budget:", error);
+            return null;
+        }
     };
 
     /**
-     * Función para formatear una fecha en formato ISO a un formato legible.
-     * @param isoDate Fecha en formato ISO para formatear.
-     * @description Esta función toma una fecha en formato ISO y la convierte a un formato legible (DD-MM-YYYY).
-     * @returns 
+     * Función para obtener los gastos asociados a la tarea
+     * @param taskId ID de la tarea
+     * @returns Gastos de la tarea como Number
      */
-    const formatDate = (isoDate: string): string => {
-        const date = new Date(isoDate);
-    
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0"); 
-        const day = String(date.getDate() +1 ).padStart(2, "0");
-    
-        return `${day}-${month}-${year}`; 
+    const handleGetTaskExpenses = async (taskId: string) => {
+        const cached = expenseCache.current[taskId];
+        if (cached && now() - cached.timestamp < CACHE_DURATION) {
+            return cached.value;
+        }
+        try {
+            const { data: expensesData } = await getTaskExpense({
+                variables: { id: taskId },
+                fetchPolicy: 'network-only',
+            });
+            const value = expensesData ? expensesData.taskTotalExpense : null;
+            expenseCache.current[taskId] = { value, timestamp: now() };
+            return value;
+        } catch (error) {
+            console.error("Error fetching task expenses:", error);
+            return null;
+        }
     };
 
     /**
-     * Función para obtener el color de la barra de progreso según el porcentaje.
-     * @param percentage Porcentaje de progreso de la tarea.
-     * @description Esta función devuelve un color específico para la barra de progreso según el porcentaje de progreso de la tarea.
-     * @returns 
+     * Función para obtener un estado simplificado del compliance
+     * @param taskId ID de la tarea
+     * @returns Estados simplificados del compliance como string
      */
-    const getColor = (percentage: number) => {
-        if (percentage === 100) return "bg-green-500";
-        if (percentage > 30 && percentage < 100) return "bg-yellow-500";
-        return "bg-red-500";
-    };
-
-    /**
-     * Función para obtener la clase de ancho de la barra de progreso según el porcentaje.
-     * @param percentage Porcentaje de progreso de la tarea.
-     * @description Esta función devuelve una clase de ancho específica para la barra de progreso según el porcentaje de progreso de la tarea.
-     * @returns 
-     */
-    const getWidth = (percentage: number) => {
-        if (percentage === 100) return "w-full";
-        if (percentage > 70 && percentage < 100) return "w-3/4";
-        if (percentage > 50 && percentage < 70) return "w-1/2";
-        if (percentage > 30 && percentage < 50) return "w-1/3";
-        if (percentage > 0 && percentage < 30) return "w-1/6";
-        if (percentage === 0 ) return ;
-        return "w-1/4";
+    const handleGetComplianceStatus = async (taskId: string) => {
+        const cached = complianceCache.current[taskId];
+        if (cached && now() - cached.timestamp < CACHE_DURATION) {
+            return cached.value;
+        }
+        const task = tasks.find(t => t.id === taskId);
+        if (task && task.applies === false) {
+            complianceCache.current[taskId] = { value: "No Aplica", timestamp: now() };
+            return "No Aplica";
+        }
+        try {
+            const {data: taskCompliance} = await getTaskCompliance({
+                variables: { taskId },
+                fetchPolicy: 'network-only'
+            });
+            let value = "No completado";
+            if (taskCompliance && taskCompliance.getTaskCompliance) {
+                const statusName = taskCompliance.getTaskCompliance.status?.name;
+                if (statusName === "Completado") {
+                    value = "Completado";
+                }
+            }
+            complianceCache.current[taskId] = { value, timestamp: now() };
+            return value;
+        }
+        catch (error){
+            console.error("Error al obtener el compliance");
+            return "No completado";
+        }
     }
-    
+
+    const infoTaskNames = useMemo(() => ({
+        origin: origins || [],
+        type: types || [],
+        scope: scopes || [],
+        interaction: interactions || [],
+        investment: investments || [],
+        risk: risks || [],
+    }), [origins, types, scopes, interactions, investments, risks]);
+
     return {
+        handleGetTaskBudget,
+        handleGetTaskExpenses,
+        handleGetComplianceStatus,
         taskProgressMap,
-        calculateRemainingDays,
-        formatDate,
-        getColor,
-        getWidth,
+        infoTaskNames
     };
 }

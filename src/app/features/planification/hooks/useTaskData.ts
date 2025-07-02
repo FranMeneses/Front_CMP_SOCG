@@ -585,6 +585,8 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         
         const budget = task.id ? await valleyTaskForm.handleGetTaskBudget(task.id) : null;
         
+        const expense = task.id ? await valleyTaskForm.handleGetTaskExpenses(task.id) : null;
+
         const startDate = associatedSubtasks.length
           ? new Date(Math.min(...associatedSubtasks.map((subtask) => new Date(subtask.startDate).getTime())))
           : null;
@@ -615,6 +617,7 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         return {
           ...task,
           budget: budget || 0,  
+          expense: expense || 0,
           startDate: startDate ? startDate.toISOString() : "-",
           endDate: endDate ? endDate.toISOString() : "-",
           finishedDate: finishDate ? finishDate.toISOString() : "-",
