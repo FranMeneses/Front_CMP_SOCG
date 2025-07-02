@@ -29,7 +29,8 @@ export default function CommunicationForm({
             error,
             handleSave, 
             handleInputChange, 
-            handleComplianceChange 
+            handleComplianceChange,
+            setError
         } = useCommunicationTaskForm(
             onSave, 
             isEditing, 
@@ -146,8 +147,15 @@ export default function CommunicationForm({
                                 <DropdownMenu
                                     buttonText={"Seleccione Estado"}
                                     isInModal={true}
-                                    items={dropdownItems.statuses} 
-                                    onSelect={(value) => handleInputChange('statusId', value)}
+                                    items={dropdownItems.statuses}
+                                    onSelect={(value) => {
+                                        if (value === "Completada") {
+                                            setError("La iniciativa pasara a completado cuando se terminen todas las subtareas");
+                                        } else {
+                                            setError(null);
+                                            handleInputChange('statusId', value);
+                                        }
+                                    }}
                                     selectedValue={dropdownItems.statuses[selectedTask?.statusId ? selectedTask.statusId - 1 : 0]}
                                     data-test-id="communication-status-dropdown"
                                     disabled={isManager || selectedTask?.status?.name === "En Cumplimiento" || selectedTask?.statusId === dropdownItems.statuses.findIndex((state: string) => state === "En Cumplimiento") + 1}

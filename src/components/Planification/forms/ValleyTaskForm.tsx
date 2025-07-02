@@ -25,6 +25,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
     handleInputChange,
     handleComplianceChange,
     handleSave,
+    setError,
   } = useValleyTaskForm(onSave, valley, isEditing, infoTask);
 
   const { isManager, userRole } = useHooks();
@@ -207,8 +208,19 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 <label className="text-xs text-gray-500 required">Estado</label>
                 <DropdownMenu
                   buttonText="Seleccione Estado"
-                  items={dropdownItems.state}
-                  onSelect={(value) => handleInputChange("state", value)}
+                  items={dropdownItems.state.map((state: string) => ({
+                    label: state,
+                    value: state,
+                    disabled: state === "Completada"
+                  }))}
+                  onSelect={(value) => {
+                    if (value === "Completada") {
+                      setError("La iniciativa pasara a completado cuando se terminen todas las subtareas");
+                    } else {
+                      setError(null);
+                      handleInputChange("state", value);
+                    }
+                  }}
                   isInModal={true}
                   selectedValue={infoTask?.task?.statusId ? dropdownItems.state[infoTask.task.statusId - 1] : undefined}
                   data-test-id="task-state-dropdown"

@@ -377,15 +377,25 @@ export const useValleySubtasksForm = (
      * @description Maneja el guardado de los cambios en la subtarea, incluyendo la creación o actualización según corresponda
      */
     const handleSaveSubtask = useCallback(() => {
-        
+        // Detectar si el estado seleccionado es 'Completada'
+        const completedStateName = "Completada";
+        const completedStateIndex = subtaskState.findIndex((s: string) => s === completedStateName);
+        const isCompleted = (subtaskFormState.state === completedStateName) ||
+            (Number(subtaskFormState.state) === completedStateIndex + 1);
+        let finalDate = subtaskFormState.finalDate;
+        if (isCompleted && !finalDate) {
+            // Si no hay fecha de finalización, usar la fecha de hoy
+            const today = new Date();
+            finalDate = today.toISOString().split('T')[0];
+        }
         const subtaskDetails = {
             ...subtaskFormState,
             budget: parseInt(subtaskFormState.budget) || 0,
             expense: parseInt(subtaskFormState.expense) || 0,
             priority: Number(subtaskFormState.priority) ? Number(subtaskFormState.priority) : subtaskPriority.findIndex((p: string | number) => p === subtaskFormState.priority) + 1,
             status: Number(subtaskFormState.state) ? Number(subtaskFormState.state) : subtaskState.findIndex((s: string | number) => s === subtaskFormState.state) + 1,
+            finalDate: finalDate
         };
-        
         onSave(subtaskDetails);
         setSubtaskFormState({
             name: "",

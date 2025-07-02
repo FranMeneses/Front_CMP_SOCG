@@ -316,5 +316,6 @@ export const useCommunicationTaskForm = (
         handleSave,
         handleGetTask,
         handleComplianceChange,
+        setError,
     };
 };

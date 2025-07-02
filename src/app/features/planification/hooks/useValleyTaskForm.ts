@@ -462,10 +462,11 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         handleInputChange,
         handleComplianceChange,
         handleSave,
+        handleDeleteTask,
         handleGetTaskBudget,
         handleGetTaskExpenses,
         handleGetInfoTask,
         handleUpdateTask,
-        handleDeleteTask
+        setError
     };
 };
