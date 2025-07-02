@@ -23,10 +23,21 @@ export default function Beneficiaries() {
 
   const { userRole, handleLogout } = useHooks();
 
+  let userName = '';
+  if (typeof window !== 'undefined') {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userObj = JSON.parse(userStr);
+        userName = userObj.full_name || userObj.name || '';
+      } catch {}
+    }
+  }
+
   if (beneficiariesLoading) {
     return (
       <div className="min-h-screen w-full">
-        <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
+        <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} />
         <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
           <LoadingSpinner />
         </div>
@@ -36,7 +47,7 @@ export default function Beneficiaries() {
 
   return (
     <div className="min-h-screen w-full bg-[#F2F2F2]">
-      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
+      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} />
       <div
         className={`grid ${
           isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"

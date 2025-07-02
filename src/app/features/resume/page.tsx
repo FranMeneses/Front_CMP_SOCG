@@ -20,10 +20,20 @@ export default function Resume() {
         setIsSidebarOpen(!isSidebarOpen);
     };
     
+    let userName = '';
+    if (typeof window !== 'undefined') {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            try {
+                const userObj = JSON.parse(userStr);
+                userName = userObj.full_name || userObj.name || '';
+            } catch {}
+        }
+    }
 
     const layout = (content: React.ReactNode) => (
         <div className="h-screen flex flex-col overflow-hidden">
-            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} />
+            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} />
             <div className={`flex flex-1 overflow-hidden`}>
                 {isSidebarOpen && (
                     <aside className="w-56 border-r bg-white flex-shrink-0">

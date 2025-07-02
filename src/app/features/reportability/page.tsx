@@ -40,6 +40,16 @@ export default function Reportability() {
   const [month, setMonth] = useState<string>();
   const [year, setYear] = useState<number>();
   const [currentCalendarDate, setCurrentCalendarDate] = useState(new Date());
+  let userName = '';
+  if (typeof window !== 'undefined') {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userObj = JSON.parse(userStr);
+        userName = userObj.full_name || userObj.name || '';
+      } catch {}
+    }
+  }
 
   useEffect(() => {
     if (!reportabilityLoading) {
@@ -58,7 +68,7 @@ export default function Reportability() {
 
   return (
     <div className="min-h-screen w-full">
-      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
+      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} data-test-id="header"/>
       {isLoading ? (
         <div className="flex items-center justify-center h-[calc(100vh-5rem)]" data-test-id="loading-spinner">
           <LoadingSpinner />

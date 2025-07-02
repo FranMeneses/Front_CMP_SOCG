@@ -26,7 +26,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const [expenses, setExpenses] = useState<Record<string, number | null>>({});
   const [complianceStatuses, setComplianceStatuses] = useState<Record<string, string>>({});
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
-  const [infoTask, setInfoTask] = useState<any>(null);
+  const [infoTask, setInfoTask] = useState<IInfoTask | { description: string } | null>(null);
   const [getTaskInfo] = useLazyQuery(GET_TASK_INFO);
 
   useEffect(() => {
@@ -56,6 +56,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
     }
   }, [tasks]);
 
+  /**
+   * Función para manejar la apertura de las filas
+   * @param task 
+   */
   const handleRowClick = async (task: ITask) => {
     if ([1, 2, 3].includes(task.processId ?? -1)) {
       if (expandedTaskId === task.id) {
@@ -76,6 +80,41 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
       }
     }
   };
+
+  /**
+   * Función para formatear valores númericos a forma chilena
+   * @param value Monto a formatear
+   * @returns 
+   */
+  function formatCLP(value: number | null | undefined): string {
+    if (value === null || value === undefined) return "-";
+    return new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 }).format(value);
+  }
+
+  // Orden de prioridad de los estados
+  const statusOrder = [
+    'Completada',
+    'En Proceso',
+    'En Cumplimiento',
+    'En Espera',
+    'No Iniciada',
+    undefined,
+    null
+  ];
+
+  // Función para obtener el índice de orden
+  function getStatusOrder(statusName?: string | null): number {
+    if (!statusName) return statusOrder.length;
+    const idx = statusOrder.findIndex(s => s?.toLowerCase() === statusName.toLowerCase());
+    return idx === -1 ? statusOrder.length : idx;
+  }
+
+  // Ordenar las tareas según el estado
+  const sortedTasks = [...tasks].sort((a, b) => {
+    const aStatus = a.status?.name || (a.statusId === undefined ? 'No Iniciada' : undefined);
+    const bStatus = b.status?.name || (b.statusId === undefined ? 'No Iniciada' : undefined);
+    return getStatusOrder(aStatus) - getStatusOrder(bStatus);
+  });
 
   if (!tasks || tasks.length === 0) {
     return (
@@ -103,7 +142,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
           </tr>
         </thead>
         <tbody className="font-medium">
-          {tasks.map((task) => (
+          {sortedTasks.map((task) => (
             <React.Fragment key={task.id}>
               <tr
                 className="hover:bg-gray-50 text-sm cursor-pointer"
@@ -113,10 +152,10 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                   {task.name}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {task.id ? (budgets[task.id] !== undefined ? budgets[task.id] : "-") : "-"}
+                  {task.id ? (budgets[task.id] !== undefined ? formatCLP(budgets[task.id]) : "-") : "-"}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
-                  {task.id ? (expenses[task.id] !== undefined ? expenses[task.id] : "-") : "-"}
+                  {task.id ? (expenses[task.id] !== undefined ? formatCLP(expenses[task.id]) : "-") : "-"}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
                   {task.id ? (
@@ -150,19 +189,19 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 <tr>
                   <td colSpan={ManagementTableColumns.length} className="bg-gray-50 p-4 border-b border-gray-300">
                     <div>
-                      {[1, 2, 3].includes(task.processId ?? -1) ? (
+                      {typeof task.processId === 'number' && [1, 2, 3].includes(task.processId) && 'task' in infoTask ? (
                         <>
-                          <strong>Descripción:</strong> {infoTask.task?.description}<br />
-                          <strong>Origen:</strong> {infoTaskNames.origin.find((info: IInfoTask) => info.id === infoTask.originId)?.name || "-"}<br />
-                          <strong>Inversión:</strong> {infoTaskNames.investment.find((info: IInfoTask) => info.id === infoTask.investmentId)?.line || "-"}<br />
-                          <strong>Tipo:</strong> {infoTaskNames.type.find((info: IInfoTask) => info.id === infoTask.typeId)?.name || "-"}<br />
-                          <strong>Alcance:</strong> {infoTaskNames.scope.find((info: IInfoTask) => info.id === infoTask.scopeId)?.name || "-"}<br />
-                          <strong>Interacción:</strong> {infoTaskNames.interaction.find((info: IInfoTask) => info.id === infoTask.interactionId)?.operation || "-"}<br />
-                          <strong>Riesgo:</strong> {infoTaskNames.risk.find((info: IInfoTask) => info.id === infoTask.riskId)?.type || "-"}<br />
+                          <strong>Descripción:</strong> {'task' in infoTask ? (infoTask.task?.description || ('description' in infoTask ? infoTask.description : '-') || '-') : '-'}<br />
+                          <strong>Origen:</strong> {infoTaskNames.origin.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).originId))?.name || "-"}<br />
+                          <strong>Inversión:</strong> {infoTaskNames.investment.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).investmentId))?.line || "-"}<br />
+                          <strong>Tipo:</strong> {infoTaskNames.type.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).typeId))?.name || "-"}<br />
+                          <strong>Alcance:</strong> {infoTaskNames.scope.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).scopeId))?.name || "-"}<br />
+                          <strong>Interacción:</strong> {infoTaskNames.interaction.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).interactionId))?.operation || "-"}<br />
+                          <strong>Riesgo:</strong> {infoTaskNames.risk.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).riskId))?.type || "-"}<br />
                         </>
                       ) : (
                         <>
-                          <strong>Descripción:</strong> {infoTask.description}<br />
+                          <strong>Descripción:</strong> {infoTask && 'description' in infoTask ? infoTask.description : "-"}<br />
                           <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${taskProgressMap[task.id]}%` : "-"}
                         </>
                       )}

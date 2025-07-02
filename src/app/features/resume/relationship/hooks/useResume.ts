@@ -143,6 +143,7 @@ export function useResume() {
      */
     const {
       data: tasksDataQuery = [],
+      refetch: refetchTasks
     } = useQuery({    
         queryKey: ['relationship-tasks'],
         queryFn: async () => {
@@ -170,8 +171,10 @@ export function useResume() {
             setElquiTasks(elquiTask);
             return allTasks;
         },
-        staleTime: 1000 * 60 * 10, // 10 minutos
-        });
+        staleTime: 0, // Siempre refetch
+        refetchOnMount: true, // Refresca al montar
+        refetchOnWindowFocus: true, // Refresca al volver a la pestaña
+    });
 
     useEffect(() => {
         const fetchAveragePercentages = async () => {
@@ -253,5 +256,6 @@ export function useResume() {
         HuascoData,
         ElquiData,
         handleLegendClick,
+        refetchTasks,
     };
 }

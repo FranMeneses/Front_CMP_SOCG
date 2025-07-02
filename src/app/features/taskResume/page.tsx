@@ -7,11 +7,21 @@ import DynamicTable from "@/components/Resume/DynamicTable";
 import { useHooks } from "../hooks/useHooks";
 import { useTasksData } from "../planification/hooks/useTaskData";
 import Image from "next/image";
-import TaskFilters from "@/components/Planification/Table/TaskFilters";
 import DropdownMenu from "@/components/Dropdown";
 
 export default function TaskResume() {
     const { userRole, handleLogout } = useHooks();
+    // Obtener nombre de usuario desde localStorage
+    let userName = '';
+    if (typeof window !== 'undefined') {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            try {
+                const userObj = JSON.parse(userStr);
+                userName = userObj.full_name || userObj.name || '';
+            } catch {}
+        }
+    }
     // Usamos el hook de planificación para obtener tareas y subtareas
     const {
         detailedTasks,
@@ -21,7 +31,7 @@ export default function TaskResume() {
         activeFilter,
         handleFilterByProcess,
     } = useTasksData(undefined, userRole);
-    const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
     // Filtro de proceso
@@ -40,7 +50,7 @@ export default function TaskResume() {
     if (loading) {
         return (
             <div className="min-h-screen w-full">
-                <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+                <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" userName={userName} userRole={userRole} />
                 <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
                     <LoadingSpinner data-test-id="loading-spinner" />
                 </div>
@@ -50,7 +60,7 @@ export default function TaskResume() {
 
     return (
         <div className="min-h-screen w-full bg-[#F2F2F2]">
-            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" userName={userName} userRole={userRole} />
             <div
                 className={`grid ${
                     isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"

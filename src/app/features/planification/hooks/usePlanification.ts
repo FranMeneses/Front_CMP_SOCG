@@ -12,6 +12,7 @@ import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task } from "@/app/models/ITaskForm";
 
 import { CREATE_COMPLIANCE, CREATE_REGISTRY, GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { useQueryClient } from '@tanstack/react-query';
 
 export const usePlanification = () => {
     const { currentValley, isValleyManager, isCommunicationsManager, userRole } = useHooks();
@@ -73,6 +74,8 @@ export const usePlanification = () => {
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
     const [createRegistry] = useMutation(CREATE_REGISTRY);
+
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         if (subTasks && subTasks.length > 0) {
@@ -150,11 +153,13 @@ export const usePlanification = () => {
                 },
             });
             await refetch();
+            await queryClient.invalidateQueries({ queryKey: ['relationship-tasks'] });
         }catch (error) {
             console.error("Error saving communication task:", error);
         }
         setIsCommunicationModalOpen(false);
         await refetch();
+        await queryClient.invalidateQueries({ queryKey: ['relationship-tasks'] });
     };
       
     /**

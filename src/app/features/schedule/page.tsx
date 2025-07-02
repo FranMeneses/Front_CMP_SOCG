@@ -13,10 +13,20 @@ export default function Schedule() {
   const { loading, isSidebarOpen, toggleSidebar, subtasks } = useSchedule();
   const { userRole, handleLogout } = useHooks();
   const [viewMode, setViewMode] = useState<"Day" | "Week" | "Month">("Day");
+  let userName = '';
+  if (typeof window !== 'undefined') {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const userObj = JSON.parse(userStr);
+        userName = userObj.full_name || userObj.name || '';
+      } catch {}
+    }
+  }
 
   return (
     <div className="h-screen w-full bg-[#F2F2F2] flex flex-col">
-      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header"/>
+      <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} data-test-id="header"/>
       {loading ? (
         <div className="flex-1 flex items-center justify-center" data-test-id="loading-spinner">
           <LoadingSpinner />

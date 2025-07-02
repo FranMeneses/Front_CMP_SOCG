@@ -16,11 +16,21 @@ export default function Compliance() {
     } = useCompliance();
 
     const { userRole, handleLogout } = useHooks();
+    let userName = '';
+    if (typeof window !== 'undefined') {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            try {
+                const userObj = JSON.parse(userStr);
+                userName = userObj.full_name || userObj.name || '';
+            } catch {}
+        }
+    }
 
     if (loading) {
         return (
             <div className="min-h-screen w-full">
-                <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+                <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} data-test-id="header" />
                 <div className="flex items-center justify-center h-[calc(100vh-5rem)]">
                     <LoadingSpinner data-test-id="loading-spinner" />
                 </div>
@@ -30,7 +40,7 @@ export default function Compliance() {
 
     return (
         <div className="min-h-screen w-full bg-[#F2F2F2]">
-            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" />
+            <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} data-test-id="header" />
             <div
                 className={`grid ${
                     isSidebarOpen ? "grid-cols-[220px_1fr]" : "grid-cols-1"

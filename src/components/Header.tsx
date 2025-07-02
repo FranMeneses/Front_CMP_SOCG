@@ -9,9 +9,11 @@ import { useNotifications } from "@/app/features/notifications/hooks/useNotifica
 interface HeaderProps {
   toggleSidebar: () => void;
   isOpen: boolean;
+  userName?: string;
+  userRole?: string;
 }
 
-export function Header({ toggleSidebar, isOpen }: HeaderProps) {
+export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
   const { unreadCount } = useNotifications();
@@ -52,6 +54,13 @@ export function Header({ toggleSidebar, isOpen }: HeaderProps) {
           </div>
           {showNotifications && <NotificationsMenu />}
         </div>
+        {/* Usuario y rol */}
+        {userName && (
+          <div className="flex flex-col items-end mr-2">
+            <span className="text-white font-semibold text-base leading-tight">{userName}</span>
+            {userRole && <span className="text-white text-xs leading-tight opacity-80">{userRole}</span>}
+          </div>
+        )}
         <Image
           src="/CmpLogo.png"
           alt="Logo"

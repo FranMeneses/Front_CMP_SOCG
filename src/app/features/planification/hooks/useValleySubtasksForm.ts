@@ -3,6 +3,7 @@ import { useQuery, useLazyQuery, useMutation } from "@apollo/client";
 import { GET_PRIORITIES, GET_SUBTASK_STATUSES, CREATE_SUBTASK, UPDATE_SUBTASK, GET_SUBTASK, DELETE_SUBTASK, GET_SUBTASKS } from "@/app/api/subtasks";
 import { IPriority, ISubtask, ISubtasksStatus } from "@/app/models/ISubtasks";
 import { SubtasksInitialValues, ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
+import { useQueryClient } from '@tanstack/react-query';
 
 export const useValleySubtasksForm = (
     onSave: (subtask: ExtendedSubtaskValues) => void, 
@@ -101,6 +102,8 @@ export const useValleySubtasksForm = (
     const subtaskPriority = priority.map((p: IPriority) => p.name);
     const subtaskState = state.map((s: ISubtasksStatus) => s.name);
 
+    const queryClient = useQueryClient();
+
     /**
      * Valida que la fecha de inicio no sea posterior a la fecha de término
      * @param startDate - Fecha de inicio
@@ -180,6 +183,7 @@ export const useValleySubtasksForm = (
             if (onSuccess) {
                 onSuccess();
             }
+            await queryClient.invalidateQueries({ queryKey: ['relationship-tasks'] });
             return data.removeSubtask.id;
         } catch (error) {
             console.error("Error deleting subtask:", error);
@@ -221,6 +225,7 @@ export const useValleySubtasksForm = (
             if (onSuccess) {
                 onSuccess();
             }
+            await queryClient.invalidateQueries({ queryKey: ['relationship-tasks'] });
             return data.createSubtask.id;
         }
         catch (error) {
@@ -265,6 +270,7 @@ export const useValleySubtasksForm = (
             if (onSuccess) {
                 onSuccess();
             }
+            await queryClient.invalidateQueries({ queryKey: ['relationship-tasks'] });
             return data.updateSubtask.id;
         }
         catch (error) {
