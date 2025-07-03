@@ -483,22 +483,16 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
       return "-";
     }
     if (task.status?.name === "Completada") {
-      const taskSubtasks = subTasks.filter(subtask => subtask.taskId === task.id);
-      if (taskSubtasks.length === 0) {
-        return 0;
+      if (task.finishedDate && task.endDate) {
+        const finish = new Date(task.finishedDate);
+        const diffTime = end.getTime() - finish.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (isNaN(diffDays)) {
+          return "-";
+        }
+        return diffDays;
       }
-
-      const subtaskDays = taskSubtasks.map(subtask => {
-        const daysValue = getRemainingSubtaskDays(subtask);
-        return daysValue === "-" ? Number.MAX_SAFE_INTEGER : Number(daysValue);
-      });
-
-      const validDays = subtaskDays.filter(days => days !== Number.MAX_SAFE_INTEGER);
-      if (validDays.length === 0) {
-        return 0;
-      }
-      
-      return Math.min(...validDays);
+      return 0;
     }
     if (task.status?.name === "Cancelada") {
       return 0;
