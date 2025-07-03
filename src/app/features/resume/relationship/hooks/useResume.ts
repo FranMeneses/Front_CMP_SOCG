@@ -57,18 +57,14 @@ export function useResume() {
      * @returns 
      */
     const YearlyBudget = async (processId: number) => {
-        let totalBudget = 0;
-        
         try {
-            for (const month of Months) {
-                const { data: BudgetData } = await getMonthBudget({
-                    variables: { monthName: month, year: new Date().getFullYear(), processId }, 
-                });
-                if (BudgetData && BudgetData.totalBudgetByMonthAndProcess) {
-                    totalBudget += BudgetData.totalBudgetByMonthAndProcess || 0;
-                }
-            }
-            return totalBudget;
+            const promises = Months.map(month =>
+                getMonthBudget({
+                    variables: { monthName: month, year: new Date().getFullYear(), processId },
+                })
+            );
+            const results = await Promise.all(promises);
+            return results.reduce((total, { data }) => total + (data?.totalBudgetByMonthAndProcess || 0), 0);
         } catch (error) {
             console.error("Error calculating yearly budget:", error);
             return 0;
@@ -81,18 +77,14 @@ export function useResume() {
      * @returns 
      */
     const YearlyExpenses = async (processId: number) => {
-        let totalExpenses = 0;
-        
         try {
-            for (const month of Months) {
-                const { data: ExpensesData } = await getMonthExpenses({
+            const promises = Months.map(month =>
+                getMonthExpenses({
                     variables: { monthName: month, year: new Date().getFullYear(), processId },
-                });
-                if (ExpensesData && ExpensesData.totalExpenseByMonthAndProcess) {
-                    totalExpenses += ExpensesData.totalExpenseByMonthAndProcess || 0;
-                }
-            }
-            return totalExpenses;
+                })
+            );
+            const results = await Promise.all(promises);
+            return results.reduce((total, { data }) => total + (data?.totalExpenseByMonthAndProcess || 0), 0);
         } catch (error) {
             console.error("Error calculating yearly expenses:", error);
             return 0;
@@ -104,35 +96,29 @@ export function useResume() {
      * @description Este efecto se ejecuta una vez al montar el componente, cargando los datos del presupuesto y gastos anuales.
      */
     useEffect(() => {
-    const loadBudgetData = async () => {
-        setBudgetLoading(true);
-        try {
-            const relationshipProcessIds = [1, 2, 3];
-            let totalBudget = 0;
-            
-            for (const processId of relationshipProcessIds) {
-                const processBudget = await YearlyBudget(processId);
-                totalBudget += processBudget;
+        const loadBudgetData = async () => {
+            setBudgetLoading(true);
+            try {
+                const relationshipProcessIds = [1, 2, 3];
+                // Paralelizar presupuestos
+                const budgetPromises = relationshipProcessIds.map(processId => YearlyBudget(processId));
+                const budgets = await Promise.all(budgetPromises);
+                const totalBudget = budgets.reduce((acc, val) => acc + val, 0);
+                setYearlyBudgetTotal(totalBudget);
+                setFormattedBudget(formatCurrency(totalBudget));
+                // Paralelizar gastos
+                const expensesPromises = relationshipProcessIds.map(processId => YearlyExpenses(processId));
+                const expenses = await Promise.all(expensesPromises);
+                const totalExpenses = expenses.reduce((acc, val) => acc + val, 0);
+                setYearlyExpensesTotal(totalExpenses);
+                setFormattedExpenses(formatCurrency(totalExpenses));
+            } catch (error) {
+                console.error("Error loading budget data:", error);
+            } finally {
+                setBudgetLoading(false);
             }
-            
-            setYearlyBudgetTotal(totalBudget);
-            setFormattedBudget(formatCurrency(totalBudget));
-            
-            let totalExpenses = 0;
-            for (const processId of relationshipProcessIds) {
-                const processExpenses = await YearlyExpenses(processId);
-                totalExpenses += processExpenses;
-            }
-            setYearlyExpensesTotal(totalExpenses);
-            setFormattedExpenses(formatCurrency(totalExpenses));
-        } catch (error) {
-            console.error("Error loading budget data:", error);
-        } finally {
-            setBudgetLoading(false);
-        }
-    };
-    
-    loadBudgetData();
+        };
+        loadBudgetData();
     }, []); 
     
     const loading = isLoadingTaskDetails || budgetLoading;

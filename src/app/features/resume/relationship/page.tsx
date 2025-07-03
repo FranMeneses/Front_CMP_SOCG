@@ -6,7 +6,7 @@ import { useResume } from "./hooks/useResume";
 import { usePieChart } from "./hooks/usePieChart";
 import { useBarChart } from "./hooks/useBarChart";
 import { useComboChart } from "./hooks/useComboChart";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import ComboChart from "@/components/Charts/ComboChart";
 import Image from "next/image";
 
@@ -35,6 +35,15 @@ export default function ResumeRelationship() {
     }
   }, [resumeLoading, barChartLoading, comboChartLoading]);
 
+  // Memoizar datos para evitar renders innecesarios
+  const memoPieChartData = useMemo(() => pieChartData, [pieChartData]);
+  const memoBarChartData = useMemo(() => barChartData, [barChartData]);
+  const memoComboChartData = useMemo(() => comboChartData, [comboChartData]);
+  const memoTasksData = useMemo(() => tasksData, [tasksData]);
+  const memoCopiapoData = useMemo(() => CopiapoData, [CopiapoData]);
+  const memoHuascoData = useMemo(() => HuascoData, [HuascoData]);
+  const memoElquiData = useMemo(() => ElquiData, [ElquiData]);
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full" data-test-id="loading-spinner">
@@ -59,7 +68,7 @@ export default function ResumeRelationship() {
         <div className="bg-[#00B7FF] p-6 rounded-2xl shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{tasksData.length || 0}</p>
+              <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{memoTasksData.length || 0}</p>
               <h3 className="text-white font-medium text-sm lg:text-lg">INICIATIVAS EN DESARROLLO</h3>
             </div>
           </div>
@@ -87,12 +96,16 @@ export default function ResumeRelationship() {
       {/* ComboChart */}
       <div className="bg-white p-4 rounded-lg shadow-lg min-w-0">
         <div className="w-full h-96 lg:h-[500px] xl:h-[600px]">
-          <ComboChart
-            data={comboChartData}
-            selectedLegend={selectedLegend}
-            onLegendClick={handleLegendClick}
-            data-test-id="combo-chart"
-          />
+          {comboChartLoading ? (
+            <div className="flex items-center justify-center h-full"><LoadingSpinner /></div>
+          ) : (
+            <ComboChart
+              data={memoComboChartData}
+              selectedLegend={selectedLegend}
+              onLegendClick={handleLegendClick}
+              data-test-id="combo-chart"
+            />
+          )}
         </div>
       </div>
 
@@ -102,28 +115,36 @@ export default function ResumeRelationship() {
           <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4 text-start">INICIATIVAS DE RELACIONAMIENTO</h2>
           <div className="w-full h-80 lg:h-96 flex justify-center items-center">
             <div className="w-full max-w-md h-full">
-              <PieChart
-                data={pieChartData}
-                selectedLegend={selectedLegend}
-                onLegendClick={handleLegendClick}
-                data-test-id="pie-chart"
-                title=""
-                titleSize={18}
-                font="Helvetica"
-              />
+              {pieChartData ? (
+                <PieChart
+                  data={memoPieChartData}
+                  selectedLegend={selectedLegend}
+                  onLegendClick={handleLegendClick}
+                  data-test-id="pie-chart"
+                  title=""
+                  titleSize={18}
+                  font="Helvetica"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full"><LoadingSpinner /></div>
+              )}
             </div>
           </div>
         </div>
         <div className="bg-white p-4 rounded-lg shadow min-w-0">
           <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">INICIATIVAS POR LÍNEA DE INVERSIÓN</h2>
           <div className="w-full h-80 lg:h-96">
-            <BarChart
-              chartType="investment-lines"
-              data={barChartData}
-              selectedLegend={selectedLegend}
-              onLegendClick={handleLegendClick}
-              data-test-id="bar-chart"
-            />
+            {barChartLoading ? (
+              <div className="flex items-center justify-center h-full"><LoadingSpinner /></div>
+            ) : (
+              <BarChart
+                chartType="investment-lines"
+                data={memoBarChartData}
+                selectedLegend={selectedLegend}
+                onLegendClick={handleLegendClick}
+                data-test-id="bar-chart"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -136,45 +157,57 @@ export default function ResumeRelationship() {
           {/* Plan de trabajo Copiapó */}
           <div className="flex flex-col p-4 border-r border-gray-400 lg:border-r lg:last:border-r-0">
             <div className="w-full h-64 lg:h-80 xl:h-96">
-              <PieChart
-                data={CopiapoData}
-                selectedLegend={""}
-                onLegendClick={handleLegendClick}
-                data-test-id="pie-chart-copiapo"
-                title="PLAN DE TRABAJO COPIAPÓ"
-                titleSize={16}
-                font="Helvetica"
-              />
+              {CopiapoData ? (
+                <PieChart
+                  data={memoCopiapoData}
+                  selectedLegend={""}
+                  onLegendClick={handleLegendClick}
+                  data-test-id="pie-chart-copiapo"
+                  title="PLAN DE TRABAJO COPIAPÓ"
+                  titleSize={16}
+                  font="Helvetica"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full"><LoadingSpinner /></div>
+              )}
             </div>
           </div>
           
           {/* Plan de trabajo Huasco */}
           <div className="flex flex-col p-4 border-r border-gray-400 lg:border-r lg:last:border-r-0 border-t lg:border-t-0">
             <div className="w-full h-64 lg:h-80 xl:h-96">
-              <PieChart
-                data={HuascoData}
-                selectedLegend={""}
-                onLegendClick={handleLegendClick}
-                data-test-id="pie-chart-huasco"
-                title="PLAN DE TRABAJO HUASCO"
-                titleSize={16}
-                font="Helvetica"
-              />
+              {HuascoData ? (
+                <PieChart
+                  data={memoHuascoData}
+                  selectedLegend={""}
+                  onLegendClick={handleLegendClick}
+                  data-test-id="pie-chart-huasco"
+                  title="PLAN DE TRABAJO HUASCO"
+                  titleSize={16}
+                  font="Helvetica"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full"><LoadingSpinner /></div>
+              )}
             </div>
           </div>
           
           {/* Plan de trabajo Elqui */}
           <div className="flex flex-col p-4 border-t border-gray-300 lg:border-t-0">
             <div className="w-full h-64 lg:h-80 xl:h-96">
-              <PieChart
-                data={ElquiData}
-                selectedLegend={""}
-                onLegendClick={handleLegendClick}
-                data-test-id="pie-chart-elqui"
-                title="PLAN DE TRABAJO ELQUI"
-                titleSize={16}
-                font="Helvetica"
-              />
+              {ElquiData ? (
+                <PieChart
+                  data={memoElquiData}
+                  selectedLegend={""}
+                  onLegendClick={handleLegendClick}
+                  data-test-id="pie-chart-elqui"
+                  title="PLAN DE TRABAJO ELQUI"
+                  titleSize={16}
+                  font="Helvetica"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full"><LoadingSpinner /></div>
+              )}
             </div>
           </div>
         </div>

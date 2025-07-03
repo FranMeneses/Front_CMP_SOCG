@@ -1,14 +1,17 @@
 'use client';
-import { useState } from "react";
-import ResumeCommunications from "./communications/page";
-import ResumeRelationship from "./relationship/page";
+import { useState, useMemo, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { Chart, registerables } from 'chart.js';
 import { useHooks } from "../hooks/useHooks";
+import React from "react";
 
 Chart.register(...registerables);
+
+// Lazy load de los componentes pesados
+const ResumeCommunicationsLazy = React.lazy(() => import("./communications/page"));
+const ResumeRelationshipLazy = React.lazy(() => import("./relationship/page"));
 
 export default function Resume() {
     const [activeView, setActiveView] = useState("relationship");
@@ -20,16 +23,19 @@ export default function Resume() {
         setIsSidebarOpen(!isSidebarOpen);
     };
     
-    let userName = '';
-    if (typeof window !== 'undefined') {
-        const userStr = localStorage.getItem('user');
-        if (userStr) {
-            try {
-                const userObj = JSON.parse(userStr);
-                userName = userObj.full_name || userObj.name || '';
-            } catch {}
+    // Memoizar el nombre de usuario
+    const userName = useMemo(() => {
+        if (typeof window !== 'undefined') {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                try {
+                    const userObj = JSON.parse(userStr);
+                    return userObj.full_name || userObj.name || '';
+                } catch {}
+            }
         }
-    }
+        return '';
+    }, []);
 
     const layout = (content: React.ReactNode) => (
         <div className="h-screen flex flex-col overflow-hidden">
@@ -48,11 +54,19 @@ export default function Resume() {
     );
     
     if (userRole === "Superintendente Comunicaciones") {
-        return layout(<ResumeCommunications />);
+        return layout(
+            <Suspense fallback={<div>Cargando resumen de comunicaciones...</div>}>
+                <ResumeCommunicationsLazy />
+            </Suspense>
+        );
     }
     
     else if (userRole === "Superintendente Relacionamiento") {
-        return layout(<ResumeRelationship />);
+        return layout(
+            <Suspense fallback={<div>Cargando resumen de relacionamiento...</div>}>
+                <ResumeRelationshipLazy />
+            </Suspense>
+        );
     }
     
     else if (userRole === "Gerente" || userRole === "Encargado Cumplimiento" || userRole === "Admin") {
@@ -82,7 +96,9 @@ export default function Resume() {
                 </div>
                 
                 <div className="min-w-0">
-                    {activeView === "relationship" ? <ResumeRelationship /> : <ResumeCommunications />}
+                    <Suspense fallback={<div>Cargando resumen...</div>}>
+                        {activeView === "relationship" ? <ResumeRelationshipLazy /> : <ResumeCommunicationsLazy />}
+                    </Suspense>
                 </div>
             </>
         );
