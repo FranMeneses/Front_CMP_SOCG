@@ -17,8 +17,7 @@ interface TaskResumeProps {
 
 export default function TaskResume({ 
     calendarEvents, 
-    valleys, 
-    valleyNames, 
+    valleys,
     ValleyColors, 
     month, 
     selectedValley,
