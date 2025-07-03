@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { ITask } from "@/app/models/ITasks";
 import { IProcess } from "@/app/models/IProcess";
+import { SUBTASKS_BY_PROCESS } from "@/app/api/subtasks";
 
 export function useTaskResume() {
     const [GetSubtasksByMonthYearAndProcess, 
@@ -30,6 +31,7 @@ export function useTaskResume() {
     const [tasksPercentage, setTasksPercentage] = useState<number[]>([]);
     const [ProcessPercentage, setProcessPercentage] = useState<number>(0);
 
+    const [GetSubtasksByProcess] = useLazyQuery(SUBTASKS_BY_PROCESS, { fetchPolicy: "network-only" });
 
     /**
      * Función para obtener el porcentaje de tareas completadas por proceso.
@@ -178,6 +180,23 @@ export function useTaskResume() {
         handleGetTotalPercentage();
     }, [handleGetTotalPercentage]);
 
+    /**
+     * Función para obtener el total de subtareas por proceso (sin filtrar por mes/año)
+     * @param processId - ID del proceso
+     * @returns Número de subtareas
+     */
+    const handleGetSubtasksByProcess = useCallback(async (processId: number) => {
+        if (!processId) return 0;
+        try {
+            const { data } = await GetSubtasksByProcess({ variables: { processId } });
+            if (!data?.subtasksByProcess) return 0;
+            return data.subtasksByProcess.length;
+        } catch (error) {
+            console.error("Error al obtener las subtareas por proceso", error)
+            return 0;
+        }
+    }, [GetSubtasksByProcess]);
+
     const pieChartData = {
         labels: ['Completado', 'Pendiente'],
         datasets: [
@@ -198,6 +217,7 @@ export function useTaskResume() {
         subtasksByMonthYearAndProcessError,
         pieChartData,
         ProcessPercentage,
-        tasksPercentage
+        tasksPercentage,
+        handleGetSubtasksByProcess
     }
 }

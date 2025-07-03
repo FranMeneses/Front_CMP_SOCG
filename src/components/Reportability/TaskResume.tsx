@@ -24,10 +24,11 @@ export default function TaskResume({
     year 
 }: TaskResumeProps) {
     
-    const { handleGetSubtasksByMonthYearAndProcess, handleGetTotalSubtasksByMonthYear, pieChartData } = useTaskResume();
+    const { handleGetSubtasksByMonthYearAndProcess, handleGetTotalSubtasksByMonthYear, handleGetSubtasksByProcess, pieChartData } = useTaskResume();
     const { userRole, currentProcess, isManager } = useHooks();
     const [valleySubtasks, setValleySubtasks] = useState<Record<string, number>>({});
     const [totalSubtasks, setTotalSubtasks] = useState<number>(0);
+    const [totalValleySubtasks, setTotalValleySubtasks] = useState<Record<string, number>>({});
 
     const loadSubtasks = useCallback(async () => {
         if (!month || !year || !valleys?.length) return;
@@ -90,9 +91,25 @@ export default function TaskResume({
         
     }, [month, year, valleys, selectedValley, handleGetSubtasksByMonthYearAndProcess, handleGetTotalSubtasksByMonthYear]);
 
+    const loadTotalValleySubtasks = useCallback(async () => {
+        if (!valleys?.length) return;
+        const result: Record<string, number> = {};
+        for (const valley of valleys) {
+            try {
+                const count = await handleGetSubtasksByProcess(Number(valley.id));
+                result[valley.id] = count || 0;
+            } catch (error) {
+                result[valley.id] = 0;
+                console.error("Error al obtener subtareas por proceso", error)
+            }
+        }
+        setTotalValleySubtasks(result);
+    }, [valleys]);
+
     useEffect(() => {
         loadSubtasks();
-    }, [loadSubtasks]);
+        loadTotalValleySubtasks();
+    }, [loadSubtasks, loadTotalValleySubtasks]);
 
     return (
     <div className="mt-4 border-t pt-4 font-[Helvetica]">
@@ -108,7 +125,7 @@ export default function TaskResume({
                         <p className="text-sm text-gray-500">Distribución por valle</p>
                         <div className="text-sm mt-1">
                             {valleys?.filter(valley => valley.name !== "Transversal").map((valley, index) => {
-                                const valleyEvents = valleySubtasks[valley.id] ?? 0;
+                                const valleyEvents = totalValleySubtasks[valley.id] ?? 0;
                                 return (
                                     <div key={valley.id} className="flex justify-between items-center mt-1">
                                         <span className="flex items-center">
