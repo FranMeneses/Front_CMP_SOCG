@@ -11,6 +11,11 @@ import { usePieChartCommunications } from "./hooks/usePieChartCommunications";
 import { useCommunicationComboChart } from "./hooks/useCommunicationComboChart";
 import { useCommunicationBarChart } from "./hooks/useCommunicationBarChart";
 import Image from "next/image";
+import DropdownMenu from "@/components/Dropdown";
+import { useQuery } from "@apollo/client";
+import { GET_ALL_PROCESSES } from "@/app/api/tasks";
+import { IProcess } from "@/app/models/IProcess";
+import { ITask } from "@/app/models/ITasks";
 
 export default function ResumeCommunications() {
 
@@ -33,18 +38,36 @@ export default function ResumeCommunications() {
   
   const [isLoading, setIsLoading] = useState(true);
   
-  useEffect(() => {
-    if (!resumeLoading && !barChartLoading && !comboChartLoading) {
-      setIsLoading(false);
-    }
-  }, [resumeLoading, barChartLoading, comboChartLoading]);
-
+  const [selectedProcess, setSelectedProcess] = useState<string>("Todos");
+  const { data: processesData } = useQuery(GET_ALL_PROCESSES);
+  // Filtrar solo procesos de comunicaciones
+  const communicationProcessNames = [
+    "Comunicaciones Internas",
+    "Comunicaciones Externas",
+    "Asuntos Públicos",
+    "Transversales"
+  ];
+  const communicationProcesses = (processesData?.processes || []).filter((p: IProcess) => communicationProcessNames.includes(p.name));
   // Memoizar datos para evitar renders innecesarios
   const memoPieChartData = useMemo(() => pieChartData, [pieChartData]);
   const memoBarChartData = useMemo(() => barChartData, [barChartData]);
   const memoComboChartData = useMemo(() => comboChartData, [comboChartData]);
   const memoTasksData = useMemo(() => tasksData, [tasksData]);
   const memoSubtasks = useMemo(() => subtasks, [subtasks]);
+  // Filtrado de tareas solo por proceso
+  const filteredTasks = useMemo(() => {
+    let tasks = memoTasksData;
+    if (selectedProcess !== "Todos") {
+      tasks = tasks.filter((task: ITask) => task.process?.name === selectedProcess);
+    }
+    return tasks;
+  }, [memoTasksData, selectedProcess]);
+
+  useEffect(() => {
+    if (!resumeLoading && !barChartLoading && !comboChartLoading) {
+      setIsLoading(false);
+    }
+  }, [resumeLoading, barChartLoading, comboChartLoading]);
 
   if (isLoading) {
     return (
@@ -70,7 +93,7 @@ export default function ResumeCommunications() {
         <div className="bg-[#00B7FF] p-6 rounded-2xl shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{memoTasksData?.length || 0}</p>
+              <p className="text-3xl lg:text-5xl text-white font-bold mb-1">{filteredTasks?.length || 0}</p>
               <h3 className="text-white font-medium text-sm lg:text-lg">INICIATIVAS EN DESARROLLO</h3>
             </div>
           </div>
@@ -147,14 +170,24 @@ export default function ResumeCommunications() {
           </div>
         </div>
       </div>
-      {/* Tabla de tareas */}
+      {/* Filtro de proceso y Tabla de tareas */}
       <div className="bg-white p-4 rounded-lg shadow">
-        <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-4">DETALLE DE TAREAS</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
+          <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl">DETALLE DE TAREAS</h2>
+          <div className="w-64">
+            <DropdownMenu
+              buttonText="Filtrar por proceso"
+              items={["Todos", ...communicationProcesses.map((p: IProcess) => p.name)]}
+              onSelect={setSelectedProcess}
+              selectedValue={selectedProcess}
+            />
+          </div>
+        </div>
         {resumeLoading ? (
           <div className="flex items-center justify-center h-32"><LoadingSpinner /></div>
         ) : (
           <DynamicTable
-            tasks={memoTasksData || []}
+            tasks={filteredTasks || []}
             subtasks={memoSubtasks}
             selectedTaskId={selectedTaskId}
             onTaskClick={handleTaskClick}

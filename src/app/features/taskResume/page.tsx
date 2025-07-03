@@ -9,6 +9,10 @@ import { useTasksData } from "../planification/hooks/useTaskData";
 import Image from "next/image";
 import DropdownMenu from "@/components/Dropdown";
 import { IProcess } from "@/app/models/IProcess";
+import { Months } from "@/constants/months";
+import { useLazyQuery } from "@apollo/client";
+import { GET_TASKS_BY_MONTH_AND_PROCESS, GET_TASKS_BY_MONTH } from "@/app/api/tasks";
+import { ITask } from "@/app/models/ITasks";
 
 export default function TaskResume() {
     const { userRole, handleLogout } = useHooks();
@@ -29,25 +33,50 @@ export default function TaskResume() {
         subTasks,
         loading,
         allProcesses,
-        handleFilterByProcess,
     } = useTasksData(undefined, userRole);
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
     // Filtro de proceso
     const [selectedProcess, setSelectedProcess] = React.useState<string>("Todos");
+    const monthsWithAll = ["Todos", ...Months];
+    const [selectedMonth, setSelectedMonth] = React.useState<string>(monthsWithAll[new Date().getMonth() + 1]);
+    const [year] = React.useState<number>(new Date().getFullYear());
+    const [filteredTasks, setFilteredTasks] = React.useState<ITask[]>([]);
+    const [fetchByMonthAndProcess, { data: dataByMonthAndProcess, loading: loadingByMonthAndProcess }] = useLazyQuery(GET_TASKS_BY_MONTH_AND_PROCESS);
+    const [fetchByMonth, { data: dataByMonth, loading: loadingByMonth }] = useLazyQuery(GET_TASKS_BY_MONTH);
+
+    React.useEffect(() => {
+        if (selectedMonth === "Todos") {
+            setFilteredTasks(detailedTasks || []);
+            return;
+        }
+        if (selectedProcess === "Todos") {
+            fetchByMonth({ variables: { monthName: selectedMonth, year } });
+        } else {
+            const process = allProcesses.find((p: IProcess) => p.name === selectedProcess);
+            if (process) {
+                fetchByMonthAndProcess({ variables: { monthName: selectedMonth, year, processId: Number(process.id) } });
+            }
+        }
+    }, [selectedProcess, selectedMonth, year, allProcesses, detailedTasks]);
+
+    React.useEffect(() => {
+        if (selectedProcess === "Todos" && dataByMonth?.tasksByMonth) {
+            setFilteredTasks(dataByMonth.tasksByMonth);
+        } else if (dataByMonthAndProcess?.tasksByMonthAndProcess) {
+            setFilteredTasks(dataByMonthAndProcess.tasksByMonthAndProcess);
+        }
+    }, [dataByMonth, dataByMonthAndProcess, selectedProcess]);
 
     const handleProcessFilter = async (processName: string) => {
         setSelectedProcess(processName);
-        const process = allProcesses.find((p: IProcess) => p.name === processName);
-        if (process) {
-            await handleFilterByProcess(process.id);
-        } else {
-            await handleFilterByProcess(0);
-        }
+    };
+    const handleMonthFilter = (month: string) => {
+        setSelectedMonth(month);
     };
 
-    if (loading) {
+    if (loading || loadingByMonth || loadingByMonthAndProcess) {
         return (
             <div className="min-h-screen w-full">
                 <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} data-test-id="header" userName={userName} userRole={userRole} />
@@ -91,7 +120,7 @@ export default function TaskResume() {
                                 <h1 className="text-3xl font-bold">RESUMEN DE TAREAS</h1>
                             </div>
                             {/* Filtro por proceso */}
-                            <div className="px-6 pt-4">
+                            <div className="px-6 pt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
                                 {allProcesses && allProcesses.length > 0 && (
                                     <div className="mb-4 w-64 overflow-visible">
                                         <DropdownMenu
@@ -102,10 +131,18 @@ export default function TaskResume() {
                                         />
                                     </div>
                                 )}
+                                <div className="mb-4 w-64 overflow-visible">
+                                    <DropdownMenu
+                                        buttonText="Filtrar por mes"
+                                        items={monthsWithAll}
+                                        onSelect={handleMonthFilter}
+                                        selectedValue={selectedMonth}
+                                    />
+                                </div>
                             </div>
                             <div className="p-4">
                                 <DynamicTable
-                                    tasks={detailedTasks || []}
+                                    tasks={filteredTasks || []}
                                     subtasks={subTasks || []}
                                     selectedTaskId={null}
                                     onTaskClick={() => {}}
