@@ -9,8 +9,17 @@ import { useComboChart } from "./hooks/useComboChart";
 import { useEffect, useState, useMemo } from "react";
 import ComboChart from "@/components/Charts/ComboChart";
 import Image from "next/image";
+import DropdownMenu from "@/components/Dropdown";
+import { Months } from "@/constants/months";
 
 export default function ResumeRelationship() {
+  // Agregar opción 'Total' al inicio de los meses
+  const monthsWithTotal = ["Total", ...Months];
+  const [selectedMonth, setSelectedMonth] = useState<string>(monthsWithTotal[0]); // Por defecto el mes actual
+
+  // Si el usuario selecciona 'Total', pasar undefined al hook useResume
+  const mesParaHook = selectedMonth === "Total" ? undefined : selectedMonth;
+
   const {
     loading: resumeLoading,
     tasksData,
@@ -21,7 +30,7 @@ export default function ResumeRelationship() {
     HuascoData,
     ElquiData,
     handleLegendClick,
-  } = useResume();
+  } = useResume(mesParaHook);
 
   const {pieChartData} = usePieChart();
   const {barChartData, loading: barChartLoading} = useBarChart();
@@ -152,7 +161,15 @@ export default function ResumeRelationship() {
       {/* Planes de trabajo por valles */}
       <div className="bg-white p-4 rounded-lg shadow min-w-0">
         <h2 className="font-[Helvetica] font-bold text-xl lg:text-2xl mb-6">AVANCE PLAN DE TRABAJO</h2>
-        
+        {/* Filtro de mes debajo del título */}
+        <div className="flex flex-row gap-4 items-start mb-6 w-1/3">
+          <DropdownMenu
+            buttonText="Selecciona un mes"
+            items={monthsWithTotal}
+            onSelect={setSelectedMonth}
+            selectedValue={selectedMonth}
+          />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           {/* Plan de trabajo Copiapó */}
           <div className="flex flex-col p-4 border-r border-gray-400 lg:border-r lg:last:border-r-0">

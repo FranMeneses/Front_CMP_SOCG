@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { GET_TASK_PROGRESS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS } from "@/app/api/tasks";
+import { GET_TASK_PROGRESS, GET_TASKS_BY_PROCESS, GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS, GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS, GET_TASKS_BY_MONTH_AND_PROCESS } from "@/app/api/tasks";
 import { Months } from "@/constants/months";
 import { ITask } from "@/app/models/ITasks";
 import { useQuery } from '@tanstack/react-query';
 
-export function useResume() {
+export function useResume(selectedMonth?: string) {
     
     const [selectedLegend, setSelectedLegend] = useState<string | null>(null);
 
@@ -29,6 +29,7 @@ export function useResume() {
     const [getTaskPercentage] = useLazyQuery(GET_TASK_PROGRESS);
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
     const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS);
+    const [getTasksByMonthAndProcess] = useLazyQuery(GET_TASKS_BY_MONTH_AND_PROCESS);
 
     /**
      * Función para manejar el clic en una leyenda del gráfico.
@@ -131,26 +132,53 @@ export function useResume() {
       data: tasksDataQuery = [],
       refetch: refetchTasks
     } = useQuery({    
-        queryKey: ['relationship-tasks'],
+        queryKey: ['relationship-tasks', selectedMonth],
         queryFn: async () => {
+            // Si hay mes seleccionado, obtener tareas de todos los procesos para ese mes
+            if (selectedMonth) {
+                const relationshipProcessIds = [1, 2, 3];
+                const copiapoTask: ITask[] = [];
+                const huascoTask: ITask[] = [];
+                const elquiTask: ITask[] = [];
+                const allTasks: ITask[] = [];
+                for (const processId of relationshipProcessIds) {
+                    const { data } = await getTasksByMonthAndProcess({
+                        variables: { monthName: selectedMonth, year: new Date().getFullYear(), processId },
+                    });
+                    const processTasks = data?.tasksByMonthAndProcess || [];
+                    if (processId === 1) {
+                        copiapoTask.push(...processTasks);
+                    } else if (processId === 2) {
+                        huascoTask.push(...processTasks);
+                    } else if (processId === 3) {
+                        elquiTask.push(...processTasks);
+                    }
+                    allTasks.push(...processTasks);
+                }
+                setCopiapoTasks(copiapoTask);
+                setHuascoTasks(huascoTask);
+                setElquiTasks(elquiTask);
+                return allTasks;
+            }
+            // Si no hay filtro, comportamiento original
             const relationshipProcessIds = [1, 2, 3]; 
             const copiapoTask: ITask[] = [];
             const huascoTask: ITask[] = [];
             const elquiTask: ITask[] = [];
             const allTasks: ITask[] = [];
             for (const processId of relationshipProcessIds) {
-            const { data } = await getTasksByProcess({
-                variables: { processId },
-            });
-            const processTasks = data?.tasksByProcess || [];
-            if (processId === 1) {
-                copiapoTask.push(...processTasks);
-            } else if (processId === 2) {
-                huascoTask.push(...processTasks);
-            } else if (processId === 3) {
-                elquiTask.push(...processTasks);
-            }
-            allTasks.push(...processTasks);
+                const { data } = await getTasksByProcess({
+                    variables: { processId },
+                });
+                const processTasks = data?.tasksByProcess || [];
+                if (processId === 1) {
+                    copiapoTask.push(...processTasks);
+                } else if (processId === 2) {
+                    huascoTask.push(...processTasks);
+                } else if (processId === 3) {
+                    elquiTask.push(...processTasks);
+                }
+                allTasks.push(...processTasks);
             }
             setCopiapoTasks(copiapoTask);
             setHuascoTasks(huascoTask);
