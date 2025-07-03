@@ -18,9 +18,21 @@ export const useTaskFilters = (
      * @description Si no hay filtros activos, se inicializa el estado de las tareas filtradas con todas las tareas disponibles.
      */
     useEffect(() => {
-        if (!activeStatusFilter && !isLateFilterActive) {
-            setFilteredTasks(tasks);
+        let result = [...tasks];
+        if (activeStatusFilter) {
+            result = result.filter(task => task.status?.name === activeStatusFilter);
         }
+        if (isLateFilterActive) {
+            const currentDate = new Date();
+            result = result.filter(task => {
+                if (!task.endDate) return false;
+                const endDate = new Date(task.endDate);
+                return endDate < currentDate && 
+                    task.status?.name !== "Completada" && 
+                    task.status?.name !== "Cancelada";
+            });
+        }
+        setFilteredTasks(result);
     }, [tasks, activeStatusFilter, isLateFilterActive]);
     
     /**

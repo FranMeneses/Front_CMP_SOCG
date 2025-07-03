@@ -4,7 +4,7 @@ import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { useHooks } from "../../hooks/useHooks";
-import { IInfoTask, ITask } from "@/app/models/ITasks";
+import { IInfoTask, ITask, ITaskDetails } from "@/app/models/ITasks";
 import { useValleyTaskForm } from "./useValleyTaskForm";
 import { useValleySubtasksForm } from "./useValleySubtasksForm";
 import { useTasksData } from "./useTaskData";
@@ -12,7 +12,6 @@ import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task } from "@/app/models/ITaskForm";
 
 import { CREATE_COMPLIANCE } from "@/app/api/compliance";
-import { useQueryClient } from '@tanstack/react-query';
 
 export const usePlanification = () => {
     const { currentValley, isValleyManager, isCommunicationsManager, userRole } = useHooks();
@@ -34,11 +33,11 @@ export const usePlanification = () => {
 
     const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
     
+    const [isLocalEdit, setIsLocalEdit] = useState(false);
     
-    const dummyInfoTask = () => {}; 
-    const dummyTask = () => {}; 
-    const dummySubtask = () => {}; 
-   
+    // Estado para el proceso filtrado
+    const [selectedProcess, setSelectedProcess] = useState<{id: number, name: string} | null>(null);
+    const selectedProcessId = selectedProcess?.id;
     const {
         data,
         loading,
@@ -54,33 +53,39 @@ export const usePlanification = () => {
         formatDate,
         handleFilterClick,
         handleFilterByProcess,
-    } = useTasksData(currentValley?.id ?? undefined, userRole);
+        setDetailedTasks,
+        setTasksData,
+    } = useTasksData(currentValley?.id ?? undefined, userRole, isLocalEdit, selectedProcessId);
 
-    const valleyTaskForm = useValleyTaskForm(dummyInfoTask, currentValley?.id.toString() || "");
-    const valleySubtaskForm = useValleySubtasksForm(
-        dummySubtask, 
-        undefined, 
-        async () => {
-            await refetch();
-        },
-        updateTaskDetailsAfterSubtaskChange 
-    );
-    const communicationTaskForm = useCommunicationTaskForm(dummyTask);
+    const valleyTaskForm = useValleyTaskForm(() => {}, currentValley?.id.toString() || "");
+    const valleySubtaskForm = useValleySubtasksForm(() => {}, undefined, undefined, updateTaskDetailsAfterSubtaskChange);
+    const communicationTaskForm = useCommunicationTaskForm(() => {});
     
     const [createTask] = useMutation(CREATE_TASK);
     const [updateTask] = useMutation(UPDATE_TASK);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
 
-    const queryClient = useQueryClient();
+    useEffect(() => {
+        if (!isLocalEdit) {
+            if (subTasks && subTasks.length > 0) {
+                setLocalSubtasks(subTasks);
+            } else {
+                setLocalSubtasks([]);
+            }
+        }
+    }, [subTasks, isLocalEdit]);
 
     useEffect(() => {
-        if (subTasks && subTasks.length > 0) {
-            setLocalSubtasks(subTasks);
-        } else {
-            setLocalSubtasks([]);
+        setIsLocalEdit(false);
+    }, [activeFilter]);
+
+    useEffect(() => {
+        if (!activeFilter && !selectedProcessId) {
+            refetch();
+            setIsLocalEdit(false);
         }
-    }, [subTasks]);
+    }, [activeFilter, selectedProcessId]);
 
     /**
      * Función para manejar la creación de una nueva tarea
@@ -116,9 +121,10 @@ export const usePlanification = () => {
     /**
      * Función para guardar una nueva tarea 
      * @param task Tarea a guardar
+     * @param selectedProcessId ID del proceso filtrado
      * @description Guarda una nueva tarea
      */
-    const handleSaveCommunication = async (task: ITask) => {
+    const handleSaveCommunication = async (task: ITask, selectedProcessId?: number) => {
         try {
             const { data } = await createTask({
                 variables: {
@@ -133,22 +139,52 @@ export const usePlanification = () => {
                     }
                 }
             });
-            await createCompliance({
-                variables: {
-                    input: {
-                        taskId: data.createTask.id,
-                        statusId: 7,
+            if (task.applies) {
+                await createCompliance({
+                    variables: {
+                        input: {
+                            taskId: data.createTask.id,
+                            statusId: 7,
+                        },
                     },
-                },
-            });
-            await refetch();
-            await queryClient.invalidateQueries({ queryKey: ['relationship-tasks'] });
+                });
+            }
+            const newTask = {
+                id: data.createTask.id,
+                name: task.name ?? '',
+                description: task.description ?? '',
+                valleyId: task.valleyId,
+                faenaId: task.faenaId,
+                statusId: task.statusId,
+                processId: task.processId,
+                applies: task.applies,
+                beneficiaryId: task.beneficiaryId,
+                status: { id: task.statusId, name: "NO iniciada", percentage: 0 },
+                budget: 0,
+                expense: 0,
+                startDate: '',
+                endDate: '',
+                finishedDate: '',
+            } as ITaskDetails;
+            let cumpleFiltro = true;
+            if (typeof activeFilter !== 'undefined' && activeFilter !== null) {
+                cumpleFiltro = cumpleFiltro && (newTask.status?.name === activeFilter);
+            }
+            if (typeof selectedProcessId !== 'undefined' && selectedProcessId !== null) {
+                cumpleFiltro = cumpleFiltro && (newTask.processId === selectedProcessId);
+            }
+            if (cumpleFiltro) {
+                setDetailedTasks((prev: ITaskDetails[]) => {
+                    const nuevo = [...prev, newTask];
+                    return nuevo;
+                });
+            }
+            // Siempre agregar la tarea a la lista global
+            setTasksData((prev: ITask[]) => [...prev, newTask]);
         }catch (error) {
             console.error("Error saving communication task:", error);
         }
         setIsCommunicationModalOpen(false);
-        await refetch();
-        await queryClient.invalidateQueries({ queryKey: ['relationship-tasks'] });
     };
       
     /**
@@ -217,16 +253,34 @@ export const usePlanification = () => {
     /**
      * Función para eliminar una tarea
      * @description Abre el modal de confirmación para eliminar una tarea
-     * @param taskId ID de la tarea a eliminar
+     * @param selectedProcessId ID del proceso filtrado
      */
-    const handleDeleteTask = async () => {
+    const handleDeleteTask = async (selectedProcessId?: number) => {
         try {
             await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
-            await refetch();
-            if (detailedTasks.length === 1) {
-                setLocalSubtasks([]);
-            }
+            // Eliminar la tarea localmente si cumple el filtro
+            setDetailedTasks((prev: ITaskDetails[]) => {
+                const updated = prev.filter((task: ITaskDetails) => {
+                    let cumpleFiltro = true;
+                    if (typeof activeFilter !== 'undefined' && activeFilter !== null) {
+                        cumpleFiltro = cumpleFiltro && (task.status?.name === activeFilter);
+                    }
+                    if (typeof selectedProcessId !== 'undefined' && selectedProcessId !== null) {
+                        cumpleFiltro = cumpleFiltro && (task.processId === selectedProcessId);
+                    }
+                    // Si cumple el filtro, eliminarla (es decir, no incluirla en el array)
+                    if (cumpleFiltro) {
+                        return task.id !== itemToDeleteId;
+                    }
+                    // Si no cumple el filtro, dejarla igual
+                    return true;
+                });
+                if (updated.length === 1) {
+                    setLocalSubtasks([]);
+                }
+                return updated;
+            });
         } catch (error) {
             console.error("Error deleting task:", error);
         }
@@ -240,12 +294,35 @@ export const usePlanification = () => {
      */
     const handleDeleteSubtask = async () => {
         try {
+            setIsLocalEdit(true);
             await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
-            
             setLocalSubtasks(prev => prev.filter(s => s.id !== itemToDeleteId));
-            
-            await refetch();
-            
+            setDetailedTasks((prev: ITaskDetails[]) => {
+                let updated = prev.map((task: ITaskDetails) => {
+                    if (task.id === selectedTaskId) {
+                        const subtasks = localSubtasks.filter(s => s.id !== itemToDeleteId && s.taskId === task.id);
+                        const budget = subtasks.reduce((acc, s) => acc + (s.budget || 0), 0);
+                        const expense = subtasks.reduce((acc, s) => acc + (s.expense || 0), 0);
+                        const startDates = subtasks.map(s => new Date(s.startDate)).filter(d => !isNaN(d.getTime()));
+                        const endDates = subtasks.map(s => new Date(s.endDate)).filter(d => !isNaN(d.getTime()));
+                        return {
+                            ...task,
+                            budget,
+                            expense,
+                            startDate: startDates.length ? new Date(Math.min(...startDates.map(d => d.getTime()))).toISOString() : '',
+                            endDate: endDates.length ? new Date(Math.max(...endDates.map(d => d.getTime()))).toISOString() : '',
+                        };
+                    }
+                    return task;
+                });
+                if (activeFilter) {
+                    updated = updated.filter(task => task.status?.name === activeFilter);
+                }
+                if (selectedProcessId) {
+                    updated = updated.filter(task => task.processId === selectedProcessId);
+                }
+                return updated;
+            });
             setIsDeleteSubtaskModalOpen(false);
         } catch (error) {
             console.error("Error deleting subtask:", error);
@@ -255,10 +332,11 @@ export const usePlanification = () => {
 
     /**
      * Función para guardar una nueva tarea
-     * @description Guarda una nueva tarea en la base de datos
      * @param task Tarea a guardar
+     * @param selectedProcessId ID del proceso filtrado
+     * @description Guarda una nueva tarea
      */
-    const handleSaveTask = async (task: Task) => { 
+    const handleSaveTask = async (task: Task, selectedProcessId?: number) => { 
         try {
             const { data } = await createTask({
                 variables: {
@@ -292,15 +370,48 @@ export const usePlanification = () => {
                     },
                 },
             });
-            await createCompliance({
-                variables: {
-                    input: {
-                        taskId: data.createTask.id,
-                        statusId: 7,
+            if (task.compliance) {
+                await createCompliance({
+                    variables: {
+                        input: {
+                            taskId: data.createTask.id,
+                            statusId: 7,
+                        },
                     },
-                },
-            });
-            await refetch();
+                });
+            }
+            const newTask = {
+                id: data.createTask.id,
+                name: task.name ?? '',
+                description: task.description ?? '',
+                valleyId: Number(task.valley),
+                faenaId: Number(task.faena),
+                statusId: 1,
+                processId: Number(task.process),
+                applies: task.compliance,
+                beneficiaryId: task.beneficiary ? Number(task.beneficiary) : undefined,
+                status: { id: 1, name: "NO iniciada", percentage: 0 },
+                budget: 0,
+                expense: 0,
+                startDate: '',
+                endDate: '',
+                finishedDate: '',
+            } as ITaskDetails;
+            let cumpleFiltro = true;
+            if (typeof activeFilter !== 'undefined' && activeFilter !== null) {
+                cumpleFiltro = cumpleFiltro && (newTask.status?.name === activeFilter);
+            }
+            if (typeof selectedProcessId !== 'undefined' && selectedProcessId !== null) {
+                cumpleFiltro = cumpleFiltro && (newTask.processId === selectedProcessId);
+            }
+            if (cumpleFiltro) {
+                setDetailedTasks((prev: ITaskDetails[]) => {
+                    const nuevo = [...prev, newTask];
+                    return nuevo;
+                });
+            }
+            // Siempre agregar la tarea a la lista global
+            setTasksData((prev: ITask[]) => [...prev, newTask]);
         } catch (error) {
             console.error("Error saving task:", error);
         }
@@ -384,8 +495,8 @@ export const usePlanification = () => {
      */
     const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
+            setIsLocalEdit(true);
             const newSubtaskId = await valleySubtaskForm.handleCreateSubtask(subtask);
-            
             const newSubtask: ISubtask = {
                 ...subtask,
                 id: newSubtaskId,
@@ -396,12 +507,37 @@ export const usePlanification = () => {
                     percentage: 0,
                 }
             };
-            
             setLocalSubtasks(prev => [...prev, newSubtask]);
-            
-            await refetch();
-            
+            setDetailedTasks((prev: ITaskDetails[]) => {
+                let updated = prev.map((task: ITaskDetails) => {
+                    if (task.id === newSubtask.taskId) {
+                        const subtasks = [...localSubtasks, newSubtask].filter(s => s.taskId === task.id);
+                        const budget = subtasks.reduce((acc, s) => acc + (s.budget || 0), 0);
+                        const expense = subtasks.reduce((acc, s) => acc + (s.expense || 0), 0);
+                        const startDates = subtasks.map(s => new Date(s.startDate)).filter(d => !isNaN(d.getTime()));
+                        const endDates = subtasks.map(s => new Date(s.endDate)).filter(d => !isNaN(d.getTime()));
+                        return {
+                            ...task,
+                            budget,
+                            expense,
+                            startDate: startDates.length ? new Date(Math.min(...startDates.map(d => d.getTime()))).toISOString() : '',
+                            endDate: endDates.length ? new Date(Math.max(...endDates.map(d => d.getTime()))).toISOString() : '',
+                        };
+                    }
+                    return task;
+                });
+                if (activeFilter) {
+                    updated = updated.filter(task => task.status?.name === activeFilter);
+                }
+                if (selectedProcessId) {
+                    updated = updated.filter(task => task.processId === selectedProcessId);
+                }
+                return updated;
+            });
             setIsPopupSubtaskOpen(false);
+            if (activeFilter) {
+                await handleFilterClick(activeFilter);
+            }
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
         }
@@ -415,14 +551,15 @@ export const usePlanification = () => {
     const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
             await valleySubtaskForm.handleUpdateSubtask(subtask);
-            
             setLocalSubtasks(prev => prev.map(s => 
                 s.id === selectedSubtask?.id ? {...subtask, id: selectedSubtask.id, taskId: selectedTaskId!} : s
             ));
-            
             await refetch();
-            
             setIsPopupSubtaskOpen(false);
+            // Si hay un filtro activo, vuelve a aplicarlo
+            if (activeFilter) {
+                await handleFilterClick(activeFilter);
+            }
         } catch (error) {
             console.error("Error in handleUpdateSubtask:", error);
         }
@@ -501,5 +638,8 @@ export const usePlanification = () => {
         taskState,
         activeFilter,
         allProcesses: useTasksData(currentValley?.id ?? undefined, userRole).allProcesses,
+        selectedProcess,
+        setSelectedProcess,
+        isLocalEdit,
     };
 };

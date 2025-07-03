@@ -12,12 +12,15 @@ import TaskModals from "../TaskModalForms";
 import { useTaskFilters } from "@/app/features/planification/hooks/useTaskFilters";
 import { ITaskForm } from "@/app/models/ICommunicationsForm";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
+import { Task } from "@/app/models/ITaskForm";
 
 interface TasksTableProps {
     subtasks: ISubtask[];
     taskStates?: string[];  
     onFilterClick?: (filter: string) => void;  
     activeFilter?: string | null; 
+    selectedProcess?: { id: number, name: string } | null;
+    setSelectedProcess?: (process: { id: number, name: string } | null) => void;
 }
 
 const TasksTable: React.FC<TasksTableProps> = ({ 
@@ -73,6 +76,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
 
         handleCreateComplianceManager,
         detailedTasks,
+        isLocalEdit,
     } = usePlanification();
 
     const { currentValley, userRole } = useHooks();
@@ -102,7 +106,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     
     const { 
         filteredTasks, 
-        selectedProcess,
+        selectedProcess: taskFiltersSelectedProcess,
         activeStatusFilter,
         isLateFilterActive,
         handleProcessFilterChange,
@@ -116,7 +120,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     };
 
     const saveCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
-        return handleSaveCommunication(task as ITask);
+        return handleSaveCommunication(task as ITask, taskFiltersSelectedProcess?.id);
     };
 
     const updateCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
@@ -165,13 +169,23 @@ const TasksTable: React.FC<TasksTableProps> = ({
 
     const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subtasks;
 
+    const saveTaskAdapter = (task: Task) => {
+        return handleSaveTask(task, taskFiltersSelectedProcess?.id);
+    };
+
+    const deleteTaskAdapter = () => {
+        return handleDeleteTask(taskFiltersSelectedProcess?.id);
+    };
+
+    const tasksToRender = isLocalEdit ? detailedTasks : filteredTasks;
+
     return (
         <div>
             <div className="p-4 border-b border-gray-200 w-full">
                 <TaskTableHeader 
                     userRole={userRole}
                     allProcesses={allProcesses}
-                    selectedProcess={selectedProcess}
+                    selectedProcess={taskFiltersSelectedProcess}
                     handleProcessFilterChange={handleProcessFilterChange}
                     handleCreateTask={handleCreateTask}
                     handleUploadPlanification={handleUploadPlanification}
@@ -205,7 +219,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                         <tbody className="bg-white text-xs truncate divide-y divide-gray-200">
                             <tr>
                                 <td className="py-2 px-4 text-left text-sm font-medium text-gray-700 border-r border-gray-200">
-                                    Cantidad de tareas asignadas al proceso: {filteredTasks.length}
+                                    Cantidad de tareas asignadas al proceso: {tasksToRender.length}
                                 </td>
                                 <td className="border-r border-gray-200" />
                                 <td className="border-r border-gray-200" />
@@ -216,14 +230,14 @@ const TasksTable: React.FC<TasksTableProps> = ({
                                 <td className="border-r border-gray-200" />
                                 <td />
                             </tr>
-                            {filteredTasks.length === 0 ? (
+                            {tasksToRender.length === 0 ? (
                                 <tr>
                                     <td colSpan={9} className="py-8 text-center text-gray-400 font-medium">
                                         No hay tareas registradas.
                                     </td>
                                 </tr>
                             ) : (
-                                filteredTasks.map((task) => (
+                                tasksToRender.map((task) => (
                                     <React.Fragment key={task.id}>
                                         <TaskRow 
                                             task={task}
@@ -265,7 +279,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 selectedInfoTask={selectedInfoTask}
                 handleCancel={handleCancel}
                 handleUpdateTask={handleUpdateTask}
-                handleSaveTask={handleSaveTask}
+                handleSaveTask={saveTaskAdapter}
                 
                 isPopupSubtaskOpen={isPopupSubtaskOpen}
                 setIsPopupSubtaskOpen={setIsPopupSubtaskOpen}
@@ -286,7 +300,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 isDeleteSubtaskModalOpen={isDeleteSubtaskModalOpen}
                 setIsDeleteTaskModalOpen={setIsDeleteTaskModalOpen}
                 setIsDeleteSubtaskModalOpen={setIsDeleteSubtaskModalOpen}
-                handleDeleteTask={handleDeleteTask}
+                handleDeleteTask={deleteTaskAdapter}
                 handleDeleteSubtask={handleDeleteSubtask}
 
                 isPopupPlanificationOpen={isPopupPlanificationOpen}

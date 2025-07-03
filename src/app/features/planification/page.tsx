@@ -20,6 +20,8 @@ export default function Planification() {
         localSubtasks,
         handleFilterClick, 
         activeFilter,      
+        selectedProcess,
+        setSelectedProcess,
     } = usePlanification();
 
     const { userRole, handleLogout } = useHooks();
@@ -86,6 +88,8 @@ export default function Planification() {
                             taskStates={taskState}
                             onFilterClick={handleFilterClick}
                             activeFilter={activeFilter}
+                            selectedProcess={selectedProcess}
+                            setSelectedProcess={setSelectedProcess}
                             data-test-id="tasks-table"
                         />
                     </div>

@@ -110,7 +110,11 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
                   <td className="px-4 py-2">{formatDate(subtask.startDate)}</td>
                   <td className="px-4 py-2">{formatDate(subtask.endDate)}</td>
                   <td className="px-4 py-2">{getRemainingSubtaskDays(subtask)}</td>
-                  <td className="px-4 py-2">{formatDate(subtask.finalDate)}</td>
+                  <td className="px-4 py-2">
+                    {subtask.finalDate && !isNaN(new Date(subtask.finalDate).getTime())
+                      ? formatDate(subtask.finalDate)
+                      : "-"}
+                  </td>
                   <td className="px-4 py-2">
                     <span className={`px-2 py-1 rounded-full text-xs ${
                       subtask.status?.name === "Completada" ? "bg-green-100 text-green-800" : 

@@ -12,7 +12,7 @@ import { ISubtask } from "@/app/models/ISubtasks";
 import { ITask, ITaskDetails, ITaskStatus } from "@/app/models/ITasks";
 import { useValleyTaskForm } from "./useValleyTaskForm";
 
-export const useTasksData = (currentValleyId: number | undefined, userRole:string) => {
+export const useTasksData = (currentValleyId: number | undefined, userRole:string, isLocalEdit?: boolean, selectedProcessId?: number) => {
   const [subTasks, setSubtasks] = useState<ISubtask[]>([]);
   const [detailedTasks, setDetailedTasks] = useState<ITaskDetails[]>([]);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
@@ -407,14 +407,20 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
    * @description Inicializa el estado de las tareas y subtareas, y configura los efectos secundarios para cargar los datos
    */
   useEffect(() => {
-    if (!isCommunicationsRole) {
-      const newTasks = shouldUseProcessQuery 
-        ? (processData?.tasksByProcess || []) 
-        : (allTasksData?.tasks || []);
-      
-      setTasksData(newTasks);
+    if (isLocalEdit) return; // No sobrescribas si es edición local
+    let processedTasks = shouldUseProcessQuery 
+      ? (processData?.tasksByProcess || []) 
+      : (allTasksData?.tasks || []);
+    // Aplica siempre el filtro activo y el proceso seleccionado
+    if (activeFilter) {
+      processedTasks = processedTasks.filter((task: ITaskDetails) => task.status?.name === activeFilter);
     }
-  }, [processData, allTasksData, shouldUseProcessQuery, isCommunicationsRole]);
+    if (selectedProcessId) {
+      processedTasks = processedTasks.filter((task: ITaskDetails) => task.processId === selectedProcessId);
+    }
+    setTasksData(processedTasks);
+    setDetailedTasks(processedTasks);
+  }, [processData, allTasksData, shouldUseProcessQuery, isCommunicationsRole, activeFilter, selectedProcessId, isLocalEdit]);
 
   /**
    * Función para obtener las tareas filtradas por estado
@@ -738,6 +744,8 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
         setDetailedTasks(detailedFilteredTasks); 
         return detailedFilteredTasks; 
       } else {
+        // Forzar refetch real al backend cuando es 'Todos los procesos'
+        await refetch();
         const processedTasks = await loadTasksWithDetails();
         setDetailedTasks(processedTasks);
         return processedTasks;
@@ -754,15 +762,27 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     ? processData
     : { tasksByValley: allTasksData?.tasks || [] };
 
+  useEffect(() => {
+    if (!isLocalEdit) {
+      // Forzar refetch real y aplicar filtro al salir del modo edición local
+      refetch();
+    }
+  }, [isLocalEdit]);
+
   return {
     data: unifiedData,
     loading,
     error,
     subTasks,
+    setSubtasks,
     detailedTasks,
+    setDetailedTasks,
     states,
     taskState,
     activeFilter,
+    setActiveFilter,
+    tasksData,
+    setTasksData,
     allProcesses,
     isCommunicationsRole,
     refetch,
@@ -772,6 +792,5 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
     getRemainingSubtaskDays,
     formatDate,
     handleFilterClick,
-    setActiveFilter,
   };
 };
