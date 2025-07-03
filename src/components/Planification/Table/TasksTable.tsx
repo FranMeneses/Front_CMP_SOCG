@@ -77,6 +77,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleCreateComplianceManager,
         detailedTasks,
         isLocalEdit,
+        filteredTasks,
     } = usePlanification();
 
     const { currentValley, userRole } = useHooks();
@@ -105,7 +106,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
     }, [detailedTasks]);
     
     const { 
-        filteredTasks, 
         selectedProcess: taskFiltersSelectedProcess,
         activeStatusFilter,
         isLateFilterActive,
@@ -177,7 +177,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
         return handleDeleteTask(taskFiltersSelectedProcess?.id);
     };
 
-    const tasksToRender = isLocalEdit ? detailedTasks : filteredTasks;
+    const tasksToRender = filteredTasks;
 
     return (
         <div>

@@ -32,7 +32,6 @@ export const usePlanification = () => {
     const [itemToDeleteId, setItemToDeleteId] = useState<string | null>(null);
 
     const [localSubtasks, setLocalSubtasks] = useState<ISubtask[]>([]);
-    
     const [isLocalEdit, setIsLocalEdit] = useState(false);
     
     // Estado para el proceso filtrado
@@ -66,6 +65,14 @@ export const usePlanification = () => {
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
 
+    const [filteredTasksLocal, setFilteredTasksLocal] = useState<ITaskDetails[]>([]);
+
+    useEffect(() => {
+        if (!selectedProcessId) {
+            refetch();
+        }
+    }, [selectedProcessId]);
+
     useEffect(() => {
         if (!isLocalEdit) {
             if (subTasks && subTasks.length > 0) {
@@ -77,15 +84,15 @@ export const usePlanification = () => {
     }, [subTasks, isLocalEdit]);
 
     useEffect(() => {
-        setIsLocalEdit(false);
-    }, [activeFilter]);
-
-    useEffect(() => {
         if (!activeFilter && !selectedProcessId) {
             refetch();
             setIsLocalEdit(false);
         }
     }, [activeFilter, selectedProcessId]);
+
+    useEffect(() => {
+        setIsLocalEdit(false);
+    }, [activeFilter]);
 
     /**
      * Función para manejar la creación de una nueva tarea
@@ -259,28 +266,8 @@ export const usePlanification = () => {
         try {
             await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
-            // Eliminar la tarea localmente si cumple el filtro
-            setDetailedTasks((prev: ITaskDetails[]) => {
-                const updated = prev.filter((task: ITaskDetails) => {
-                    let cumpleFiltro = true;
-                    if (typeof activeFilter !== 'undefined' && activeFilter !== null) {
-                        cumpleFiltro = cumpleFiltro && (task.status?.name === activeFilter);
-                    }
-                    if (typeof selectedProcessId !== 'undefined' && selectedProcessId !== null) {
-                        cumpleFiltro = cumpleFiltro && (task.processId === selectedProcessId);
-                    }
-                    // Si cumple el filtro, eliminarla (es decir, no incluirla en el array)
-                    if (cumpleFiltro) {
-                        return task.id !== itemToDeleteId;
-                    }
-                    // Si no cumple el filtro, dejarla igual
-                    return true;
-                });
-                if (updated.length === 1) {
-                    setLocalSubtasks([]);
-                }
-                return updated;
-            });
+            // Después de eliminar una tarea, refresca los datos globales
+            await refetch();
         } catch (error) {
             console.error("Error deleting task:", error);
         }
@@ -294,7 +281,6 @@ export const usePlanification = () => {
      */
     const handleDeleteSubtask = async () => {
         try {
-            setIsLocalEdit(true);
             await valleySubtaskForm.handleDeleteSubtask(itemToDeleteId!);
             setLocalSubtasks(prev => prev.filter(s => s.id !== itemToDeleteId));
             setDetailedTasks((prev: ITaskDetails[]) => {
@@ -496,14 +482,45 @@ export const usePlanification = () => {
     const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
             setIsLocalEdit(true);
-            await valleySubtaskForm.handleCreateSubtask(subtask);
+            const newSubtaskId = await valleySubtaskForm.handleCreateSubtask(subtask);
+            const newSubtask: ISubtask = {
+                ...subtask,
+                id: newSubtaskId,
+                taskId: selectedTaskId!,
+                status: {
+                    id: 1,
+                    name: "NO iniciada",
+                    percentage: 0,
+                }
+            };
+            setLocalSubtasks(prev => {
+                const updatedSubtasks = [...prev, newSubtask];
+                setFilteredTasksLocal((prevTasks: ITaskDetails[]) => {
+                    let updatedTasks = prevTasks.map((task) => {
+                        if (task.id === newSubtask.taskId) {
+                            const subtasks = updatedSubtasks.filter(s => s.taskId === task.id);
+                            const budget = subtasks.reduce((acc, s) => acc + (s.budget || 0), 0);
+                            const expense = subtasks.reduce((acc, s) => acc + (s.expense || 0), 0);
+                            const startDates = subtasks.map(s => new Date(s.startDate)).filter(d => !isNaN(d.getTime()));
+                            const endDates = subtasks.map(s => new Date(s.endDate)).filter(d => !isNaN(d.getTime()));
+                            return {
+                                ...task,
+                                budget,
+                                expense,
+                                startDate: startDates.length ? new Date(Math.min(...startDates.map(d => d.getTime()))).toISOString() : '',
+                                endDate: endDates.length ? new Date(Math.max(...endDates.map(d => d.getTime()))).toISOString() : '',
+                            };
+                        }
+                        return task;
+                    });
+                    if (activeFilter) {
+                        updatedTasks = updatedTasks.filter(task => task.status?.name === activeFilter);
+                    }
+                    return updatedTasks;
+                });
+                return updatedSubtasks;
+            });
             setIsPopupSubtaskOpen(false);
-            // Refresca los datos globales
-            await refetch();
-            // Aplica el filtro seleccionado si existe
-            if (activeFilter) {
-                await handleFilterClick(activeFilter);
-            }
         } catch (error) {
             console.error("Error in handleCreateSubtask:", error);
         }
@@ -517,15 +534,35 @@ export const usePlanification = () => {
     const handleUpdateSubtask = async (subtask: ISubtask) => {
         try {
             await valleySubtaskForm.handleUpdateSubtask(subtask);
-            setLocalSubtasks(prev => prev.map(s => 
-                s.id === selectedSubtask?.id ? {...subtask, id: selectedSubtask.id, taskId: selectedTaskId!} : s
-            ));
-            await refetch();
+            setLocalSubtasks(prev => {
+                // Actualiza la subtarea en el array local
+                const updatedSubtasks = prev.map(s => s.id === subtask.id ? { ...subtask } : s);
+                setFilteredTasksLocal((prevTasks: ITaskDetails[]) => {
+                    let updatedTasks = prevTasks.map((task) => {
+                        if (task.id === subtask.taskId) {
+                            const subtasks = updatedSubtasks.filter(s => s.taskId === task.id);
+                            const budget = subtasks.reduce((acc, s) => acc + (s.budget || 0), 0);
+                            const expense = subtasks.reduce((acc, s) => acc + (s.expense || 0), 0);
+                            const startDates = subtasks.map(s => new Date(s.startDate)).filter(d => !isNaN(d.getTime()));
+                            const endDates = subtasks.map(s => new Date(s.endDate)).filter(d => !isNaN(d.getTime()));
+                            return {
+                                ...task,
+                                budget,
+                                expense,
+                                startDate: startDates.length ? new Date(Math.min(...startDates.map(d => d.getTime()))).toISOString() : '',
+                                endDate: endDates.length ? new Date(Math.max(...endDates.map(d => d.getTime()))).toISOString() : '',
+                            };
+                        }
+                        return task;
+                    });
+                    if (activeFilter) {
+                        updatedTasks = updatedTasks.filter(task => task.status?.name === activeFilter);
+                    }
+                    return updatedTasks;
+                });
+                return updatedSubtasks;
+            });
             setIsPopupSubtaskOpen(false);
-            // Si hay un filtro activo, vuelve a aplicarlo
-            if (activeFilter) {
-                await handleFilterClick(activeFilter);
-            }
         } catch (error) {
             console.error("Error in handleUpdateSubtask:", error);
         }
@@ -545,6 +582,13 @@ export const usePlanification = () => {
             console.error("Error in handleUpdateTask:", error);
         }
     };
+
+    // Sincroniza filteredTasksLocal con detailedTasks cuando se sale del modo edición local
+    useEffect(() => {
+        if (!isLocalEdit) {
+            setFilteredTasksLocal(detailedTasks);
+        }
+    }, [isLocalEdit, detailedTasks]);
 
     return {
         setIsPopupOpen,
@@ -607,5 +651,6 @@ export const usePlanification = () => {
         selectedProcess,
         setSelectedProcess,
         isLocalEdit,
+        filteredTasks: isLocalEdit ? filteredTasksLocal : detailedTasks,
     };
 };
