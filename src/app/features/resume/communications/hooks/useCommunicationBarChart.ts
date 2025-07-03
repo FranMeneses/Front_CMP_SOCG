@@ -82,28 +82,28 @@ export const useCommunicationBarChart = () => {
             {
                 label: "Comunicaciones Internas",
                 id: "Comunicaciones Internas",
-                data: [internalCommunicationsTotal],    
+                data: [internalCommunicationsTotal, 0, 0, 0],    
                 backgroundColor: [CommunicationsColors[0]],
                 hoverBackgroundColor: [CommunicationsColors[0]],
             },
             {
                 label: "Comunicaciones Externas",
                 id: "Comunicaciones Externas",
-                data: [externalCommunicationsTotal],
+                data: [0, externalCommunicationsTotal, 0, 0],
                 backgroundColor: [CommunicationsColors[1]],
                 hoverBackgroundColor: [CommunicationsColors[1]],
             },
             {
                 label: "Asuntos Públicos",
                 id: "Asuntos Públicos",
-                data: [publicAffairsTotal],
+                data: [0, 0, publicAffairsTotal, 0],
                 backgroundColor: [CommunicationsColors[2]],
                 hoverBackgroundColor: [CommunicationsColors[2]],
             },
             {
                 label: "Transversales",
                 id: "Transversales",
-                data: [transversalTotal],
+                data: [0, 0, 0, transversalTotal],
                 backgroundColor: [CommunicationsColors[3]],
                 hoverBackgroundColor: [CommunicationsColors[3]],
             }
