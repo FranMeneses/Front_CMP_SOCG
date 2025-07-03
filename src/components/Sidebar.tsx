@@ -104,7 +104,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
             asChild
             variant={item.isActive ? "secondary" : "ghost"}
             size="sm"
-            className="justify-start"
+            className="justify-start whitespace-normal break-words w-full max-w-[200px]"
             onClick={() => {
               setIsDisabled(true); 
               if (onNavClick) onNavClick();
@@ -112,9 +112,9 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
             disabled={isDisabled} 
             data-test-id={`sidebar-${item.title.toLowerCase()}`}
           >
-            <Link href={item.href}>
-              <item.icon className={cn("mr-2 h-6 w-6", item.isActive && "text-primary")} />
-              {item.title}
+            <Link href={item.href} className="flex items-center w-full">
+              <item.icon className={cn("mr-2 h-6 w-6 flex-shrink-0", item.isActive && "text-primary")} />
+              <span className="whitespace-normal break-words">{item.title}</span>
             </Link>
           </Button>
         ))}

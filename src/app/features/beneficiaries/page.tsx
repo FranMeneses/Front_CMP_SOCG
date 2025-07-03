@@ -46,7 +46,7 @@ export default function Beneficiaries() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#F2F2F2]">
+    <div className="min-h-screen w-full bg-[#F2F2F2] overflow-x-hidden">
       <Header toggleSidebar={toggleSidebar} isOpen={isSidebarOpen} userName={userName} userRole={userRole} />
       <div
         className={`grid ${
@@ -64,7 +64,7 @@ export default function Beneficiaries() {
             <Sidebar userRole={userRole} onNavClick={toggleSidebar} handleLogout={handleLogout}/>
           </aside>
         )}
-        <main className="flex-1 bg-[#F2F2F2] font-[Helvetica]">
+        <main className="flex-1 bg-[#F2F2F2] font-[Helvetica] overflow-x-auto">
           <div className="flex flex-col gap-6 w-full font-[Helvetica] min-w-0 px-8 lg:px-12 xl:px-16 py-6">
             <div className="bg-white rounded-lg shadow">
               <div className="flex flex-row gap-4 items-center px-6 pt-6 pb-4 border-b border-gray-200">
