@@ -7,7 +7,7 @@ import { IInfoTask, ITaskStatus } from "@/app/models/ITasks";
 import { UPDATE_INFO_TASK } from "@/app/api/infoTask";
 import { TaskInitialValues as InitialValues, TaskDetails } from "@/app/models/ITaskForm";
 import { useHooks } from "../../hooks/useHooks";
-import { GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE } from "@/app/api/compliance";
 import { GET_BENEFICIARIES } from "@/app/api/beneficiaries";
 import { IBeneficiary } from "@/app/models/IBeneficiary";
 
@@ -15,8 +15,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     
     const [initialValues, setInitialValues] = useState<InitialValues | undefined>(undefined);
     const [error, setError] = useState<string | null>(null);
-    const [updateTask] = useMutation(UPDATE_TASK);
-    const [updateRegistry] = useMutation(UPDATE_REGISTRY);
+    const [updateTask] = useMutation(UPDATE_TASK);;
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
     const [updateInfoTask] = useMutation(UPDATE_INFO_TASK);
     const [deleteTask] = useMutation(DELETE_TASK);
@@ -171,14 +170,6 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             if (data?.updateTask.status.id === 3) {
                 const { data: complianceData } = await getCompliance({
                     variables: { taskId: selectedTaskId },
-                });
-                await updateRegistry({
-                    variables: {
-                        id: complianceData?.getTaskCompliance.registries?.[0]?.id,
-                        input: {
-                            startDate: new Date(),
-                        },
-                    },
                 });
                 await updateCompliance({
                     variables: {

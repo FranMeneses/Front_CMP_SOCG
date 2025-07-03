@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_APPLIED_COMPLIANCES } from "@/app/api/compliance";
+import { GET_ALL_COMPLIANCES } from "@/app/api/compliance";
 import { ICompliance } from "@/app/models/ICompliance";
 
 export const useComplianceData = () => {
@@ -14,7 +14,7 @@ export const useComplianceData = () => {
     loading: allCompliancesLoading, 
     error: allCompliancesError,
     refetch: refetchAllTasks 
-  } = useQuery(GET_APPLIED_COMPLIANCES);
+  } = useQuery(GET_ALL_COMPLIANCES);
 ;
 
   const error = allCompliancesError;
@@ -33,13 +33,12 @@ export const useComplianceData = () => {
    * @description Inicializa el estado de las tareas y subtareas, y configura los efectos secundarios para cargar los datos
    */
   useEffect(() => {
-    const newTasks = (allCompliancesData?.getAppliedCompliances || []);
+    const newTasks = (allCompliancesData?.findAllCompliances || []);
     setTasksData(newTasks);
     setIsInitialLoad(false); 
   }, [allCompliancesData]);
 
-
-  const unifiedData :ICompliance[] =  allCompliancesData?.getAppliedCompliances || [] ;
+  const unifiedData :ICompliance[] =  allCompliancesData?.findAllCompliances || [] ;
 
   return {
     data: unifiedData,

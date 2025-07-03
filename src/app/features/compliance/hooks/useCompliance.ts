@@ -4,7 +4,7 @@ import { ITask } from "@/app/models/ITasks";
 import { useComplianceData } from "./useComplianceData";
 import { useComplianceForm } from "./useComplianceForm";
 import { IComplianceForm } from "@/app/models/ICompliance";
-import { UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { UPDATE_COMPLIANCE } from "@/app/api/compliance";
 import { UPDATE_TASK } from "@/app/api/tasks";
 
 export const useCompliance = () => {
@@ -34,7 +34,6 @@ export const useCompliance = () => {
     } = useComplianceData();
     
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
-    const [updateRegistry] = useMutation(UPDATE_REGISTRY);
     const [updateTask] = useMutation(UPDATE_TASK);
 
     /**
@@ -53,25 +52,7 @@ export const useCompliance = () => {
     const handleUpdateCompliance = async (compliance: IComplianceForm) => {
         if (compliance.statusId === 6) {
             try {
-                await updateRegistry({
-                    variables: {
-                        id: compliance.registryId,
-                        input: {
-                            carta: (compliance.cartaAporte) ? compliance.cartaAporte : undefined,
-                            minuta: (compliance.minuta) ? compliance.minuta : undefined,
-                            hem: (compliance.hasHem || compliance.hasHes) ? compliance.hasHem : undefined,
-                            hes: (compliance.hasHem || compliance.hasHes) ? compliance.hasHes : undefined,
-                            provider: (compliance.provider) ? compliance.provider : undefined,
-                            es_solped: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasSolped : undefined,
-                            es_memo: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasMemo : undefined,
-                            endDate: (compliance.endDate) ? compliance.endDate : undefined,
-                            solpedMemoSap: (compliance.hasSolped || compliance.hasMemo) ? compliance.solpedMemoSap : undefined,
-                            hesHemSap: (compliance.hasHem || compliance.hasHes) ? compliance.hesHemSap : undefined,
-                        }
-                    }
-                })
-                try {
-                    await updateCompliance({
+                await updateCompliance({
                         variables: {
                             id: selectedCompliance?.id,
                             input: {
@@ -96,30 +77,8 @@ export const useCompliance = () => {
                     console.error("Error updating task status:", error);
                 }
             }
-            catch (error) {
-                console.error("Error updating registry task:", error);
-            }
-        }
         else {
             try {
-                await updateRegistry({
-                    variables: {
-                        id: compliance.registryId,
-                        input: {
-                            carta: (compliance.cartaAporte) ? compliance.cartaAporte : undefined,
-                            minuta: (compliance.minuta) ? compliance.minuta : undefined,
-                            hem: (compliance.hasHem || compliance.hasHes) ? compliance.hasHem : undefined,
-                            hes: (compliance.hasHem || compliance.hasHes) ? compliance.hasHes : undefined,
-                            provider: (compliance.provider) ? compliance.provider : undefined,
-                            es_solped: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasSolped : undefined,
-                            es_memo: (compliance.hasSolped || compliance.hasMemo) ? compliance.hasMemo : undefined,
-                            endDate: (compliance.endDate) ? compliance.endDate : undefined,
-                            solpedMemoSap: (compliance.hasSolped || compliance.hasMemo) ? compliance.solpedMemoSap : undefined,
-                            hesHemSap: (compliance.hasHem || compliance.hasHes) ? compliance.hesHemSap : undefined,
-                        }
-                    }
-                })
-                try {
                     await updateCompliance({
                         variables: {
                             id: selectedCompliance?.id,
@@ -133,10 +92,6 @@ export const useCompliance = () => {
                     console.error("Error updating compliance", error);
                 }
             }
-            catch (error) {
-                console.error("Error updating registry task:", error);
-            }
-        }
         refetch();
         setIsComplianceModalOpen(false);
     }
@@ -173,34 +128,14 @@ export const useCompliance = () => {
      */
     const handleSeeInformation = async (complianceId: string ) => {
         setSelectedTaskId(complianceId);
-            try {
-                const taskInfo = await complianceForm.handleGetCompliance(complianceId);
-                try {
-                    const taskRegistry = await complianceForm.handleGetRegistry(taskInfo.id);
-                    if (taskRegistry) {
-                        const complianceWithRegistry: IComplianceForm = {
-                            ...taskInfo,
-                            cartaAporte: taskRegistry[0].cartaAporte || "",
-                            minuta: taskRegistry[0].minuta || "",
-                            hasMemo: taskRegistry[0].es_memo || false,
-                            hasSolped: taskRegistry[0].es_solped || false,
-                            hasHem: taskRegistry[0].hem || false,
-                            hasHes: taskRegistry[0].hes || false,
-                            provider: taskRegistry[0].provider || "",
-                            hesHemSap: taskRegistry[0].hesHemSap || 0,
-                            solpedMemoSap: taskRegistry[0].solpedMemoSap || 0,
-                        };
-                        setSelectedCompliance(complianceWithRegistry);
-                        setIsComplianceModalOpen(true);
-                    }
-                }
-                catch (error) {
-                    console.error("Error fetching compliance registry:", error);
-                }
-            }
-            catch (error) {
-                console.error("Error fetching task information:", error);
-            }
+        try {
+            const complianceInfo = await complianceForm.handleGetCompliance(complianceId);
+            setSelectedCompliance(complianceInfo);
+            setIsComplianceModalOpen(true);
+        }
+        catch (error) {
+            console.error("Error fetching task information:", error);
+        }
     };
 
     /**

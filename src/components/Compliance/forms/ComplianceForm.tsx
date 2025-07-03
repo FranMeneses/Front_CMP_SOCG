@@ -1,9 +1,11 @@
 import DropdownMenu from "@/components/Dropdown";
 import { Button } from "@/components/ui/button";
 import { useComplianceForm } from "../../../app/features/compliance/hooks/useComplianceForm";
-import { IComplianceForm, IComplianceMemo, IComplianceSolped, IComplianceStatus } from "@/app/models/ICompliance";
+import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
 import { useState, useEffect } from "react";
 import { IDocumentList } from "@/app/models/IDocuments";
+import { FileUploadButton } from "@/components/Documents/FileUploadButton";
+import { FileText } from "lucide-react";
 
 import CartaAporteFields from "./status-fields/CartaAporteFields";
 import MinutaFields from "./status-fields/MinutaFields";
@@ -11,6 +13,9 @@ import MemorandumFields from "./status-fields/MemorandumFields";
 import HemHesFields from "./status-fields/HEMHESFields";
 import ComplianceSummary from "./status-fields/ComplianceSummary";
 import { Info } from "lucide-react";
+import AuthorizationFields from "./status-fields/AuthorizationFields";
+import TransferPurchaseOrderFields from "./status-fields/TransferPurchaseOrderFields";
+import MemoSolpedFields from "./status-fields/MemoSolpedFields";
 
 interface ComplianceFormProps {
     onSave: (compliance: Partial<IComplianceForm>) => void;
@@ -36,8 +41,17 @@ export default function ComplianceForm({
         handleMinutaChange, 
         handleGetCarta, 
         handleGetMinuta,
+        handleDonationFormChange,
+        handleAuthorizationChange,
+        handleMemoSolpedTypeChange,
+        handleMemoSolpedFileChange,
+        handleTransferFileChange,
+        handleHesHemFileChange,
+        handleGetFormulario,
+        handleGetAutorizacion,
+        handleGetTransferencia,
+        handleGetMemo,
         handleGetSolped,
-        handleGetMemo
     } = useComplianceForm(
         onSave, 
         isEditing, 
@@ -45,37 +59,46 @@ export default function ComplianceForm({
     );
 
     const [documents, setDocuments] = useState({
+        formulario: undefined as IDocumentList | undefined,
         carta: undefined as IDocumentList | undefined,
-        minuta: undefined as IDocumentList | undefined
+        minuta: undefined as IDocumentList | undefined,
+        autorizacion: undefined as IDocumentList | undefined,
+        transferencia: undefined as IDocumentList | undefined,
+        memo: undefined as IDocumentList | undefined,
+        solped: undefined as IDocumentList | undefined,
     });
-
-    const [solped, setSolped] = useState<IComplianceSolped>();
-    const [memo, setMemo] = useState<IComplianceMemo>();
 
     useEffect(() => {
         const fetchDocuments = async () => {
             if (selectedCompliance?.task.id) {
-                const [cartaResult, minutaResult] = await Promise.all([
+                const [
+                    formularioResult,
+                    cartaResult,
+                    minutaResult,
+                    autorizacionResult,
+                    transferenciaResult,
+                    memoResult,
+                    solpedResult
+                ] = await Promise.all([
+                    handleGetFormulario(),
                     handleGetCarta(),
-                    handleGetMinuta()
+                    handleGetMinuta(),
+                    handleGetAutorizacion(),
+                    handleGetTransferencia(),
+                    handleGetMemo(),
+                    handleGetSolped()
                 ]);
                 setDocuments({
+                    formulario: formularioResult,
                     carta: cartaResult,
-                    minuta: minutaResult
+                    minuta: minutaResult,
+                    autorizacion: autorizacionResult,
+                    transferencia: transferenciaResult,
+                    memo: memoResult,
+                    solped: solpedResult,
                 });
             }
         };
-        const fetchSolpedMemo = async () => {
-            if (selectedCompliance?.hasSolped && selectedCompliance?.registries?.[0]?.id) {
-                const solpedMemo = await handleGetSolped(selectedCompliance?.registries?.[0]?.id);
-                setSolped(solpedMemo);
-            }
-            else if (selectedCompliance?.hasMemo && selectedCompliance?.registries?.[0]?.id){
-                const memo = await handleGetMemo(selectedCompliance?.registries?.[0]?.id);
-                setMemo(memo);
-            }
-        }
-        fetchSolpedMemo();
         fetchDocuments();
     }, [selectedCompliance]);
 
@@ -91,44 +114,48 @@ export default function ComplianceForm({
         if (!currentStatus) return null;
 
         switch(currentStatus.id) {
-            case 2: // Carta Aporte
+            case 8: // Carta Aporte
                 return <CartaAporteFields 
                     formState={formState} 
                     handleCartaAporteChange={handleCartaAporteChange} 
                 />;
             
-            case 3: // Minuta
+            case 9: // Minuta
                 return <MinutaFields 
                     formState={formState}
                     cartaData={documents.carta}
                     handleMinutaChange={handleMinutaChange}
                 />;
             
-            case 4: // MEMORANDUM y/o SOLPED
-                return <MemorandumFields 
+            case 10: // Autorización
+                return <AuthorizationFields
                     formState={formState}
-                    cartaData={documents.carta}
-                    minutaData={documents.minuta}
+                    handleAuthorizationChange={handleAuthorizationChange}
+                />;
+            
+            case 11: // Transferencia/Orden de Compra, MEMO o SOLPED
+                return <MemoSolpedFields
+                    formState={formState}
+                    handleMemoSolpedTypeChange={handleMemoSolpedTypeChange}
+                    handleMemoSolpedFileChange={handleMemoSolpedFileChange}
                     handleInputChange={handleInputChange}
                 />;
                 
-            case 5: // HEM/HES
+            case 12: // HEM/HES
                 return <HemHesFields 
                     formState={formState}
                     cartaData={documents.carta}
                     minutaData={documents.minuta}
-                    solpedData={solped}
-                    memoData={memo}
                     handleInputChange={handleInputChange}
+                    handleTransferFileChange={handleTransferFileChange}
+                    handleHesHemFileChange={handleHesHemFileChange}
                 />;
                 
-            case 6: // Resumen
+            case 13: // Resumen
                 return <ComplianceSummary 
                     formState={formState}
                     cartaData={documents.carta}
                     minutaData={documents.minuta}
-                    solpedData={solped}
-                    memoData={memo}
                 />;
                 
             default:
@@ -142,10 +169,12 @@ export default function ComplianceForm({
         if (!baseValidation) return false;
         
         switch(formState.statusId) {
-            case 2: return !!formState.cartaAporteFile;
-            case 3: return !!formState.minutaFile;
-            case 4: return !!(formState.hasMemo || formState.hasSolped);
-            case 5: return !!(formState.hasHem || formState.hasHes) && !!formState.provider;
+            case 7: return !!formState.donationFormFile;
+            case 8: return !!formState.cartaAporteFile;
+            case 9: return !!(formState.minutaFile);
+            case 10: return !!(formState.authorizationFile);
+            case 11: return !!(formState.transferPurchaseOrderFile);
+            case 12: return !!(formState.hesHem);
             default: return true;
         }
     };
@@ -198,6 +227,20 @@ export default function ComplianceForm({
                             data-test-id="compliance-status-dropdown"
                         />
                     </div>
+                    <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4 col-span-2">
+                        <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                            <FileText className="h-4 w-4 mr-2" />
+                            Subir Formulario de Donaciones
+                        </h3>
+                        <div className="flex items-center">
+                            <FileUploadButton onFileChange={handleDonationFormChange} disabled={false} />
+                            {formState.donationFormFile && (
+                                <span className="ml-2 text-sm text-gray-600">
+                                    {formState.donationFormFile.name}
+                                </span>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -212,7 +255,7 @@ export default function ComplianceForm({
                 >
                     Cancelar
                 </Button>
-                {formState.statusId && formState.statusId < 6 && (
+                {formState.statusId && formState.statusId >= 7 && formState.statusId <= 12 && (
                     <Button
                         variant="default"
                         onClick={handleSave}
@@ -220,10 +263,21 @@ export default function ComplianceForm({
                         className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                         data-test-id="save-button"
                     >
-                        {formState.statusId >= 2 && formState.statusId < 6 ? "Guardar y Avanzar" : saveButtonText}
+                        Guardar y Avanzar
                     </Button>
                 )}
-                {formState.statusId === 6 && (
+                {(!formState.statusId || formState.statusId < 7 || formState.statusId > 12) && (
+                    <Button
+                        variant="default"
+                        onClick={handleSave}
+                        disabled={!isFormValid()}
+                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
+                        data-test-id="save-button"
+                    >
+                        {saveButtonText}
+                    </Button>
+                )}
+                {formState.statusId === 13 && (
                     <Button
                         variant="default"
                         onClick={onCancel}

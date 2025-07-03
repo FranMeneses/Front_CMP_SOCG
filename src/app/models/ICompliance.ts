@@ -4,9 +4,14 @@ export interface ICompliance {
     id: string;
     taskId: string;
     statusId: number;
+    updatedAt: Date;
+    valor: number;
+    ceco: number;
+    cuenta: number;
+    solpedMemoSap: number;
+    hesHemSap: number;
     task: ITask;
     status: IComplianceStatus;
-    registries: IComplianceRegistry[];
 };
 
 export interface IComplianceStatus {
@@ -15,53 +20,23 @@ export interface IComplianceStatus {
     days: number;
 };
 
-export interface IComplianceRegistry {
-    id: string;
-    complianceId: string;
-    hes:boolean;
-    hem:boolean;
-    provider: string;
-    startDate: string;
-    endDate: string;
-    carta: boolean;
-    minuta: boolean;
-    es_solped: boolean;
-    es_memo: boolean;
-    solpedMemoSap: number;
-    hesHemSap: number;
-    compliance: ICompliance;
-    memos: IComplianceMemo[];
-    solpeds: IComplianceSolped[];
-};
-
-export interface IComplianceMemo {
-    id: string;
-    registryId: string;
-    value: number;
-    registry: IComplianceRegistry;
-};
-
-export interface IComplianceSolped {
-    id: string;
-    registryId: string;
-    ceco: number;
-    account: string;
-    value: number;
-    registry: IComplianceRegistry;
-};
-
-export interface ComplianceFormState extends Partial<IComplianceForm> {
-    hasMemo?: boolean; 
-    hasSolped?: boolean;
-    hasHem?: boolean;
-    hasHes?: boolean;
-    provider?: string;
+export interface ComplianceFormState {
+    name: string;
+    description: string;
+    statusId: number;
+    donationFormFile?: File | null;
+    authorizationFile?: File | null;
+    transferPurchaseOrderFile?: File | null;
+    memoSolpedType?: "MEMO" | "SOLPED";
+    memoSolpedFile?: File | null;
+    memoAmount?: number;
+    solpedMemoSap?: number;
+    solpedCECO?: number;
+    solpedAccount?: number;
+    hesHem?: File | null;
+    hesHemSap?: number;
     cartaAporteFile?: File | null;
     minutaFile?: File | null;
-    memoAmount?: string | number;
-    solpedCECO?: number;
-    solpedAccount?: number; 
-    solpedAmount?: string | number;
 }
 
 export interface IComplianceForm {
@@ -71,26 +46,10 @@ export interface IComplianceForm {
     status: IComplianceStatus;
     cartaAporte: boolean;
     minuta: boolean;
-    hasMemo: boolean;
-    hasSolped: boolean;
-    hasHem: boolean;
-    hasHes: boolean;
+    valor: number;
+    ceco: number;
+    cuenta: number;
     solpedMemoSap: number;
     hesHemSap: number;
-    provider: string;
-    registryId?: string;
     endDate?: string;
-    registries?: IComplianceRegistry[];
 };
-
-export interface ISolped {
-    registryId: string;
-    ceco: number;
-    account: number;
-    value: number;
-}
-
-export interface IMemo {
-    registryId: string;
-    value: number;
-}

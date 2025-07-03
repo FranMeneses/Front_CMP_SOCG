@@ -1,27 +1,33 @@
 import { useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
-import { GET_COMPLIANCE, GET_COMPLIANCE_REGISTRIES, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
-import { IComplianceForm, IComplianceStatus, IMemo, ISolped } from "@/app/models/ICompliance";
+import { GET_COMPLIANCE, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
+import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
 import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
 import { ITipoDocumento } from "@/app/models/IDocuments";
 import { useDocumentsPage } from "../../documents/hooks/useDocumentsPage";
 import { FormData } from "../../documents/hooks/useDocumentForms";
-import { CREATE_SOLPED, GET_REGISTRY_SOLPED } from "@/app/api/solped";
-import { CREATE_MEMO, GET_REGISTRY_MEMO } from "@/app/api/memo";
 
-interface ComplianceFormState extends Partial<IComplianceForm> {
+interface ComplianceFormState {
     name: string;
     description: string;
-    valleyId: string;
-    faenaId: string;
-    processId: string;
+    statusId: number;
+    donationFormFile: File | null;
     cartaAporteFile: File | null;
     minutaFile: File | null;
+    authorizationFile: File | null;
+    transferPurchaseOrderFile: File | null;
+    hesHem: File | null;
     memoAmount?: number;
-    solpedCECO?: number;
     solpedAccount?: number;
+    solpedCECO?: number;
     solpedAmount?: number;
+    solpedMemoSap?: number;
+    hesHemSap?: number;
+    // Memo/Solped
+    memoSolpedType?: "MEMO" | "SOLPED";
+    memoSolpedFile?: File | null;
+    transferFile?: File | null;
 }
 
 type FormFieldValue = string | number | boolean | File | null | undefined;
@@ -34,25 +40,22 @@ export const useComplianceForm = (
     const [formState, setFormState] = useState<ComplianceFormState>({
         name: "",
         description: "",
-        valleyId: "",
-        faenaId: "",
-        processId: "",
         statusId: 0,
-        cartaAporte: false,
+        donationFormFile: null,
         cartaAporteFile: null,
-        minuta: false,
         minutaFile: null,
-        hasMemo: false,
-        hasSolped: false,
-        hasHem: false,
-        hasHes: false,
-        provider: "",
+        authorizationFile: null,
+        transferPurchaseOrderFile: null,
+        hesHem: null,
         memoAmount: undefined,
         solpedAccount: undefined,
         solpedCECO: undefined,
         solpedAmount: undefined,
         solpedMemoSap: undefined,
         hesHemSap: undefined,
+        memoSolpedType: undefined,
+        memoSolpedFile: null,
+        transferFile: undefined,
     });
 
     const {data: complianceStatusData } = useQuery(GET_COMPLIANCE_STATUSES);
@@ -63,13 +66,7 @@ export const useComplianceForm = (
     const complianceStatusNames = complianceStatuses.map((status: IComplianceStatus) => status.name);
 
     const [getCompliance] = useLazyQuery(GET_COMPLIANCE);
-    const [getRegistry] = useLazyQuery(GET_COMPLIANCE_REGISTRIES);
     const [getDocument] = useLazyQuery(GET_DOCUMENT_BY_TASK_AND_TYPE);
-    const [getSolped] = useLazyQuery(GET_REGISTRY_SOLPED);
-    const [getMemo] = useLazyQuery(GET_REGISTRY_MEMO);
-
-    const [createSolped] = useMutation(CREATE_SOLPED);
-    const [createMemo] = useMutation(CREATE_MEMO);
 
     const { handleUploadFile } = useDocumentsPage();
     const { valleysName, faenasName, valleys } = useHooks();
@@ -119,97 +116,6 @@ export const useComplianceForm = (
     };
 
     /**
-     * Función que obtiene la Solped asociada a un registro de cumplimiento.	
-     * @description Esta función realiza una consulta para obtener la Solped asociada al registro de cumplimiento especificado.
-     * @param registryId ID del registro de cumplimiento para el cual se desea obtener la Solped.
-     * @returns 
-     */
-    const handleGetSolped = async (registryId: string) => {
-        try {
-            const { data } = await getSolped({
-                variables: {
-                    registryId
-                }
-            });
-            return data.getRegistrySolped;
-        }
-        catch (error) {
-            console.error("Error fetching Solped:", error);
-            return null;
-        }
-    };
-
-    /**
-     * Función que obtiene el Memo asociado a un registro de cumplimiento.
-     * @description Esta función realiza una consulta para obtener el Memo asociado al registro de cumplimiento especificado.
-     * @param registryId ID del registro de cumplimiento para el cual se desea obtener el Memo.
-     * @returns 
-     */
-    const handleGetMemo = async (registryId: string) => {
-        try {
-            const { data } = await getMemo({
-                variables: {
-                    registryId
-                }
-            });
-            return data.getRegistryMemo;
-        }
-        catch (error) {
-            console.error("Error fetching Memo:", error);
-            return null;
-        }
-    };
-
-    /**
-     * Función para crear una Solped.
-     * @description Esta función utiliza la mutación `createSolped` para crear una nueva Solped asociada a la tarea de cumplimiento seleccionada.
-     * @param solpedData Datos necesarios para crear una Solped.
-     * @returns 
-     */
-    const handleCreateSolped = async (solpedData: ISolped) => {
-        try {
-            const { data } = await createSolped({
-                variables: {
-                    input: {
-                        registryId: solpedData.registryId,
-                        ceco: Number(solpedData.ceco),
-                        account: Number(solpedData.account),
-                        value: Number(solpedData.value),
-                    }
-                }
-            });
-            return data.createSolped;
-        }
-        catch (error) {
-            console.error("Error creating Solped:", error);
-            return null;
-        }
-    };
-
-    /**
-     * Función para crear un Memo.
-     * @description Esta función utiliza la mutación `createMemo` para crear un nuevo Memo asociado a la tarea de cumplimiento seleccionada.
-     * @param memoData Datos necesarios para crear un Memo.
-     * @returns 
-     */
-    const handleCreateMemo = async (memoData: IMemo) => {
-        try {
-            const { data } = await createMemo({
-                variables: {
-                    input: {
-                        registryId: memoData.registryId,
-                        value: memoData.value,
-                    }
-                }
-            });
-            return data.createMemo;
-        }
-        catch (error) {
-            console.error("Error creating Memo:", error);
-        }
-    };
-
-    /**
      * Función que obtiene los datos de cumplimiento de una tarea específica.
      * @param {string} id - ID de la tarea para la cual se desea obtener los datos de cumplimiento.
      * @returns {Promise<IComplianceForm | null>}
@@ -220,7 +126,7 @@ export const useComplianceForm = (
             const { data } = await getCompliance({
                 variables: { id }
             });
-            return data.findOne;
+            return data.findOneCompliance;
         }
         catch (error) {
             console.error("Error fetching compliance data:", error);
@@ -235,8 +141,7 @@ export const useComplianceForm = (
     const handleCartaAporteChange = (file: File) => {
         setFormState({
             ...formState,
-            cartaAporteFile: file,
-            cartaAporte: true
+            cartaAporteFile: file
         });
     };
 
@@ -247,27 +152,39 @@ export const useComplianceForm = (
     const handleMinutaChange = (file: File) => {
         setFormState({
             ...formState,
-            minutaFile: file,
-            minuta: true
+            minutaFile: file
         });
     };
 
     /**
-     * Función que obtiene los registros de cumplimiento asociados a un compliance específico.
-     * @param {string} id - ID de la tarea para la cual se desean obtener los registros de cumplimiento.
-     * @returns {Promise<Array>} - Lista de registros de cumplimiento.
+     * Handler para el archivo PDF de Formulario de Donaciones
      */
-    const handleGetRegistry = async (id: string) => {
-        try {
-            const { data } = await getRegistry({
-                variables: { complianceId: id }
-            });
-            return data.getComplianceRegistries;
-        } catch (error) {
-            console.error("Error fetching compliance registry:", error);
-            return [];
-        }
-    }
+    const handleDonationFormChange = (file: File) => {
+        setFormState((prev) => ({
+            ...prev,
+            donationFormFile: file,
+        }));
+    };
+
+    /**
+     * Handler para el archivo de Autorización
+     */
+    const handleAuthorizationChange = (file: File) => {
+        setFormState((prev) => ({
+            ...prev,
+            authorizationFile: file,
+        }));
+    };
+
+    /**
+     * Handler para el archivo de Transferencia/Orden de Compra
+     */
+    const handleTransferPurchaseOrderChange = (file: File) => {
+        setFormState((prev) => ({
+            ...prev,
+            transferPurchaseOrderFile: file,
+        }));
+    };
 
     /**
      * Hook que se ejecuta al iniciar el componente para cargar los datos de cumplimiento si se está editando.
@@ -277,21 +194,22 @@ export const useComplianceForm = (
             setFormState({
                 name: selectedCompliance.task.name || "",
                 description: selectedCompliance.task.description || "",
-                valleyId: selectedCompliance.task.valleyId !== undefined && selectedCompliance.task.valleyId !== null ? String(selectedCompliance.task.valleyId) : "",
-                faenaId: selectedCompliance.task.faenaId !== undefined && selectedCompliance.task.faenaId !== null ? String(selectedCompliance.task.faenaId) : "",
-                processId: selectedCompliance.task.processId !== undefined && selectedCompliance.task.processId !== null ? String(selectedCompliance.task.processId) : "",
                 statusId: selectedCompliance.statusId || 0,
-                cartaAporte: selectedCompliance.cartaAporte || false,
+                donationFormFile: null,
                 cartaAporteFile: null,
-                minuta: selectedCompliance.minuta || false,
                 minutaFile: null,
-                hasMemo: selectedCompliance.hasMemo || false,
-                hasSolped: selectedCompliance.hasSolped || false,
-                solpedMemoSap: selectedCompliance.solpedMemoSap || undefined,
-                hesHemSap: selectedCompliance.hesHemSap || undefined,
-                hasHem: selectedCompliance.hasHem || false,
-                hasHes: selectedCompliance.hasHes || false,
-                provider: selectedCompliance.provider || "",
+                authorizationFile: null,
+                transferPurchaseOrderFile: null,
+                hesHem: null,
+                memoAmount: selectedCompliance.valor,
+                solpedAccount: selectedCompliance.cuenta,
+                solpedCECO: selectedCompliance.ceco,
+                solpedAmount: undefined,
+                solpedMemoSap: selectedCompliance.solpedMemoSap,
+                hesHemSap: selectedCompliance.hesHemSap,
+                memoSolpedType: selectedCompliance.ceco ? "SOLPED" : "MEMO",
+                memoSolpedFile: null,
+                transferFile: undefined,
             }); 
         }
     }, [isEditing, selectedCompliance]);
@@ -301,7 +219,7 @@ export const useComplianceForm = (
      * @param field - Nombre del campo que se está modificando
      * @param value - Nuevo valor para el campo
      */
-    const handleInputChange = (field: keyof ComplianceFormState, value: FormFieldValue) => {
+    const handleInputChange = (field: keyof ComplianceFormState | string, value: any) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     };
 
@@ -310,106 +228,110 @@ export const useComplianceForm = (
      * @description Esta función valida los campos requeridos y prepara los datos para ser enviados al servidor.
      */
     const handleSave = async () => {
-        const registry = await handleGetRegistry(selectedCompliance?.id || "");
         let compliance = {};
         let document: FormData;
-        
-        if (typeof formState.statusId === "string") {
-            formState.statusId = complianceStatuses.find((status: IComplianceStatus) => status.name === String(formState.statusId))?.id || 0;
-        }
-
         let nextStatusId = formState.statusId;
-        
-        if (formState.statusId ? formState.statusId >= 2 && formState.statusId < 6 : 0) {
+        if (formState.statusId >= 7 && formState.statusId <= 12) {
             if (
-                (formState.statusId === 2 && formState.cartaAporteFile) ||
-                (formState.statusId === 3 && formState.minutaFile) ||
-                (formState.statusId === 5 && (formState.hasHem || formState.hasHes) && formState.provider)
+                (formState.statusId === 7 && formState.donationFormFile) ||
+                (formState.statusId === 8 && formState.cartaAporteFile) ||
+                (formState.statusId === 9 && formState.minutaFile) ||
+                (formState.statusId === 10 && formState.authorizationFile) ||
+                (formState.statusId === 11 && formState.transferPurchaseOrderFile) ||
+                (formState.statusId === 12 && formState.hesHem)
             ) {
                 nextStatusId = formState.statusId + 1;
             }
-            else if (formState.statusId === 4 && formState.hasMemo) {
-                nextStatusId = formState.statusId + 2; 
-            }
-            else if (formState.statusId === 4 && formState.hasSolped) {
-                nextStatusId = formState.statusId + 1;
-            }
         }
-        
         compliance = {
             task: {
                 name: formState.name,
                 description: formState.description,
-                valleyId: formState.valleyId ? parseInt(formState.valleyId) : null,
-                faenaId: formState.faenaId ? parseInt(formState.faenaId) : null,
-                processId: formState.processId ? parseInt(formState.processId) : null,
             },
             statusId: nextStatusId,
-            cartaAporte: formState.cartaAporte || false,
-            minuta: formState.minuta || false,
-            hasMemo: formState.hasMemo || false,
-            hasSolped: formState.hasSolped || false,
-            hasHem: formState.hasHem || false,
-            hasHes: formState.hasHes || false,
-            provider: formState.provider || "",
-            registryId: registry[0]?.id || "",
         };
-
-        if (formState.statusId === 2 && formState.cartaAporteFile) {
-            document = {
-                file: formState.cartaAporteFile,
-                documentType: documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
-                task: selectedCompliance?.task.id || "",
-            };
-            handleUploadFile(document);   
+        // Validación de campos requeridos para Memo/Solped
+        if (formState.statusId === 11 && formState.memoSolpedType) {
+            if (formState.memoSolpedType === "MEMO") {
+                if (!formState.memoSolpedFile || !formState.memoAmount || !formState.solpedMemoSap) {
+                    console.error("Faltan campos requeridos para MEMO");
+                    return;
+                }
+            }
+            if (formState.memoSolpedType === "SOLPED") {
+                if (!formState.memoSolpedFile || !formState.memoAmount || !formState.solpedMemoSap || !formState.solpedCECO || !formState.solpedAccount) {
+                    console.error("Faltan campos requeridos para SOLPED");
+                    return;
+                }
+            }
         }
-        
-        if (formState.statusId === 3 && formState.minutaFile) {
+        // Agregar datos de Memo/Solped si corresponde
+        if (formState.statusId === 11 && formState.memoSolpedType) {
+            compliance = {
+                ...compliance,
+                memoSolpedType: formState.memoSolpedType,
+                memoAmount: formState.memoAmount,
+                solpedMemoSap: formState.solpedMemoSap,
+                solpedCECO: formState.memoSolpedType === "SOLPED" ? formState.solpedCECO : undefined,
+                solpedAccount: formState.memoSolpedType === "SOLPED" ? formState.solpedAccount : undefined,
+            };
+        }
+        // Agregar datos de HEM/HES si corresponde
+        if (formState.statusId === 12) {
+            compliance = {
+                ...compliance,
+                hesHemSap: formState.hesHemSap,
+            };
+        }
+        // Subida de archivos según el estado
+        if (formState.statusId === 7 && formState.donationFormFile) {
             document = {
-                file: formState.minutaFile,
-                documentType: documentsType.find((d:ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
+                file: formState.donationFormFile,
+                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "",
                 task: selectedCompliance?.task.id || "",
             };
             handleUploadFile(document);
         }
-        
-        if (formState.hasMemo && formState.statusId === 4) {
-            const value = Number(formState.memoAmount);
-            const memoData = {
-                registryId: registry[0]?.id || "",
-                value: value,
+        if (formState.statusId === 8 && formState.cartaAporteFile) {
+            document = {
+                file: formState.cartaAporteFile,
+                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
+                task: selectedCompliance?.task.id || "",
             };
-            await handleCreateMemo(memoData);
-            compliance = {
-                ...compliance,
-                endDate: new Date().toISOString(),
-            };
+            handleUploadFile(document);
         }
-
-        if (formState.hasSolped && formState.statusId === 4) {
-            const value = Number(formState.solpedAmount);
-            const ceco = Number(formState.solpedCECO);
-            const account = Number(formState.solpedAccount);
-            const solpedData = {
-                registryId: registry[0]?.id || "",
-                ceco: ceco,
-                account: account,
-                value: value,
+        if (formState.statusId === 9 && formState.minutaFile) {
+            document = {
+                file: formState.minutaFile,
+                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
+                task: selectedCompliance?.task.id || "",
             };
-            await handleCreateSolped(solpedData);
-            compliance = {
-                ...compliance,
-                solpedMemoSap: Number(formState.solpedMemoSap) || 0,
-            };
-            
+            handleUploadFile(document);
         }
-
-        if (formState.statusId === 5) {
-            compliance = {
-                ...compliance,
-                endDate: new Date().toISOString(),
-                hesHemSap: Number(formState.hesHemSap) || 0,
+        if (formState.statusId === 10 && formState.authorizationFile) {
+            document = {
+                file: formState.authorizationFile,
+                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Autorización")?.id_tipo_documento || "",
+                task: selectedCompliance?.task.id || "",
             };
+            handleUploadFile(document);
+        }
+        if (formState.statusId === 11 && formState.transferPurchaseOrderFile) {
+            document = {
+                file: formState.transferPurchaseOrderFile,
+                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Transferencia/Orden de Compra")?.id_tipo_documento || "",
+                task: selectedCompliance?.task.id || "",
+            };
+            handleUploadFile(document);
+        }
+        if (formState.statusId === 11 && formState.memoSolpedFile && formState.memoSolpedType) {
+            let tipoDoc = formState.memoSolpedType === "MEMO" ? "MEMO" : "SOLPED";
+            document = {
+                file: formState.memoSolpedFile,
+                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === tipoDoc)?.id_tipo_documento || "",
+                task: selectedCompliance?.task.id || "",
+            };
+            handleUploadFile(document);
         }
         onSave(compliance);
     };
@@ -418,17 +340,153 @@ export const useComplianceForm = (
         statuses: complianceStatusNames || [],
     }), [complianceStatuses]);
 
+    // Handler para cambiar el tipo de Memo/Solped
+    const handleMemoSolpedTypeChange = (type: "MEMO" | "SOLPED") => {
+        setFormState((prev) => ({
+            ...prev,
+            memoSolpedType: type,
+        }));
+    };
+
+    // Handler para cambiar el archivo de Memo/Solped
+    const handleMemoSolpedFileChange = (file: File) => {
+        setFormState((prev) => ({
+            ...prev,
+            memoSolpedFile: file,
+        }));
+    };
+
+    // Handler para archivo de comprobante de transferencia (MEMO)
+    const handleTransferFileChange = (file: File) => {
+        setFormState((prev) => ({
+            ...prev,
+            transferFile: file,
+        }));
+    };
+
+    // Handler para archivo de HEM/HES (SOLPED)
+    const handleHesHemFileChange = (file: File) => {
+        setFormState((prev) => ({
+            ...prev,
+            hesHem: file,
+        }));
+    };
+
+    /**
+     * Función que obtiene el Formulario de Donaciones asociado a la tarea de cumplimiento.
+     */
+    const handleGetFormulario = async () => {
+        try {
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Donaciones" || d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "";
+            const { data } = await getDocument({
+                variables: {
+                    taskId: selectedCompliance?.task.id || "",
+                    documentType: tipo
+                }
+            });
+            return data.documentByTaskAndType;
+        } catch (error) {
+            console.error("Error al obtener Formulario de Donaciones:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene la Autorización asociada a la tarea de cumplimiento.
+     */
+    const handleGetAutorizacion = async () => {
+        try {
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Autorización")?.id_tipo_documento || "";
+            const { data } = await getDocument({
+                variables: {
+                    taskId: selectedCompliance?.task.id || "",
+                    documentType: tipo
+                }
+            });
+            return data.documentByTaskAndType;
+        } catch (error) {
+            console.error("Error al obtener Autorización:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene la Transferencia/Orden de Compra asociada a la tarea de cumplimiento.
+     */
+    const handleGetTransferencia = async () => {
+        try {
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Transferencia/Orden de Compra")?.id_tipo_documento || "";
+            const { data } = await getDocument({
+                variables: {
+                    taskId: selectedCompliance?.task.id || "",
+                    documentType: tipo
+                }
+            });
+            return data.documentByTaskAndType;
+        } catch (error) {
+            console.error("Error al obtener Transferencia/Orden de Compra:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene el Memo asociado a la tarea de cumplimiento.
+     */
+    const handleGetMemo = async () => {
+        try {
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "MEMO")?.id_tipo_documento || "";
+            const { data } = await getDocument({
+                variables: {
+                    taskId: selectedCompliance?.task.id || "",
+                    documentType: tipo
+                }
+            });
+            return data.documentByTaskAndType;
+        } catch (error) {
+            console.error("Error al obtener MEMO:", error);
+            return null;
+        }
+    };
+
+    /**
+     * Función que obtiene la SOLPED asociada a la tarea de cumplimiento.
+     */
+    const handleGetSolped = async () => {
+        try {
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "SOLPED")?.id_tipo_documento || "";
+            const { data } = await getDocument({
+                variables: {
+                    taskId: selectedCompliance?.task.id || "",
+                    documentType: tipo
+                }
+            });
+            return data.documentByTaskAndType;
+        } catch (error) {
+            console.error("Error al obtener SOLPED:", error);
+            return null;
+        }
+    };
+
     return {
         handleInputChange,
         handleSave,
         handleGetCompliance,
-        handleGetRegistry,
         handleCartaAporteChange,
         handleMinutaChange,
         handleGetCarta,
         handleGetMinuta,
-        handleGetSolped,
+        handleDonationFormChange,
+        handleAuthorizationChange,
+        handleTransferPurchaseOrderChange,
+        handleMemoSolpedTypeChange,
+        handleMemoSolpedFileChange,
+        handleTransferFileChange,
+        handleHesHemFileChange,
+        handleGetFormulario,
+        handleGetAutorizacion,
+        handleGetTransferencia,
         handleGetMemo,
+        handleGetSolped,
         formState,
         valleysName,
         faenasName,

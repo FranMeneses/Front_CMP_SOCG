@@ -59,14 +59,18 @@ const ComplianceFilters: React.FC<ComplianceFiltersProps> = ({
         switch (status) {
             case "Completado":
             return `${baseStyle} bg-green-100 text-green-800 border border-green-200`;
-            case "Gestionando Carta Aporte":
-            return `${baseStyle} bg-[#90c2c9] text-[#0c3f46] border border-[#90c2c9]`;
-            case "Gestionando Minuta":
+            case "Ingreso solicitud(formulario donaciones)":
+            return `${baseStyle} bg-yellow-100 text-yellow-800 border border-yellow-200`;
+            case "Carta conductora":
             return `${baseStyle} bg-blue-100 text-blue-800 border border-blue-200`;
-            case "Gestionando MEMORANDUM y/o SOLPED":
+            case "Minuta/Acta comité donaciones":
             return `${baseStyle} bg-purple-100 text-purple-800 border border-purple-200`;
-            case "HEM/HES registradas":
-            return `${baseStyle} bg-[#c590c9] text-[#6f0779] border border-[#c590c9]`;
+            case "Autorización (GG, CD o Directorio)":
+            return `${baseStyle} bg-pink-100 text-pink-800 border border-pink-200`;
+            case "Transferencia recursos/Orden compra":
+            return `${baseStyle} bg-orange-100 text-orange-800 border border-orange-200`;
+            case "Pago (HEM/HES/Comprobante transferencia)":
+            return `${baseStyle} bg-indigo-100 text-indigo-800 border border-indigo-200`;
             case "NO iniciado":
             return `${baseStyle} bg-gray-100 text-gray-800 border border-gray-200`;
             case "Cancelada":

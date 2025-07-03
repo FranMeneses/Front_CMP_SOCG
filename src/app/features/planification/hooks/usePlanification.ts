@@ -11,7 +11,7 @@ import { useTasksData } from "./useTaskData";
 import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task } from "@/app/models/ITaskForm";
 
-import { CREATE_COMPLIANCE, CREATE_REGISTRY, GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE, UPDATE_REGISTRY } from "@/app/api/compliance";
+import { CREATE_COMPLIANCE, GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE } from "@/app/api/compliance";
 import { useQueryClient } from '@tanstack/react-query';
 
 export const usePlanification = () => {
@@ -70,10 +70,8 @@ export const usePlanification = () => {
     const [createTask] = useMutation(CREATE_TASK);
     const [updateTask] = useMutation(UPDATE_TASK);
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
-    const [updateRegistry] = useMutation(UPDATE_REGISTRY);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
-    const [createRegistry] = useMutation(CREATE_REGISTRY);
 
     const queryClient = useQueryClient();
 
@@ -141,14 +139,7 @@ export const usePlanification = () => {
                 variables: {
                     input: {
                         taskId: data.createTask.id,
-                        statusId: 1,
-                    },
-                },
-            });
-            await createRegistry({
-                variables: {
-                    input: {
-                        complianceId: complianceData.create.id,
+                        statusId: 7,
                     },
                 },
             });
@@ -182,40 +173,6 @@ export const usePlanification = () => {
             })
             if (!data?.updateTask?.id) {
                 throw new Error("Task update failed: ID is undefined.");
-            }
-            
-            if (data?.updateTask.status.id === 3) {
-                try {
-                    const complianceData = await getCompliance({
-                        variables: {
-                            taskId: data.updateTask.id,
-                        },
-                    });
-                    if (complianceData.data?.getTaskCompliance) {
-                        const complianceId = complianceData.data.getTaskCompliance.id
-                        await updateRegistry({
-                            variables: {
-                                id: complianceData?.data.getTaskCompliance.registries?.[0]?.id,
-                                input: {
-                                    startDate: new Date(),
-                                },
-                            },
-                        });
-                        await updateCompliance({
-                            variables: {
-                                id: complianceId,
-                                input: {
-                                    statusId: 2,
-                                },
-                            },
-                        });
-                    } else {
-                        console.warn("No compliance data found for the updated task.");
-                    }
-                }
-                catch (error) {
-                    console.error("Error fetching compliance data:", error);
-                }
             }
         }catch (error) {
             console.error("Error updating communication task:", error);
@@ -341,14 +298,7 @@ export const usePlanification = () => {
                 variables: {
                     input: {
                         taskId: data.createTask.id,
-                        statusId: 1,
-                    },
-                },
-            });
-            await createRegistry({
-                variables: {
-                    input: {
-                        complianceId: complianceData.create.id,
+                        statusId: 7,
                     },
                 },
             });
