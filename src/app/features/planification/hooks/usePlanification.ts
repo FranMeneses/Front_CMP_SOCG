@@ -496,45 +496,11 @@ export const usePlanification = () => {
     const handleCreateSubtask = async (subtask: ISubtask) => {
         try {
             setIsLocalEdit(true);
-            const newSubtaskId = await valleySubtaskForm.handleCreateSubtask(subtask);
-            const newSubtask: ISubtask = {
-                ...subtask,
-                id: newSubtaskId,
-                taskId: selectedTaskId!,
-                status: {
-                    id: 1,
-                    name: "NO iniciada",
-                    percentage: 0,
-                }
-            };
-            setLocalSubtasks(prev => [...prev, newSubtask]);
-            setDetailedTasks((prev: ITaskDetails[]) => {
-                let updated = prev.map((task: ITaskDetails) => {
-                    if (task.id === newSubtask.taskId) {
-                        const subtasks = [...localSubtasks, newSubtask].filter(s => s.taskId === task.id);
-                        const budget = subtasks.reduce((acc, s) => acc + (s.budget || 0), 0);
-                        const expense = subtasks.reduce((acc, s) => acc + (s.expense || 0), 0);
-                        const startDates = subtasks.map(s => new Date(s.startDate)).filter(d => !isNaN(d.getTime()));
-                        const endDates = subtasks.map(s => new Date(s.endDate)).filter(d => !isNaN(d.getTime()));
-                        return {
-                            ...task,
-                            budget,
-                            expense,
-                            startDate: startDates.length ? new Date(Math.min(...startDates.map(d => d.getTime()))).toISOString() : '',
-                            endDate: endDates.length ? new Date(Math.max(...endDates.map(d => d.getTime()))).toISOString() : '',
-                        };
-                    }
-                    return task;
-                });
-                if (activeFilter) {
-                    updated = updated.filter(task => task.status?.name === activeFilter);
-                }
-                if (selectedProcessId) {
-                    updated = updated.filter(task => task.processId === selectedProcessId);
-                }
-                return updated;
-            });
+            await valleySubtaskForm.handleCreateSubtask(subtask);
             setIsPopupSubtaskOpen(false);
+            // Refresca los datos globales
+            await refetch();
+            // Aplica el filtro seleccionado si existe
             if (activeFilter) {
                 await handleFilterClick(activeFilter);
             }

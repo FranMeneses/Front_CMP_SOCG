@@ -765,7 +765,12 @@ export const useTasksData = (currentValleyId: number | undefined, userRole:strin
   useEffect(() => {
     if (!isLocalEdit) {
       // Forzar refetch real y aplicar filtro al salir del modo edición local
-      refetch();
+      refetch().then(() => {
+        // Si hay un filtro activo, volver a aplicarlo
+        if (activeFilter) {
+          handleFilterClick(activeFilter);
+        }
+      });
     }
   }, [isLocalEdit]);
 
