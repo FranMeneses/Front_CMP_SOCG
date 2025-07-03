@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useHooks } from "../../hooks/useHooks";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_COMPLIANCE, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
 import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
 import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
@@ -26,11 +26,8 @@ interface ComplianceFormState {
     hesHemSap?: number;
     // Memo/Solped
     memoSolpedType?: "MEMO" | "SOLPED";
-    memoSolpedFile?: File | null;
     transferFile?: File | null;
 }
-
-type FormFieldValue = string | number | boolean | File | null | undefined;
 
 export const useComplianceForm = (
     onSave: (compliance: Partial<IComplianceForm>) => void,
@@ -54,7 +51,6 @@ export const useComplianceForm = (
         solpedMemoSap: undefined,
         hesHemSap: undefined,
         memoSolpedType: undefined,
-        memoSolpedFile: null,
         transferFile: undefined,
     });
 
@@ -208,7 +204,6 @@ export const useComplianceForm = (
                 solpedMemoSap: selectedCompliance.solpedMemoSap,
                 hesHemSap: selectedCompliance.hesHemSap,
                 memoSolpedType: selectedCompliance.ceco ? "SOLPED" : "MEMO",
-                memoSolpedFile: null,
                 transferFile: undefined,
             }); 
         }
@@ -253,13 +248,13 @@ export const useComplianceForm = (
         // Validación de campos requeridos para Memo/Solped
         if (formState.statusId === 11 && formState.memoSolpedType) {
             if (formState.memoSolpedType === "MEMO") {
-                if (!formState.memoSolpedFile || !formState.memoAmount || !formState.solpedMemoSap) {
+                if (!formState.memoAmount || !formState.solpedMemoSap) {
                     console.error("Faltan campos requeridos para MEMO");
                     return;
                 }
             }
             if (formState.memoSolpedType === "SOLPED") {
-                if (!formState.memoSolpedFile || !formState.memoAmount || !formState.solpedMemoSap || !formState.solpedCECO || !formState.solpedAccount) {
+                if (!formState.memoAmount || !formState.solpedMemoSap || !formState.solpedCECO || !formState.solpedAccount) {
                     console.error("Faltan campos requeridos para SOLPED");
                     return;
                 }
@@ -320,15 +315,6 @@ export const useComplianceForm = (
             document = {
                 file: formState.transferPurchaseOrderFile,
                 documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Transferencia/Orden de Compra")?.id_tipo_documento || "",
-                task: selectedCompliance?.task.id || "",
-            };
-            handleUploadFile(document);
-        }
-        if (formState.statusId === 11 && formState.memoSolpedFile && formState.memoSolpedType) {
-            let tipoDoc = formState.memoSolpedType === "MEMO" ? "MEMO" : "SOLPED";
-            document = {
-                file: formState.memoSolpedFile,
-                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === tipoDoc)?.id_tipo_documento || "",
                 task: selectedCompliance?.task.id || "",
             };
             handleUploadFile(document);
