@@ -44,7 +44,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             return [...defaultProcesses, ...communicationProcesses];
         } 
         
-        if (userRole.toLowerCase() === "Superintendente Relacionamiento") {
+        if (userRole.toLowerCase() === "superintendente relacionamiento") {
             const relationshipProcesses = allProcesses
                 .filter((p: IProcess) => PROCESS_FILTERS.RELATIONSHIP.includes(p.name))
                 .map((p: IProcess) => p.name);
