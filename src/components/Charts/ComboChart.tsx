@@ -57,8 +57,6 @@ const ComboChart = ({
     datasets: data.datasets.map(dataset => {
       const isExpense = dataset.label.includes('GASTOS');
       
-      const valleyName = isExpense ? dataset.label.replace('Gastos ', '') : dataset.label;
-      
       const processedData = selectedLegend && dataset.id !== data.datasets.find(ds => ds.label === selectedLegend)?.id
         ? []
         : dataset.data.map((value) => {
@@ -68,10 +66,6 @@ const ComboChart = ({
             if (currency === 'CLP') return value * exchangeRates.CLP;
             return null;
           });
-      
-      const matchingDataset = isExpense 
-        ? data.datasets.find(ds => ds.label === valleyName) 
-        : data.datasets.find(ds => ds.label === `Gastos ${dataset.label}`); 
       
       const baseColor = dataset.borderColor;
       

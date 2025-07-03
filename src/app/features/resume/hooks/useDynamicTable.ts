@@ -138,7 +138,7 @@ export function useDynamicTable(tasks: ITask[]) {
             return value;
         }
         catch (error){
-            console.error("Error al obtener el compliance");
+            console.error("Error al obtener el compliance", error);
             return "No completado";
         }
     }

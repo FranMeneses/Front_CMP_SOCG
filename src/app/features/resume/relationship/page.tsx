@@ -21,7 +21,6 @@ export default function ResumeRelationship() {
     HuascoData,
     ElquiData,
     handleLegendClick,
-    refetchTasks,
   } = useResume();
 
   const {pieChartData} = usePieChart();
@@ -29,13 +28,12 @@ export default function ResumeRelationship() {
   const {comboChartData, loading: comboChartLoading} = useComboChart();
   
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   
   useEffect(() => {
-    if (!resumeLoading && !barChartLoading && !comboChartLoading && !isRefreshing) {
+    if (!resumeLoading && !barChartLoading && !comboChartLoading ) {
       setIsLoading(false);
     }
-  }, [resumeLoading, barChartLoading, comboChartLoading, isRefreshing]);
+  }, [resumeLoading, barChartLoading, comboChartLoading]);
 
   if (isLoading) {
     return (

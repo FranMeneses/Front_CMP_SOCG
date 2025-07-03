@@ -9,12 +9,10 @@ import { FileText } from "lucide-react";
 
 import CartaAporteFields from "./status-fields/CartaAporteFields";
 import MinutaFields from "./status-fields/MinutaFields";
-import MemorandumFields from "./status-fields/MemorandumFields";
 import HemHesFields from "./status-fields/HEMHESFields";
 import ComplianceSummary from "./status-fields/ComplianceSummary";
 import { Info } from "lucide-react";
 import AuthorizationFields from "./status-fields/AuthorizationFields";
-import TransferPurchaseOrderFields from "./status-fields/TransferPurchaseOrderFields";
 import MemoSolpedFields from "./status-fields/MemoSolpedFields";
 
 interface ComplianceFormProps {

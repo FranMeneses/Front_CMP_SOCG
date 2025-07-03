@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { FileUploadButton } from "@/components/Documents/FileUploadButton";
 import { FileText } from "lucide-react";
 
@@ -13,7 +12,7 @@ interface MemoSolpedFieldsProps {
     };
     handleMemoSolpedTypeChange: (type: "MEMO" | "SOLPED") => void;
     handleMemoSolpedFileChange: (file: File) => void;
-    handleInputChange: (field: string, value: any) => void;
+    handleInputChange: (field: string, value: string | number | boolean | File | null | undefined) => void;
 }
 
 export default function MemoSolpedFields({

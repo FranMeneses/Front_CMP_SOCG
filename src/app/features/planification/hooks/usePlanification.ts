@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { CREATE_TASK, UPDATE_TASK } from "@/app/api/tasks";
 import { CREATE_INFO_TASK } from "@/app/api/infoTask";
 import { ISubtask } from "@/app/models/ISubtasks";
@@ -11,7 +11,7 @@ import { useTasksData } from "./useTaskData";
 import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task } from "@/app/models/ITaskForm";
 
-import { CREATE_COMPLIANCE, GET_TASK_COMPLIANCE, UPDATE_COMPLIANCE } from "@/app/api/compliance";
+import { CREATE_COMPLIANCE } from "@/app/api/compliance";
 import { useQueryClient } from '@tanstack/react-query';
 
 export const usePlanification = () => {
@@ -69,7 +69,6 @@ export const usePlanification = () => {
     
     const [createTask] = useMutation(CREATE_TASK);
     const [updateTask] = useMutation(UPDATE_TASK);
-    const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
     const [createInfoTask] = useMutation(CREATE_INFO_TASK);
     const [createCompliance] = useMutation(CREATE_COMPLIANCE);
 
@@ -83,7 +82,6 @@ export const usePlanification = () => {
         }
     }, [subTasks]);
 
-    const [getCompliance] = useLazyQuery(GET_TASK_COMPLIANCE);
     /**
      * Función para manejar la creación de una nueva tarea
      * @description Abre el modal para crear una nueva tarea, dependiendo del rol del usuario
@@ -135,7 +133,7 @@ export const usePlanification = () => {
                     }
                 }
             });
-            const { data: complianceData } = await createCompliance({
+            await createCompliance({
                 variables: {
                     input: {
                         taskId: data.createTask.id,
@@ -294,7 +292,7 @@ export const usePlanification = () => {
                     },
                 },
             });
-            const { data: complianceData } = await createCompliance({
+            await createCompliance({
                 variables: {
                     input: {
                         taskId: data.createTask.id,

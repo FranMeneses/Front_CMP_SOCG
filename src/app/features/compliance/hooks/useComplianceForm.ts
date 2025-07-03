@@ -214,7 +214,7 @@ export const useComplianceForm = (
      * @param field - Nombre del campo que se está modificando
      * @param value - Nuevo valor para el campo
      */
-    const handleInputChange = (field: keyof ComplianceFormState | string, value: any) => {
+    const handleInputChange = (field: keyof ComplianceFormState | string, value: string | number | boolean | File | null | undefined) => {
         setFormState((prev) => ({ ...prev, [field]: value }));
     };
 

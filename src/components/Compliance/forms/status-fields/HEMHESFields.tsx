@@ -1,6 +1,4 @@
 import { IDocumentList } from "@/app/models/IDocuments";
-import DocumentPreview from "./DocumentsPreview";
-import { ComplianceFormState} from "@/app/models/ICompliance";
 import { FileText } from "lucide-react";
 import { FileUploadButton } from "@/components/Documents/FileUploadButton";
 
@@ -12,7 +10,7 @@ interface HemHesFieldsProps {
         transferNumber?: number;
         transferFile?: File | null;
     };
-    handleInputChange: (field: string, value: any) => void;
+    handleInputChange: (field: string, value: string | number | boolean | File | null | undefined) => void;
     handleTransferFileChange: (file: File) => void;
     handleHesHemFileChange: (file: File) => void;
     cartaData?: IDocumentList;
@@ -24,8 +22,6 @@ export default function HemHesFields({
     handleInputChange,
     handleTransferFileChange,
     handleHesHemFileChange,
-    cartaData,
-    minutaData,
 }: HemHesFieldsProps) {
     return (
         <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">

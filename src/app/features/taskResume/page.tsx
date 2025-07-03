@@ -8,6 +8,7 @@ import { useHooks } from "../hooks/useHooks";
 import { useTasksData } from "../planification/hooks/useTaskData";
 import Image from "next/image";
 import DropdownMenu from "@/components/Dropdown";
+import { IProcess } from "@/app/models/IProcess";
 
 export default function TaskResume() {
     const { userRole, handleLogout } = useHooks();
@@ -28,7 +29,6 @@ export default function TaskResume() {
         subTasks,
         loading,
         allProcesses,
-        activeFilter,
         handleFilterByProcess,
     } = useTasksData(undefined, userRole);
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
@@ -39,7 +39,7 @@ export default function TaskResume() {
 
     const handleProcessFilter = async (processName: string) => {
         setSelectedProcess(processName);
-        const process = allProcesses.find((p: any) => p.name === processName);
+        const process = allProcesses.find((p: IProcess) => p.name === processName);
         if (process) {
             await handleFilterByProcess(process.id);
         } else {
@@ -96,7 +96,7 @@ export default function TaskResume() {
                                     <div className="mb-4 w-64 overflow-visible">
                                         <DropdownMenu
                                             buttonText="Filtrar por proceso"
-                                            items={["Todos", ...allProcesses.map((p: any) => p.name)]}
+                                            items={["Todos", ...allProcesses.map((p: IProcess) => p.name)]}
                                             onSelect={handleProcessFilter}
                                             selectedValue={selectedProcess}
                                         />
