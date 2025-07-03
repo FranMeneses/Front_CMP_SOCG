@@ -1,4 +1,3 @@
-
 export const ValleyColors = [
     "#D89E1D",
     "#47BF6F",
@@ -24,6 +23,13 @@ export const CommunicationsColors = [
     "#AC5AAC", // EXTERNA
     "#41A79B", // ASUNTOS PÚBLICOS
     "#0068D1", // TRANSVERSAL  
+]
+
+export const SecondaryCommunicationsColors = [
+    "#253B52", // INTERNA (más oscuro)
+    "#4B234B", // EXTERNA (más oscuro)
+    "#18443D", // ASUNTOS PÚBLICOS (más oscuro)
+    "#002147" // TRANSVERSAL (más oscuro)
 ]
 
 export const CommunicationsColorsHover = [

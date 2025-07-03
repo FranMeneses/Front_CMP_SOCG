@@ -1,7 +1,7 @@
 import { GET_PROCESS_MONTHLY_BUDGETS, GET_PROCESS_MONTHLY_EXPENSES } from "@/app/api/tasks";
 import { ITaskBudget, ITaskExpense } from "@/app/models/ITasks";
 import { Months } from "@/constants/months";
-import { CommunicationsColors } from "@/constants/colors";
+import { CommunicationsColors, SecondaryCommunicationsColors } from "@/constants/colors";
 import { useLazyQuery } from "@apollo/client/react";
 import { useState, useEffect } from "react";
 
@@ -127,11 +127,27 @@ export function useCommunicationComboChart() {
           backgroundColor: CommunicationsColors[0],
         },
         {
+          label: 'Gastos Comunicaciones Internas',
+          id: 'Valle de Copiapó',
+          data: internalCommunicationsExpenses,
+          borderColor: SecondaryCommunicationsColors[0],
+          backgroundColor: SecondaryCommunicationsColors[0],
+          borderDash: [5, 5],
+        },
+        {
           label: 'Comunicaciones Externas',
           id: 'Valle del Huasco',
           data: externalCommunicationsBudget,
           borderColor: CommunicationsColors[1],
           backgroundColor: CommunicationsColors[1],
+        },        
+        {
+          label: 'Gastos Comunicaciones Externas',
+          id: 'Valle del Huasco',
+          data: externalCommunicationsExpenses,
+          borderColor: SecondaryCommunicationsColors[1],
+          backgroundColor: SecondaryCommunicationsColors[1],
+          borderDash: [5, 5],
         },
         {
           label: 'Asuntos Públicos',
@@ -141,42 +157,26 @@ export function useCommunicationComboChart() {
           backgroundColor: CommunicationsColors[2],
         },
         {
+          label: 'Gastos Asuntos Públicos',
+          id: 'Valle del Elqui',
+          data: publicAffairsExpenses,
+          borderColor: SecondaryCommunicationsColors[2],
+          backgroundColor: SecondaryCommunicationsColors[2],
+          borderDash: [5, 5],
+        },
+        {
           label: 'Transversales',
           id: 'Transversal',
           data: transversalBudget,
           borderColor: CommunicationsColors[3],
           backgroundColor: CommunicationsColors[3],
-        },
-        {
-          label: 'Gastos Comunicaciones Internas',
-          id: 'Valle de Copiapó',
-          data: internalCommunicationsExpenses,
-          borderColor: CommunicationsColors[0],
-          backgroundColor: CommunicationsColors[0],
-          borderDash: [5, 5],
-        },
-        {
-          label: 'Gastos Comunicaciones Externas',
-          id: 'Valle del Huasco',
-          data: externalCommunicationsExpenses,
-          borderColor: CommunicationsColors[1],
-          backgroundColor: CommunicationsColors[1],
-          borderDash: [5, 5],
-        },
-        {
-          label: 'Gastos Asuntos Públicos',
-          id: 'Valle del Elqui',
-          data: publicAffairsExpenses,
-          borderColor: CommunicationsColors[2],
-          backgroundColor: CommunicationsColors[2],
-          borderDash: [5, 5],
-        },
+        },        
         {
           label: 'Gastos Transversales',
           id: 'Transversal',
           data: transversalExpenses,
-          borderColor: CommunicationsColors[3],
-          backgroundColor: CommunicationsColors[3],
+          borderColor: SecondaryCommunicationsColors[3],
+          backgroundColor: SecondaryCommunicationsColors[3],
         }
       ],
     })
