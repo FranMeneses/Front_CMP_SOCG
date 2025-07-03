@@ -116,19 +116,22 @@ export default function ComplianceForm({
                 return <CartaAporteFields 
                     formState={formState} 
                     handleCartaAporteChange={handleCartaAporteChange} 
+                    documents={documents}
                 />;
-            
+                
             case 9: // Minuta
                 return <MinutaFields 
                     formState={formState}
                     cartaData={documents.carta}
                     handleMinutaChange={handleMinutaChange}
+                    documents={documents}
                 />;
             
             case 10: // Autorización
                 return <AuthorizationFields
                     formState={formState}
                     handleAuthorizationChange={handleAuthorizationChange}
+                    documents={documents}
                 />;
             
             case 11: // Transferencia/Orden de Compra, MEMO o SOLPED
@@ -137,6 +140,7 @@ export default function ComplianceForm({
                     handleMemoSolpedTypeChange={handleMemoSolpedTypeChange}
                     handleMemoSolpedFileChange={handleMemoSolpedFileChange}
                     handleInputChange={handleInputChange}
+                    documents={documents}
                 />;
                 
             case 12: // HEM/HES
@@ -147,6 +151,7 @@ export default function ComplianceForm({
                     handleInputChange={handleInputChange}
                     handleTransferFileChange={handleTransferFileChange}
                     handleHesHemFileChange={handleHesHemFileChange}
+                    documents={documents}
                 />;
                 
             case 13: // Resumen

@@ -37,6 +37,8 @@ export interface ComplianceFormState {
     hesHemSap?: number;
     cartaAporteFile?: File | null;
     minutaFile?: File | null;
+    transferFile?: File | null;
+    transferNumber?: number;
 }
 
 export interface IComplianceForm {

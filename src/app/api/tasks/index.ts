@@ -519,3 +519,77 @@ export const GET_DOCUMENTS_BY_TASK = gql`
     }
   }
 `;
+
+// QUERY PARA OBTENER TAREAS POR MES
+export const GET_TASKS_BY_MONTH = gql`
+  query GetTasksByMonth($monthName: String!, $year: Int!) {
+    tasksByMonth(monthName: $monthName, year: $year) {
+      id
+      name
+      description
+      statusId
+      processId
+      valleyId
+      faenaId
+      applies
+      beneficiaryId
+      status {
+        id
+        name
+      }
+      process {
+        id
+        name
+      }
+      valley {
+        id
+        name
+      }
+      faena {
+        id
+        name
+      }
+      beneficiary {
+        id
+        legalName
+      }
+    }
+  }
+`;
+
+// QUERY PARA OBTENER TAREAS POR MES Y PROCESO
+export const GET_TASKS_BY_MONTH_AND_PROCESS = gql`
+  query GetTasksByMonthAndProcess($monthName: String!, $year: Int!, $processId: Int!) {
+    tasksByMonthAndProcess(monthName: $monthName, year: $year, processId: $processId) {
+      id
+      name
+      description
+      statusId
+      processId
+      valleyId
+      faenaId
+      applies
+      beneficiaryId
+      status {
+        id
+        name
+      }
+      process {
+        id
+        name
+      }
+      valley {
+        id
+        name
+      }
+      faena {
+        id
+        name
+      }
+      beneficiary {
+        id
+        legalName
+      }
+    }
+  }
+`;
