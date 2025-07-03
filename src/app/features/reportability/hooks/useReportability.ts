@@ -99,7 +99,7 @@ export function useReportability() {
           return "#000000";
       }
     }
-    else if (userRole === "Encargado Cumplimiento" || userRole === 'Admin') {
+    else if (userRole === "Encargado Cumplimiento" || userRole === 'Admin' || userRole === 'Gerente') {
       switch (id) {
         case 1:
           return ValleyColors[0]; // Valle Copiapó
@@ -187,7 +187,7 @@ export function useReportability() {
               valley: handleGetValley(task?.valleyId ?? 5),
               process: processes.find((p: IProcess) => Number(p.id) === task?.processId)?.name || "Proceso desconocido",
               faena: handleGetFaena(task?.faenaId ?? 11),
-              color: handleGetColor(isCommunicationsManager ? (task?.processId ?? 8) : (userRole === "Encargado Cumplimiento" || userRole === 'Admin') ? (task.processId ?? 8) : (task?.valleyId ?? 5)),
+              color: handleGetColor(isCommunicationsManager ? (task?.processId ?? 8) : (userRole === "Encargado Cumplimiento" || userRole === 'Admin' || userRole === 'Gerente') ? (task.processId ?? 8) : (task?.valleyId ?? 5)),
               allDay: true,
             };
           } catch (err) {
