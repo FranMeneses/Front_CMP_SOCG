@@ -94,7 +94,7 @@ const ComboChart = ({
         hoverBackgroundColor: baseColor,
         borderColor: baseColor,
         borderWidth: 1,
-        categoryPercentage: 0.7,
+        categoryPercentage: 1,
         order: 1,
         yAxisID: 'y',
       };
