@@ -80,7 +80,7 @@ export default function ComplianceSummary({
             <div className="mt-4">
                 {(formState.memoAmount || formState.solpedCECO) && (
                     <div className="bg-gray-100 p-3 rounded mb-2">
-                        <h4 className="font-medium text-xs mb-2">Datos de Transferencia</h4>
+                        <h4 className="font-medium text-xs mb-2">{formState.solpedCECO ? 'Datos SOLPED':'Datos de Transferencia'}</h4>
                         {formState.solpedCECO ? (
                             <>
                                 <div><span className="font-semibold">Tipo:</span> SOLPED</div>
