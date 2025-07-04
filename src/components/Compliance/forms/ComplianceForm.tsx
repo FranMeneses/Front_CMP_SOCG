@@ -49,6 +49,7 @@ export default function ComplianceForm({
         handleGetAutorizacion,
         handleGetTransferencia,
         handleGetComprobante,
+        isUploading,
     } = useComplianceForm(
         onSave, 
         isEditing, 
@@ -252,6 +253,7 @@ export default function ComplianceForm({
                     onClick={onCancel}
                     className="bg-gray-200 hover:bg-gray-300 cursor-pointer"
                     data-test-id="cancel-button"
+                    disabled={isUploading}
                 >
                     Cancelar
                 </Button>
@@ -259,22 +261,22 @@ export default function ComplianceForm({
                     <Button
                         variant="default"
                         onClick={handleSave}
-                        disabled={!isFormValid()}
+                        disabled={!isFormValid() || isUploading}
                         className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                         data-test-id="save-button"
                     >
-                        Guardar y Avanzar
+                        {isUploading ? 'Subiendo...' : 'Guardar y Avanzar'}
                     </Button>
                 )}
                 {(!formState.statusId || formState.statusId < 7 || formState.statusId > 12) && (
                     <Button
                         variant="default"
                         onClick={handleSave}
-                        disabled={!isFormValid()}
+                        disabled={!isFormValid() || isUploading}
                         className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                         data-test-id="save-button"
                     >
-                        {saveButtonText}
+                        {isUploading ? 'Subiendo...' : saveButtonText}
                     </Button>
                 )}
                 {formState.statusId === 13 && (
@@ -283,6 +285,7 @@ export default function ComplianceForm({
                         onClick={onCancel}
                         className="bg-[#0068D1] hover:bg-[#0056A3] text-white cursor-pointer"
                         data-test-id="close-button"
+                        disabled={isUploading}
                     >
                         Cerrar
                     </Button>

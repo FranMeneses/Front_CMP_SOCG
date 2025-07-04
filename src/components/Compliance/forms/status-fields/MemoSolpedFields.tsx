@@ -15,7 +15,6 @@ interface MemoSolpedFieldsProps {
 export default function MemoSolpedFields({
     formState,
     handleMemoSolpedTypeChange,
-    handleMemoSolpedFileChange,
     handleInputChange,
     documents,
 }: MemoSolpedFieldsProps) {
@@ -50,10 +49,10 @@ export default function MemoSolpedFields({
                     </label>
                 </div>
                 <div className="flex items-center mb-3">
-                    <FileUploadButton onFileChange={handleMemoSolpedFileChange} disabled={false} />
-                    {formState.memoSolpedFile && (
+                    <FileUploadButton onFileChange={file => handleInputChange("transferPurchaseOrderFile", file)} disabled={false} />
+                    {formState.transferPurchaseOrderFile && (
                         <span className="ml-2 text-sm text-gray-600">
-                            {formState.memoSolpedFile.name}
+                            {formState.transferPurchaseOrderFile.name}
                         </span>
                     )}
                 </div>

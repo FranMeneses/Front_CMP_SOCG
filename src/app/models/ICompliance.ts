@@ -28,7 +28,6 @@ export interface ComplianceFormState {
     authorizationFile?: File | null;
     transferPurchaseOrderFile?: File | null;
     memoSolpedType?: "MEMO" | "SOLPED";
-    memoSolpedFile?: File | null;
     memoAmount?: number;
     solpedMemoSap?: number;
     solpedCECO?: number;

@@ -53,6 +53,7 @@ export const useComplianceForm = (
         memoSolpedType: undefined,
         transferFile: undefined,
     });
+    const [isUploading, setIsUploading] = useState(false);
 
     const {data: complianceStatusData } = useQuery(GET_COMPLIANCE_STATUSES);
     const {data: documentsTypeData } = useQuery(GET_ALL_DOCUMENT_TYPES);
@@ -279,45 +280,50 @@ export const useComplianceForm = (
             };
         }
         // Subida de archivos según el estado
-        if (formState.statusId === 7 && formState.donationFormFile) {
-            document = {
-                file: formState.donationFormFile,
-                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "",
-                task: selectedCompliance?.task.id || "",
-            };
-            handleUploadFile(document);
-        }
-        if (formState.statusId === 8 && formState.cartaAporteFile) {
-            document = {
-                file: formState.cartaAporteFile,
-                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
-                task: selectedCompliance?.task.id || "",
-            };
-            handleUploadFile(document);
-        }
-        if (formState.statusId === 9 && formState.minutaFile) {
-            document = {
-                file: formState.minutaFile,
-                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
-                task: selectedCompliance?.task.id || "",
-            };
-            handleUploadFile(document);
-        }
-        if (formState.statusId === 10 && formState.authorizationFile) {
-            document = {
-                file: formState.authorizationFile,
-                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Autorización")?.id_tipo_documento || "",
-                task: selectedCompliance?.task.id || "",
-            };
-            handleUploadFile(document);
-        }
-        if (formState.statusId === 11 && formState.transferPurchaseOrderFile) {
-            document = {
-                file: formState.transferPurchaseOrderFile,
-                documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Transferencia/Orden de Compra")?.id_tipo_documento || "",
-                task: selectedCompliance?.task.id || "",
-            };
-            handleUploadFile(document);
+        try {
+            setIsUploading(true);
+            if (formState.statusId === 7 && formState.donationFormFile) {
+                document = {
+                    file: formState.donationFormFile,
+                    documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "",
+                    task: selectedCompliance?.task.id || "",
+                };
+                await handleUploadFile(document);
+            }
+            if (formState.statusId === 8 && formState.cartaAporteFile) {
+                document = {
+                    file: formState.cartaAporteFile,
+                    documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
+                    task: selectedCompliance?.task.id || "",
+                };
+                await handleUploadFile(document);
+            }
+            if (formState.statusId === 9 && formState.minutaFile) {
+                document = {
+                    file: formState.minutaFile,
+                    documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
+                    task: selectedCompliance?.task.id || "",
+                };
+                await handleUploadFile(document);
+            }
+            if (formState.statusId === 10 && formState.authorizationFile) {
+                document = {
+                    file: formState.authorizationFile,
+                    documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Autorización")?.id_tipo_documento || "",
+                    task: selectedCompliance?.task.id || "",
+                };
+                await handleUploadFile(document);
+            }
+            if (formState.statusId === 11 && formState.transferPurchaseOrderFile) {
+                document = {
+                    file: formState.transferPurchaseOrderFile,
+                    documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Transferencia/Orden de Compra")?.id_tipo_documento || "",
+                    task: selectedCompliance?.task.id || "",
+                };
+                await handleUploadFile(document);
+            }
+        } finally {
+            setIsUploading(false);
         }
         onSave(compliance);
     };
@@ -453,6 +459,7 @@ export const useComplianceForm = (
         handleGetAutorizacion,
         handleGetTransferencia,
         handleGetComprobante,
+        isUploading,
         formState,
         valleysName,
         faenasName,
