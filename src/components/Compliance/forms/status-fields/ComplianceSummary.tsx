@@ -63,7 +63,7 @@ export default function ComplianceSummary({
                     </ul>
                 </div>
                 {/* Memorandum y Solped */}
-                {(formState.memoSolpedFile) && (
+                {(formState.transferPurchaseOrderFile) && (
                     <div>
                         <h4 className="font-medium text-xs mb-2 flex items-center">
                             <Clipboard className="h-4 w-4 mr-1" />

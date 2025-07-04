@@ -42,7 +42,6 @@ export default function ComplianceForm({
         handleDonationFormChange,
         handleAuthorizationChange,
         handleMemoSolpedTypeChange,
-        handleMemoSolpedFileChange,
         handleTransferFileChange,
         handleHesHemFileChange,
         handleGetFormulario,
@@ -134,7 +133,6 @@ export default function ComplianceForm({
                 return <MemoSolpedFields
                     formState={formState}
                     handleMemoSolpedTypeChange={handleMemoSolpedTypeChange}
-                    handleMemoSolpedFileChange={handleMemoSolpedFileChange}
                     handleInputChange={handleInputChange}
                     documents={documents}
                 />;

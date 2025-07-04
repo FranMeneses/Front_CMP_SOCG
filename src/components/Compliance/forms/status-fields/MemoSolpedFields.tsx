@@ -7,7 +7,6 @@ import { IDocumentList } from "@/app/models/IDocuments";
 interface MemoSolpedFieldsProps {
     formState: ComplianceFormState;
     handleMemoSolpedTypeChange: (type: "MEMO" | "SOLPED") => void;
-    handleMemoSolpedFileChange: (file: File) => void;
     handleInputChange: (field: string, value: string | number | boolean | File | null | undefined) => void;
     documents: { [key: string]: IDocumentList | undefined };
 }

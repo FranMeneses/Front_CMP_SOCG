@@ -340,14 +340,6 @@ export const useComplianceForm = (
         }));
     };
 
-    // Handler para cambiar el archivo de Memo/Solped
-    const handleMemoSolpedFileChange = (file: File) => {
-        setFormState((prev) => ({
-            ...prev,
-            memoSolpedFile: file,
-        }));
-    };
-
     // Handler para archivo de comprobante de transferencia (MEMO)
     const handleTransferFileChange = (file: File) => {
         setFormState((prev) => ({
@@ -452,7 +444,6 @@ export const useComplianceForm = (
         handleAuthorizationChange,
         handleTransferPurchaseOrderChange,
         handleMemoSolpedTypeChange,
-        handleMemoSolpedFileChange,
         handleTransferFileChange,
         handleHesHemFileChange,
         handleGetFormulario,
