@@ -6,8 +6,6 @@ import TasksTable from "@/components/Planification/Table/TasksTable";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";
 import Image from "next/image";
-import { ITaskDetails } from "@/app/models/ITasks";
-import { ISubtask } from "@/app/models/ISubtasks";
 import { useTaskFilters } from "./hooks/useTaskFilters";
 import { useState } from "react";
 

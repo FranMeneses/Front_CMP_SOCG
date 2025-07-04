@@ -66,7 +66,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
         isDeleteSubtaskModalOpen,
         allProcesses,
         localSubtasks,
-        handleFilterByProcess,
         setIsDeleteTaskModalOpen,
         setIsDeleteSubtaskModalOpen,
         setItemToDeleteId,
@@ -78,7 +77,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleUpdateCommunication,
         handleCancelCommunication,
         handleCreateComplianceManager,
-        detailedTasks,
     } = usePlanification();
 
     const { currentValley, userRole } = useHooks();
@@ -89,7 +87,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     };
 
     const saveCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
-        return handleSaveCommunication(task as ITask, selectedProcess?.id);
+        return handleSaveCommunication(task as ITask);
     };
 
     const updateCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
@@ -139,7 +137,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subtasks;
 
     const saveTaskAdapter = (task: Task) => {
-        return handleSaveTask(task, selectedProcess?.id);
+        return handleSaveTask(task);
     };
 
     const deleteTaskAdapter = () => {

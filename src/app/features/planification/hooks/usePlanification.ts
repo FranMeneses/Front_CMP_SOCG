@@ -53,7 +53,6 @@ export const usePlanification = () => {
         handleFilterClick,
         handleFilterByProcess,
         setDetailedTasks,
-        setTasksData,
     } = useTasksData(currentValley?.id ?? undefined, userRole, isLocalEdit, selectedProcessId);
 
     const valleyTaskForm = useValleyTaskForm(() => {}, currentValley?.id.toString() || "");
@@ -128,10 +127,9 @@ export const usePlanification = () => {
     /**
      * Función para guardar una nueva tarea 
      * @param task Tarea a guardar
-     * @param selectedProcessId ID del proceso filtrado
      * @description Guarda una nueva tarea
      */
-    const handleSaveCommunication = async (task: ITask, selectedProcessId?: number) => {
+    const handleSaveCommunication = async (task: ITask) => {
         try {
             const { data } = await createTask({
                 variables: {
@@ -292,10 +290,9 @@ export const usePlanification = () => {
     /**
      * Función para guardar una nueva tarea
      * @param task Tarea a guardar
-     * @param selectedProcessId ID del proceso filtrado
      * @description Guarda una nueva tarea
      */
-    const handleSaveTask = async (task: Task, selectedProcessId?: number) => { 
+    const handleSaveTask = async (task: Task) => { 
         try {
             const { data } = await createTask({
                 variables: {
