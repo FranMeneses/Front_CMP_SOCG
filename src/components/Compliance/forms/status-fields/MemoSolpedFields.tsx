@@ -61,8 +61,8 @@ export default function MemoSolpedFields({
                         <input
                             type="number"
                             className="form-input"
-                            value={formState.valor || ""}
-                            onChange={e => handleInputChange("valor", Number(e.target.value))}
+                            value={formState.memoAmount || ""}
+                            onChange={e => handleInputChange("memoAmount", Number(e.target.value))}
                             min={0}
                         />
                     </div>
@@ -83,8 +83,8 @@ export default function MemoSolpedFields({
                                 <input
                                     type="number"
                                     className="form-input"
-                                    value={formState.ceco || ""}
-                                    onChange={e => handleInputChange("ceco", Number(e.target.value))}
+                                    value={formState.solpedCECO || ""}
+                                    onChange={e => handleInputChange("solpedCECO", Number(e.target.value))}
                                     min={0}
                                 />
                             </div>
@@ -93,8 +93,8 @@ export default function MemoSolpedFields({
                                 <input
                                     type="number"
                                     className="form-input"
-                                    value={formState.cuenta || ""}
-                                    onChange={e => handleInputChange("cuenta", Number(e.target.value))}
+                                    value={formState.solpedAccount || ""}
+                                    onChange={e => handleInputChange("solpedAccount", Number(e.target.value))}
                                     min={0}
                                 />
                             </div>

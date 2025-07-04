@@ -18,13 +18,12 @@ interface ComplianceFormState {
     authorizationFile: File | null;
     transferPurchaseOrderFile: File | null;
     hesHem: File | null;
-    valor?: number;
-    cuenta?: number;
-    ceco?: number;
+    memoAmount?: number;
+    solpedAccount?: number;
+    solpedCECO?: number;
     solpedAmount?: number;
     solpedMemoSap?: number;
     hesHemSap?: number;
-    // Memo/Solped
     memoSolpedType?: "MEMO" | "SOLPED";
     transferFile?: File | null;
 }
@@ -44,9 +43,9 @@ export const useComplianceForm = (
         authorizationFile: null,
         transferPurchaseOrderFile: null,
         hesHem: null,
-        valor: undefined,
-        cuenta: undefined,
-        ceco: undefined,
+        memoAmount: undefined,
+        solpedAccount: undefined,
+        solpedCECO: undefined,
         solpedAmount: undefined,
         solpedMemoSap: undefined,
         hesHemSap: undefined,
@@ -198,9 +197,9 @@ export const useComplianceForm = (
                 authorizationFile: null,
                 transferPurchaseOrderFile: null,
                 hesHem: null,
-                valor: selectedCompliance.valor,
-                cuenta: selectedCompliance.cuenta,
-                ceco: selectedCompliance.ceco,
+                memoAmount: selectedCompliance.valor,
+                solpedAccount: selectedCompliance.cuenta,
+                solpedCECO: selectedCompliance.ceco,
                 solpedAmount: undefined,
                 solpedMemoSap: selectedCompliance.solpedMemoSap,
                 hesHemSap: selectedCompliance.hesHemSap,
@@ -249,13 +248,13 @@ export const useComplianceForm = (
         // Validación de campos requeridos para Memo/Solped
         if (formState.statusId === 11 && formState.memoSolpedType) {
             if (formState.memoSolpedType === "MEMO") {
-                if (!formState.valor || !formState.solpedMemoSap) {
+                if (!formState.memoAmount || !formState.solpedMemoSap) {
                     console.error("Faltan campos requeridos para MEMO");
                     return;
                 }
             }
             if (formState.memoSolpedType === "SOLPED") {
-                if (!formState.valor || !formState.solpedMemoSap || !formState.ceco || !formState.cuenta) {
+                if (!formState.memoAmount || !formState.solpedMemoSap || !formState.solpedCECO || !formState.solpedAccount) {
                     console.error("Faltan campos requeridos para SOLPED");
                     return;
                 }
@@ -266,10 +265,10 @@ export const useComplianceForm = (
             compliance = {
                 ...compliance,
                 memoSolpedType: formState.memoSolpedType,
-                valor: formState.valor,
+                memoAmount: formState.memoAmount,
                 solpedMemoSap: formState.solpedMemoSap,
-                ceco: formState.memoSolpedType === "SOLPED" ? formState.ceco : undefined,
-                cuenta: formState.memoSolpedType === "SOLPED" ? formState.cuenta : undefined,
+                solpedCECO: formState.memoSolpedType === "SOLPED" ? formState.solpedCECO : undefined,
+                solpedAccount: formState.memoSolpedType === "SOLPED" ? formState.solpedAccount : undefined,
             };
         }
         // Agregar datos de HEM/HES si corresponde
