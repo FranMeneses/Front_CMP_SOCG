@@ -79,7 +79,6 @@ export const useCompliance = () => {
             }
         else if (compliance.statusId === 12) {
             try {
-                console.log(compliance);
                 await updateCompliance({
                     variables: {
                         id: selectedCompliance?.id,
@@ -112,8 +111,8 @@ export const useCompliance = () => {
                     console.error("Error updating compliance", error);
                 }
             }
-        refetch();
-        setIsComplianceModalOpen(false);
+        // refetch();
+        // setIsComplianceModalOpen(false);
     }
 
     /**
