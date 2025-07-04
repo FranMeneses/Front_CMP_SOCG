@@ -6,6 +6,12 @@ export const GET_ALL_COMPLIANCES = gql`
       id
       taskId
       statusId
+      updatedAt
+      valor
+      ceco
+      cuenta
+      solpedMemoSap
+      hesHemSap
       status {
         id
         name
@@ -27,6 +33,12 @@ export const GET_COMPLIANCE = gql`
       id
       taskId
       statusId
+      updatedAt
+      valor
+      ceco
+      cuenta
+      solpedMemoSap
+      hesHemSap
       status {
         id
         name
@@ -48,16 +60,22 @@ export const GET_TASK_COMPLIANCE = gql`
       id
       taskId
       statusId
+      updatedAt
+      valor
+      ceco
+      cuenta
+      solpedMemoSap
+      hesHemSap
+      status {
+        id
+        name
+        days
+      }
       task {
         id
         name
         description
         statusId
-      }
-      status {
-        id
-        name
-        days
       }
     }
   }

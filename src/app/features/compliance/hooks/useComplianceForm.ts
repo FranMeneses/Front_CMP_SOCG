@@ -196,7 +196,7 @@ export const useComplianceForm = (
      */
     useEffect(() => {
         if (isEditing && selectedCompliance) {
-            setFormState({
+            const newFormState = {
                 name: selectedCompliance.task.name || "",
                 description: selectedCompliance.task.description || "",
                 statusId: selectedCompliance.statusId || 0,
@@ -212,9 +212,16 @@ export const useComplianceForm = (
                 solpedAmount: undefined,
                 solpedMemoSap: selectedCompliance.solpedMemoSap,
                 hesHemSap: selectedCompliance.hesHemSap,
-                memoSolpedType: selectedCompliance.ceco ? "SOLPED" : "MEMO",
+                memoSolpedType: selectedCompliance.ceco ? ("SOLPED" as const) : ("MEMO" as const),
                 transferFile: undefined,
-            }); 
+            };
+            
+            console.log("=== FORM STATE AL ABRIR MODAL DE EDICIÓN ===");
+            console.log("selectedCompliance:", selectedCompliance);
+            console.log("formState inicializado:", newFormState);
+            console.log("==========================================");
+            
+            setFormState(newFormState);
         }
     }, [isEditing, selectedCompliance]);
 
