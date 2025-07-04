@@ -21,7 +21,7 @@ export interface ITipoDocumento {
 export interface IDocumentList {
     id_documento: string,
     nombre_archivo: string,
-    fecha_carga: Date,
+    fecha_carga: string,
     tipo_doc: ITipoDocumento,
     id_tarea?: string,
     id_subtarea?: string,

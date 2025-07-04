@@ -69,7 +69,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                       {doc.nombre_archivo ? doc.nombre_archivo : 'Sin nombre'}
                     </td>
                     <td className="px-4 py-3 text-center border-r border-gray-200 truncate">
-                      {doc.fecha_carga ? new Date(doc.fecha_carga).toLocaleDateString() : 'N/A'}
+                      {doc.fecha_carga ? doc.fecha_carga : 'N/A'}
                     </td>
                     <td className="px-4 py-3 text-center border-r border-gray-200">
                       {doc.tipo_doc.tipo_documento || 'N/A'}
