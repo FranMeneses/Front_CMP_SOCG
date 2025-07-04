@@ -94,7 +94,36 @@ export function useFormRegistry() {
             await registerUser(registerData);
         } catch (error) {
             console.error("Registration error:", error);
-            setErrorMessage(error instanceof Error ? error.message : "Error en el registro. Intente nuevamente.");
+            console.error("Error type:", typeof error);
+            console.error("Error instanceof Error:", error instanceof Error);
+            
+            // Definir tipos para el error de GraphQL
+            interface GraphQLError {
+                message: string;
+            }
+            
+            interface ApolloError {
+                message?: string;
+                graphQLErrors?: GraphQLError[];
+            }
+            
+            const apolloError = error as ApolloError;
+            console.error("Error message:", apolloError?.message);
+            console.error("Error graphQLErrors:", apolloError?.graphQLErrors);
+            
+            // Mejorar el manejo de errores de GraphQL
+            let errorMsg = "Error en el registro. Intente nuevamente.";
+            
+            if (error instanceof Error) {
+                errorMsg = error.message;
+            } else if (apolloError?.graphQLErrors && apolloError.graphQLErrors.length > 0) {
+                errorMsg = apolloError.graphQLErrors[0].message;
+            } else if (apolloError?.message) {
+                errorMsg = apolloError.message;
+            }
+            
+            console.log("Setting error message:", errorMsg);
+            setErrorMessage(errorMsg);
         } finally {
             setIsSubmitting(false);
         }
