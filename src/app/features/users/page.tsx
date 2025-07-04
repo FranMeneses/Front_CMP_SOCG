@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Modal from "@/components/Modal";
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import { useHooks } from "../hooks/useHooks";
 import { useUsers } from "./hooks/useUsers";
 import UserTable from "@/components/Users/UserTable/UserTable";
@@ -20,6 +21,10 @@ export default function UsersPage() {
         closeUserModal,
         toggleSidebar,
         handleUpdateUser,
+        isDeleteModalOpen,
+        openDeleteModal,
+        closeDeleteModal,
+        handleDeleteUser,
     } = useUsers();
 
     const { userRole, handleLogout } = useHooks();
@@ -82,6 +87,8 @@ export default function UsersPage() {
                                 <UserTable
                                     users={usersData?.users || []}
                                     onEditUser={openUserModal}
+                                    onDeleteUser={openDeleteModal}
+                                    userRole={userRole}
                                     data-test-id="users-table"
                                 />
                             </div>
@@ -100,6 +107,13 @@ export default function UsersPage() {
                         onCancel={closeUserModal}
                     />
             </Modal>
+
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDeleteUser}
+                itemType="usuario"
+            />
         </div>
     );
 }

@@ -131,18 +131,29 @@ export function useHooks() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Error during registration:", error);
+            console.log("=== useHooks handleRegister error ===");
+            console.log("Error type:", typeof error);
+            console.log("Has graphQLErrors:", !!error.graphQLErrors);
+            
             if (error.graphQLErrors && error.graphQLErrors.length > 0) {
                 const graphQLError = error.graphQLErrors[0];
+                console.log("GraphQL error message:", graphQLError.message);
+                
                 if (graphQLError.message.includes("El email ya está registrado")) {
+                    console.log("Throwing: Email ya registrado");
                     throw new Error("Este email ya está registrado. Intente con otro email.");
                 } else if (graphQLError.message.includes("El email proporcionado no es válido")) {
+                    console.log("Throwing: Email no válido");
                     throw new Error("El email proporcionado no es válido o no existe.");
                 } else {
+                    console.log("Throwing: GraphQL error message");
                     throw new Error(graphQLError.message);
                 }
             } else if (error.networkError) {
+                console.log("Throwing: Network error");
                 throw new Error("Error de conexión. Verifique su conexión a internet.");
             } else {
+                console.log("Throwing: Generic error");
                 throw new Error("Error al registrar usuario. Intente nuevamente.");
             }
         }

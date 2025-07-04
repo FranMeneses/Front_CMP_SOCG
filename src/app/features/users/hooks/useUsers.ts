@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { IUpdateUserInput, IUser } from "@/app/models/IAuth";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_USERS, UPDATE_USER } from "@/app/api/Auth";
+import { GET_USERS, UPDATE_USER, REMOVE_USER } from "@/app/api/Auth";
 
 export function useUsers() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [userToDeleteId, setUserToDeleteId] = useState<string | null>(null);
 
     const getAuthToken = () => {
         if (typeof window !== 'undefined') {
@@ -32,7 +34,15 @@ export function useUsers() {
         }
     })
 
-    const toggleSidebar = () => setIsSidebarOpen((v) => !v);
+    const [removeUser] = useMutation(REMOVE_USER, {
+        context: {
+            headers:{
+                Authorization: `Bearer ${getAuthToken()}`,
+            }
+        }
+    })
+
+    const toggleSidebar = () => setIsSidebarOpen((v: boolean) => !v);
 
     const openUserModal = (user: IUser) => {
         setSelectedUser(user);
@@ -64,6 +74,32 @@ export function useUsers() {
         }
     }
 
+    const openDeleteModal = (userId: string) => {
+        setUserToDeleteId(userId);
+        setIsDeleteModalOpen(true);
+    };
+
+    const closeDeleteModal = () => {
+        setUserToDeleteId(null);
+        setIsDeleteModalOpen(false);
+    };
+
+    const handleDeleteUser = async () => {
+        if (!userToDeleteId) return;
+        
+        try {
+            await removeUser({
+                variables: {
+                    id: userToDeleteId
+                },
+                refetchQueries: [{ query: GET_USERS }],
+            });
+            closeDeleteModal();
+        } catch (error) {
+            console.error("Error deleting user:", error);
+        }
+    };
+
     return {
         usersLoading,
         isSidebarOpen,
@@ -74,5 +110,10 @@ export function useUsers() {
         closeUserModal,
         toggleSidebar,
         handleUpdateUser,
+        isDeleteModalOpen,
+        userToDeleteId,
+        openDeleteModal,
+        closeDeleteModal,
+        handleDeleteUser,
     };
 }

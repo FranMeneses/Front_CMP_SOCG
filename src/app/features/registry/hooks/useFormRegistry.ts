@@ -7,6 +7,8 @@ interface IRegistryForm extends Omit<IRegisterInput, 'id_rol'> {
 }
 
 export function useFormRegistry() {
+    console.log("🚀 useFormRegistry loaded with NEW CHANGES");
+    
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formState, setFormState] = useState<IRegistryForm>({
         email: "",
