@@ -267,7 +267,7 @@ export const usePlanification = () => {
             await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);
             // Después de eliminar una tarea, refresca los datos globales
-            await refetch();
+            await window.location.reload();
         } catch (error) {
             console.error("Error deleting task:", error);
         }
@@ -323,7 +323,6 @@ export const usePlanification = () => {
      * @description Guarda una nueva tarea
      */
     const handleSaveTask = async (task: Task, selectedProcessId?: number) => { 
-        console.log('handleSaveTask recibe:', { task, selectedProcessId });
         try {
             const { data } = await createTask({
                 variables: {
@@ -339,7 +338,6 @@ export const usePlanification = () => {
                     },
                 },
             });
-            console.log("TAREA CREADA");
             if (!data?.createTask?.id) {
                 throw new Error("Task creation failed: ID is undefined.");
             }
@@ -402,7 +400,6 @@ export const usePlanification = () => {
             console.error("Error saving task:", error);
         }
         finally {
-            console.log("CERRANDO MODAL");
             if (isValleyManager) {
                 setIsPopupOpen(false);
             } else {
