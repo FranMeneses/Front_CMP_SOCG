@@ -262,7 +262,7 @@ export const usePlanification = () => {
      * @description Abre el modal de confirmación para eliminar una tarea
      * @param selectedProcessId ID del proceso filtrado
      */
-    const handleDeleteTask = async (selectedProcessId?: number) => {
+    const handleDeleteTask = async () => {
         try {
             await valleyTaskForm.handleDeleteTask(itemToDeleteId!);
             setIsDeleteTaskModalOpen(false);

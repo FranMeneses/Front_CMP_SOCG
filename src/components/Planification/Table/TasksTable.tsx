@@ -173,7 +173,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     };
 
     const deleteTaskAdapter = () => {
-        return handleDeleteTask(taskFiltersSelectedProcess?.id);
+        return handleDeleteTask();
     };
 
     const tasksToRender = filteredTasks;
