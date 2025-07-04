@@ -273,11 +273,11 @@ export const useComplianceForm = (
         if (formState.statusId === 11 && formState.memoSolpedType) {
             compliance = {
                 ...compliance,
-                memoSolpedType: formState.memoSolpedType,
-                memoAmount: formState.memoAmount,
-                solpedMemoSap: formState.solpedMemoSap,
-                solpedCECO: formState.memoSolpedType === "SOLPED" ? formState.solpedCECO : undefined,
-                solpedAccount: formState.memoSolpedType === "SOLPED" ? formState.solpedAccount : undefined,
+                memoSolpedType: Number(formState.memoSolpedType),
+                memoAmount: Number(formState.memoAmount),
+                solpedMemoSap: Number(formState.solpedMemoSap),
+                solpedCECO: formState.memoSolpedType === "SOLPED" ? Number(formState.solpedCECO) : undefined,
+                solpedAccount: formState.memoSolpedType === "SOLPED" ? Number(formState.solpedAccount) : undefined,
             };
         }
         // Agregar datos de HEM/HES si corresponde
@@ -333,7 +333,6 @@ export const useComplianceForm = (
         } finally {
             setIsUploading(false);
         }
-        console.log(compliance);
         onSave(compliance);
     };
 

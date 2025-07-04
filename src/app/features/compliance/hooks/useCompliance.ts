@@ -77,7 +77,7 @@ export const useCompliance = () => {
                     console.error("Error updating task status:", error);
                 }
             }
-        else if (compliance.statusId === 11) {
+        else if (compliance.statusId === 12) {
             try {
                 await updateCompliance({
                     variables: {
