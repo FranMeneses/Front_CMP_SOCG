@@ -4,7 +4,7 @@ import { useLazyQuery, useQuery } from "@apollo/client";
 import { GET_COMPLIANCE, GET_COMPLIANCE_STATUSES } from "@/app/api/compliance";
 import { IComplianceForm, IComplianceStatus } from "@/app/models/ICompliance";
 import { GET_ALL_DOCUMENT_TYPES, GET_DOCUMENT_BY_TASK_AND_TYPE } from "@/app/api/documents";
-import { ITipoDocumento } from "@/app/models/IDocuments";
+import { IDocumentList, ITipoDocumento } from "@/app/models/IDocuments";
 import { useDocumentsPage } from "../../documents/hooks/useDocumentsPage";
 import { FormData } from "../../documents/hooks/useDocumentForms";
 
@@ -27,6 +27,15 @@ interface ComplianceFormState {
     memoSolpedType?: "MEMO" | "SOLPED";
     transferFile?: File | null;
 }
+
+type ComplianceDocuments = {
+    formulario?: IDocumentList;
+    carta?: IDocumentList;
+    minuta?: IDocumentList;
+    autorizacion?: IDocumentList;
+    transferencia?: IDocumentList;
+    comprobante?: IDocumentList;
+  };
 
 export const useComplianceForm = (
     onSave: (compliance: Partial<IComplianceForm>) => void,
@@ -222,18 +231,18 @@ export const useComplianceForm = (
      * Función que maneja el guardado de los datos del formulario.
      * @description Esta función valida los campos requeridos y prepara los datos para ser enviados al servidor.
      */
-    const handleSave = async () => {
+    const handleSave = async (documents: ComplianceDocuments) => {
         let compliance = {};
         let document: FormData;
         let nextStatusId = formState.statusId;
         if (formState.statusId >= 7 && formState.statusId <= 12) {
             if (
-                (formState.statusId === 7 && formState.donationFormFile) ||
-                (formState.statusId === 8 && formState.cartaAporteFile) ||
-                (formState.statusId === 9 && formState.minutaFile) ||
-                (formState.statusId === 10 && formState.authorizationFile) ||
-                (formState.statusId === 11 && formState.transferPurchaseOrderFile) ||
-                (formState.statusId === 12 && formState.hesHem)
+                (formState.statusId === 7 && (formState.donationFormFile || documents.formulario)) ||
+                (formState.statusId === 8 && (formState.cartaAporteFile || documents.carta)) ||
+                (formState.statusId === 9 && (formState.minutaFile || documents.minuta)) ||
+                (formState.statusId === 10 && (formState.authorizationFile || documents.autorizacion)) ||
+                (formState.statusId === 11 && (formState.transferPurchaseOrderFile || documents.transferencia)) ||
+                (formState.statusId === 12 && (formState.hesHem || documents.comprobante))
             ) {
                 nextStatusId = formState.statusId + 1;
             }

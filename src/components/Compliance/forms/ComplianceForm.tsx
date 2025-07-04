@@ -258,7 +258,7 @@ export default function ComplianceForm({
                 {formState.statusId && formState.statusId >= 7 && formState.statusId <= 12 && (
                     <Button
                         variant="default"
-                        onClick={handleSave}
+                        onClick={() => handleSave(documents)}
                         disabled={!isFormValid() || isUploading}
                         className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                         data-test-id="save-button"
@@ -269,7 +269,7 @@ export default function ComplianceForm({
                 {(!formState.statusId || formState.statusId < 7 || formState.statusId > 12) && (
                     <Button
                         variant="default"
-                        onClick={handleSave}
+                        onClick={() => handleSave(documents)}
                         disabled={!isFormValid() || isUploading}
                         className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
                         data-test-id="save-button"
