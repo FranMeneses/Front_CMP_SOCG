@@ -1,13 +1,15 @@
 import React from "react";
 import { IUser } from "@/app/models/IAuth";
-import { ZoomIn } from "lucide-react";
+import { ZoomIn, Trash } from "lucide-react";
 
 interface UserTableProps {
     users: IUser[];
     onEditUser: (user: IUser) => void;
+    onDeleteUser: (userId: string) => void;
+    userRole: string;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => (
+const UserTable: React.FC<UserTableProps> = ({ users, onEditUser, onDeleteUser, userRole }) => (
     <div className="overflow-x-auto rounded-lg shadow font-[Helvetica]">
         <table className="w-full">
             <thead className="bg-gray-100">
@@ -36,13 +38,23 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEditUser }) => (
                                 {user.is_active ? "Activo" : "Inactivo"}
                             </span>
                         </td>
-                        <td className="px-4 py-2 text-center justify-center items-center flex">
-                            <ZoomIn
-                                onClick={() => onEditUser(user)}
-                                color="#082C4B"
-                                className="cursor-pointer items-center justify-center"
-                            >
-                            </ZoomIn>
+                        <td className="px-4 py-2 text-center">
+                            <div className="flex justify-center items-center gap-2">
+                                <ZoomIn
+                                    onClick={() => onEditUser(user)}
+                                    color="#082C4B"
+                                    className="cursor-pointer"
+                                    size={20}
+                                />
+                                {userRole === 'Admin' && (
+                                    <Trash
+                                        onClick={() => onDeleteUser(user.id_usuario)}
+                                        color="#082C4B"
+                                        className="cursor-pointer"
+                                        size={20}
+                                    />
+                                )}
+                            </div>
                         </td>
                     </tr>
                 ))}
