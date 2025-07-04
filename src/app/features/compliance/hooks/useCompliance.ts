@@ -77,6 +77,25 @@ export const useCompliance = () => {
                     console.error("Error updating task status:", error);
                 }
             }
+        else if (compliance.statusId === 11) {
+            try {
+                await updateCompliance({
+                    variables: {
+                        id: selectedCompliance?.id,
+                        input: {
+                            taskId: selectedCompliance?.task.id,
+                            statusId: compliance.statusId,
+                            valor: compliance.valor,
+                            solpedMemoSap: compliance.solpedMemoSap,
+                            ceco: compliance.ceco,
+                            cuenta: compliance.cuenta,
+                        }
+                    }
+                })
+            } catch (error) {
+                console.error("Error updating compliance (estado 11)", error);
+            }
+        }
         else {
             try {
                     await updateCompliance({
