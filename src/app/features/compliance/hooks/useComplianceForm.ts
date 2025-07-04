@@ -287,7 +287,7 @@ export const useComplianceForm = (
         if (formState.statusId === 12) {
             compliance = {
                 ...compliance,
-                hesHemSap: formState.hesHemSap,
+                hesHemSap: Number(formState.hesHemSap),
             };
         }
         // Subida de archivos según el estado
