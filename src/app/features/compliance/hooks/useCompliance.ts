@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client";
 import { ITask } from "@/app/models/ITasks";
 import { useComplianceData } from "./useComplianceData";
 import { useComplianceForm } from "./useComplianceForm";
-import { IComplianceForm } from "@/app/models/ICompliance";
+import { IComplianceForm, ComplianceFormState } from "@/app/models/ICompliance";
 import { UPDATE_COMPLIANCE } from "@/app/api/compliance";
 import { UPDATE_TASK } from "@/app/api/tasks";
 
@@ -49,7 +49,7 @@ export const useCompliance = () => {
      * @description Actualiza el cumplimiento de una tarea existente
      * @param compliance Cumplimiento de la tarea a actualizar
      */
-    const handleUpdateCompliance = async (compliance: IComplianceForm) => {
+    const handleUpdateCompliance = async (compliance: ComplianceFormState) => {
         if (compliance.statusId === 6) {
             try {
                 await updateCompliance({
@@ -85,10 +85,10 @@ export const useCompliance = () => {
                         input: {
                             taskId: selectedCompliance?.task.id,
                             statusId: compliance.statusId,
-                            valor: compliance.valor,
+                            valor: compliance.memoAmount,
                             solpedMemoSap: compliance.solpedMemoSap,
-                            ceco: compliance.ceco,
-                            cuenta: compliance.cuenta,
+                            ceco: compliance.solpedCECO,
+                            cuenta: compliance.solpedAccount,
                         }
                     }
                 })
