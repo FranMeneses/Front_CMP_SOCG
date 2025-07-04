@@ -5,7 +5,7 @@ import { useHooks } from "../../../app/features/hooks/useHooks";
 import ComplianceRow from "./ComplianceRow";
 import ComplianceModals from "../ComplianceModalForms";
 import ComplianceFilters from "../ComplianceFilters";
-import { ICompliance, IComplianceForm } from "@/app/models/ICompliance";
+import { ComplianceFormState, ICompliance } from "@/app/models/ICompliance";
 
 interface ComplianceTableProps {
     compliance: ICompliance[];
@@ -29,12 +29,14 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
 
     const { currentValley, userRole } = useHooks();
 
-    const handleUpdateComplianceWrapper = (partialCompliance: Partial<IComplianceForm>) => {
+    const handleUpdateComplianceWrapper = (partialCompliance: Partial<ComplianceFormState>) => {
         if (selectedCompliance) {
             const fullCompliance = {
                 ...selectedCompliance,
                 ...partialCompliance,
                 id: selectedCompliance.id,
+                name: selectedCompliance.task.name,
+                description: selectedCompliance.task.description,
                 task: selectedCompliance.task,
                 statusId: partialCompliance.statusId ?? selectedCompliance.statusId,
             };
