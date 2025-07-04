@@ -151,8 +151,7 @@ export default function ComplianceForm({
             case 13: // Resumen
                 return <ComplianceSummary 
                     formState={formState}
-                    cartaData={documents.carta}
-                    minutaData={documents.minuta}
+                    documents={documents}
                 />;
                 
             default:
