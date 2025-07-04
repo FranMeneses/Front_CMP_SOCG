@@ -113,7 +113,7 @@ export const useCompliance = () => {
                 console.error("Error updating compliance", error);
             }
             }
-        refetch();
+        await refetch();
         setIsComplianceModalOpen(false);
     }
 
@@ -152,6 +152,7 @@ export const useCompliance = () => {
         try {
             const complianceInfo = await complianceForm.handleGetCompliance(complianceId);
             setSelectedCompliance(complianceInfo);
+            console.log('selectedCompliance al abrir modal:', complianceInfo);
             setIsComplianceModalOpen(true);
         }
         catch (error) {

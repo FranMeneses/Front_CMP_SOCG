@@ -14,8 +14,7 @@ export const useComplianceData = () => {
     loading: allCompliancesLoading, 
     error: allCompliancesError,
     refetch: refetchAllTasks 
-  } = useQuery(GET_ALL_COMPLIANCES);
-;
+  } = useQuery(GET_ALL_COMPLIANCES, { fetchPolicy: 'network-only' });
 
   const error = allCompliancesError;
   const mainQueryLoading =  allCompliancesLoading;
