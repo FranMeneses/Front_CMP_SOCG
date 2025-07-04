@@ -216,11 +216,6 @@ export const useComplianceForm = (
                 transferFile: undefined,
             };
             
-            console.log("=== FORM STATE AL ABRIR MODAL DE EDICIÓN ===");
-            console.log("selectedCompliance:", selectedCompliance);
-            console.log("formState inicializado:", newFormState);
-            console.log("==========================================");
-            
             setFormState(newFormState);
         }
     }, [isEditing, selectedCompliance]);
