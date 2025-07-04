@@ -11,6 +11,14 @@ interface DocumentTableProps {
   documents: IDocumentList[];
 }
 
+// Utilidad para formatear fecha yyyy-mm-dd a dd-mm-yyyy
+const formatDate = (dateStr: string) => {
+  if (!dateStr) return 'N/A';
+  const [year, month, day] = dateStr.split('-');
+  if (!year || !month || !day) return dateStr;
+  return `${day}-${month}-${year}`;
+};
+
 export const DocumentTable = ({ documents }: DocumentTableProps) => {
   const { handleDownload } = useDocumentsRest();
   const { handleDeleteDocument } = useDocumentsGraph();
@@ -69,7 +77,7 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                       {doc.nombre_archivo ? doc.nombre_archivo : 'Sin nombre'}
                     </td>
                     <td className="px-4 py-3 text-center border-r border-gray-200 truncate">
-                      {doc.fecha_carga ? doc.fecha_carga : 'N/A'}
+                      {doc.fecha_carga ? formatDate(doc.fecha_carga as string) : 'N/A'}
                     </td>
                     <td className="px-4 py-3 text-center border-r border-gray-200">
                       {doc.tipo_doc.tipo_documento || 'N/A'}
