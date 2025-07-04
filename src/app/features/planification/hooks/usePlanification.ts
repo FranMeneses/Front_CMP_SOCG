@@ -323,6 +323,7 @@ export const usePlanification = () => {
      * @description Guarda una nueva tarea
      */
     const handleSaveTask = async (task: Task, selectedProcessId?: number) => { 
+        console.log('handleSaveTask recibe:', { task, selectedProcessId });
         try {
             const { data } = await createTask({
                 variables: {
@@ -338,7 +339,7 @@ export const usePlanification = () => {
                     },
                 },
             });
-
+            console.log("TAREA CREADA");
             if (!data?.createTask?.id) {
                 throw new Error("Task creation failed: ID is undefined.");
             }
@@ -396,13 +397,18 @@ export const usePlanification = () => {
                     return nuevo;
                 });
             }
-            // Siempre agregar la tarea a la lista global
             setTasksData((prev: ITask[]) => [...prev, newTask]);
         } catch (error) {
             console.error("Error saving task:", error);
         }
-
-        setIsPopupOpen(false);
+        finally {
+            console.log("CERRANDO MODAL");
+            if (isValleyManager) {
+                setIsPopupOpen(false);
+            } else {
+                setIsCommunicationModalOpen(false);
+            }
+        };
     };
 
     /**
