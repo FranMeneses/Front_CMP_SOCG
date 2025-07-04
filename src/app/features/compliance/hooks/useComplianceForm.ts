@@ -324,6 +324,7 @@ export const useComplianceForm = (
         } finally {
             setIsUploading(false);
         }
+        console.log(compliance);
         onSave(compliance);
     };
 
