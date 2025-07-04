@@ -30,7 +30,7 @@ export const useCompliance = () => {
         loading,
         error,
         activeFilter,
-        refetch,
+        // refetch,
     } = useComplianceData();
     
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
