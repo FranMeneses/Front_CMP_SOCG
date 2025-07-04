@@ -30,7 +30,7 @@ export const useCompliance = () => {
         loading,
         error,
         activeFilter,
-        // refetch,
+        refetch,
     } = useComplianceData();
     
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
@@ -99,21 +99,21 @@ export const useCompliance = () => {
         }
         else {
             try {
-                    await updateCompliance({
-                        variables: {
-                            id: selectedCompliance?.id,
-                            input: {
-                                taskId: selectedCompliance?.task.id,
-                                statusId: compliance.statusId,
-                            }
+                await updateCompliance({
+                    variables: {
+                        id: selectedCompliance?.id,
+                        input: {
+                            taskId: selectedCompliance?.task.id,
+                            statusId: compliance.statusId,
                         }
-                    })
-                }catch (error) {
-                    console.error("Error updating compliance", error);
-                }
+                    }
+                })
+            }catch (error) {
+                console.error("Error updating compliance", error);
             }
-        // refetch();
-        // setIsComplianceModalOpen(false);
+            }
+        refetch();
+        setIsComplianceModalOpen(false);
     }
 
     /**
