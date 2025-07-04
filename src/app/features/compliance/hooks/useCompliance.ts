@@ -79,6 +79,7 @@ export const useCompliance = () => {
             }
         else if (compliance.statusId === 12) {
             try {
+                console.log(compliance);
                 await updateCompliance({
                     variables: {
                         id: selectedCompliance?.id,
