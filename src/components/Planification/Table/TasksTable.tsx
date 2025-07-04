@@ -76,7 +76,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
 
         handleCreateComplianceManager,
         detailedTasks,
-        isLocalEdit,
         filteredTasks,
     } = usePlanification();
 

@@ -48,8 +48,7 @@ export default function ComplianceForm({
         handleGetFormulario,
         handleGetAutorizacion,
         handleGetTransferencia,
-        handleGetMemo,
-        handleGetSolped,
+        handleGetComprobante,
     } = useComplianceForm(
         onSave, 
         isEditing, 
@@ -62,8 +61,7 @@ export default function ComplianceForm({
         minuta: undefined as IDocumentList | undefined,
         autorizacion: undefined as IDocumentList | undefined,
         transferencia: undefined as IDocumentList | undefined,
-        memo: undefined as IDocumentList | undefined,
-        solped: undefined as IDocumentList | undefined,
+        comprobante: undefined as IDocumentList | undefined
     });
 
     useEffect(() => {
@@ -75,16 +73,14 @@ export default function ComplianceForm({
                     minutaResult,
                     autorizacionResult,
                     transferenciaResult,
-                    memoResult,
-                    solpedResult
+                    comprobanteResult
                 ] = await Promise.all([
                     handleGetFormulario(),
                     handleGetCarta(),
                     handleGetMinuta(),
                     handleGetAutorizacion(),
                     handleGetTransferencia(),
-                    handleGetMemo(),
-                    handleGetSolped()
+                    handleGetComprobante()
                 ]);
                 setDocuments({
                     formulario: formularioResult,
@@ -92,8 +88,7 @@ export default function ComplianceForm({
                     minuta: minutaResult,
                     autorizacion: autorizacionResult,
                     transferencia: transferenciaResult,
-                    memo: memoResult,
-                    solped: solpedResult,
+                    comprobante: comprobanteResult
                 });
             }
         };
@@ -230,20 +225,22 @@ export default function ComplianceForm({
                             data-test-id="compliance-status-dropdown"
                         />
                     </div>
-                    <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4 col-span-2">
-                        <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
-                            <FileText className="h-4 w-4 mr-2" />
-                            Subir Formulario de Donaciones
-                        </h3>
-                        <div className="flex items-center">
-                            <FileUploadButton onFileChange={handleDonationFormChange} disabled={false} />
-                            {formState.donationFormFile && (
-                                <span className="ml-2 text-sm text-gray-600">
-                                    {formState.donationFormFile.name}
-                                </span>
-                            )}
-                        </div>
-                    </div>
+                    {!documents.formulario && (
+                      <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4 col-span-2">
+                          <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                              <FileText className="h-4 w-4 mr-2" />
+                              Subir Formulario de Donaciones
+                          </h3>
+                          <div className="flex items-center">
+                              <FileUploadButton onFileChange={handleDonationFormChange} disabled={false} />
+                              {formState.donationFormFile && (
+                                  <span className="ml-2 text-sm text-gray-600">
+                                      {formState.donationFormFile.name}
+                                  </span>
+                              )}
+                          </div>
+                      </div>
+                    )}
                 </div>
             </div>
 

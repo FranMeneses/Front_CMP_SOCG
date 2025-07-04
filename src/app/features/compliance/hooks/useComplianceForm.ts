@@ -363,7 +363,7 @@ export const useComplianceForm = (
      */
     const handleGetFormulario = async () => {
         try {
-            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Donaciones" || d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "";
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "";
             const { data } = await getDocument({
                 variables: {
                     taskId: selectedCompliance?.task.id || "",
@@ -416,11 +416,11 @@ export const useComplianceForm = (
     };
 
     /**
-     * Función que obtiene el Memo asociado a la tarea de cumplimiento.
+     * 
      */
-    const handleGetMemo = async () => {
+    const handleGetComprobante = async () => {
         try {
-            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "MEMO")?.id_tipo_documento || "";
+            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Comprobante transferencia/HES/HEM")?.id_tipo_documento || "";
             const { data } = await getDocument({
                 variables: {
                     taskId: selectedCompliance?.task.id || "",
@@ -429,29 +429,10 @@ export const useComplianceForm = (
             });
             return data.documentByTaskAndType;
         } catch (error) {
-            console.error("Error al obtener MEMO:", error);
+            console.error("Error al obtener Comprobante transferencia/HES/HEM:", error);
             return null;
         }
-    };
-
-    /**
-     * Función que obtiene la SOLPED asociada a la tarea de cumplimiento.
-     */
-    const handleGetSolped = async () => {
-        try {
-            const tipo = documentsType.find((d: ITipoDocumento) => d.tipo_documento === "SOLPED")?.id_tipo_documento || "";
-            const { data } = await getDocument({
-                variables: {
-                    taskId: selectedCompliance?.task.id || "",
-                    documentType: tipo
-                }
-            });
-            return data.documentByTaskAndType;
-        } catch (error) {
-            console.error("Error al obtener SOLPED:", error);
-            return null;
-        }
-    };
+    }
 
     return {
         handleInputChange,
@@ -471,8 +452,7 @@ export const useComplianceForm = (
         handleGetFormulario,
         handleGetAutorizacion,
         handleGetTransferencia,
-        handleGetMemo,
-        handleGetSolped,
+        handleGetComprobante,
         formState,
         valleysName,
         faenasName,
