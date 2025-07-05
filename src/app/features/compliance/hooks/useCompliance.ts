@@ -50,6 +50,7 @@ export const useCompliance = () => {
      * @param compliance Cumplimiento de la tarea a actualizar
      */
     const handleUpdateCompliance = async (compliance: ComplianceFormState) => {
+        console.log('handleUpdateCompliance - compliance recibido:', compliance);
         if (compliance.statusId === 13) {
             try {
                 await updateCompliance({
@@ -77,7 +78,7 @@ export const useCompliance = () => {
                 catch (error) {
                     console.error("Error updating task status:", error);
                 }
-            }
+        }
         else if (compliance.statusId === 12) {
             try {
                 console.log(compliance);
