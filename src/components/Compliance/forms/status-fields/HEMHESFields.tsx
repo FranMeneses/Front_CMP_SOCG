@@ -18,7 +18,6 @@ interface HemHesFieldsProps {
 export default function HemHesFields({
     formState,
     handleInputChange,
-    handleTransferFileChange,
     handleHesHemFileChange,
     documents,
 }: HemHesFieldsProps) {
@@ -37,10 +36,10 @@ export default function HemHesFields({
                 {!formState.solpedCECO && (
                     <>
                         <div className="flex items-center mb-3">
-                            <FileUploadButton onFileChange={handleTransferFileChange} disabled={false} />
-                            {formState.transferFile && (
+                            <FileUploadButton onFileChange={handleHesHemFileChange} disabled={false} />
+                            {formState.hesHem && (
                                 <span className="ml-2 text-sm text-gray-600">
-                                    {formState.transferFile.name}
+                                    {formState.hesHem.name}
                                 </span>
                             )}
                         </div>
