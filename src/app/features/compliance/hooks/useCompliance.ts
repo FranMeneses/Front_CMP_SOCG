@@ -50,7 +50,13 @@ export const useCompliance = () => {
      * @param compliance Cumplimiento de la tarea a actualizar
      */
     const handleUpdateCompliance = async (compliance: ComplianceFormState) => {
+        console.log("🚀 handleUpdateCompliance llamado con:", {
+            statusId: compliance.statusId,
+            selectedComplianceId: selectedCompliance?.id,
+            selectedTaskId: selectedCompliance?.task.id
+        });
         if (compliance.statusId === 13) {
+            console.log("🔄 Actualizando compliance a estado 13...");
             try {
                 await updateCompliance({
                         variables: {
@@ -62,21 +68,31 @@ export const useCompliance = () => {
                             }
                         }
                     })
-                }catch (error) {
-                    console.error("Error updating compliance", error);
-                }
-                try {
-                    await updateTask({
-                        variables: {
-                            id: selectedCompliance?.task.id,
-                            input: {
-                                statusId: (selectedCompliance?.task?.statusId ?? 0) + 1,
-                            }
-                        }})
-                }
-                catch (error) {
-                    console.error("Error updating task status:", error);
-                }
+                console.log("✅ Compliance actualizado exitosamente");
+            }catch (error) {
+                console.error("❌ Error updating compliance", error);
+            }
+            
+            console.log("🔄 Actualizando tarea...", {
+                taskId: selectedCompliance?.task.id,
+                currentStatus: selectedCompliance?.task?.statusId,
+                newStatus: (selectedCompliance?.task?.statusId ?? 0) + 1
+            });
+            
+            try {
+                const result = await updateTask({
+                    variables: {
+                        id: selectedCompliance?.task.id,
+                        input: {
+                            statusId: (selectedCompliance?.task?.statusId ?? 0) + 1,
+                        }
+                    }
+                })
+                console.log("✅ Tarea actualizada exitosamente:", result);
+            }
+            catch (error) {
+                console.error("❌ Error updating task status:", error);
+            }
         }
         else if (compliance.statusId === 12) {
             try {
