@@ -15,10 +15,6 @@ const ComplianceRow: React.FC<ComplianceRowProps> = ({
   handleSeeInformation,
   userRole
 }) => {
-
-  // const { handleRemainingDays } = useComplianceTable();
-  
-  console.log('ComplianceRow - renderizando compliance:', compliance, 'statusId:', compliance.statusId);
   
   return (
     <tr className='font-[Helvetica] hover:bg-gray-50 transition-colors duration-200 border-b border-gray-200'>

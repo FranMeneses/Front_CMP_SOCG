@@ -50,7 +50,6 @@ export const useCompliance = () => {
      * @param compliance Cumplimiento de la tarea a actualizar
      */
     const handleUpdateCompliance = async (compliance: ComplianceFormState) => {
-        console.log('handleUpdateCompliance - compliance recibido:', compliance);
         if (compliance.statusId === 13) {
             try {
                 await updateCompliance({
@@ -81,7 +80,6 @@ export const useCompliance = () => {
         }
         else if (compliance.statusId === 12) {
             try {
-                console.log(compliance);
                 await updateCompliance({
                     variables: {
                         id: selectedCompliance?.id,
@@ -153,7 +151,6 @@ export const useCompliance = () => {
         try {
             const complianceInfo = await complianceForm.handleGetCompliance(complianceId);
             setSelectedCompliance(complianceInfo);
-            console.log('selectedCompliance al abrir modal:', complianceInfo);
             setIsComplianceModalOpen(true);
         }
         catch (error) {

@@ -377,7 +377,6 @@ export const useComplianceForm = (
         }
         // Solo ejecuta el update si la subida fue exitosa (o no era necesaria)
         if (uploadOk) {
-            console.log('handleSave - compliance a guardar:', compliance);
             onSave(compliance);
         } else {
             // Aquí podrías mostrar un mensaje de error en la UI si quieres
