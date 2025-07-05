@@ -49,8 +49,8 @@ export default function HemHesFields({
                             <input
                                 type="number"
                                 className="form-input"
-                                value={formState.transferNumber || ""}
-                                onChange={e => handleInputChange("transferNumber", Number(e.target.value))}
+                                value={formState.hesHemSap || ""}
+                                onChange={e => handleInputChange("hesHemSap", Number(e.target.value))}
                                 min={0}
                             />
                         </div>
