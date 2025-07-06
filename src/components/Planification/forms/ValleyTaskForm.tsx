@@ -73,24 +73,26 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
         </div>
 
         {/* Proceso y Ubicación */}
-        <div className="bg-gray-50 p-4 rounded-md">
-          <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
-            <Clipboard className="h-4 w-4 mr-2" />
-            Proceso y Ubicación
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-xs text-gray-500 required">Valle</label>
-            <DropdownMenu
-              buttonText="Seleccionar Valle"
-              items={dropdownItems.valleyNames}
-              onSelect={(value) => handleInputChange("valley", value)}
-              isInModal={true}
-              selectedValue={infoTask?.task.valley?.name? dropdownItems.valleyNames[infoTask.task.valley.id - 1] : undefined}
-            />
+        {userRole !== "Jefe Relacionamiento VH" && userRole !== "Jefe Relacionamiento VE" && userRole !== "Jefe Relacionamiento VC" && (
+          <div className="bg-gray-50 p-4 rounded-md">
+            <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+              <Clipboard className="h-4 w-4 mr-2" />
+              Proceso y Ubicación
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs text-gray-500 required">Valle</label>
+              <DropdownMenu
+                buttonText="Seleccionar Valle"
+                items={dropdownItems.valleyNames}
+                onSelect={(value) => handleInputChange("valley", value)}
+                isInModal={true}
+                selectedValue={infoTask?.task.valley?.name? dropdownItems.valleyNames[infoTask.task.valley.id - 1] : undefined}
+              />
+            </div>
+            </div>
           </div>
-          </div>
-        </div>
+        )}
 
         {/* Información Tarea */}
         <div className="bg-gray-50 p-4 rounded-md">
