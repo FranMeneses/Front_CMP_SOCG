@@ -192,7 +192,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       {typeof task.processId === 'number' && [1, 2, 3].includes(task.processId) && 'task' in infoTask ? (
                         <>
                           <div className="mb-3">
-                            <strong>Descripción:</strong> {'task' in infoTask ? (infoTask.task?.description || ('description' in infoTask ? infoTask.description : '-') || '-') : '-'}
+                            <strong>Descripción:</strong> {(() => {
+                              if ('task' in infoTask && infoTask.task?.description) {
+                                return infoTask.task.description;
+                              } else if ('description' in infoTask && infoTask.description) {
+                                return infoTask.description;
+                              }
+                              return '-';
+                            })()}
                           </div>
                           <div className="mb-3">
                             <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${Number(taskProgressMap[task.id]).toFixed(2)}%` : "-"}
