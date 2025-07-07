@@ -228,8 +228,8 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                   data-test-id="task-state-dropdown"
                   disabled={
                     isManager ||
-                    formState.state === "En Cumplimiento" ||
-                    infoTask?.task?.statusId === dropdownItems.state.findIndex((state: string) => state === "En Cumplimiento") + 1
+                    formState.state === "Due Diligence" ||
+                    infoTask?.task?.statusId === dropdownItems.state.findIndex((state: string) => state === "Due Diligence") + 1
                   }
                 />
                 {error && <p className="text-sm text-red-500 mt-1">{error}</p>}

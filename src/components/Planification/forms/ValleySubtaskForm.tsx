@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useValleySubtasksForm } from "@/app/features/planification/hooks/useValleySubtasksForm";
+import DropdownMenu from "@/components/Dropdown";
 import { ISubtask } from "@/app/models/ISubtasks";
 import { useHooks } from "@/app/features/hooks/useHooks";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
-import { Info, Clipboard } from "lucide-react";
+import { Info, Clipboard, FileText } from "lucide-react";
 
 interface ValleySubtaskFormProps {
     onSave: (subtask: ExtendedSubtaskValues) => void;
@@ -16,6 +17,7 @@ interface ValleySubtaskFormProps {
 export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask }: ValleySubtaskFormProps) {
     const {
         subtaskFormState,
+        dropdownItems,
         dateError,
         handleSubtaskInputChange,
         handleSaveSubtask,
@@ -138,6 +140,31 @@ export default function ValleySubtaskForm({ onSave, onCancel, isEditing, subtask
                     )}
                 </div>
             </div>
+
+            {/* Estado y Prioridad */}
+            {isEditing && (
+            <div className="bg-gray-50 p-4 rounded-md mb-6">
+                <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
+                    <FileText className="h-4 w-4 mr-2" />
+                    Estado
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   
+                        <div className="space-y-1">
+                            <label className="text-xs text-gray-500">Estado</label>
+                            <DropdownMenu
+                                buttonText="Seleccione Estado"
+                                items={dropdownItems.subtaskState}
+                                onSelect={(value) => { handleSubtaskInputChange("state", value) }}
+                                isInModal={true}
+                                selectedValue={dropdownItems.subtaskState[(subtask?.status?.id ?? 1) - 1]}
+                                data-test-id="subtask-state-dropdown"
+                                disabled={isManager}
+                            />
+                        </div>
+                </div>
+            </div>
+            )}
 
             <div className="flex justify-end space-x-2">
                 <Button

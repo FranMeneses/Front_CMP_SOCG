@@ -158,7 +158,7 @@ export default function CommunicationForm({
                                     }}
                                     selectedValue={dropdownItems.statuses[selectedTask?.statusId ? selectedTask.statusId - 1 : 0]}
                                     data-test-id="communication-status-dropdown"
-                                    disabled={isManager || selectedTask?.status?.name === "En Cumplimiento" || selectedTask?.statusId === dropdownItems.statuses.findIndex((state: string) => state === "En Cumplimiento") + 1}
+                                    disabled={isManager || selectedTask?.status?.name === "Due Diligence" || selectedTask?.statusId === dropdownItems.statuses.findIndex((state: string) => state === "Due Diligence") + 1}
                                 />
                                 {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
                             </div>
