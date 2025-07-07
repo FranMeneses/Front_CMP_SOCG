@@ -70,17 +70,6 @@ const UserForm: React.FC<UserFormProps> = ({ userData, onSave, onCancel }) => {
                             required
                         />
                     </div>
-                    <div>
-                        <label className="block text-xs font-medium mb-1">Estado</label>
-                        <DropdownMenu
-                            buttonText={formState.is_active ? "Activo" : "Inactivo"}
-                            isInModal={true}
-                            items={["Activo", "Inactivo"]}
-                            onSelect={(value) => handleInputChange('is_active', (value === "Activo").toString())}
-                            selectedValue={formState.is_active ? "Activo" : "Inactivo"}
-                            data-test-id="users-status-dropdown"
-                        />
-                    </div>
                 </div>
                 <div className="flex justify-end space-x-2 mt-8">
                     <Button
