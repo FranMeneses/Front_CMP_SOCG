@@ -97,7 +97,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
                 </div>
                 {/* Cuadro del contador de tareas */}
                 {taskCount !== undefined && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
+                    <div className="bg-blue-50 border border-blue-200 rounded-md h-9 px-4 py-2 shadow-sm flex items-center">
                         <span className="text-sm font-medium text-blue-800">
                             Tareas asignadas: <span className="font-bold">{taskCount}</span>
                         </span>
