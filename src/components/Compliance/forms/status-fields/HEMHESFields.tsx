@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 import { FileUploadButton } from "@/components/Documents/FileUploadButton";
 import DocumentsPreview from "./DocumentsPreview";
 import { ComplianceFormState } from "@/app/models/ICompliance";
+import { useState } from "react";
 
 interface HemHesFieldsProps {
     formState: ComplianceFormState;
@@ -17,27 +18,28 @@ interface HemHesFieldsProps {
 export default function HemHesFields({
     formState,
     handleInputChange,
-    handleTransferFileChange,
     handleHesHemFileChange,
     documents,
 }: HemHesFieldsProps) {
+    const [hesHemType, setHesHemType] = useState<'HEM' | 'HES'>('HEM');
+
     return (
         <>
             <DocumentsPreview documents={documents} formState={formState} />
             <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-4">
                 <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
                     <FileText className="h-4 w-4 mr-2" />
-                    {formState.memoSolpedType === "MEMO"
-                        ? "Comprobante de Transferencia"
-                        : "HEM/HES de SAP"}
+                    {formState.solpedCECO
+                        ? "HEM/HES de SAP"
+                        : "Comprobante de Transferencia"}
                 </h3>
-                {formState.memoSolpedType === "MEMO" && (
+                {!formState.solpedCECO && (
                     <>
                         <div className="flex items-center mb-3">
-                            <FileUploadButton onFileChange={handleTransferFileChange} disabled={false} />
-                            {formState.transferFile && (
+                            <FileUploadButton onFileChange={handleHesHemFileChange} disabled={false} />
+                            {formState.hesHem && (
                                 <span className="ml-2 text-sm text-gray-600">
-                                    {formState.transferFile.name}
+                                    {formState.hesHem.name}
                                 </span>
                             )}
                         </div>
@@ -46,42 +48,54 @@ export default function HemHesFields({
                             <input
                                 type="number"
                                 className="form-input"
-                                value={formState.transferNumber || ""}
-                                onChange={e => handleInputChange("transferNumber", Number(e.target.value))}
+                                value={formState.hesHemSap || ""}
+                                onChange={e => handleInputChange("hesHemSap", Number(e.target.value))}
                                 min={0}
                             />
                         </div>
                     </>
                 )}
-                {formState.memoSolpedType === "SOLPED" && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-xs font-medium mb-1">HEM SAP</label>
-                            <input
-                                type="number"
-                                className="form-input"
-                                value={formState.hesHemSap || ""}
-                                onChange={e => handleInputChange("hesHemSap", Number(e.target.value))}
-                                min={0}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">HES SAP</label>
-                            <input
-                                type="number"
-                                className="form-input"
-                                value={formState.hesHemSap || ""}
-                                onChange={e => handleInputChange("hesHemSap", Number(e.target.value))}
-                                min={0}
-                            />
-                        </div>
-                        <div className="col-span-2">
+                {formState.solpedCECO && (
+                    <div className="space-y-4">
+                        <div className="flex items-center mb-3">
                             <FileUploadButton onFileChange={handleHesHemFileChange} disabled={false} />
                             {formState.hesHem && (
                                 <span className="ml-2 text-sm text-gray-600">
                                     {formState.hesHem.name}
                                 </span>
                             )}
+                        </div>
+                        <div className="flex gap-4">
+                            <label className="flex items-center gap-1 text-xs">
+                                <input
+                                    type="radio"
+                                    name="hesHemType"
+                                    value="HEM"
+                                    checked={hesHemType === "HEM"}
+                                    onChange={() => setHesHemType("HEM")}
+                                />
+                                HEM
+                            </label>
+                            <label className="flex items-center gap-1 text-xs">
+                                <input
+                                    type="radio"
+                                    name="hesHemType"
+                                    value="HES"
+                                    checked={hesHemType === "HES"}
+                                    onChange={() => setHesHemType("HES")}
+                                />
+                                HES
+                            </label>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium mb-1">{hesHemType}</label>
+                            <input
+                                type="number"
+                                className="form-input"
+                                value={formState.hesHemSap || ""}
+                                onChange={e => handleInputChange("hesHemSap", Number(e.target.value))}
+                                min={0}
+                            />
                         </div>
                     </div>
                 )}

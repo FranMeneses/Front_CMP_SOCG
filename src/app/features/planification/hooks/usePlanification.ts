@@ -53,7 +53,6 @@ export const usePlanification = () => {
         handleFilterClick,
         handleFilterByProcess,
         setDetailedTasks,
-        setTasksData,
     } = useTasksData(currentValley?.id ?? undefined, userRole, isLocalEdit, selectedProcessId);
 
     const valleyTaskForm = useValleyTaskForm(() => {}, currentValley?.id.toString() || "");
@@ -128,10 +127,9 @@ export const usePlanification = () => {
     /**
      * Función para guardar una nueva tarea 
      * @param task Tarea a guardar
-     * @param selectedProcessId ID del proceso filtrado
      * @description Guarda una nueva tarea
      */
-    const handleSaveCommunication = async (task: ITask, selectedProcessId?: number) => {
+    const handleSaveCommunication = async (task: ITask) => {
         try {
             const { data } = await createTask({
                 variables: {
@@ -156,38 +154,11 @@ export const usePlanification = () => {
                     },
                 });
             }
-            const newTask = {
-                id: data.createTask.id,
-                name: task.name ?? '',
-                description: task.description ?? '',
-                valleyId: task.valleyId,
-                faenaId: task.faenaId,
-                statusId: task.statusId,
-                processId: task.processId,
-                applies: task.applies,
-                beneficiaryId: task.beneficiaryId,
-                status: { id: task.statusId, name: "NO iniciada", percentage: 0 },
-                budget: 0,
-                expense: 0,
-                startDate: '',
-                endDate: '',
-                finishedDate: '',
-            } as ITaskDetails;
-            let cumpleFiltro = true;
-            if (typeof activeFilter !== 'undefined' && activeFilter !== null) {
-                cumpleFiltro = cumpleFiltro && (newTask.status?.name === activeFilter);
+            // Refresca la lista de tareas después de crear
+            await refetch();
+            if (selectedProcess && selectedProcess.id) {
+                await handleFilterByProcess(selectedProcess.id);
             }
-            if (typeof selectedProcessId !== 'undefined' && selectedProcessId !== null) {
-                cumpleFiltro = cumpleFiltro && (newTask.processId === selectedProcessId);
-            }
-            if (cumpleFiltro) {
-                setDetailedTasks((prev: ITaskDetails[]) => {
-                    const nuevo = [...prev, newTask];
-                    return nuevo;
-                });
-            }
-            // Siempre agregar la tarea a la lista global
-            setTasksData((prev: ITask[]) => [...prev, newTask]);
         }catch (error) {
             console.error("Error saving communication task:", error);
         }
@@ -319,10 +290,9 @@ export const usePlanification = () => {
     /**
      * Función para guardar una nueva tarea
      * @param task Tarea a guardar
-     * @param selectedProcessId ID del proceso filtrado
      * @description Guarda una nueva tarea
      */
-    const handleSaveTask = async (task: Task, selectedProcessId?: number) => { 
+    const handleSaveTask = async (task: Task) => { 
         try {
             const { data } = await createTask({
                 variables: {
@@ -365,37 +335,11 @@ export const usePlanification = () => {
                     },
                 });
             }
-            const newTask = {
-                id: data.createTask.id,
-                name: task.name ?? '',
-                description: task.description ?? '',
-                valleyId: Number(task.valley),
-                faenaId: Number(task.faena),
-                statusId: 1,
-                processId: Number(task.process),
-                applies: task.compliance,
-                beneficiaryId: task.beneficiary ? Number(task.beneficiary) : undefined,
-                status: { id: 1, name: "NO iniciada", percentage: 0 },
-                budget: 0,
-                expense: 0,
-                startDate: '',
-                endDate: '',
-                finishedDate: '',
-            } as ITaskDetails;
-            let cumpleFiltro = true;
-            if (typeof activeFilter !== 'undefined' && activeFilter !== null) {
-                cumpleFiltro = cumpleFiltro && (newTask.status?.name === activeFilter);
+            // Refresca la lista de tareas después de crear
+            await refetch();
+            if (selectedProcess && selectedProcess.id) {
+                await handleFilterByProcess(selectedProcess.id);
             }
-            if (typeof selectedProcessId !== 'undefined' && selectedProcessId !== null) {
-                cumpleFiltro = cumpleFiltro && (newTask.processId === selectedProcessId);
-            }
-            if (cumpleFiltro) {
-                setDetailedTasks((prev: ITaskDetails[]) => {
-                    const nuevo = [...prev, newTask];
-                    return nuevo;
-                });
-            }
-            setTasksData((prev: ITask[]) => [...prev, newTask]);
         } catch (error) {
             console.error("Error saving task:", error);
         }

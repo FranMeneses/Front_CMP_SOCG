@@ -9,29 +9,37 @@ import SubtasksTable from "./SubtasksTable";
 import TaskFilters from "./TaskFilters";
 import TaskTableHeader from "./TaskTableHeaders";
 import TaskModals from "../TaskModalForms";
-import { useTaskFilters } from "@/app/features/planification/hooks/useTaskFilters";
 import { ITaskForm } from "@/app/models/ICommunicationsForm";
 import { ExtendedSubtaskValues } from "@/app/models/ISubtaskForm";
 import { Task } from "@/app/models/ITaskForm";
 
 interface TasksTableProps {
     subtasks: ISubtask[];
-    taskStates?: string[];  
-    onFilterClick?: (filter: string) => void;  
-    activeFilter?: string | null; 
+    taskStates?: string[];
+    filteredTasks: ITaskDetails[];
     selectedProcess?: { id: number, name: string } | null;
-    setSelectedProcess?: (process: { id: number, name: string } | null) => void;
+    activeStatusFilter?: string | null;
+    isLateFilterActive?: boolean;
+    handleProcessFilterChange?: (item: string) => void;
+    handleStatusFilterChange?: (statusName: string) => void;
+    handleLateFilterClick?: () => void;
 }
 
 const TasksTable: React.FC<TasksTableProps> = ({ 
     subtasks,
     taskStates,
+    filteredTasks,
+    selectedProcess = null,
+    activeStatusFilter = null,
+    isLateFilterActive = false,
+    handleProcessFilterChange = () => {},
+    handleStatusFilterChange = () => {},
+    handleLateFilterClick = () => {}
 }) => {
     const { 
         getRemainingDays,
         getRemainingSubtaskDays,
         formatDate,
-
         handleSeeInformation, 
         handleGetSubtask,
         setIsPopupOpen, 
@@ -45,7 +53,6 @@ const TasksTable: React.FC<TasksTableProps> = ({
         handleSaveTask,
         setIsCommunicationModalOpen,
         setIsPopupPlanificationOpen,
-
         isPopupOpen, 
         isPopupPlanificationOpen,
         isPopupSubtaskOpen,
@@ -59,67 +66,28 @@ const TasksTable: React.FC<TasksTableProps> = ({
         isDeleteSubtaskModalOpen,
         allProcesses,
         localSubtasks,
-
-        handleFilterByProcess,
         setIsDeleteTaskModalOpen,
         setIsDeleteSubtaskModalOpen,
         setItemToDeleteId,
         handleDeleteTask,
         handleDeleteSubtask,
-
         handleCreateTask,
         handleUploadPlanification,
-
         handleSaveCommunication,
         handleUpdateCommunication,
         handleCancelCommunication,
-
         handleCreateComplianceManager,
-        detailedTasks,
-        filteredTasks,
     } = usePlanification();
 
     const { currentValley, userRole } = useHooks();
 
-    const sortedDetailedTasks = React.useMemo(() => {
-        return [...detailedTasks].sort((a: ITaskDetails, b: ITaskDetails) => {
-            const aCompleted = a.status?.name === 'Completada';
-            const bCompleted = b.status?.name === 'Completada';
-            const aCanceled = a.status?.name === 'Cancelada';
-            const bCanceled = b.status?.name === 'Cancelada';
-                
-            if (a.endDate && a.endDate !== '-' && (b.endDate === '-' || !b.endDate)) return -1;
-            if (b.endDate && b.endDate !== '-' && (a.endDate === '-' || !a.endDate)) return 1;
-                
-            if (a.endDate && a.endDate !== '-' && b.endDate && b.endDate !== '-') 
-                return a.endDate.localeCompare(b.endDate);
-                
-            if (aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
-            if (!aCompleted && bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
-                
-            if (aCanceled && !bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return -1;
-            if (!aCanceled && bCanceled && !aCompleted && !bCompleted && (a.endDate === '-' || !a.endDate) && (b.endDate === '-' || !b.endDate)) return 1;
-                
-            return 0;
-        });
-    }, [detailedTasks]);
-    
-    const { 
-        selectedProcess: taskFiltersSelectedProcess,
-        activeStatusFilter,
-        isLateFilterActive,
-        handleProcessFilterChange,
-        handleStatusFilterChange,
-        handleLateFilterClick
-    } = useTaskFilters(sortedDetailedTasks, allProcesses, handleFilterByProcess);
-
     const actualTaskState = taskStates || taskState;
     const handleLocalFilterClick = (filter: string) => {
-        handleStatusFilterChange(filter);
+        if (handleStatusFilterChange) handleStatusFilterChange(filter);
     };
 
     const saveCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
-        return handleSaveCommunication(task as ITask, taskFiltersSelectedProcess?.id);
+        return handleSaveCommunication(task as ITask);
     };
 
     const updateCommunicationAdapter = (task: Partial<ITaskForm> | ITask) => {
@@ -169,7 +137,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
     const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subtasks;
 
     const saveTaskAdapter = (task: Task) => {
-        return handleSaveTask(task, taskFiltersSelectedProcess?.id);
+        return handleSaveTask(task);
     };
 
     const deleteTaskAdapter = () => {
@@ -184,7 +152,7 @@ const TasksTable: React.FC<TasksTableProps> = ({
                 <TaskTableHeader 
                     userRole={userRole}
                     allProcesses={allProcesses}
-                    selectedProcess={taskFiltersSelectedProcess}
+                    selectedProcess={selectedProcess}
                     handleProcessFilterChange={handleProcessFilterChange}
                     handleCreateTask={handleCreateTask}
                     handleUploadPlanification={handleUploadPlanification}

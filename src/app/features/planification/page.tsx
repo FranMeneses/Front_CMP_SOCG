@@ -6,8 +6,8 @@ import TasksTable from "@/components/Planification/Table/TasksTable";
 import { usePlanification } from "./hooks/usePlanification";
 import { useHooks } from "../hooks/useHooks";
 import Image from "next/image";
-import { ITaskDetails } from "@/app/models/ITasks";
-import { ISubtask } from "@/app/models/ISubtasks";
+import { useTaskFilters } from "./hooks/useTaskFilters";
+import { useState } from "react";
 
 export default function Planification() {
     const {
@@ -18,10 +18,8 @@ export default function Planification() {
         detailedTasks,
         taskState,         
         localSubtasks,
-        handleFilterClick, 
-        activeFilter,      
-        selectedProcess,
-        setSelectedProcess,
+        handleFilterByProcess,
+        allProcesses,
     } = usePlanification();
 
     const { userRole, handleLogout } = useHooks();
@@ -38,6 +36,19 @@ export default function Planification() {
     }
 
     const subtasksToUse = localSubtasks && localSubtasks.length > 0 ? localSubtasks : subTasks;    
+
+    // Estado global para el proceso seleccionado
+    const [selectedProcess, setSelectedProcess] = useState<{id: number, name: string} | null>(null);
+
+    // Centralizar la lógica de filtros aquí
+    const {
+        filteredTasks,
+        activeStatusFilter,
+        isLateFilterActive,
+        handleProcessFilterChange,
+        handleStatusFilterChange,
+        handleLateFilterClick
+    } = useTaskFilters(detailedTasks, allProcesses, handleFilterByProcess, selectedProcess, setSelectedProcess);
 
     if (loading) {
         return (
@@ -83,19 +94,22 @@ export default function Planification() {
                                 <h1 className="text-3xl font-bold">PLANIFICACIÓN</h1>
                             </div>
                             <TasksTable
-                            key={`tasks-table-${detailedTasks.length}-${subtasksToUse.length}-${JSON.stringify(detailedTasks.map((t: ITaskDetails) => t.id))}-${JSON.stringify(subtasksToUse.map((s: ISubtask) => s.id))}`}
-                            subtasks={subtasksToUse}
-                            taskStates={taskState}
-                            onFilterClick={handleFilterClick}
-                            activeFilter={activeFilter}
-                            selectedProcess={selectedProcess}
-                            setSelectedProcess={setSelectedProcess}
-                            data-test-id="tasks-table"
-                        />
+                                key={`tasks-table-${filteredTasks.length}-${subtasksToUse.length}`}
+                                subtasks={subtasksToUse}
+                                taskStates={taskState}
+                                filteredTasks={filteredTasks}
+                                selectedProcess={selectedProcess}
+                                activeStatusFilter={activeStatusFilter}
+                                isLateFilterActive={isLateFilterActive}
+                                handleProcessFilterChange={handleProcessFilterChange}
+                                handleStatusFilterChange={handleStatusFilterChange}
+                                handleLateFilterClick={handleLateFilterClick}
+                                data-test-id="tasks-table"
+                            />
+                        </div>
                     </div>
-                </div>
-            </main>
+                </main>
+            </div>
         </div>
-    </div>
     );
 }

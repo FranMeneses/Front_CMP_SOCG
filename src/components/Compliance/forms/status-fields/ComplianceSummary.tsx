@@ -5,18 +5,23 @@ import { Info, FileText, Clipboard } from "lucide-react";
 
 interface ComplianceSummaryProps {
     formState: ComplianceFormState;
-    cartaData?: IDocumentList;
-    minutaData?: IDocumentList;
+    documents: { [key: string]: IDocumentList | undefined };
 }
+
+const DOCUMENT_LABELS: { [key: string]: string } = {
+    formulario: "Formulario de Donaciones",
+    carta: "Carta Aporte",
+    minuta: "Minuta",
+    autorizacion: "Autorización",
+    transferencia: "Transferencia/Orden de Compra",
+    comprobante: "Comprobante transferencia/HES/HEM",
+};
 
 export default function ComplianceSummary({ 
     formState, 
-    cartaData, 
-    minutaData,
+    documents,
 }: ComplianceSummaryProps) {
-
     const { handleDownload } = useDocumentsRest();
-    
     return (
         <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
             <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center">
@@ -34,32 +39,21 @@ export default function ComplianceSummary({
                         Documentos
                     </h4>
                     <ul className="list-disc pl-5 space-y-1 text-xs">
-                        <li className="flex items-center gap-1">
-                            <span className="font-medium">Carta Aporte:</span>
-                            {cartaData?.nombre_archivo ? (
-                                <span
-                                    onClick={cartaData.id_documento ? () => handleDownload(cartaData.id_documento) : undefined}
-                                    className="text-blue-600 cursor-pointer hover:underline"
-                                >
-                                    {cartaData.nombre_archivo}
-                                </span>
-                            ) : (
-                                <span className="text-gray-400">No disponible</span>
-                            )}
-                        </li>
-                        <li className="flex items-center gap-1">
-                            <span className="font-medium">Minuta:</span>
-                            {minutaData?.nombre_archivo ? (
-                                <span
-                                    onClick={minutaData.id_documento ? () => handleDownload(minutaData.id_documento) : undefined}
-                                    className="text-blue-600 cursor-pointer hover:underline"
-                                >
-                                    {minutaData.nombre_archivo}
-                                </span>
-                            ) : (
-                                <span className="text-gray-400">No disponible</span>
-                            )}
-                        </li>
+                        {Object.entries(documents).map(([key, doc]) => (
+                            <li className="flex items-center gap-1" key={key}>
+                                <span className="font-medium">{DOCUMENT_LABELS[key] || key}:</span>
+                                {doc?.nombre_archivo ? (
+                                    <span
+                                        onClick={doc.id_documento ? () => handleDownload(doc.id_documento) : undefined}
+                                        className="text-blue-600 cursor-pointer hover:underline"
+                                    >
+                                        {doc.nombre_archivo}
+                                    </span>
+                                ) : (
+                                    <span className="text-gray-400">No disponible</span>
+                                )}
+                            </li>
+                        ))}
                     </ul>
                 </div>
                 {/* Memorandum y Solped */}
@@ -81,6 +75,34 @@ export default function ComplianceSummary({
                         Otros
                     </h4>
                 </div>
+            </div>
+            {/* Datos de MEMO/SOLPED y SAP */}
+            <div className="mt-4">
+                {(formState.memoAmount || formState.solpedCECO) && (
+                    <div className="bg-gray-100 p-3 rounded mb-2">
+                        <h4 className="font-medium text-xs mb-2">{formState.solpedCECO ? 'Datos SOLPED':'Datos de Transferencia'}</h4>
+                        {formState.solpedCECO ? (
+                            <>
+                                <div><span className="font-semibold">Tipo:</span> SOLPED</div>
+                                <div><span className="font-semibold">Valor:</span> {formState.memoAmount}</div>
+                                <div><span className="font-semibold">CECO:</span> {formState.solpedCECO}</div>
+                                <div><span className="font-semibold">Cuenta:</span> {formState.solpedAccount}</div>
+                                <div><span className="font-semibold">SOLPED/MEMO SAP:</span> {formState.solpedMemoSap}</div>
+                            </>
+                        ) : (
+                            <>
+                                <div><span className="font-semibold">Tipo:</span> MEMO</div>
+                                <div><span className="font-semibold">Valor:</span> {formState.memoAmount}</div>
+                            </>
+                        )}
+                    </div>
+                )}
+                {formState.hesHemSap && (
+                    <div className="bg-gray-100 p-3 rounded">
+                        <h4 className="font-medium text-xs mb-2">Datos SAP</h4>
+                        <div><span className="font-semibold">HES/HEM SAP:</span> {formState.hesHemSap}</div>
+                    </div>
+                )}
             </div>
         </div>
     );

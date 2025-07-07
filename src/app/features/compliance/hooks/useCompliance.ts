@@ -30,7 +30,7 @@ export const useCompliance = () => {
         loading,
         error,
         activeFilter,
-        // refetch,
+        refetch,
     } = useComplianceData();
     
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
@@ -58,28 +58,31 @@ export const useCompliance = () => {
                             input: {
                                 taskId: selectedCompliance?.task.id,
                                 statusId: compliance.statusId,
+                                hesHemSap: compliance.hesHemSap
                             }
                         }
                     })
-                }catch (error) {
-                    console.error("Error updating compliance", error);
-                }
-                try {
-                    await updateTask({
-                        variables: {
-                            id: selectedCompliance?.task.id,
-                            input: {
-                                statusId: (selectedCompliance?.task?.statusId ?? 0) + 1,
-                            }
-                        }})
-                }
-                catch (error) {
-                    console.error("Error updating task status:", error);
-                }
+            }catch (error) {
+                console.error("❌ Error updating compliance", error);
             }
+            
+            try {
+                await updateTask({
+                    variables: {
+                        id: selectedCompliance?.task.id,
+                        input: {
+                            statusId: (selectedCompliance?.task?.statusId ?? 0) + 1,
+                        }
+                    }
+                })
+            }
+            catch (error) {
+                console.error("❌ Error updating task status:", error);
+                console.error("❌ Detalles del error:", error instanceof Error ? error.message : String(error));
+            }
+        }
         else if (compliance.statusId === 12) {
             try {
-                console.log(compliance);
                 await updateCompliance({
                     variables: {
                         id: selectedCompliance?.id,
@@ -99,21 +102,21 @@ export const useCompliance = () => {
         }
         else {
             try {
-                    await updateCompliance({
-                        variables: {
-                            id: selectedCompliance?.id,
-                            input: {
-                                taskId: selectedCompliance?.task.id,
-                                statusId: compliance.statusId,
-                            }
+                await updateCompliance({
+                    variables: {
+                        id: selectedCompliance?.id,
+                        input: {
+                            taskId: selectedCompliance?.task.id,
+                            statusId: compliance.statusId,
                         }
-                    })
-                }catch (error) {
-                    console.error("Error updating compliance", error);
-                }
+                    }
+                })
+            }catch (error) {
+                console.error("Error updating compliance", error);
             }
-        // refetch();
-        // setIsComplianceModalOpen(false);
+            }
+        await refetch();
+        setIsComplianceModalOpen(false);
     }
 
     /**

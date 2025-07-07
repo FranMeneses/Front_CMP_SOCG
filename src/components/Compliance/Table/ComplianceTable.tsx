@@ -1,32 +1,38 @@
 'use client';
 import React from "react";
-import { useCompliance } from "../../../app/features/compliance/hooks/useCompliance";
 import { useHooks } from "../../../app/features/hooks/useHooks";
 import ComplianceRow from "./ComplianceRow";
 import ComplianceModals from "../ComplianceModalForms";
 import ComplianceFilters from "../ComplianceFilters";
-import { ComplianceFormState, ICompliance } from "@/app/models/ICompliance";
+import { ComplianceFormState, ICompliance, IComplianceForm } from "@/app/models/ICompliance";
 
 interface ComplianceTableProps {
     compliance: ICompliance[];
+    handleSeeInformation: (id: string) => void;
+    handleOnTaskClick: (id: string) => void;
+    setIsComplianceModalOpen: (open: boolean) => void;
+    selectedCompliance: IComplianceForm | undefined;
+    isComplianceModalOpen: boolean;
+    handleUpdateCompliance: (compliance: ComplianceFormState) => void;
+    handleCancelCompliance: () => void;
+    selectedStatusFilter: string;
+    filteredCompliance: ICompliance[];
+    handleStatusFilterChange: (status: string) => void;
 }
 
 const ComplianceTable: React.FC<ComplianceTableProps> = ({ 
-    compliance, 
+    compliance,
+    handleSeeInformation,
+    handleOnTaskClick,
+    setIsComplianceModalOpen,
+    selectedCompliance,
+    isComplianceModalOpen,
+    handleUpdateCompliance,
+    handleCancelCompliance,
+    selectedStatusFilter,
+    filteredCompliance,
+    handleStatusFilterChange,
 }) => {
-    const { 
-        handleSeeInformation, 
-        handleOnTaskClick,
-        setIsComplianceModalOpen,
-        selectedCompliance,
-        isComplianceModalOpen,
-        handleUpdateCompliance, 
-        handleCancelCompliance,
-        selectedStatusFilter,
-        filteredCompliance,
-        handleStatusFilterChange,
-    } = useCompliance();
-
     const { currentValley, userRole } = useHooks();
 
     const handleUpdateComplianceWrapper = (partialCompliance: Partial<ComplianceFormState>) => {
@@ -45,7 +51,6 @@ const ComplianceTable: React.FC<ComplianceTableProps> = ({
             console.error("No hay un cumplimiento seleccionado para actualizar");
         }
     };
-
 
     return (
         <>

@@ -5,9 +5,10 @@ import { IProcess } from "@/app/models/IProcess";
 export const useTaskFilters = (
     tasks: ITaskDetails[], 
     allProcesses: IProcess[], 
-    handleFilterByProcess: (processId: number) => Promise<ITaskDetails[] | undefined>
+    handleFilterByProcess: (processId: number) => Promise<ITaskDetails[] | undefined>,
+    selectedProcess: {id: number, name: string} | null,
+    setSelectedProcess: (process: {id: number, name: string} | null) => void
 ) => {
-    const [selectedProcess, setSelectedProcess] = useState<{id: number, name: string} | null>(null);
     const [filteredTasks, setFilteredTasks] = useState(tasks);
     const [activeStatusFilter, setActiveStatusFilter] = useState<string | null>(null);
     const [isLateFilterActive, setIsLateFilterActive] = useState<boolean>(false);
@@ -19,6 +20,10 @@ export const useTaskFilters = (
      */
     useEffect(() => {
         let result = [...tasks];
+        // Si hay un proceso seleccionado, filtra por ese proceso
+        if (selectedProcess) {
+            result = result.filter(task => task.processId === selectedProcess.id);
+        }
         if (activeStatusFilter) {
             result = result.filter(task => task.status?.name === activeStatusFilter);
         }
@@ -32,8 +37,14 @@ export const useTaskFilters = (
                     task.status?.name !== "Cancelada";
             });
         }
+        // Ordenar por fecha de vencimiento más próxima (endDate ascendente)
+        result = result.sort((a, b) => {
+            const dateA = a.endDate && a.endDate !== '-' ? new Date(a.endDate).getTime() : Infinity;
+            const dateB = b.endDate && b.endDate !== '-' ? new Date(b.endDate).getTime() : Infinity;
+            return dateA - dateB;
+        });
         setFilteredTasks(result);
-    }, [tasks, activeStatusFilter, isLateFilterActive]);
+    }, [tasks, selectedProcess, activeStatusFilter, isLateFilterActive]);
     
     /**
      * Función para manejar el cambio de filtro de procesos.

@@ -12,7 +12,17 @@ export default function Compliance() {
         toggleSidebar,
         loading,
         isSidebarOpen,    
-        data
+        data,
+        handleSeeInformation,
+        handleOnTaskClick,
+        setIsComplianceModalOpen,
+        selectedCompliance,
+        isComplianceModalOpen,
+        handleUpdateCompliance,
+        handleCancelCompliance,
+        selectedStatusFilter,
+        filteredCompliance,
+        handleStatusFilterChange,
     } = useCompliance();
 
     const { userRole, handleLogout } = useHooks();
@@ -72,6 +82,16 @@ export default function Compliance() {
                             </div>
                             <ComplianceTable
                                 compliance={data}
+                                handleSeeInformation={handleSeeInformation}
+                                handleOnTaskClick={handleOnTaskClick}
+                                setIsComplianceModalOpen={setIsComplianceModalOpen}
+                                selectedCompliance={selectedCompliance}
+                                isComplianceModalOpen={isComplianceModalOpen}
+                                handleUpdateCompliance={handleUpdateCompliance}
+                                handleCancelCompliance={handleCancelCompliance}
+                                selectedStatusFilter={selectedStatusFilter}
+                                filteredCompliance={filteredCompliance}
+                                handleStatusFilterChange={handleStatusFilterChange}
                                 data-test-id="tasks-table"
                             />
                         </div>

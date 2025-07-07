@@ -196,7 +196,7 @@ export const useComplianceForm = (
      */
     useEffect(() => {
         if (isEditing && selectedCompliance) {
-            setFormState({
+            const newFormState = {
                 name: selectedCompliance.task.name || "",
                 description: selectedCompliance.task.description || "",
                 statusId: selectedCompliance.statusId || 0,
@@ -212,9 +212,11 @@ export const useComplianceForm = (
                 solpedAmount: undefined,
                 solpedMemoSap: selectedCompliance.solpedMemoSap,
                 hesHemSap: selectedCompliance.hesHemSap,
-                memoSolpedType: selectedCompliance.ceco ? "SOLPED" : "MEMO",
+                memoSolpedType: selectedCompliance.ceco ? ("SOLPED" as const) : ("MEMO" as const),
                 transferFile: undefined,
-            }); 
+            };
+            
+            setFormState(newFormState);
         }
     }, [isEditing, selectedCompliance]);
 
@@ -235,6 +237,7 @@ export const useComplianceForm = (
         let compliance = {};
         let document: FormData;
         let nextStatusId = formState.statusId;
+        let uploadOk = true;
         if (formState.statusId >= 7 && formState.statusId <= 12) {
             if (
                 (formState.statusId === 7 && (formState.donationFormFile || documents.formulario)) ||
@@ -284,19 +287,25 @@ export const useComplianceForm = (
         if (formState.statusId === 12) {
             compliance = {
                 ...compliance,
-                hesHemSap: formState.hesHemSap,
+                hesHemSap: Number(formState.hesHemSap),
             };
         }
         // Subida de archivos según el estado
         try {
             setIsUploading(true);
+            // Subir archivo SOLO si hay archivo nuevo
             if (formState.statusId === 7 && formState.donationFormFile) {
                 document = {
                     file: formState.donationFormFile,
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "",
                     task: selectedCompliance?.task.id || "",
                 };
-                await handleUploadFile(document);
+                try {
+                    await handleUploadFile(document);
+                } catch (e) {
+                    uploadOk = false;
+                    console.error("Error subiendo archivo de Formulario de Aportes:", e);
+                }
             }
             if (formState.statusId === 8 && formState.cartaAporteFile) {
                 document = {
@@ -304,7 +313,12 @@ export const useComplianceForm = (
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
                     task: selectedCompliance?.task.id || "",
                 };
-                await handleUploadFile(document);
+                try {
+                    await handleUploadFile(document);
+                } catch (e) {
+                    uploadOk = false;
+                    console.error("Error subiendo archivo de Carta de Aporte:", e);
+                }
             }
             if (formState.statusId === 9 && formState.minutaFile) {
                 document = {
@@ -312,7 +326,12 @@ export const useComplianceForm = (
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
                     task: selectedCompliance?.task.id || "",
                 };
-                await handleUploadFile(document);
+                try {
+                    await handleUploadFile(document);
+                } catch (e) {
+                    uploadOk = false;
+                    console.error("Error subiendo archivo de Minuta:", e);
+                }
             }
             if (formState.statusId === 10 && formState.authorizationFile) {
                 document = {
@@ -320,7 +339,12 @@ export const useComplianceForm = (
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Autorización")?.id_tipo_documento || "",
                     task: selectedCompliance?.task.id || "",
                 };
-                await handleUploadFile(document);
+                try {
+                    await handleUploadFile(document);
+                } catch (e) {
+                    uploadOk = false;
+                    console.error("Error subiendo archivo de Autorización:", e);
+                }
             }
             if (formState.statusId === 11 && formState.transferPurchaseOrderFile) {
                 document = {
@@ -328,12 +352,36 @@ export const useComplianceForm = (
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Transferencia/Orden de Compra")?.id_tipo_documento || "",
                     task: selectedCompliance?.task.id || "",
                 };
-                await handleUploadFile(document);
+                try {
+                    await handleUploadFile(document);
+                } catch (e) {
+                    uploadOk = false;
+                    console.error("Error subiendo archivo de Transferencia/Orden de Compra:", e);
+                }
+            }
+            if (formState.statusId === 12 && formState.hesHem) {
+                document = {
+                    file: formState.hesHem,
+                    documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Comprobante transferencia/HES/HEM")?.id_tipo_documento || "",
+                    task: selectedCompliance?.task.id || "",
+                };
+                try {
+                    await handleUploadFile(document);
+                } catch (e) {
+                    uploadOk = false;
+                    console.error("Error subiendo archivo de Comprobante transferencia/HES/HEM:", e);
+                }
             }
         } finally {
             setIsUploading(false);
         }
-        onSave(compliance);
+        // Solo ejecuta el update si la subida fue exitosa (o no era necesaria)
+        if (uploadOk) {
+            onSave(compliance);
+        } else {
+            // Aquí podrías mostrar un mensaje de error en la UI si quieres
+            console.error("No se ejecutó el updateCompliance porque falló la subida de archivo.");
+        }
     };
 
     const dropdownItems = useMemo(() => ({

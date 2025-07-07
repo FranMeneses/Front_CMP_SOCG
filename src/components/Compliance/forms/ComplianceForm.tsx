@@ -151,8 +151,7 @@ export default function ComplianceForm({
             case 13: // Resumen
                 return <ComplianceSummary 
                     formState={formState}
-                    cartaData={documents.carta}
-                    minutaData={documents.minuta}
+                    documents={documents}
                 />;
                 
             default:
@@ -246,38 +245,7 @@ export default function ComplianceForm({
             {renderAdditionalFields()}
             
             <div className="flex justify-end space-x-2 mt-2">
-                <Button
-                    variant="secondary"
-                    onClick={onCancel}
-                    className="bg-gray-200 hover:bg-gray-300 cursor-pointer"
-                    data-test-id="cancel-button"
-                    disabled={isUploading}
-                >
-                    Cancelar
-                </Button>
-                {formState.statusId && formState.statusId >= 7 && formState.statusId <= 12 && (
-                    <Button
-                        variant="default"
-                        onClick={() => handleSave(documents)}
-                        disabled={!isFormValid() || isUploading}
-                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
-                        data-test-id="save-button"
-                    >
-                        {isUploading ? 'Subiendo...' : 'Guardar y Avanzar'}
-                    </Button>
-                )}
-                {(!formState.statusId || formState.statusId < 7 || formState.statusId > 12) && (
-                    <Button
-                        variant="default"
-                        onClick={() => handleSave(documents)}
-                        disabled={!isFormValid() || isUploading}
-                        className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
-                        data-test-id="save-button"
-                    >
-                        {isUploading ? 'Subiendo...' : saveButtonText}
-                    </Button>
-                )}
-                {formState.statusId === 13 && (
+                {formState.statusId === 13 ? (
                     <Button
                         variant="default"
                         onClick={onCancel}
@@ -287,6 +255,40 @@ export default function ComplianceForm({
                     >
                         Cerrar
                     </Button>
+                ) : (
+                    <>
+                        <Button
+                            variant="secondary"
+                            onClick={onCancel}
+                            className="bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                            data-test-id="cancel-button"
+                            disabled={isUploading}
+                        >
+                            Cancelar
+                        </Button>
+                        {formState.statusId && formState.statusId >= 7 && formState.statusId <= 12 && (
+                            <Button
+                                variant="default"
+                                onClick={() => handleSave(documents)}
+                                disabled={!isFormValid() || isUploading}
+                                className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
+                                data-test-id="save-button"
+                            >
+                                {isUploading ? 'Subiendo...' : 'Guardar y Avanzar'}
+                            </Button>
+                        )}
+                        {(!formState.statusId || formState.statusId < 7 || formState.statusId > 12) && (
+                            <Button
+                                variant="default"
+                                onClick={() => handleSave(documents)}
+                                disabled={!isFormValid() || isUploading}
+                                className="bg-[#0068D1] hover:bg-[#0056A3] text-white disabled:bg-[#747474c6] cursor-pointer"
+                                data-test-id="save-button"
+                            >
+                                {isUploading ? 'Subiendo...' : saveButtonText}
+                            </Button>
+                        )}
+                    </>
                 )}
             </div>
 
