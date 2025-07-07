@@ -148,7 +148,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 className="hover:bg-gray-50 text-sm cursor-pointer"
                 onClick={() => handleRowClick(task)}
               >
-                <td className="text-center px-4 py-2 border-b border-gray-300">
+                <td className="text-left px-4 py-2 border-b border-gray-300">
                   {task.name}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
