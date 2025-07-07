@@ -14,6 +14,7 @@ interface TaskTableHeaderProps {
     handleCreateTask: () => void;
     handleUploadPlanification?: () => void;
     handleCreateComplianceManager?: () => void;
+    taskCount?: number;
 }
 
 const PROCESS_FILTERS = {
@@ -30,6 +31,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     handleCreateTask,
     handleUploadPlanification,
     handleCreateComplianceManager,
+    taskCount,
 }) => {
     const { isCommunicationsManager, isManager } = useHooks();
 
@@ -89,8 +91,21 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     
     return (
         <div className="flex justify-between items-center mb-2 font-[Helvetica]">
-            <div>
-                {renderProcessDropdown()}
+            <div className="flex items-center gap-4">
+                <div>
+                    {renderProcessDropdown()}
+                </div>
+                {/* Cuadro del contador de tareas */}
+                {taskCount !== undefined && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 shadow-sm">
+                        <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm font-medium text-blue-800">
+                                Tareas asignadas: <span className="font-bold">{taskCount}</span>
+                            </span>
+                        </div>
+                    </div>
+                )}
             </div>
             <div className=' flex flex-row gap-2'>
                  {((isCommunicationsManager || userRole === "Admin" || userRole === "Encargado Cumplimiento") && !isManager) && (
