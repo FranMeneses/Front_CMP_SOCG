@@ -427,8 +427,7 @@ export const useValleySubtasksForm = (
     const isFormValid = subtaskFormState.name && 
                        subtaskFormState.budget && 
                        subtaskFormState.endDate && 
-                       subtaskFormState.startDate && 
-                       subtaskFormState.priority &&
+                       subtaskFormState.startDate &&
                        !dateError; 
 
     return {
