@@ -191,14 +191,32 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                     <div>
                       {typeof task.processId === 'number' && [1, 2, 3].includes(task.processId) && 'task' in infoTask ? (
                         <>
-                          <strong>Descripción:</strong> {'task' in infoTask ? (infoTask.task?.description || ('description' in infoTask ? infoTask.description : '-') || '-') : '-'}<br />
-                          <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${Number(taskProgressMap[task.id]).toFixed(2)}%` : "-"}<br />
-                          <strong>Origen:</strong> {infoTaskNames.origin.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).originId))?.name || "-"}<br />
-                          <strong>Inversión:</strong> {infoTaskNames.investment.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).investmentId))?.line || "-"}<br />
-                          <strong>Tipo:</strong> {infoTaskNames.type.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).typeId))?.name || "-"}<br />
-                          <strong>Alcance:</strong> {infoTaskNames.scope.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).scopeId))?.name || "-"}<br />
-                          <strong>Interacción:</strong> {infoTaskNames.interaction.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).interactionId))?.operation || "-"}<br />
-                          <strong>Riesgo:</strong> {infoTaskNames.risk.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).riskId))?.type || "-"}<br />
+                          <div className="mb-3">
+                            <strong>Descripción:</strong> {'task' in infoTask ? (infoTask.task?.description || ('description' in infoTask ? infoTask.description : '-') || '-') : '-'}
+                          </div>
+                          <div className="mb-3">
+                            <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${Number(taskProgressMap[task.id]).toFixed(2)}%` : "-"}
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              <strong>Origen:</strong> {infoTaskNames.origin.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).originId))?.name || "-"}
+                            </div>
+                            <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <strong>Inversión:</strong> {infoTaskNames.investment.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).investmentId))?.line || "-"}
+                            </div>
+                            <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                              <strong>Tipo:</strong> {infoTaskNames.type.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).typeId))?.name || "-"}
+                            </div>
+                            <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                              <strong>Alcance:</strong> {infoTaskNames.scope.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).scopeId))?.name || "-"}
+                            </div>
+                            <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                              <strong>Interacción:</strong> {infoTaskNames.interaction.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).interactionId))?.operation || "-"}
+                            </div>
+                            <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                              <strong>Riesgo:</strong> {infoTaskNames.risk.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).riskId))?.type || "-"}
+                            </div>
+                          </div>
                         </>
                       ) : (
                         <>
