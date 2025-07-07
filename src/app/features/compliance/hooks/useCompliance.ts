@@ -50,13 +50,7 @@ export const useCompliance = () => {
      * @param compliance Cumplimiento de la tarea a actualizar
      */
     const handleUpdateCompliance = async (compliance: ComplianceFormState) => {
-        console.log("🚀 handleUpdateCompliance llamado con:", {
-            statusId: compliance.statusId,
-            selectedComplianceId: selectedCompliance?.id,
-            selectedTaskId: selectedCompliance?.task.id
-        });
         if (compliance.statusId === 13) {
-            console.log("🔄 Actualizando compliance a estado 13...");
             try {
                 await updateCompliance({
                         variables: {
@@ -68,19 +62,12 @@ export const useCompliance = () => {
                             }
                         }
                     })
-                console.log("✅ Compliance actualizado exitosamente");
             }catch (error) {
                 console.error("❌ Error updating compliance", error);
             }
             
-            console.log("🔄 Actualizando tarea...", {
-                taskId: selectedCompliance?.task.id,
-                currentStatus: selectedCompliance?.task?.statusId,
-                newStatus: (selectedCompliance?.task?.statusId ?? 0) + 1
-            });
-            
             try {
-                const result = await updateTask({
+                await updateTask({
                     variables: {
                         id: selectedCompliance?.task.id,
                         input: {
@@ -88,10 +75,10 @@ export const useCompliance = () => {
                         }
                     }
                 })
-                console.log("✅ Tarea actualizada exitosamente:", result);
             }
             catch (error) {
                 console.error("❌ Error updating task status:", error);
+                console.error("❌ Detalles del error:", error instanceof Error ? error.message : String(error));
             }
         }
         else if (compliance.statusId === 12) {
