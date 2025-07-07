@@ -192,14 +192,14 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       {(() => {
                         const isRelationshipTask = typeof task.processId === 'number' && [1, 2, 3].includes(task.processId) && 'task' in infoTask;
                         
-                        if (isRelationshipTask) {
-                          // Obtener descripción de forma segura
-                          let description = '-';
-                          if ('task' in infoTask && infoTask.task?.description) {
-                            description = infoTask.task.description;
-                          } else if ('description' in infoTask && infoTask.description) {
-                            description = infoTask.description;
-                          }
+                                                 if (isRelationshipTask) {
+                           // Obtener descripción de forma segura
+                           let description = '-';
+                           if ('task' in infoTask && infoTask.task?.description) {
+                             description = infoTask.task.description;
+                           } else if ('description' in infoTask && infoTask.description && typeof infoTask.description === 'string') {
+                             description = infoTask.description;
+                           }
                           
                           return (
                             <>
