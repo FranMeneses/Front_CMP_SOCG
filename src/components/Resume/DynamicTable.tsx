@@ -192,7 +192,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       {typeof task.processId === 'number' && [1, 2, 3].includes(task.processId) && 'task' in infoTask ? (
                         <>
                           <strong>Descripción:</strong> {'task' in infoTask ? (infoTask.task?.description || ('description' in infoTask ? infoTask.description : '-') || '-') : '-'}<br />
-                          <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${taskProgressMap[task.id]}%` : "-"}<br />
+                          <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${Number(taskProgressMap[task.id]).toFixed(2)}%` : "-"}<br />
                           <strong>Origen:</strong> {infoTaskNames.origin.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).originId))?.name || "-"}<br />
                           <strong>Inversión:</strong> {infoTaskNames.investment.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).investmentId))?.line || "-"}<br />
                           <strong>Tipo:</strong> {infoTaskNames.type.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).typeId))?.name || "-"}<br />
@@ -203,7 +203,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       ) : (
                         <>
                           <strong>Descripción:</strong> {infoTask && 'description' in infoTask ? infoTask.description : "-"}<br />
-                          <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${taskProgressMap[task.id]}%` : "-"}
+                          <strong>Porcentaje de avance:</strong> {task.id && taskProgressMap && taskProgressMap[task.id] !== undefined ? `${Number(taskProgressMap[task.id]).toFixed(2)}%` : "-"}
                         </>
                       )}
                     </div>
