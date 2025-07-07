@@ -32,8 +32,15 @@ export const useTaskFilters = (
             result = result.filter(task => {
                 if (!task.endDate) return false;
                 const endDate = new Date(task.endDate);
-                return endDate < currentDate && 
-                    task.status?.name !== "Completada" && 
+                
+                // Para tareas completadas, verificar si se terminaron después de la fecha límite
+                if (task.status?.name === "Completada" && task.finishedDate) {
+                    const finishedDate = new Date(task.finishedDate);
+                    return finishedDate > endDate; // Se completó después de la fecha límite
+                }
+                
+                // Para tareas pendientes, verificar si la fecha límite ya pasó
+                return endDate <= currentDate && 
                     task.status?.name !== "Cancelada";
             });
         }
@@ -110,8 +117,15 @@ export const useTaskFilters = (
                 result = result.filter(task => {
                     if (!task.endDate) return false;
                     const endDate = new Date(task.endDate);
+                    
+                    // Para tareas completadas, verificar si se terminaron después de la fecha límite
+                    if (task.status?.name === "Completada" && task.finishedDate) {
+                        const finishedDate = new Date(task.finishedDate);
+                        return finishedDate > endDate; // Se completó después de la fecha límite
+                    }
+                    
+                    // Para tareas pendientes, verificar si la fecha límite ya pasó
                     return endDate < currentDate && 
-                        task.status?.name !== "Completada" && 
                         task.status?.name !== "Cancelada";
                 });
             }
@@ -151,8 +165,15 @@ export const useTaskFilters = (
                 result = result.filter(task => {
                     if (!task.endDate) return false;
                     const endDate = new Date(task.endDate);
+                    
+                    // Para tareas completadas, verificar si se terminaron después de la fecha límite
+                    if (task.status?.name === "Completada" && task.finishedDate) {
+                        const finishedDate = new Date(task.finishedDate);
+                        return finishedDate > endDate; // Se completó después de la fecha límite
+                    }
+                    
+                    // Para tareas pendientes, verificar si la fecha límite ya pasó
                     return endDate < currentDate && 
-                        task.status?.name !== "Completada" && 
                         task.status?.name !== "Cancelada";
                 });
             }
