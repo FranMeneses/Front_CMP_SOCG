@@ -225,7 +225,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                                 <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
                                   <strong>Interacción:</strong> {infoTaskNames.interaction.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).interactionId))?.operation || "-"}
                                 </div>
-                                <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                <div className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                                   <strong>Riesgo:</strong> {infoTaskNames.risk.find((info: IInfoTask) => Number(info.id) === Number((infoTask as IInfoTask).riskId))?.type || "-"}
                                 </div>
                               </div>
