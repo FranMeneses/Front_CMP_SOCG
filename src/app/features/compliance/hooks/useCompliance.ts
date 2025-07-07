@@ -114,7 +114,7 @@ export const useCompliance = () => {
             }catch (error) {
                 console.error("Error updating compliance", error);
             }
-            }
+        }
         await refetch();
         setIsComplianceModalOpen(false);
     }

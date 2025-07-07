@@ -10,8 +10,9 @@ import { useValleySubtasksForm } from "./useValleySubtasksForm";
 import { useTasksData } from "./useTaskData";
 import { useCommunicationTaskForm } from "./useCommunicationTaskForm";
 import { Task } from "@/app/models/ITaskForm";
-
 import { CREATE_COMPLIANCE } from "@/app/api/compliance";
+
+
 
 export const usePlanification = () => {
     const { currentValley, isValleyManager, isCommunicationsManager, userRole } = useHooks();
@@ -131,7 +132,7 @@ export const usePlanification = () => {
      */
     const handleSaveCommunication = async (task: ITask) => {
         try {
-            const { data } = await createTask({
+            await createTask({
                 variables: {
                     input: {
                         name: task.name,
@@ -144,16 +145,6 @@ export const usePlanification = () => {
                     }
                 }
             });
-            if (task.applies) {
-                await createCompliance({
-                    variables: {
-                        input: {
-                            taskId: data.createTask.id,
-                            statusId: 7,
-                        },
-                    },
-                });
-            }
             // Refresca la lista de tareas después de crear
             await refetch();
             if (selectedProcess && selectedProcess.id) {
@@ -186,6 +177,16 @@ export const usePlanification = () => {
             if (!data?.updateTask?.id) {
                 throw new Error("Task update failed: ID is undefined.");
             }
+            if (data?.updateTask.status.id === 3) {
+                await createCompliance({
+                    variables: {
+                        input: {
+                            taskId: data.updateTask.id,
+                            statusId: 7,
+                        },
+                    },
+                });
+            };
         }catch (error) {
             console.error("Error updating communication task:", error);
         }
@@ -325,16 +326,6 @@ export const usePlanification = () => {
                     },
                 },
             });
-            if (task.compliance) {
-                await createCompliance({
-                    variables: {
-                        input: {
-                            taskId: data.createTask.id,
-                            statusId: 7,
-                        },
-                    },
-                });
-            }
             // Refresca la lista de tareas después de crear
             await refetch();
             if (selectedProcess && selectedProcess.id) {
