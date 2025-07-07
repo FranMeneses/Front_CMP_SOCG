@@ -50,7 +50,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
     const taskInteraction = interactions.map((i: IInteraction) => i.operation);
     const taskScope = scopes.map((s: IScope) => s.name);
     const taskType = types.map((t: IType) => t.name);
-    const taskState = initialValues?.compliance? states.map((s: ITaskStatus) => s.name) : states.filter((s: ITaskStatus) => s.name !== "En Cumplimiento").map((s: ITaskStatus) => s.name);
+    const taskState = initialValues?.compliance? states.map((s: ITaskStatus) => s.name) : states.filter((s: ITaskStatus) => s.name !== "Due Diligence").map((s: ITaskStatus) => s.name);
     const taskBeneficiaries = beneficiaries.map((b: IBeneficiary) => b.legalName);
 
     /**
@@ -307,7 +307,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             currentState === "En Proceso" || 
             (typeof currentState === 'number' && states.find((s: ITaskStatus) => s.id === currentState)?.name === "En Proceso");
         
-        if (isCurrentStateInProcess && ["NO iniciada", "En Espera", "En Cumplimiento"].includes(newState)) {
+        if (isCurrentStateInProcess && ["NO iniciada", "En Espera", "Due Diligence"].includes(newState)) {
             return false;
         }
         

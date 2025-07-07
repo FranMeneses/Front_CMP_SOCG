@@ -30,7 +30,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
                             filter === "En Proceso" ? "bg-[#FDC28E] text-[#C95E00] font-medium" :
                             filter === "En Espera" ? "bg-[#F7F7B5] text-yellow-800 font-medium" :
                             filter === "Cancelada" ? "bg-[#FFB9BB] text-red-800 font-medium" :
-                            filter === "En Cumplimiento" ? "bg-[#B4E0F7] text-[#128CCC] font-medium" :
+                            filter === "Due Diligence" ? "bg-[#B4E0F7] text-[#128CCC] font-medium" :
                             "bg-[#EAE9E8] text-gray-800 font-medium"
                             : "bg-white hover:bg-gray-100"
                     }`}

@@ -191,7 +191,7 @@ export const useCommunicationTaskForm = (
         const newStateName = getCurrentStateName(newState);
         
         if (currentStateName === "En Proceso") {
-            if (["NO iniciada", "En Espera", "En Cumplimiento"].includes(newStateName)) {
+            if (["NO iniciada", "En Espera", "Due Diligence"].includes(newStateName)) {
                 return false;
             }
         }

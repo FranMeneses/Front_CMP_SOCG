@@ -95,7 +95,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
   const statusOrder = [
     'Completada',
     'En Proceso',
-    'En Cumplimiento',
+    'Due Diligence',
     'En Espera',
     'No Iniciada',
     undefined,
@@ -178,7 +178,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                       task.status?.name === "En Proceso" ? "bg-[#FDC28E] text-[#C95E00]" :
                       task.status?.name === "En Espera" ? "bg-[#F7F7B5] text-yellow-800" :
                       task.status?.name === "Cancelada" ? "bg-[#FFB9BB] text-red-800" :
-                      task.status?.name === "En Cumplimiento" ? "bg-[#B4E0F7] text-[#128CCC]" :
+                      task.status?.name === "Due Diligence" ? "bg-[#B4E0F7] text-[#128CCC]" :
                       "bg-[#EAE9E8] text-gray-800"}`}
                   >
                     {task.status?.name?.toUpperCase() || "NO INICIADA"}

@@ -53,7 +53,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
           task.status?.name === "En Proceso" ? "bg-[#FDC28E] text-[#C95E00] font-medium" :
           task.status?.name === "En Espera" ? "bg-[#F7F7B5] text-yellow-800 font-medium" :
           task.status?.name === "Cancelada" ? "bg-[#FFB9BB] text-red-800 font-medium" :
-          task.status?.name === "En Cumplimiento" ? "bg-[#B4E0F7] text-[#128CCC] font-medium" :
+          task.status?.name === "Due Diligence" ? "bg-[#B4E0F7] text-[#128CCC] font-medium" :
           "bg-[#EAE9E8] text-gray-800 font-medium"
         }`}>
           {task.status?.name?.toUpperCase() || "NO iniciada"}
