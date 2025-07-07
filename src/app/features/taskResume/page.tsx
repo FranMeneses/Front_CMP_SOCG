@@ -6,7 +6,6 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import DynamicTable from "@/components/Resume/DynamicTable";
 import { useHooks } from "../hooks/useHooks";
 import { useTasksData } from "../planification/hooks/useTaskData";
-import { useDynamicTable } from "../resume/hooks/useDynamicTable";
 import Image from "next/image";
 import DropdownMenu from "@/components/Dropdown";
 import { IProcess } from "@/app/models/IProcess";
@@ -36,25 +35,14 @@ export default function TaskResume() {
         allProcesses,
     } = useTasksData(undefined, userRole);
     
-    // Hook para obtener las categorías de filtros
-    const { infoTaskNames } = useDynamicTable(detailedTasks || []);
-    
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-    // Filtros existentes
+    // Filtros
     const [selectedProcess, setSelectedProcess] = React.useState<string>("Todos");
     const monthsWithAll = ["Todos", ...Months];
     const [selectedMonth, setSelectedMonth] = React.useState<string>(monthsWithAll[new Date().getMonth() + 1]);
     const [year] = React.useState<number>(new Date().getFullYear());
-    
-    // Nuevos filtros de categorías
-    const [selectedOrigin, setSelectedOrigin] = React.useState<string>("Todos");
-    const [selectedInvestment, setSelectedInvestment] = React.useState<string>("Todos");
-    const [selectedType, setSelectedType] = React.useState<string>("Todos");
-    const [selectedScope, setSelectedScope] = React.useState<string>("Todos");
-    const [selectedInteraction, setSelectedInteraction] = React.useState<string>("Todos");
-    const [selectedRisk, setSelectedRisk] = React.useState<string>("Todos");
     
     const [filteredTasks, setFilteredTasks] = React.useState<ITask[]>([]);
     const [fetchByMonthAndProcess, { data: dataByMonthAndProcess, loading: loadingByMonthAndProcess }] = useLazyQuery(GET_TASKS_BY_MONTH_AND_PROCESS);
@@ -75,64 +63,13 @@ export default function TaskResume() {
         }
     }, [selectedProcess, selectedMonth, year, allProcesses, detailedTasks]);
 
-    // Función para aplicar filtros de categorías en el cliente
-    const applyCategoryFilters = React.useCallback((tasks: ITask[]) => {
-        return tasks.filter(task => {
-            // Solo aplicar filtros de categorías a tareas de relacionamiento (procesos 1, 2, 3)
-            const isRelationshipTask = typeof task.processId === 'number' && [1, 2, 3].includes(task.processId);
-            
-            if (!isRelationshipTask) {
-                return true; // No filtrar tareas que no son de relacionamiento
-            }
-
-            // Aplicar filtros de categorías solo a tareas de relacionamiento
-            if (selectedOrigin !== "Todos") {
-                const originName = infoTaskNames.origin.find(info => info.id === task.originId)?.name;
-                if (originName !== selectedOrigin) return false;
-            }
-            
-            if (selectedInvestment !== "Todos") {
-                const investmentName = infoTaskNames.investment.find(info => info.id === task.investmentId)?.line;
-                if (investmentName !== selectedInvestment) return false;
-            }
-            
-            if (selectedType !== "Todos") {
-                const typeName = infoTaskNames.type.find(info => info.id === task.typeId)?.name;
-                if (typeName !== selectedType) return false;
-            }
-            
-            if (selectedScope !== "Todos") {
-                const scopeName = infoTaskNames.scope.find(info => info.id === task.scopeId)?.name;
-                if (scopeName !== selectedScope) return false;
-            }
-            
-            if (selectedInteraction !== "Todos") {
-                const interactionName = infoTaskNames.interaction.find(info => info.id === task.interactionId)?.operation;
-                if (interactionName !== selectedInteraction) return false;
-            }
-            
-            if (selectedRisk !== "Todos") {
-                const riskName = infoTaskNames.risk.find(info => info.id === task.riskId)?.type;
-                if (riskName !== selectedRisk) return false;
-            }
-            
-            return true;
-        });
-    }, [selectedOrigin, selectedInvestment, selectedType, selectedScope, selectedInteraction, selectedRisk, infoTaskNames]);
-
     React.useEffect(() => {
-        let baseTasks: ITask[] = [];
-        
         if (selectedProcess === "Todos" && dataByMonth?.tasksByMonth) {
-            baseTasks = dataByMonth.tasksByMonth;
+            setFilteredTasks(dataByMonth.tasksByMonth);
         } else if (dataByMonthAndProcess?.tasksByMonthAndProcess) {
-            baseTasks = dataByMonthAndProcess.tasksByMonthAndProcess;
+            setFilteredTasks(dataByMonthAndProcess.tasksByMonthAndProcess);
         }
-        
-        // Aplicar filtros de categorías
-        const categoryFilteredTasks = applyCategoryFilters(baseTasks);
-        setFilteredTasks(categoryFilteredTasks);
-    }, [dataByMonth, dataByMonthAndProcess, selectedProcess, applyCategoryFilters]);
+    }, [dataByMonth, dataByMonthAndProcess, selectedProcess]);
 
     const handleProcessFilter = async (processName: string) => {
         setSelectedProcess(processName);
@@ -141,14 +78,6 @@ export default function TaskResume() {
     const handleMonthFilter = (month: string) => {
         setSelectedMonth(month);
     };
-    
-    // Handlers para filtros de categorías
-    const handleOriginFilter = (origin: string) => setSelectedOrigin(origin);
-    const handleInvestmentFilter = (investment: string) => setSelectedInvestment(investment);
-    const handleTypeFilter = (type: string) => setSelectedType(type);
-    const handleScopeFilter = (scope: string) => setSelectedScope(scope);
-    const handleInteractionFilter = (interaction: string) => setSelectedInteraction(interaction);
-    const handleRiskFilter = (risk: string) => setSelectedRisk(risk);
 
     if (loading || loadingByMonth || loadingByMonthAndProcess) {
         return (
@@ -193,7 +122,7 @@ export default function TaskResume() {
                                 />
                                 <h1 className="text-3xl font-bold">RESUMEN DE TAREAS</h1>
                             </div>
-                            {/* Filtros principales */}
+                            {/* Filtros */}
                             <div className="px-6 pt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
                                 {allProcesses && allProcesses.length > 0 && (
                                     <div className="mb-4 w-64 overflow-visible">
@@ -212,78 +141,6 @@ export default function TaskResume() {
                                         onSelect={handleMonthFilter}
                                         selectedValue={selectedMonth}
                                     />
-                                </div>
-                            </div>
-                            
-                            {/* Filtros de categorías para tareas de relacionamiento */}
-                            <div className="px-6 pb-4">
-                                <h3 className="text-sm font-medium text-gray-700 mb-3">Filtros para tareas de relacionamiento:</h3>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-2">
-                                    <div className="w-full overflow-visible">
-                                        <DropdownMenu
-                                            buttonText="Origen"
-                                            items={["Todos", ...(infoTaskNames.origin?.map(origin => origin.name) || [])]}
-                                            onSelect={handleOriginFilter}
-                                            selectedValue={selectedOrigin}
-                                        />
-                                    </div>
-                                    <div className="w-full overflow-visible">
-                                        <DropdownMenu
-                                            buttonText="Inversión"
-                                            items={["Todos", ...(infoTaskNames.investment?.map(investment => investment.line) || [])]}
-                                            onSelect={handleInvestmentFilter}
-                                            selectedValue={selectedInvestment}
-                                        />
-                                    </div>
-                                    <div className="w-full overflow-visible">
-                                        <DropdownMenu
-                                            buttonText="Tipo"
-                                            items={["Todos", ...(infoTaskNames.type?.map(type => type.name) || [])]}
-                                            onSelect={handleTypeFilter}
-                                            selectedValue={selectedType}
-                                        />
-                                    </div>
-                                    <div className="w-full overflow-visible">
-                                        <DropdownMenu
-                                            buttonText="Alcance"
-                                            items={["Todos", ...(infoTaskNames.scope?.map(scope => scope.name) || [])]}
-                                            onSelect={handleScopeFilter}
-                                            selectedValue={selectedScope}
-                                        />
-                                    </div>
-                                    <div className="w-full overflow-visible">
-                                        <DropdownMenu
-                                            buttonText="Interacción"
-                                            items={["Todos", ...(infoTaskNames.interaction?.map(interaction => interaction.operation) || [])]}
-                                            onSelect={handleInteractionFilter}
-                                            selectedValue={selectedInteraction}
-                                        />
-                                    </div>
-                                    <div className="w-full overflow-visible">
-                                        <DropdownMenu
-                                            buttonText="Riesgo"
-                                            items={["Todos", ...(infoTaskNames.risk?.map(risk => risk.type) || [])]}
-                                            onSelect={handleRiskFilter}
-                                            selectedValue={selectedRisk}
-                                        />
-                                    </div>
-                                </div>
-                                
-                                {/* Botón para limpiar filtros de categorías */}
-                                <div className="mt-3">
-                                    <button
-                                        onClick={() => {
-                                            setSelectedOrigin("Todos");
-                                            setSelectedInvestment("Todos");
-                                            setSelectedType("Todos");
-                                            setSelectedScope("Todos");
-                                            setSelectedInteraction("Todos");
-                                            setSelectedRisk("Todos");
-                                        }}
-                                        className="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition-colors"
-                                    >
-                                        Limpiar filtros de categorías
-                                    </button>
                                 </div>
                             </div>
                             <div className="p-4">
