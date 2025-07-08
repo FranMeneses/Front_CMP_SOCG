@@ -65,7 +65,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
             const filteredProcesses = getFilteredProcesses();
 
             return (
-                <div className="mb-4 font-[Helvetica]">
+                <div className="font-[Helvetica]">
                     <DropdownMenu
                         buttonText="Seleccione proceso"
                         isInModal={false}
