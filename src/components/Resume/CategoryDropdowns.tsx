@@ -45,24 +45,69 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
         return "Todos";
     };
 
-    // Manejar la selección en cada dropdown
-    const handleDropdownSelect = (category: string, value: string, items: (IOrigin | IInvestment | IType | IScope | IInteraction | IRisk)[]) => {
+    // Funciones específicas para cada categoría
+    const handleOrigenSelect = (value: string) => {
         if (value === "Todos") {
             clearFilters();
         } else {
-            // Encontrar el ID del item seleccionado
-            const selectedItem = items.find(item => {
-                if (category === "origen") return item.name === value;
-                if (category === "inversión") return item.line === value;
-                if (category === "tipo") return item.name === value;
-                if (category === "alcance") return item.name === value;
-                if (category === "interacción") return item.operation === value;
-                if (category === "riesgo") return item.type === value;
-                return false;
-            });
-            
+            const selectedItem = origins.find(item => item.name === value);
             if (selectedItem) {
-                handleFilterClick(category, value, selectedItem.id);
+                handleFilterClick("origen", value, selectedItem.id);
+            }
+        }
+    };
+
+    const handleInvestmentSelect = (value: string) => {
+        if (value === "Todos") {
+            clearFilters();
+        } else {
+            const selectedItem = investments.find(item => item.line === value);
+            if (selectedItem) {
+                handleFilterClick("inversión", value, selectedItem.id);
+            }
+        }
+    };
+
+    const handleTypeSelect = (value: string) => {
+        if (value === "Todos") {
+            clearFilters();
+        } else {
+            const selectedItem = types.find(item => item.name === value);
+            if (selectedItem) {
+                handleFilterClick("tipo", value, selectedItem.id);
+            }
+        }
+    };
+
+    const handleScopeSelect = (value: string) => {
+        if (value === "Todos") {
+            clearFilters();
+        } else {
+            const selectedItem = scopes.find(item => item.name === value);
+            if (selectedItem) {
+                handleFilterClick("alcance", value, selectedItem.id);
+            }
+        }
+    };
+
+    const handleInteractionSelect = (value: string) => {
+        if (value === "Todos") {
+            clearFilters();
+        } else {
+            const selectedItem = interactions.find(item => item.operation === value);
+            if (selectedItem) {
+                handleFilterClick("interacción", value, selectedItem.id);
+            }
+        }
+    };
+
+    const handleRiskSelect = (value: string) => {
+        if (value === "Todos") {
+            clearFilters();
+        } else {
+            const selectedItem = risks.find(item => item.type === value);
+            if (selectedItem) {
+                handleFilterClick("riesgo", value, selectedItem.id);
             }
         }
     };
@@ -77,7 +122,7 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
                         <DropdownMenu
                             buttonText="Filtrar por origen"
                             items={originOptions}
-                            onSelect={(value) => handleDropdownSelect("origen", value, origins)}
+                            onSelect={handleOrigenSelect}
                             selectedValue={getSelectedValue("origen")}
                         />
                     </div>
@@ -89,7 +134,7 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
                         <DropdownMenu
                             buttonText="Filtrar por inversión"
                             items={investmentOptions}
-                            onSelect={(value) => handleDropdownSelect("inversión", value, investments)}
+                            onSelect={handleInvestmentSelect}
                             selectedValue={getSelectedValue("inversión")}
                         />
                     </div>
@@ -101,7 +146,7 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
                         <DropdownMenu
                             buttonText="Filtrar por tipo"
                             items={typeOptions}
-                            onSelect={(value) => handleDropdownSelect("tipo", value, types)}
+                            onSelect={handleTypeSelect}
                             selectedValue={getSelectedValue("tipo")}
                         />
                     </div>
@@ -113,7 +158,7 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
                         <DropdownMenu
                             buttonText="Filtrar por alcance"
                             items={scopeOptions}
-                            onSelect={(value) => handleDropdownSelect("alcance", value, scopes)}
+                            onSelect={handleScopeSelect}
                             selectedValue={getSelectedValue("alcance")}
                         />
                     </div>
@@ -125,7 +170,7 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
                         <DropdownMenu
                             buttonText="Filtrar por interacción"
                             items={interactionOptions}
-                            onSelect={(value) => handleDropdownSelect("interacción", value, interactions)}
+                            onSelect={handleInteractionSelect}
                             selectedValue={getSelectedValue("interacción")}
                         />
                     </div>
@@ -137,7 +182,7 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
                         <DropdownMenu
                             buttonText="Filtrar por riesgo"
                             items={riskOptions}
-                            onSelect={(value) => handleDropdownSelect("riesgo", value, risks)}
+                            onSelect={handleRiskSelect}
                             selectedValue={getSelectedValue("riesgo")}
                         />
                     </div>
