@@ -210,11 +210,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 <label className="text-xs text-gray-500 required">Estado</label>
                 <DropdownMenu
                   buttonText="Seleccione Estado"
-                  items={dropdownItems.state.map((state: string) => ({
-                    label: state,
-                    value: state,
-                    disabled: state === "Completada"
-                  }))}
+                  items={dropdownItems.state}
                   onSelect={(value) => {
                     if (value === "Completada") {
                       setError("La iniciativa pasara a completado cuando se terminen todas las subtareas");
