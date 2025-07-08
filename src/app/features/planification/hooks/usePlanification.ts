@@ -182,7 +182,7 @@ export const usePlanification = () => {
                     variables: {
                         input: {
                             taskId: data.updateTask.id,
-                            statusId: 7,
+                            statusId: 1,
                         },
                     },
                 });
