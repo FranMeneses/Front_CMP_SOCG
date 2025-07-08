@@ -63,22 +63,47 @@ export function useTaskInfoFilters(originalTasks: ITask[]) {
     }, [originalTasks, activeFilter.category]);
 
     // Función para convertir InfoTask a ITask
-    const convertInfoTaskToTask = (infoTaskData: any): ITask => {
+    const convertInfoTaskToTask = (infoTaskData: {
+        task: {
+            id: string;
+            name: string;
+            description?: string;
+            applies?: boolean;
+            valleyId?: number;
+            faenaId?: number;
+            statusId?: number;
+            processId?: number;
+            valley?: { id: number; name: string };
+            faena?: { id: number; name: string };
+            status?: { id: number; name: string };
+            beneficiary?: {
+                id: string;
+                legalName: string;
+                rut: string;
+                address: string;
+                entityType: string;
+                representative: string;
+                hasLegalPersonality: boolean;
+            };
+        };
+    }): ITask => {
         const task = infoTaskData.task;
         return {
             id: task.id,
             name: task.name,
-            description: task.description,
+            description: task.description || '',
             applies: task.applies,
-            valleyId: task.valleyId,
-            faenaId: task.faenaId,
-            statusId: task.statusId,
+            valleyId: task.valleyId || 0,
+            faenaId: task.faenaId || 0,
+            statusId: task.statusId || 0,
             processId: task.processId,
             valley: task.valley,
             faena: task.faena,
             status: task.status,
-            beneficiary: task.beneficiary,
-            // Agregar otros campos necesarios
+            beneficiary: task.beneficiary ? {
+                ...task.beneficiary,
+                contacts: [] // Añadir contacts vacío para cumplir con IBeneficiary
+            } : undefined,
         };
     };
 
