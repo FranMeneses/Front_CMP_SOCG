@@ -153,6 +153,7 @@ export const GET_TASK_INFO = gql`
         applies
         description
         statusId
+        valleyId
       }
     }
   }

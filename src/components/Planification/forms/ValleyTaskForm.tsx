@@ -87,7 +87,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 items={dropdownItems.valleyNames}
                 onSelect={(value) => handleInputChange("valley", value)}
                 isInModal={true}
-                selectedValue={infoTask?.task.valley?.name? dropdownItems.valleyNames[infoTask.task.valley.id - 1] : undefined}
+                selectedValue={infoTask?.task.valleyId? dropdownItems.valleyNames[infoTask.task.valleyId - 1] : undefined}
               />
             </div>
             </div>
