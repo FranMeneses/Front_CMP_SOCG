@@ -238,14 +238,14 @@ export const useComplianceForm = (
         let document: FormData;
         let nextStatusId = formState.statusId;
         let uploadOk = true;
-        if (formState.statusId >= 7 && formState.statusId <= 12) {
+        if (formState.statusId >= 1 && formState.statusId <= 6) {
             if (
-                (formState.statusId === 7 && (formState.donationFormFile || documents.formulario)) ||
-                (formState.statusId === 8 && (formState.cartaAporteFile || documents.carta)) ||
-                (formState.statusId === 9 && (formState.minutaFile || documents.minuta)) ||
-                (formState.statusId === 10 && (formState.authorizationFile || documents.autorizacion)) ||
-                (formState.statusId === 11 && (formState.transferPurchaseOrderFile || documents.transferencia)) ||
-                (formState.statusId === 12 && (formState.hesHem || documents.comprobante))
+                (formState.statusId === 1 && (formState.donationFormFile || documents.formulario)) ||
+                (formState.statusId === 2 && (formState.cartaAporteFile || documents.carta)) ||
+                (formState.statusId === 3 && (formState.minutaFile || documents.minuta)) ||
+                (formState.statusId === 4 && (formState.authorizationFile || documents.autorizacion)) ||
+                (formState.statusId === 5 && (formState.transferPurchaseOrderFile || documents.transferencia)) ||
+                (formState.statusId === 6 && (formState.hesHem || documents.comprobante))
             ) {
                 nextStatusId = formState.statusId + 1;
             }
@@ -258,7 +258,7 @@ export const useComplianceForm = (
             statusId: nextStatusId,
         };
         // Validación de campos requeridos para Memo/Solped
-        if (formState.statusId === 11 && formState.memoSolpedType) {
+        if (formState.statusId === 5 && formState.memoSolpedType) {
             if (formState.memoSolpedType === "MEMO") {
                 if (!formState.memoAmount || !formState.solpedMemoSap) {
                     console.error("Faltan campos requeridos para MEMO");
@@ -273,7 +273,7 @@ export const useComplianceForm = (
             }
         }
         // Agregar datos de Memo/Solped si corresponde
-        if (formState.statusId === 11 && formState.memoSolpedType) {
+        if (formState.statusId === 5 && formState.memoSolpedType) {
             compliance = {
                 ...compliance,
                 memoSolpedType: Number(formState.memoSolpedType),
@@ -284,7 +284,7 @@ export const useComplianceForm = (
             };
         }
         // Agregar datos de HEM/HES si corresponde
-        if (formState.statusId === 12) {
+        if (formState.statusId === 6) {
             compliance = {
                 ...compliance,
                 hesHemSap: selectedCompliance?.ceco ? Number(formState.hesHemSap): undefined,
@@ -294,7 +294,7 @@ export const useComplianceForm = (
         try {
             setIsUploading(true);
             // Subir archivo SOLO si hay archivo nuevo
-            if (formState.statusId === 7 && formState.donationFormFile) {
+            if (formState.statusId === 1 && formState.donationFormFile) {
                 document = {
                     file: formState.donationFormFile,
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Formulario de Aportes")?.id_tipo_documento || "",
@@ -307,7 +307,7 @@ export const useComplianceForm = (
                     console.error("Error subiendo archivo de Formulario de Aportes:", e);
                 }
             }
-            if (formState.statusId === 8 && formState.cartaAporteFile) {
+            if (formState.statusId === 2 && formState.cartaAporteFile) {
                 document = {
                     file: formState.cartaAporteFile,
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Carta de Aporte")?.id_tipo_documento || "",
@@ -320,7 +320,7 @@ export const useComplianceForm = (
                     console.error("Error subiendo archivo de Carta de Aporte:", e);
                 }
             }
-            if (formState.statusId === 9 && formState.minutaFile) {
+            if (formState.statusId === 3 && formState.minutaFile) {
                 document = {
                     file: formState.minutaFile,
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Minuta")?.id_tipo_documento || "",
@@ -333,7 +333,7 @@ export const useComplianceForm = (
                     console.error("Error subiendo archivo de Minuta:", e);
                 }
             }
-            if (formState.statusId === 10 && formState.authorizationFile) {
+            if (formState.statusId === 4 && formState.authorizationFile) {
                 document = {
                     file: formState.authorizationFile,
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Autorización")?.id_tipo_documento || "",
@@ -346,7 +346,7 @@ export const useComplianceForm = (
                     console.error("Error subiendo archivo de Autorización:", e);
                 }
             }
-            if (formState.statusId === 11 && formState.transferPurchaseOrderFile) {
+            if (formState.statusId === 5 && formState.transferPurchaseOrderFile) {
                 document = {
                     file: formState.transferPurchaseOrderFile,
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Transferencia/Orden de Compra")?.id_tipo_documento || "",
@@ -359,7 +359,7 @@ export const useComplianceForm = (
                     console.error("Error subiendo archivo de Transferencia/Orden de Compra:", e);
                 }
             }
-            if (formState.statusId === 12 && formState.hesHem) {
+            if (formState.statusId === 6 && formState.hesHem) {
                 document = {
                     file: formState.hesHem,
                     documentType: documentsType.find((d: ITipoDocumento) => d.tipo_documento === "Comprobante transferencia/HES/HEM")?.id_tipo_documento || "",

@@ -107,14 +107,14 @@ export default function ComplianceForm({
         if (!currentStatus) return null;
 
         switch(currentStatus.id) {
-            case 8: // Carta Aporte
+            case 2: // Carta Aporte
                 return <CartaAporteFields 
                     formState={formState} 
                     handleCartaAporteChange={handleCartaAporteChange} 
                     documents={documents}
                 />;
                 
-            case 9: // Minuta
+            case 3: // Minuta
                 return <MinutaFields 
                     formState={formState}
                     cartaData={documents.carta}
@@ -122,14 +122,14 @@ export default function ComplianceForm({
                     documents={documents}
                 />;
             
-            case 10: // Autorización
+            case 4: // Autorización
                 return <AuthorizationFields
                     formState={formState}
                     handleAuthorizationChange={handleAuthorizationChange}
                     documents={documents}
                 />;
             
-            case 11: // Transferencia/Orden de Compra, MEMO o SOLPED
+            case 5: // Transferencia/Orden de Compra, MEMO o SOLPED
                 return <MemoSolpedFields
                     formState={formState}
                     handleMemoSolpedTypeChange={handleMemoSolpedTypeChange}
@@ -137,7 +137,7 @@ export default function ComplianceForm({
                     documents={documents}
                 />;
                 
-            case 12: // HEM/HES
+            case 6: // HEM/HES
                 return <HemHesFields 
                     formState={formState}
                     cartaData={documents.carta}
@@ -148,7 +148,7 @@ export default function ComplianceForm({
                     documents={documents}
                 />;
                 
-            case 13: // Resumen
+            case 7: // Resumen
                 return <ComplianceSummary 
                     formState={formState}
                     documents={documents}
@@ -165,12 +165,12 @@ export default function ComplianceForm({
         if (!baseValidation) return false;
         
         switch(formState.statusId) {
-            case 7: return !!formState.donationFormFile;
-            case 8: return !!formState.cartaAporteFile;
-            case 9: return !!(formState.minutaFile);
-            case 10: return !!(formState.authorizationFile);
-            case 11: return !!(formState.transferPurchaseOrderFile);
-            case 12: return !!(formState.hesHem);
+            case 1: return !!formState.donationFormFile;
+            case 2: return !!formState.cartaAporteFile;
+            case 3: return !!(formState.minutaFile);
+            case 4: return !!(formState.authorizationFile);
+            case 5: return !!(formState.transferPurchaseOrderFile);
+            case 6: return !!(formState.hesHem);
             default: return true;
         }
     };
@@ -245,7 +245,7 @@ export default function ComplianceForm({
             {renderAdditionalFields()}
             
             <div className="flex justify-end space-x-2 mt-2">
-                {formState.statusId === 13 ? (
+                {formState.statusId === 7 ? (
                     <Button
                         variant="default"
                         onClick={onCancel}
@@ -266,7 +266,7 @@ export default function ComplianceForm({
                         >
                             Cancelar
                         </Button>
-                        {formState.statusId && formState.statusId >= 7 && formState.statusId <= 12 && (
+                        {formState.statusId && formState.statusId >= 1 && formState.statusId <= 6 && (
                             <Button
                                 variant="default"
                                 onClick={() => handleSave(documents)}
@@ -277,7 +277,7 @@ export default function ComplianceForm({
                                 {isUploading ? 'Subiendo...' : 'Guardar y Avanzar'}
                             </Button>
                         )}
-                        {(!formState.statusId || formState.statusId < 7 || formState.statusId > 12) && (
+                        {(!formState.statusId || formState.statusId < 1 || formState.statusId > 6) && (
                             <Button
                                 variant="default"
                                 onClick={() => handleSave(documents)}
