@@ -234,6 +234,7 @@ export const useComplianceForm = (
      * @description Esta función valida los campos requeridos y prepara los datos para ser enviados al servidor.
      */
     const handleSave = async (documents: ComplianceDocuments) => {
+        console.log("🔍 FORMSTATE",formState);
         let compliance = {};
         let document: FormData;
         let nextStatusId = formState.statusId;
