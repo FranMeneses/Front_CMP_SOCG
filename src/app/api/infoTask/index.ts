@@ -224,3 +224,424 @@ export const GET_ALL_TYPES = gql`
     }
   }
 `;
+
+// Queries para filtrar tareas por categoría
+export const GET_TASKS_BY_ORIGIN = gql`
+  query GetTasksByOrigin($originId: Int!) {
+    tasksByOrigin(originId: $originId) {
+      id
+      taskId
+      originId
+      investmentId
+      typeId
+      scopeId
+      interactionId
+      riskId
+      task {
+        id
+        name
+        applies
+        description
+        valleyId
+        faenaId
+        statusId
+        processId
+        valley {
+          id
+          name
+        }
+        faena {
+          id
+          name
+        }
+        status {
+          id
+          name
+        }
+        beneficiary {
+          id
+          legalName
+          rut
+          address
+          entityType
+          representative
+          hasLegalPersonality
+        }
+      }
+      origin {
+        id
+        name
+      }
+      investment {
+        id
+        line
+      }
+      type {
+        id
+        name
+      }
+      scope {
+        id
+        name
+      }
+      interaction {
+        id
+        operation
+      }
+      risk {
+        id
+        type
+      }
+    }
+  }
+`;
+
+export const GET_TASKS_BY_INVESTMENT = gql`
+  query GetTasksByInvestment($investmentId: Int!) {
+    tasksByInvestment(investmentId: $investmentId) {
+      id
+      taskId
+      originId
+      investmentId
+      typeId
+      scopeId
+      interactionId
+      riskId
+      task {
+        id
+        name
+        applies
+        description
+        valleyId
+        faenaId
+        statusId
+        processId
+        valley {
+          id
+          name
+        }
+        faena {
+          id
+          name
+        }
+        status {
+          id
+          name
+        }
+        beneficiary {
+          id
+          legalName
+          rut
+          address
+          entityType
+          representative
+          hasLegalPersonality
+        }
+      }
+      origin {
+        id
+        name
+      }
+      investment {
+        id
+        line
+      }
+      type {
+        id
+        name
+      }
+      scope {
+        id
+        name
+      }
+      interaction {
+        id
+        operation
+      }
+      risk {
+        id
+        type
+      }
+    }
+  }
+`;
+
+export const GET_TASKS_BY_TYPE = gql`
+  query GetTasksByType($typeId: Int!) {
+    tasksByType(typeId: $typeId) {
+      id
+      taskId
+      originId
+      investmentId
+      typeId
+      scopeId
+      interactionId
+      riskId
+      task {
+        id
+        name
+        applies
+        description
+        valleyId
+        faenaId
+        statusId
+        processId
+        valley {
+          id
+          name
+        }
+        faena {
+          id
+          name
+        }
+        status {
+          id
+          name
+        }
+        beneficiary {
+          id
+          legalName
+          rut
+          address
+          entityType
+          representative
+          hasLegalPersonality
+        }
+      }
+      origin {
+        id
+        name
+      }
+      investment {
+        id
+        line
+      }
+      type {
+        id
+        name
+      }
+      scope {
+        id
+        name
+      }
+      interaction {
+        id
+        operation
+      }
+      risk {
+        id
+        type
+      }
+    }
+  }
+`;
+
+export const GET_TASKS_BY_SCOPE = gql`
+  query GetTasksByScope($scopeId: Int!) {
+    tasksByScope(scopeId: $scopeId) {
+      id
+      taskId
+      originId
+      investmentId
+      typeId
+      scopeId
+      interactionId
+      riskId
+      task {
+        id
+        name
+        applies
+        description
+        valleyId
+        faenaId
+        statusId
+        processId
+        valley {
+          id
+          name
+        }
+        faena {
+          id
+          name
+        }
+        status {
+          id
+          name
+        }
+        beneficiary {
+          id
+          legalName
+          rut
+          address
+          entityType
+          representative
+          hasLegalPersonality
+        }
+      }
+      origin {
+        id
+        name
+      }
+      investment {
+        id
+        line
+      }
+      type {
+        id
+        name
+      }
+      scope {
+        id
+        name
+      }
+      interaction {
+        id
+        operation
+      }
+      risk {
+        id
+        type
+      }
+    }
+  }
+`;
+
+export const GET_TASKS_BY_INTERACTION = gql`
+  query GetTasksByInteraction($interactionId: Int!) {
+    tasksByInteraction(interactionId: $interactionId) {
+      id
+      taskId
+      originId
+      investmentId
+      typeId
+      scopeId
+      interactionId
+      riskId
+      task {
+        id
+        name
+        applies
+        description
+        valleyId
+        faenaId
+        statusId
+        processId
+        valley {
+          id
+          name
+        }
+        faena {
+          id
+          name
+        }
+        status {
+          id
+          name
+        }
+        beneficiary {
+          id
+          legalName
+          rut
+          address
+          entityType
+          representative
+          hasLegalPersonality
+        }
+      }
+      origin {
+        id
+        name
+      }
+      investment {
+        id
+        line
+      }
+      type {
+        id
+        name
+      }
+      scope {
+        id
+        name
+      }
+      interaction {
+        id
+        operation
+      }
+      risk {
+        id
+        type
+      }
+    }
+  }
+`;
+
+export const GET_TASKS_BY_RISK = gql`
+  query GetTasksByRisk($riskId: Int!) {
+    tasksByRisk(riskId: $riskId) {
+      id
+      taskId
+      originId
+      investmentId
+      typeId
+      scopeId
+      interactionId
+      riskId
+      task {
+        id
+        name
+        applies
+        description
+        valleyId
+        faenaId
+        statusId
+        processId
+        valley {
+          id
+          name
+        }
+        faena {
+          id
+          name
+        }
+        status {
+          id
+          name
+        }
+        beneficiary {
+          id
+          legalName
+          rut
+          address
+          entityType
+          representative
+          hasLegalPersonality
+        }
+      }
+      origin {
+        id
+        name
+      }
+      investment {
+        id
+        line
+      }
+      type {
+        id
+        name
+      }
+      scope {
+        id
+        name
+      }
+      interaction {
+        id
+        operation
+      }
+      risk {
+        id
+        type
+      }
+    }
+  }
+`;

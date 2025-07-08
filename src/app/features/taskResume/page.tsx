@@ -13,6 +13,8 @@ import { Months } from "@/constants/months";
 import { useLazyQuery } from "@apollo/client";
 import { GET_TASKS_BY_MONTH_AND_PROCESS, GET_TASKS_BY_MONTH } from "@/app/api/tasks";
 import { ITask } from "@/app/models/ITasks";
+import TaskInfoFilters from "@/components/Resume/TaskInfoFilters";
+import { useTaskInfoFilters } from "./hooks/useTaskInfoFilters";
 
 export default function TaskResume() {
     const { userRole, handleLogout } = useHooks();
@@ -47,6 +49,23 @@ export default function TaskResume() {
     const [filteredTasks, setFilteredTasks] = React.useState<ITask[]>([]);
     const [fetchByMonthAndProcess, { data: dataByMonthAndProcess, loading: loadingByMonthAndProcess }] = useLazyQuery(GET_TASKS_BY_MONTH_AND_PROCESS);
     const [fetchByMonth, { data: dataByMonth, loading: loadingByMonth }] = useLazyQuery(GET_TASKS_BY_MONTH);
+
+    // Hook para filtros de información de tareas
+    const {
+        origins,
+        investments,
+        types,
+        scopes,
+        interactions,
+        risks,
+        activeFilter: infoActiveFilter,
+        filteredTasks: infoFilteredTasks,
+        handleFilterClick: handleInfoFilterClick,
+        clearFilters: clearInfoFilters
+    } = useTaskInfoFilters(filteredTasks);
+
+    // Estado para mostrar/ocultar filtros de información
+    const [showInfoFilters, setShowInfoFilters] = React.useState(false);
 
     React.useEffect(() => {
         if (selectedMonth === "Todos") {
@@ -123,29 +142,56 @@ export default function TaskResume() {
                                 <h1 className="text-3xl font-bold">RESUMEN DE TAREAS</h1>
                             </div>
                             {/* Filtros */}
-                            <div className="px-6 pt-4 flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
-                                {allProcesses && allProcesses.length > 0 && (
+                            <div className="px-6 pt-4 space-y-4">
+                                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center">
+                                    {allProcesses && allProcesses.length > 0 && (
+                                        <div className="mb-4 w-64 overflow-visible">
+                                            <DropdownMenu
+                                                buttonText="Filtrar por proceso"
+                                                items={["Todos", ...allProcesses.map((p: IProcess) => p.name)]}
+                                                onSelect={handleProcessFilter}
+                                                selectedValue={selectedProcess}
+                                            />
+                                        </div>
+                                    )}
                                     <div className="mb-4 w-64 overflow-visible">
                                         <DropdownMenu
-                                            buttonText="Filtrar por proceso"
-                                            items={["Todos", ...allProcesses.map((p: IProcess) => p.name)]}
-                                            onSelect={handleProcessFilter}
-                                            selectedValue={selectedProcess}
+                                            buttonText="Filtrar por mes"
+                                            items={monthsWithAll}
+                                            onSelect={handleMonthFilter}
+                                            selectedValue={selectedMonth}
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <button
+                                            onClick={() => setShowInfoFilters(!showInfoFilters)}
+                                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                                        >
+                                            {showInfoFilters ? 'Ocultar Filtros por Categoría' : 'Mostrar Filtros por Categoría'}
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                {/* Filtros de Información de Tareas */}
+                                {showInfoFilters && (
+                                    <div className="border-t pt-4">
+                                        <TaskInfoFilters
+                                            origins={origins}
+                                            investments={investments}
+                                            types={types}
+                                            scopes={scopes}
+                                            interactions={interactions}
+                                            risks={risks}
+                                            activeFilter={infoActiveFilter}
+                                            handleFilterClick={handleInfoFilterClick}
+                                            clearFilters={clearInfoFilters}
                                         />
                                     </div>
                                 )}
-                                <div className="mb-4 w-64 overflow-visible">
-                                    <DropdownMenu
-                                        buttonText="Filtrar por mes"
-                                        items={monthsWithAll}
-                                        onSelect={handleMonthFilter}
-                                        selectedValue={selectedMonth}
-                                    />
-                                </div>
                             </div>
                             <div className="p-4">
                                 <DynamicTable
-                                    tasks={filteredTasks || []}
+                                    tasks={infoActiveFilter.category ? infoFilteredTasks : filteredTasks || []}
                                     subtasks={subTasks || []}
                                     selectedTaskId={null}
                                     onTaskClick={() => {}}
