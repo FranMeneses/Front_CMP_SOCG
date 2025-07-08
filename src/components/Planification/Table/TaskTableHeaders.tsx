@@ -92,13 +92,13 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     return (
         <div className="flex justify-between items-center mb-2 font-[Helvetica]">
             <div className="flex items-center gap-4">
-                <div>
+                <div className="flex items-center">
                     {renderProcessDropdown()}
                 </div>
                 {/* Cuadro del contador de tareas */}
                 {taskCount !== undefined && (
-                    <div className="bg-blue-50 border border-blue-200 rounded-md h-9 px-4 py-2 shadow-sm flex items-center">
-                        <span className="text-sm font-medium text-blue-800">
+                    <div className="bg-blue-50 border border-blue-200 rounded-md h-9 px-4 shadow-sm flex items-center justify-center">
+                        <span className="text-sm font-medium text-blue-800 leading-none">
                             Tareas asignadas: <span className="font-bold">{taskCount}</span>
                         </span>
                     </div>
