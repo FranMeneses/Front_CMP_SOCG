@@ -287,7 +287,7 @@ export const useComplianceForm = (
         if (formState.statusId === 12) {
             compliance = {
                 ...compliance,
-                hesHemSap: Number(formState.hesHemSap),
+                hesHemSap: selectedCompliance?.ceco ? Number(formState.hesHemSap): undefined,
             };
         }
         // Subida de archivos según el estado

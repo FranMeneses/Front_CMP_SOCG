@@ -57,7 +57,7 @@ export const useCompliance = () => {
                             id: selectedCompliance?.id,
                             input: {
                                 taskId: selectedCompliance?.task.id,
-                                statusId: compliance.statusId,
+                                listo: true,
                                 hesHemSap: compliance.hesHemSap
                             }
                         }

@@ -43,16 +43,6 @@ export default function HemHesFields({
                                 </span>
                             )}
                         </div>
-                        <div>
-                            <label className="block text-xs font-medium mb-1">Número de Transferencia</label>
-                            <input
-                                type="number"
-                                className="form-input"
-                                value={formState.hesHemSap || ""}
-                                onChange={e => handleInputChange("hesHemSap", Number(e.target.value))}
-                                min={0}
-                            />
-                        </div>
                     </>
                 )}
                 {formState.solpedCECO && (
