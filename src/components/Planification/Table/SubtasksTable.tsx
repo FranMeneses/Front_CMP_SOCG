@@ -90,7 +90,7 @@ const SubtasksTable: React.FC<SubtasksTableProps> = ({
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500"></th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#cacaca]">
+        <tbody>
           {localSubtasks.length > 0 ? (
             localSubtasks
               .sort((a, b) => {
