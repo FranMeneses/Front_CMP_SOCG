@@ -89,7 +89,13 @@ const CategoryFilters: React.FC<CategoryFiltersProps> = ({
         }))
     ];
 
-    const getButtonStyles = (filter: any) => {
+    const getButtonStyles = (filter: {
+        type: string;
+        category: string;
+        value: string;
+        id: number;
+        color: string;
+    }) => {
         const isActive = activeFilter.category === filter.category && activeFilter.value === filter.value;
         
         if (filter.type === 'clear') {
