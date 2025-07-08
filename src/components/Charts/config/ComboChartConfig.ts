@@ -14,8 +14,8 @@ export const ComboChartOptions = ({
     responsive: true,
     maintainAspectRatio: true,
     interaction: {
-      mode: 'index',
-      intersect: false,
+      mode: 'nearest',
+      intersect: true,
     },
     scales: {
       y: {
@@ -59,8 +59,8 @@ export const ComboChartOptions = ({
     plugins: {
     tooltip: {
       enabled: true,
-      mode: 'index',
-      intersect: false,
+      mode: 'nearest',
+      intersect: true,
       backgroundColor: 'rgba(255, 255, 255, 0.9)',
       titleColor: '#000',
       bodyColor: '#000',
