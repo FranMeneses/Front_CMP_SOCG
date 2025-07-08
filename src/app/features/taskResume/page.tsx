@@ -13,7 +13,7 @@ import { Months } from "@/constants/months";
 import { useLazyQuery } from "@apollo/client";
 import { GET_TASKS_BY_MONTH_AND_PROCESS, GET_TASKS_BY_MONTH } from "@/app/api/tasks";
 import { ITask } from "@/app/models/ITasks";
-import CategoryFilters from "@/components/Resume/CategoryFilters";
+import CategoryDropdowns from "@/components/Resume/CategoryDropdowns";
 import { useTaskInfoFilters } from "./hooks/useTaskInfoFilters";
 
 export default function TaskResume() {
@@ -171,7 +171,7 @@ export default function TaskResume() {
                                 
                                 {/* Filtros de Categorías */}
                                 <div className="border-t pt-4">
-                                    <CategoryFilters
+                                    <CategoryDropdowns
                                         origins={origins}
                                         investments={investments}
                                         types={types}
