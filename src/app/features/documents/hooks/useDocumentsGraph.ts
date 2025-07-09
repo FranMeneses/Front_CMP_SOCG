@@ -153,5 +153,6 @@ export function useDocumentsGraph() {
         fetchDocumentsByType,
         enrichDocumentsWithTasksAndSubtasks,
         handleDeleteDocument,
+        refetch,
     };
 }

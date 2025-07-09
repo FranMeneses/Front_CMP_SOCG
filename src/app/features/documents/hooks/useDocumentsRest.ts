@@ -100,5 +100,31 @@ export const useDocumentsRest = () => {
         }
     };
 
-    return { handleUpload, handleDownload };
+    /**
+     * Función para eliminar un documento usando la lógica inteligente del backend
+     * @param documentId ID del documento a eliminar
+     * @description Utiliza la API REST que implementa la lógica de:
+     * - Si la tarea NO tiene historial: borra blob + metadata
+     * - Si la tarea SÍ tiene historial: borra solo metadata (preserva blob)
+     */
+    const handleDelete = async (documentId: string) => {
+        try {
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/documents/${documentId}`);
+            
+            if (response.data.success) {
+                console.log('Documento eliminado exitosamente');
+                return {
+                    success: true,
+                    ...response.data
+                };
+            } else {
+                throw new Error('Error al eliminar el documento');
+            }
+        } catch (error) {
+            console.error('Error al eliminar el documento:', error);
+            throw error;
+        }
+    };
+
+    return { handleUpload, handleDownload, handleDelete };
 }

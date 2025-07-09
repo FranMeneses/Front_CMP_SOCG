@@ -20,27 +20,42 @@ const formatDate = (dateStr: string) => {
 };
 
 export const DocumentTable = ({ documents }: DocumentTableProps) => {
-  const { handleDownload } = useDocumentsRest();
-  const { handleDeleteDocument } = useDocumentsGraph();
+  const { handleDownload, handleDelete } = useDocumentsRest();
+  // Solo necesitamos refetch del hook GraphQL para actualizar la lista después del borrado
+  const { refetch } = useDocumentsGraph();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [documentToDelete, setDocumentToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeleteClick = (documentId: string) => {
     setDocumentToDelete(documentId);
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (documentToDelete) {
-      handleDeleteDocument(documentToDelete);
-      setIsDeleteModalOpen(false);
-      setDocumentToDelete(null);
+  const handleConfirmDelete = async () => {
+    if (documentToDelete && !isDeleting) {
+      setIsDeleting(true);
+      try {
+        await handleDelete(documentToDelete);
+        console.log('Documento eliminado exitosamente');
+        // Refrescar la lista de documentos después del borrado
+        await refetch();
+      } catch (error) {
+        console.error('Error al eliminar documento:', error);
+        // Aquí podrías agregar un toast de error si tienes un sistema de notificaciones
+      } finally {
+        setIsDeleting(false);
+        setIsDeleteModalOpen(false);
+        setDocumentToDelete(null);
+      }
     }
   };
 
   const handleCancelDelete = () => {
-    setIsDeleteModalOpen(false);
-    setDocumentToDelete(null);
+    if (!isDeleting) {
+      setIsDeleteModalOpen(false);
+      setDocumentToDelete(null);
+    }
   };
 
   return (
@@ -87,9 +102,9 @@ export const DocumentTable = ({ documents }: DocumentTableProps) => {
                     </td>
                     <td className='px-4 py-3 text-center'>
                       <Trash
-                        className="w-5 h-5 cursor-pointer mx-auto"
+                        className={`w-5 h-5 cursor-pointer mx-auto ${isDeleting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         color='#082C4B'
-                        onClick={() => handleDeleteClick(doc.id_documento)}
+                        onClick={() => !isDeleting && handleDeleteClick(doc.id_documento)}
                       />
                     </td>
                   </tr>
