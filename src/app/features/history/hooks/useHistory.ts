@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_HISTORIES } from '@/app/api/history';
 import { IHistory } from '@/app/models/IHistory';
+import { DeleteResponse } from '@/app/models/IAxios';
 import axios from 'axios';
 
 export const useHistory = () => {
@@ -79,7 +80,7 @@ export const useHistory = () => {
      */
     const handleDeleteHistoryDocument = async (historyDocumentId: string) => {
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/history/documents/${historyDocumentId}`);
+            const response = await axios.delete<DeleteResponse>(`${process.env.NEXT_PUBLIC_API_URL}/history/documents/${historyDocumentId}`);
             
             if (response.data.success) {
                 console.log('Documento histórico eliminado exitosamente');
