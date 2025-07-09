@@ -149,7 +149,7 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
                 onClick={() => handleRowClick(task)}
               >
                 <td className="text-left px-4 py-2 border-b border-gray-300">
-                  {task.name}
+                  {task.name.toUpperCase()}
                 </td>
                 <td className="px-4 py-2 text-center border-b border-gray-300">
                   {task.id ? (budgets[task.id] !== undefined ? formatCLP(budgets[task.id]) : "-") : "-"}
