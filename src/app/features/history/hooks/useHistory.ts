@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_HISTORIES } from '@/app/api/history';
 import { IHistory } from '@/app/models/IHistory';
