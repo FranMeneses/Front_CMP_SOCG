@@ -49,7 +49,7 @@ export function Sidebar({ onNavClick, userRole, handleLogout }: SidebarProps) {
       displayHref: "/documents",
       icon: FileText,
       isActive: pathname === "/features/documents",
-      admitedRoles: ["Admin", "Encargado Cumplimiento","Encargado Asuntos Públicos","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
+      admitedRoles: ["Admin", "Encargado Cumplimiento","Jefe Relacionamiento VH", "Jefe Relacionamiento VC", "Jefe Relacionamiento VE"]
     },
     {
       title: "BENEFICIARIOS",
