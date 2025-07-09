@@ -7,7 +7,9 @@ import { useHooks } from "../hooks/useHooks";
 import { useHistory } from "./hooks/useHistory";
 import HistoryTable from "@/components/History/Table/HistoryTable";
 import HistoryForm from "@/components/History/HistoryForm";
+import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function ComplianceHistory() {
     const {
@@ -18,10 +20,15 @@ export default function ComplianceHistory() {
         isModalOpen,
         selectedHistory,
         openHistoryModal,
-        closeHistoryModal
+        closeHistoryModal,
+        handleDeleteHistory,
+        refetch
     } = useHistory();
 
     const { userRole, handleLogout } = useHooks();
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [historyToDelete, setHistoryToDelete] = useState<{ id: string; name: string } | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     let userName = '';
     if (typeof window !== 'undefined') {
         const userStr = localStorage.getItem('user');
@@ -32,6 +39,41 @@ export default function ComplianceHistory() {
             } catch {}
         }
     }
+
+    const handleDeleteClick = (historyId: string) => {
+        const history = historyData.find(h => h.id === historyId);
+        if (history) {
+            setHistoryToDelete({ id: historyId, name: history.name });
+            setIsDeleteModalOpen(true);
+        }
+    };
+
+    const handleConfirmDelete = async () => {
+        if (historyToDelete && !isDeleting) {
+            setIsDeleting(true);
+            try {
+                await handleDeleteHistory(historyToDelete.id);
+                console.log('Historial eliminado exitosamente');
+                // Refrescar los datos del historial
+                await refetch();
+                // Cerrar el modal de confirmación
+                setIsDeleteModalOpen(false);
+                setHistoryToDelete(null);
+            } catch (error) {
+                console.error('Error al eliminar historial:', error);
+                alert(`Error al eliminar el historial: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+            } finally {
+                setIsDeleting(false);
+            }
+        }
+    };
+
+    const handleCancelDelete = () => {
+        if (!isDeleting) {
+            setIsDeleteModalOpen(false);
+            setHistoryToDelete(null);
+        }
+    };
 
     if (historyLoading) {
         return (
@@ -81,6 +123,8 @@ export default function ComplianceHistory() {
                                 <HistoryTable
                                     history={historyData}
                                     onViewDetails={openHistoryModal}
+                                    onDelete={handleDeleteClick}
+                                    userRole={userRole}
                                     data-test-id="tasks-table"
                                 />
                             </div>
@@ -97,6 +141,14 @@ export default function ComplianceHistory() {
                     />
                 </Modal>
             )}
+
+            {/* Modal de confirmación de borrado de historial */}
+            <DeleteConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={handleCancelDelete}
+                onConfirm={handleConfirmDelete}
+                itemType="historial"
+            />
         </div>
     );
 }

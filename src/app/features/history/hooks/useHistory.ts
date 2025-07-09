@@ -107,6 +107,40 @@ export const useHistory = () => {
         }
     };
 
+    /**
+     * Función para eliminar un historial completo (solo admin)
+     * @param historyId ID del historial a eliminar
+     * @description Utiliza la API REST que elimina completamente el historial y todos sus documentos
+     */
+    const handleDeleteHistory = async (historyId: string) => {
+        try {
+            console.log('Iniciando eliminación de historial:', historyId);
+            console.log('URL de eliminación:', `${process.env.NEXT_PUBLIC_API_URL}/history/${historyId}`);
+            
+            const response = await axios.delete<any>(`${process.env.NEXT_PUBLIC_API_URL}/history/${historyId}`);
+            
+            console.log('Respuesta del servidor:', response.data);
+            
+            if (response.data.success) {
+                console.log('Historial eliminado exitosamente');
+                return response.data;
+            } else {
+                throw new Error('Error al eliminar el historial');
+            }
+        } catch (error: unknown) {
+            console.error('Error al eliminar el historial:', error);
+            if (error && typeof error === 'object' && 'response' in error && 'message' in error) {
+                const axiosError = error as { response?: { status?: number; data?: unknown }; message?: string };
+                console.error('Error de Axios:', {
+                    status: axiosError.response?.status,
+                    data: axiosError.response?.data,
+                    message: axiosError.message
+                });
+            }
+            throw error;
+        }
+    };
+
     return {
         isSidebarOpen,
         toggleSidebar,
@@ -119,5 +153,6 @@ export const useHistory = () => {
         closeHistoryModal,
         handleDownloadHistoryDocument,
         handleDeleteHistoryDocument,
+        handleDeleteHistory,
     };
 };

@@ -7,7 +7,7 @@ interface DeleteConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  itemType: 'tarea' | 'subtarea' | 'documento' | 'beneficiario' | 'contacto' | 'usuario';
+  itemType: 'tarea' | 'subtarea' | 'documento' | 'beneficiario' | 'contacto' | 'usuario' | 'historial';
 }
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({

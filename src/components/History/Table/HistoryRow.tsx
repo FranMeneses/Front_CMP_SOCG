@@ -1,15 +1,19 @@
 import React from 'react';
-import { ZoomIn } from "lucide-react";
+import { ZoomIn, Trash } from "lucide-react";
 import { IHistory } from '@/app/models/IHistory';
 
 interface HistoryRowProps {
   history: IHistory;
   onViewDetails: (history: IHistory) => void;
+  onDelete?: (historyId: string) => void;
+  userRole?: string;
 }
 
 const HistoryRow: React.FC<HistoryRowProps> = ({
   history,
-  onViewDetails
+  onViewDetails,
+  onDelete,
+  userRole
 }) => {
   
   return (
@@ -42,6 +46,14 @@ const HistoryRow: React.FC<HistoryRowProps> = ({
           className="cursor-pointer mr-4 hover:scale-110 transition-transform"
           onClick={() => onViewDetails(history)}
         />
+        {userRole === 'Admin' && onDelete && (
+          <Trash
+            size={20}
+            color="#041e3e"
+            className="cursor-pointer hover:scale-110 transition-transform hover:text-red-600"
+            onClick={() => onDelete(history.id)}
+          />
+        )}
       </td>
     </tr>
   );

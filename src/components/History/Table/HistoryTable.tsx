@@ -6,11 +6,15 @@ import { IHistory } from "@/app/models/IHistory";
 interface HistoryTableProps {
     history: IHistory[];
     onViewDetails: (history: IHistory) => void;
+    onDelete?: (historyId: string) => void;
+    userRole?: string;
 }
 
 const HistoryTable: React.FC<HistoryTableProps> = ({ 
     history, 
-    onViewDetails
+    onViewDetails,
+    onDelete,
+    userRole
 }) => {
 
     return (
@@ -33,6 +37,8 @@ const HistoryTable: React.FC<HistoryTableProps> = ({
                                 <HistoryRow
                                     history={historyItem}
                                     onViewDetails={onViewDetails}
+                                    onDelete={onDelete}
+                                    userRole={userRole}
                                 />
                             </React.Fragment>
                         ))}
