@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { IHistory } from "@/app/models/IHistory";
-import { useDocumentsRest } from "@/app/features/documents/hooks/useDocumentsRest";
+import { useHistory } from "@/app/features/history/hooks/useHistory";
 import { Clipboard, FileText, Info, User2Icon } from "lucide-react";
 
 interface HistoryFormProps {
@@ -9,7 +9,7 @@ interface HistoryFormProps {
 }
 
 export default function HistoryForm({ historyData, onClose }: HistoryFormProps) {
-    const { handleDownload } = useDocumentsRest();
+    const { handleDownloadHistoryDocument } = useHistory();
     
     const formatCurrency = (amount: number) => {
         return new Intl.NumberFormat('es-CL', {
@@ -33,6 +33,15 @@ export default function HistoryForm({ historyData, onClose }: HistoryFormProps) 
         const yearNum = parseInt(year, 10);
         
         return `${dayNum} de ${months[monthIndex]} de ${yearNum}`;
+    };
+
+    const handleDocumentDownload = async (documentId: string) => {
+        try {
+            await handleDownloadHistoryDocument(documentId);
+        } catch (error) {
+            console.error('Error al descargar documento histórico:', error);
+            // Aquí podrías agregar un toast de error si tienes un sistema de notificaciones
+        }
     };
 
     return (
@@ -149,7 +158,7 @@ export default function HistoryForm({ historyData, onClose }: HistoryFormProps) 
                                 <div key={index} className="bg-white border border-gray-200 rounded p-2 flex justify-between items-center">
                                     <span className="text-sm">{doc.fileName}</span>
                                     <button 
-                                        onClick={() => handleDownload(doc.id)}
+                                        onClick={() => handleDocumentDownload(doc.id)}
                                         className="text-blue-600 hover:text-blue-800 text-sm"
                                     >
                                         Descargar
