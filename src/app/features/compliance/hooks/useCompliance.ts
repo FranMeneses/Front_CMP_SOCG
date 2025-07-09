@@ -97,7 +97,7 @@ export const useCompliance = () => {
                     }
                 })
             } catch (error) {
-                console.error("Error updating compliance (estado 11)", error);
+                console.error("Error updating compliance (estado 6)", error);
             }
         }
         else {
