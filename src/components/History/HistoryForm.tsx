@@ -57,9 +57,11 @@ export default function HistoryForm({ historyData, onClose }: HistoryFormProps) 
     };
 
     const handleConfirmDelete = async () => {
+        console.log('handleConfirmDelete called', { documentToDelete, isDeleting });
         if (documentToDelete && !isDeleting) {
             setIsDeleting(true);
             try {
+                console.log('Intentando eliminar documento histórico:', documentToDelete.id);
                 await handleDeleteHistoryDocument(documentToDelete.id);
                 console.log('Documento histórico eliminado exitosamente');
                 // Refrescar los datos del historial
@@ -71,10 +73,12 @@ export default function HistoryForm({ historyData, onClose }: HistoryFormProps) 
                 onClose();
             } catch (error) {
                 console.error('Error al eliminar documento histórico:', error);
-                // Aquí podrías agregar un toast de error si tienes un sistema de notificaciones
+                alert(`Error al eliminar el documento: ${error instanceof Error ? error.message : 'Error desconocido'}`);
             } finally {
                 setIsDeleting(false);
             }
+        } else {
+            console.log('No se puede eliminar:', { documentToDelete, isDeleting });
         }
     };
 

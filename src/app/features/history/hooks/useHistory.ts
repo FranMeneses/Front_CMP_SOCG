@@ -80,7 +80,12 @@ export const useHistory = () => {
      */
     const handleDeleteHistoryDocument = async (historyDocumentId: string) => {
         try {
+            console.log('Iniciando eliminación de documento histórico:', historyDocumentId);
+            console.log('URL de eliminación:', `${process.env.NEXT_PUBLIC_API_URL}/history/documents/${historyDocumentId}`);
+            
             const response = await axios.delete<DeleteResponse>(`${process.env.NEXT_PUBLIC_API_URL}/history/documents/${historyDocumentId}`);
+            
+            console.log('Respuesta del servidor:', response.data);
             
             if (response.data.success) {
                 console.log('Documento histórico eliminado exitosamente');
@@ -88,8 +93,15 @@ export const useHistory = () => {
             } else {
                 throw new Error('Error al eliminar el documento histórico');
             }
-        } catch (error) {
+        } catch (error: unknown) {
             console.error('Error al eliminar el documento histórico:', error);
+            if (axios.isAxiosError(error)) {
+                console.error('Error de Axios:', {
+                    status: error.response?.status,
+                    data: error.response?.data,
+                    message: error.message
+                });
+            }
             throw error;
         }
     };
