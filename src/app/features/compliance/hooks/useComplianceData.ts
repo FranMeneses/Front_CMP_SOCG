@@ -37,7 +37,7 @@ export const useComplianceData = () => {
     setIsInitialLoad(false); 
   }, [allCompliancesData]);
 
-  const unifiedData :ICompliance[] =  allCompliancesData?.findAllCompliances || [] ;
+  const unifiedData :ICompliance[] =  [...(allCompliancesData?.findAllCompliances || [])] ;
 
   return {
     data: unifiedData,
