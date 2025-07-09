@@ -95,8 +95,8 @@ export const useHistory = () => {
             }
         } catch (error: unknown) {
             console.error('Error al eliminar el documento histórico:', error);
-            if (error && typeof error === 'object' && 'response' in error) {
-                const axiosError = error as any;
+            if (error && typeof error === 'object' && 'response' in error && 'message' in error) {
+                const axiosError = error as { response?: { status?: number; data?: unknown }; message?: string };
                 console.error('Error de Axios:', {
                     status: axiosError.response?.status,
                     data: axiosError.response?.data,
