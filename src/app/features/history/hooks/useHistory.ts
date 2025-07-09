@@ -72,6 +72,27 @@ export const useHistory = () => {
         }
     };
 
+    /**
+     * Función para eliminar documentos históricos (solo admin)
+     * @param historyDocumentId ID del documento histórico a eliminar
+     * @description Utiliza la API REST que elimina completamente el documento histórico (blob + metadata)
+     */
+    const handleDeleteHistoryDocument = async (historyDocumentId: string) => {
+        try {
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/history/documents/${historyDocumentId}`);
+            
+            if (response.data.success) {
+                console.log('Documento histórico eliminado exitosamente');
+                return response.data;
+            } else {
+                throw new Error('Error al eliminar el documento histórico');
+            }
+        } catch (error) {
+            console.error('Error al eliminar el documento histórico:', error);
+            throw error;
+        }
+    };
+
     return {
         isSidebarOpen,
         toggleSidebar,
@@ -83,5 +104,6 @@ export const useHistory = () => {
         openHistoryModal,
         closeHistoryModal,
         handleDownloadHistoryDocument,
+        handleDeleteHistoryDocument,
     };
 };
