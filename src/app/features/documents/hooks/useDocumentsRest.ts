@@ -113,10 +113,7 @@ export const useDocumentsRest = () => {
             
             if (response.data.success) {
                 console.log('Documento eliminado exitosamente');
-                return {
-                    success: true,
-                    ...response.data
-                };
+                return response.data;
             } else {
                 throw new Error('Error al eliminar el documento');
             }
