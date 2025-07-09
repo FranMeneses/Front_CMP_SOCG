@@ -5,7 +5,6 @@ import { useComplianceData } from "./useComplianceData";
 import { useComplianceForm } from "./useComplianceForm";
 import { IComplianceForm, ComplianceFormState } from "@/app/models/ICompliance";
 import { UPDATE_COMPLIANCE } from "@/app/api/compliance";
-import { UPDATE_TASK } from "@/app/api/tasks";
 
 export const useCompliance = () => {
     
@@ -34,7 +33,6 @@ export const useCompliance = () => {
     } = useComplianceData();
     
     const [updateCompliance] = useMutation(UPDATE_COMPLIANCE);
-    const [updateTask] = useMutation(UPDATE_TASK);
 
     /**
      * Función para manejar la creación de una nueva tarea
@@ -50,14 +48,14 @@ export const useCompliance = () => {
      * @param compliance Cumplimiento de la tarea a actualizar
      */
     const handleUpdateCompliance = async (compliance: ComplianceFormState) => {
-        if (compliance.statusId === 13) {
+        if (compliance.statusId === 7) {
             try {
                 await updateCompliance({
                         variables: {
                             id: selectedCompliance?.id,
                             input: {
                                 taskId: selectedCompliance?.task.id,
-                                statusId: compliance.statusId,
+                                listo: true,
                                 hesHemSap: compliance.hesHemSap
                             }
                         }
@@ -65,23 +63,8 @@ export const useCompliance = () => {
             }catch (error) {
                 console.error("❌ Error updating compliance", error);
             }
-            
-            try {
-                await updateTask({
-                    variables: {
-                        id: selectedCompliance?.task.id,
-                        input: {
-                            statusId: (selectedCompliance?.task?.statusId ?? 0) + 1,
-                        }
-                    }
-                })
-            }
-            catch (error) {
-                console.error("❌ Error updating task status:", error);
-                console.error("❌ Detalles del error:", error instanceof Error ? error.message : String(error));
-            }
         }
-        else if (compliance.statusId === 12) {
+        else if (compliance.statusId === 6) {
             try {
                 await updateCompliance({
                     variables: {
@@ -97,7 +80,7 @@ export const useCompliance = () => {
                     }
                 })
             } catch (error) {
-                console.error("Error updating compliance (estado 11)", error);
+                console.error("Error updating compliance (estado 6)", error);
             }
         }
         else {

@@ -171,7 +171,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                     variables: {
                         input: {
                             taskId: data.updateTask.id,
-                            statusId: 7,
+                            statusId: 1,
                         },
                     },
                 });
