@@ -5,6 +5,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import Modal from "@/components/Modal";
 import { useHooks } from "../hooks/useHooks";
 import { useHistory } from "./hooks/useHistory";
+import { IHistory } from "@/app/models/IHistory";
 import HistoryTable from "@/components/History/Table/HistoryTable";
 import HistoryForm from "@/components/History/HistoryForm";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal";
@@ -41,7 +42,7 @@ export default function ComplianceHistory() {
     }
 
     const handleDeleteClick = (historyId: string) => {
-        const history = historyData.find(h => h.id === historyId);
+        const history = historyData.find((h: IHistory) => h.id === historyId);
         if (history) {
             setHistoryToDelete({ id: historyId, name: history.name });
             setIsDeleteModalOpen(true);
