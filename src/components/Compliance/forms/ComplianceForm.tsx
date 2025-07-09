@@ -29,7 +29,6 @@ export default function ComplianceForm({
     isEditing = false, 
     selectedCompliance,
 }: ComplianceFormProps) {
-    console.log("🔍 ComplianceForm - selectedCompliance:", selectedCompliance);
     
     const { 
         dropdownItems, 
