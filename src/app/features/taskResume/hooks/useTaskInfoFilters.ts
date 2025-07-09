@@ -107,7 +107,15 @@ export function useTaskInfoFilters(originalTasks: ITask[]) {
         };
     };
 
-    // Función para manejar filtros por categoría
+    /**
+     * Funcion para manejar el clic en un filtro.
+     * @description Esta función se encarga de filtrar las tareas según la categoría y el valor seleccionados.
+     * @param category 
+     * @param value 
+     * @param id 
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han filtrado las tareas.
+     * @returns {void}
+     */
     const handleFilterClick = async (category: string, value: string, id: number) => {
         setActiveFilter({ category, value, id });
 
@@ -165,7 +173,11 @@ export function useTaskInfoFilters(originalTasks: ITask[]) {
         }
     };
 
-    // Función para limpiar filtros
+    /**
+     * Función para limpiar los filtros.
+     * @description Resetea los filtros activos y muestra todas las tareas originales.
+     * @return {void}
+     */
     const clearFilters = () => {
         setActiveFilter({ category: null, value: null, id: null });
         setFilteredTasks(originalTasks);

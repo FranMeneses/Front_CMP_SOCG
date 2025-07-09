@@ -82,7 +82,7 @@ export function useReportability() {
    * Función para obtener el color del valle según su ID.
    * @description Utiliza un switch para devolver el color correspondiente al valle basado en su ID.
    * @param id ID del valle para obtener su color o en su defecto ID del proceso.
-   * @returns 
+   * @returns {string} Color hexadecimal del valle o proceso.
    */
   const handleGetColor = (id: number) => {
     if (isCommunicationsManager) {
@@ -142,7 +142,7 @@ export function useReportability() {
    * Función para obtener el nombre del valle según su ID.
    * @description Busca en el array de valles el nombre correspondiente al ID proporcionado.
    * @param valleyId ID del valle para obtener su nombre.
-   * @returns 
+   * @returns {string} Nombre del valle o un mensaje por defecto si no se encuentra.
    */
   const handleGetValley = (valleyId: number) => {
     const valley = valleys.find((v: IValley) => v.id === valleyId);
@@ -153,7 +153,7 @@ export function useReportability() {
    * Función para obtener el nombre de la faena según su ID.
    * @description Busca en el array de faenas el nombre correspondiente al ID proporcionado.
    * @param faenaId ID de la faena para obtener su nombre.
-   * @returns 
+   * @returns {string} Nombre de la faena o un mensaje por defecto si no se encuentra.
    */
   const handleGetFaena = (faenaId: number) => {
     const faena = faenas.find((f: IFaena) => f.id === faenaId);
@@ -164,6 +164,8 @@ export function useReportability() {
    * Función para obtener los eventos del calendario de las subtareas.
    * @description Realiza una consulta para cada subtarea, obteniendo los detalles de la tarea asociada y formateando los eventos del calendario.
    * @param subtasks Subtareas a las que se les desea obtener los eventos del calendario.
+   * @return {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido todos los eventos del calendario.
+   * @returns void
    */
   const fetchCalendarEvents = async (subtasks: ISubtask[]) => {
     setEventsLoading(true);
@@ -220,6 +222,7 @@ export function useReportability() {
    * Función para obtener todas las subtareas de los procesos de comunicación.
    * @description Filtra los procesos de comunicación por sus IDs y obtiene las subtareas asociadas a cada uno, acumulándolas en un array.
    * @returns Lista de todas las subtareas obtenidas de los procesos de comunicación.
+   * @returns {Promise<ISubtask[]>} Retorna una promesa que resuelve con un array de subtareas.
    */
   const fetchAllProcessesSubtasks = async () => {
     const targetProcessIds: number[] = isCommunicationsManager
@@ -252,6 +255,8 @@ export function useReportability() {
    * Función para manejar la selección de un valle o subtarea en el dropdown.
    * @description Actualiza el estado del item seleccionado y obtiene las subtareas correspondientes al valle o subtarea seleccionada, así como los eventos del calendario.
    * @param item Nombre del valle o subtarea seleccionada en el dropdown.
+   * @returns void
+   * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las subtareas y eventos del calendario correspondientes.
    */
   const handleDropdownSelect = async (item: string) => {
     setSelectedItem(item);
@@ -317,10 +322,6 @@ export function useReportability() {
   loadInitialData();
 }, [processes, currentProcess]);
 
-  /**
-   * Hook para manejar la carga de subtareas del valle seleccionado.
-   * @description Este efecto se ejecuta cada vez que el valle seleccionado cambia, obteniendo las subtareas correspondientes y actualizando los eventos del calendario.
-   */
   const loading =  taskLoading || eventsLoading;
 
   return {

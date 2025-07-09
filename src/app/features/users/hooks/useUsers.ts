@@ -10,6 +10,12 @@ export function useUsers() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [userToDeleteId, setUserToDeleteId] = useState<string | null>(null);
 
+    /**
+     * Función para obtener el token de autenticación del localStorage.
+     * @description Verifica si el objeto window está definido (para evitar errores en SSR) y obtiene el token de autenticación almacenado en localStorage.
+     * Si el token no existe, retorna una cadena vacía.
+     * @returns {string} Retorna el token de autenticación almacenado en localStorage o una cadena vacía si no existe.
+     */
     const getAuthToken = () => {
         if (typeof window !== 'undefined') {
             return localStorage.getItem("token") || '';
@@ -54,6 +60,13 @@ export function useUsers() {
         setIsModalOpen(false);
     };
     
+    /**
+     * Función para manejar la actualización de un usuario.
+     * @description Utiliza la mutación `updateUser` para actualizar los datos del usuario seleccionado.
+     * @param userInput 
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando la actualización se completa.
+     * @returns {void}
+     */
     const handleUpdateUser = async (userInput: IUpdateUserInput) => {
         try {
             await updateUser({
@@ -84,6 +97,13 @@ export function useUsers() {
         setIsDeleteModalOpen(false);
     };
 
+    /**
+     * Función para manejar la eliminación de un usuario.
+     * @description Utiliza la mutación `removeUser` para eliminar al usuario seleccionado por su ID.
+     * Si el ID del usuario a eliminar no está definido, la función no hace nada.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando el usuario es eliminado.
+     * @returns {void}
+     */
     const handleDeleteUser = async () => {
         if (!userToDeleteId) return;
         

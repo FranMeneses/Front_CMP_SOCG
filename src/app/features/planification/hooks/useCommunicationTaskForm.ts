@@ -237,6 +237,7 @@ export const useCommunicationTaskForm = (
     /**
      * Función para manejar el guardado del formulario
      * @description Maneja el guardado de los datos del formulario, ya sea creando una nueva tarea o actualizando una existente
+     * @returns void
      */
     const handleSave = useCallback(() => {
         let newTask ={};

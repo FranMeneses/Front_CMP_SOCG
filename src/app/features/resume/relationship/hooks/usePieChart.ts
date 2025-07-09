@@ -15,6 +15,9 @@ export function usePieChart() {
     /**
      * Función para manejar las tareas del Valle de Copiapó.
      * @description Realiza una consulta para obtener el número de tareas del valle y actualiza el estado correspondiente.
+     * @param {number} processId - ID del proceso para el Valle de Copiapó.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las tareas del valle.
+     * @returns {void}
      */
     const handleCopiapoValleyTasks = async () => {
         try {
@@ -36,6 +39,9 @@ export function usePieChart() {
     /**
      * Función para manejar las tareas del Valle del Huasco.
      * @description Realiza una consulta para obtener el número de tareas del valle y actualiza el estado correspondiente.
+     * @param {number} processId - ID del proceso para el Valle del Huasco.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las tareas del valle.
+     * @returns {void}
      */
     const handleHuascoValleyTasks = async () => {
         try {
@@ -57,6 +63,9 @@ export function usePieChart() {
     /**
      * Función para manejar las tareas del Valle de Elqui.
      * @description Realiza una consulta para obtener el número de tareas del valle y actualiza el estado correspondiente.
+     * @param {number} processId - ID del proceso para el Valle de Elqui.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las tareas del valle.
+     * @returns {void}
      */
     const handleElquiValleyTasks = async () => {
         try {
@@ -85,10 +94,6 @@ export function usePieChart() {
         handleElquiValleyTasks();
     }, []);
 
-    /**
-     * Datos para el gráfico de pastel.
-     * @description Este objeto contiene las etiquetas y los datos para el gráfico de pastel, incluyendo los colores de fondo y de hover.
-     */
     const pieChartData = {
         labels: Valleys.filter((valley) => valley !== "Transversal"),
         datasets: [

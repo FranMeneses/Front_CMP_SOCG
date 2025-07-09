@@ -20,7 +20,8 @@ export function useBarChart() {
     /**
      * Función para obtener las inversiones del Valle de Copiapó.
      * @description Realiza una consulta para cada inversión del valle y devuelve un array con el número de tareas por inversión.
-     * @returns 
+     * @returns {Promise<number[]>} Retorna una promesa que resuelve con un array de números representando el número de tareas por inversión.
+     * @returns {void}
      */
     const handleGetCopiapoInvesment = async () => {
         try {
@@ -49,7 +50,8 @@ export function useBarChart() {
     /**
      * Función para obtener las inversiones del Valle del Huasco.
      * @description Realiza una consulta para cada inversión del valle y devuelve un array con el número de tareas por inversión.
-     * @returns 
+     * @returns {Promise<number[]>} Retorna una promesa que resuelve con un array de números representando el número de tareas por inversión.
+     * @returns {void}
      */
     const handleGetHuascoInvesment = async () => {
         try {
@@ -78,7 +80,8 @@ export function useBarChart() {
     /**
      * Función para obtener las inversiones del Valle del Elqui.
      * @description Realiza una consulta para cada inversión del valle y devuelve un array con el número de tareas por inversión.
-     * @returns 
+     * @returns {Promise<number[]>} Retorna una promesa que resuelve con un array de números representando el número de tareas por inversión.
+     * @returns {void}
      */
     const handleGetElquiInvesment = async () => {
         try {
@@ -122,10 +125,6 @@ export function useBarChart() {
         fetchAllData();
     }, []); 
 
-    /**
-     * Genera los datos para el gráfico de barras.
-     * @description Crea un objeto con las etiquetas y los datasets necesarios para el gráfico de barras.
-     */
     const barChartData = {
         labels: investmentNames,
         datasets: [

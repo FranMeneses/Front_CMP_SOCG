@@ -115,6 +115,9 @@ export const useBeneficiaryForm = ({ initialValues, onSave }: UseBeneficiaryForm
         setRutError("");
     };
 
+    /**
+     * Validador de inputs del formulario
+     */
     const isFormValid = !rutError && legalName && rut && address && entityType && representative;
 
     return {

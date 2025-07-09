@@ -27,7 +27,6 @@ export function useDynamicTable(tasks: ITask[]) {
     const scopes = scopeData?.scopes || [];
     const types = typeData?.types || [];
 
-    // Cache en memoria para presupuesto, gasto y compliance
     const budgetCache = useRef<Record<string, { value: number | null, timestamp: number }>>({});
     const expenseCache = useRef<Record<string, { value: number | null, timestamp: number }>>({});
     const complianceCache = useRef<Record<string, { value: string, timestamp: number }>>({});
@@ -35,6 +34,12 @@ export function useDynamicTable(tasks: ITask[]) {
 
     const now = () => new Date().getTime();
 
+    /**
+     * Función para obtener el progreso de las tareas
+     * @description Realiza una consulta para obtener el progreso de cada tarea y actualiza el estado del mapa de progreso de tareas.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido los progresos de todas las tareas.
+     * @returns {void}
+     */
     const fetchTaskProgress = useCallback(async () => {
         const progressMap: Record<string, number> = {};
         for (const task of tasks) {
@@ -63,7 +68,9 @@ export function useDynamicTable(tasks: ITask[]) {
     /**
      * Función para obtener el presupuesto de una tarea
      * @param taskId ID de la tarea 
-     * @returns Presupuesto de la tarea como Number
+     * @description Realiza una consulta para obtener el presupuesto total de la tarea y lo almacena en caché. 
+     * @returns {Promise<number | null>} Retorna una promesa que resuelve con el presupuesto de la tarea o null si no se encuentra.
+     * @returns {void}
      */
     const handleGetTaskBudget = async (taskId: string) => {
         const cached = budgetCache.current[taskId];
@@ -86,7 +93,9 @@ export function useDynamicTable(tasks: ITask[]) {
     /**
      * Función para obtener los gastos asociados a la tarea
      * @param taskId ID de la tarea
-     * @returns Gastos de la tarea como Number
+     * @description Realiza una consulta para obtener los gastos totales de la tarea y los almacena en caché.
+     * @returns {Promise<number | null>} Retorna una promesa que resuelve con los gastos de la tarea o null si no se encuentra.
+     * @returns {void}
      */
     const handleGetTaskExpenses = async (taskId: string) => {
         const cached = expenseCache.current[taskId];
@@ -110,7 +119,9 @@ export function useDynamicTable(tasks: ITask[]) {
     /**
      * Función para obtener un estado simplificado del compliance
      * @param taskId ID de la tarea
-     * @returns Estados simplificados del compliance como string
+     * @description Realiza una consulta para obtener el estado de cumplimiento de la tarea y lo almacena en caché.
+     * @returns {Promise<string>} Retorna una promesa que resuelve con el estado de cumplimiento de la tarea.
+     * @returns {void}
      */
     const handleGetComplianceStatus = async (taskId: string) => {
         const cached = complianceCache.current[taskId];

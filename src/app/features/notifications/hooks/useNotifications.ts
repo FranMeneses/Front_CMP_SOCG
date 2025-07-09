@@ -62,7 +62,13 @@ export function useNotifications() {
         }
     }, [unreadCountData]);
 
-    // Función para marcar una notificación como leída
+    /**
+     * Función para marcar una notificación como leída.
+     * @description Esta función actualiza el estado local de las notificaciones y el conteo de no leídas,
+     * @param notificationId - ID de la notificación a marcar como leída.
+     * @return Promise<boolean> - Retorna true si la operación fue exitosa, false en caso contrario.
+     * @return {Promise<boolean>}
+     */
     const markNotificationAsRead = useCallback(async (notificationId: string): Promise<boolean> => {
         try {
             setIsLoading(true);
@@ -105,7 +111,13 @@ export function useNotifications() {
         }
     }, [markAsReadMutation, refetchNotifications, refetchUnreadCount]);
 
-    // Función para crear una nueva notificación
+    /**
+     * Función para crear una nueva notificación.
+     * @description Esta función crea una nueva notificación y actualiza la cache y el conteo de no leídas.
+     * @param input - Objeto que contiene los datos necesarios para crear la notificación.
+     * @return Promise<INotification | null> - Retorna la notificación creada o null en caso de error.
+     * @return {Promise<INotification | null>}
+     */
     const createNotification = useCallback(async (input: ICreateNotificationInput): Promise<INotification | null> => {
         try {
             setIsLoading(true);
@@ -135,7 +147,12 @@ export function useNotifications() {
         }
     }, [createNotificationMutation, refetchNotifications, refetchUnreadCount]);
 
-    // Función para refrescar todas las notificaciones
+    /**
+     * Función para refrescar las notificaciones y el conteo de no leídas.
+     * @description Esta función permite actualizar las notificaciones y el conteo de no leídas
+     * sin necesidad de recargar la página.
+     * @return Promise<void>
+     */
     const refreshNotifications = useCallback(async () => {
         try {
             await Promise.all([
@@ -148,17 +165,32 @@ export function useNotifications() {
         }
     }, [refetchNotifications, refetchUnreadCount]);
 
-    // Función para obtener notificaciones no leídas
+    /**
+     * Función para obtener notificaciones no leídas.
+     * @description Esta función filtra las notificaciones para devolver solo aquellas que no han sido leídas.
+     * @return INotification[] - Retorna un array de notificaciones no leídas.
+     * @return {INotification[]}
+     */
     const getUnreadNotifications = useCallback((): INotification[] => {
         return notifications.filter((notification: INotification) => !notification.leida);
     }, [notifications]);
 
-    // Función para obtener notificaciones leídas
+    /**
+     * Función para obtener notificaciones leídas.
+     * @description Esta función filtra las notificaciones para devolver solo aquellas que han sido leídas.
+     * @return INotification[] - Retorna un array de notificaciones leídas.
+     * @return {INotification[]}
+     */
     const getReadNotifications = useCallback((): INotification[] => {
         return notifications.filter((notification: INotification) => notification.leida);
     }, [notifications]);
 
-    // Función para invalidar cache
+    /**
+     * Función para invalidar la cache de notificaciones.
+     * @description Esta función elimina las entradas de cache relacionadas con las notificaciones y el conteo de no leídas, lo que fuerza a las consultas a obtener datos frescos del servidor.
+     * @return void
+     * @return {void}
+     */
     const invalidateCache = useCallback(() => {
         apolloClient.cache.evict({ fieldName: "myNotifications" });
         apolloClient.cache.evict({ fieldName: "unreadNotificationsCount" });

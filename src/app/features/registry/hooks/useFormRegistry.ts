@@ -7,7 +7,6 @@ interface IRegistryForm extends Omit<IRegisterInput, 'id_rol'> {
 }
 
 export function useFormRegistry() {
-    console.log("🚀 useFormRegistry loaded with NEW CHANGES");
     
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formState, setFormState] = useState<IRegistryForm>({
@@ -24,6 +23,13 @@ export function useFormRegistry() {
 
     const { handleRegister: registerUser } = useHooks();
     
+    /**
+     * Función para validar el formato del correo electrónico.
+     * @description Utiliza una expresión regular para verificar que el correo electrónico tenga un formato válido.
+     * @param email - El correo electrónico a validar.
+     * @returns boolean - Retorna true si el correo electrónico es válido, false en caso contrario.
+     * @return {boolean}
+     */
     const validateEmail = (email: string): boolean => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return emailRegex.test(email);
@@ -56,6 +62,12 @@ export function useFormRegistry() {
         }
     };
     
+    /**
+     * Función para validar el formulario antes de enviarlo.
+     * @description Verifica que todos los campos obligatorios estén completos, que el correo electrónico tenga un formato válido y que las contraseñas coincidan.
+     * @returns boolean - Retorna true si el formulario es válido, false en caso contrario.
+     * @return {boolean}
+     */
     const validateForm = (): boolean => {
         if (!formState.email || !formState.password || !formState.full_name || 
             !formState.confirmPassword) {
@@ -78,6 +90,13 @@ export function useFormRegistry() {
         return true;
     };
     
+    /**
+     * Función para manejar el envío del formulario de registro.
+     * @param e - Evento de formulario para el registro.
+     * @description Maneja el envío del formulario de registro, validando los datos y llam
+     * @returns void
+     * @return {void}
+     */
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
         

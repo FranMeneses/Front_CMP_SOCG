@@ -8,6 +8,9 @@ export function useCalendarForms() {
     /**
      * Función para obtener el nombre de una tarea por su ID.
      * @param taskId - ID de la tarea a buscar.
+     * @description Esta función realiza una consulta para obtener el nombre de una tarea específica utilizando su ID.
+     * @returns Promise<string | null> - Retorna el nombre de la tarea si se encuentra, o null si ocurre un error.
+     * @return {Promise<string | null>}
      */
     const handleGetTaskName = useCallback(async (taskId: string) => {
         try {

@@ -82,7 +82,7 @@ const TaskTableHeader: React.FC<TaskTableHeaderProps> = ({
     };
 
     const handleAddButtonClick = () => {
-        if (userRole === "Admin") {
+        if (userRole === "Admin" || userRole === "Encargado Cumplimiento") {
             handleCreateComplianceManager?.();
         } else if (isCommunicationsManager) {
             handleCreateTask();

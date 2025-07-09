@@ -32,6 +32,10 @@ export function useHooks() {
     const [requestPasswordReset] = useMutation(REQUEST_PASSWORD_RESET);
     const [resetPassword] = useMutation(RESET_PASSWORD);
 
+    /**
+     * Efecto para sincronizar el rol del usuario desde el almacenamiento local.
+     * Esto asegura que si el rol cambia en otra pestaña o ventana, se actualice
+     */
     useEffect(() => {
         const syncRoleFromStorage = () => {
             if (typeof window !== 'undefined') {
@@ -61,6 +65,8 @@ export function useHooks() {
 
     /**
      * Función para manejar el inicio de sesión del usuario.
+     * @param input - Objeto que contiene las credenciales de inicio de sesión.
+     * @returns Promise que resuelve cuando el inicio de sesión es exitoso.
      */
     const handleLogin = async (input: ILoginInput) => {
         try {
@@ -104,6 +110,8 @@ export function useHooks() {
 
     /**
      * Función para manejar el registro de un nuevo usuario.
+     * @param input - Objeto que contiene la información del nuevo usuario.
+     * @returns Promise que resuelve cuando el registro es exitoso.
      */
     const handleRegister = async (input: IRegisterInput) => {
         try {
@@ -161,6 +169,8 @@ export function useHooks() {
 
     /**
      * Función para solicitar recuperación de contraseña.
+     * @param input - Objeto que contiene el email del usuario y la URL del frontend.
+     * @returns Promise que resuelve cuando la solicitud es exitosa.
      */
     const handleRequestPasswordReset = async (input: IRequestPasswordResetInput) => {
         try {
@@ -199,6 +209,8 @@ export function useHooks() {
 
     /**
      * Función para restablecer contraseña con token.
+     * @param input - Objeto que contiene el token y la nueva contraseña.
+     * @return Promise que resuelve cuando el restablecimiento es exitoso.
      */
     const handleResetPassword = async (input: IResetPasswordInput) => {
         try {
@@ -239,6 +251,7 @@ export function useHooks() {
 
     /**
      * Manejo de los IDs de los valles según el rol del usuario
+     * @returns Un objeto que mapea roles a IDs de valles.
      */
     const valleyIdByRole = useMemo(() => {
         return {
@@ -250,6 +263,10 @@ export function useHooks() {
         };
     }, [valleys]);
 
+    /**
+     * Manejo de los IDs de los procesos según el rol del usuario
+     * @returns Un objeto que mapea roles a IDs de procesos.
+     */
     const processByRole = useMemo(() => {
         return {
             "Jefe Relacionamiento VE": processes?.find(p => p.name === "Relacionamiento VE")?.id || 3,
@@ -258,6 +275,10 @@ export function useHooks() {
         };
     }, [processes]);
 
+    /**
+     * Efecto para establecer el valle y proceso actual según el rol del usuario.
+     * Esto asegura que al iniciar sesión, se establezca un valle y proceso por defecto.
+     */
     useEffect(() => {
         if (valleys && valleys.length > 0 && !currentValley) {
             const roleBasedId = valleyIdByRole[userRole as keyof typeof valleyIdByRole];
@@ -266,6 +287,10 @@ export function useHooks() {
         }
     }, [valleys, userRole, valleyIdByRole, currentValley]);
 
+    /**
+     * Efecto para establecer el proceso actual según el rol del usuario.
+     * Esto asegura que al iniciar sesión, se establezca un proceso por defecto.
+     */
     useEffect(() => {
         if (processes && processes.length > 0 && !currentProcess) {
             const roleBasedProcessId = processByRole[userRole as keyof typeof processByRole];
@@ -284,6 +309,11 @@ export function useHooks() {
         return faenas.map(faena => faena.name);
     }, [faenas]);
 
+    /**
+     * Función para establecer el valle actual.
+     * @param valleyNameOrObject - Nombre del valle o objeto IValley para establecer como el valle actual.
+     * @returns void
+     */
     const handleSetCurrentValley = (valleyNameOrObject: string | IValley) => {
         if (!valleys) return;
         let newValley: IValley | undefined;
@@ -297,6 +327,11 @@ export function useHooks() {
         }
     };
 
+    /**
+     * Función para establecer el proceso actual.
+     * @param processNameOrObject - Nombre del proceso o objeto IProcess para establecer como el proceso actual.
+     * @returns void
+     */
     const handleSetCurrentProcess = (processNameOrObject: string | IProcess) => {
         if (!processes) return;
         let newProcess: IProcess | undefined;
@@ -310,6 +345,12 @@ export function useHooks() {
         }
     };
 
+    /**
+     * Función para redirigir al usuario después de iniciar sesión.
+     * @description Redirige al usuario a la página correspondiente según su rol.
+     * @param role - Rol del usuario para redirigir a la página correspondiente.
+     * @return void
+     */
     const handleLoginRedirect = (role: string) => {
         switch (role) {
             case "Gerente":
@@ -338,6 +379,8 @@ export function useHooks() {
 
     /**
      * Función para cerrar sesión.
+     * @description Elimina el token y el rol del almacenamiento local, limpia las cookies y redirige al usuario a la página de inicio.
+     * @returns void
      */
     const handleLogout = () => {
         localStorage.removeItem("token");

@@ -30,6 +30,13 @@ export function useUserForms({ userData, onSave }: UseUserFormsProps) {
         is_active: userData?.is_active || undefined,
     });
 
+    /**
+     * Función para manejar los cambios en los campos del formulario.
+     * @description Actualiza el estado del formulario con el valor ingresado por el usuario.
+     * @param field 
+     * @param value 
+     * @returns {void}
+     */
     const handleInputChange = (field: keyof UserFormState, value: string) => {
         setFormState((prev) => ({
             ...prev,
@@ -37,6 +44,12 @@ export function useUserForms({ userData, onSave }: UseUserFormsProps) {
         }));
     };
 
+    /**
+     * Función para manejar el guardado del formulario.
+     * @description Prepara los datos del usuario y llama a la función onSave con los datos actualizados.
+     * @param e Evento de formulario opcional.
+     * @returns {void}
+     */
     const handleSave = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         const userInput: IUpdateUserInput = {

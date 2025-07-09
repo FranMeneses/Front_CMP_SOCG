@@ -22,7 +22,6 @@ export function useCommunicationResume() {
     const [getMonthBudget] = useLazyQuery(GET_TOTAL_BUDGET_BY_MONTH_AND_PROCESS);
     const [getMonthExpenses] = useLazyQuery(GET_TOTAL_EXPENSE_BY_MONTH_AND_PROCESS);
 
-    // Reemplazar useEffect de carga de tareas por React Query
     const {
       data: tasksDataQuery = [],
       isLoading: isLoadingTaskDetailsQuery,
@@ -47,6 +46,7 @@ export function useCommunicationResume() {
      * Función para manejar el clic en una leyenda del gráfico.
      * @description Cambia la leyenda seleccionada o la deselecciona si ya estaba seleccionada.
      * @param legend Leyenda que se ha hecho clic.
+     * @returns {void}
      */
     const handleLegendClick = (legend: string) => {
         setSelectedLegend((prev) => (prev === legend ? null : legend));
@@ -56,6 +56,8 @@ export function useCommunicationResume() {
      * Función para manejar el clic en una tarea.
      * @description Si la tarea ya está seleccionada, la deselecciona y limpia las subtareas. Si no, selecciona la tarea y obtiene sus subtareas.
      * @param taskId ID de la tarea que se ha hecho clic.
+     * @returns {Promise<void>}
+     * @returns {void}
      */
     const handleTaskClick = async (taskId: string) => {
       if (selectedTaskId === taskId) {
@@ -72,6 +74,8 @@ export function useCommunicationResume() {
      * Función para obtener las subtareas de una tarea seleccionada.
      * @description Realiza una consulta para obtener las subtareas de la tarea seleccionada por su ID.
      * @param selectedTaskId ID de la tarea seleccionada para obtener sus subtareas.
+     * @returns {Promise<void>}
+     * @returns {void}
      */
     const handleGetSubtasks = async (selectedTaskId: string) => {
         try {
@@ -94,7 +98,9 @@ export function useCommunicationResume() {
      * Función para calcular los presupuestos anuales de un proceso específico.
      * @description Recorre los meses del año y suma los gastos mensuales de un proceso específico.
      * @param processId ID del proceso para el cual se calcularán los gastos anuales.
-     * @returns Total de gastos anuales del proceso.
+     * @returns {Promise<number>} Retorna una promesa que resuelve con el total de presupuesto anual del proceso.
+     * @returns {number} Retorna 0 si hay un error o si no se pueden obtener los datos.
+     * @returns {void}
      */
     const YearlyBudget = async (processId: number) => {
       try {
@@ -114,7 +120,10 @@ export function useCommunicationResume() {
     /**
     * Función para calcular los gastos anuales.
     * @description Recorre los meses del año y realiza una consulta para obtener el total de gastos de cada mes, sumando los resultados.
-    * @returns 
+    * @param processId ID del proceso para el cual se calcularán los gastos anuales.
+    * @returns {Promise<number>} Retorna una promesa que resuelve con el total de gastos anuales del proceso.
+    * @returns {number} Retorna 0 si hay un error o si no se pueden obtener los datos.
+    * @returns {void}
     */
     const YearlyExpenses = async (processId: number) => {
         try {
@@ -135,7 +144,8 @@ export function useCommunicationResume() {
      * Función para formatear un valor numérico como moneda.
      * @description Utiliza Intl.NumberFormat para formatear el valor numérico a una cadena de texto con formato de moneda.
      * @param value Valor numérico a formatear.
-     * @returns 
+     * @returns {string} Retorna el valor formateado como una cadena de texto.
+     * @returns {void}
      */
     const formatCurrency = (value: number): string => {
         return new Intl.NumberFormat('es-CL', {

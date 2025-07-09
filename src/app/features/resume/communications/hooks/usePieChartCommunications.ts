@@ -12,6 +12,9 @@ export function usePieChartCommunications() {
     /**
      * Función para obtener las tareas de Asuntos Públicos.
      * @description Realiza una consulta para obtener las tareas asociadas al proceso de Asuntos Públicos y maneja los datos obtenidos.
+     * @param {number} processId - ID del proceso de Asuntos Públicos.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las tareas.
+     * @returns {void}
      */
     const handlePublicAffairsTasks = async () => {
         try {
@@ -33,6 +36,9 @@ export function usePieChartCommunications() {
     /**
      * Función para obtener las tareas de Comunicaciones Externas.
      * @description Realiza una consulta para obtener las tareas asociadas al proceso de Comunicaciones Externas y maneja los datos obtenidos.
+     * @param {number} processId - ID del proceso de Comunicaciones Externas.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las tareas.
+     * @returns {void}
      */
     const handleExternalCommunicationsTasks = async () => {
         try {
@@ -54,6 +60,9 @@ export function usePieChartCommunications() {
     /**
      * Función para obtener las tareas de Comunicaciones Internas.
      * @description Realiza una consulta para obtener las tareas asociadas al proceso de Comunicaciones Internas y maneja los datos obtenidos.
+     * @param {number} processId - ID del proceso de Comunicaciones Internas.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las tareas.
+     * @returns {void}
      */
     const handleInternalCommunicationsTasks = async () => {
         try {
@@ -75,6 +84,9 @@ export function usePieChartCommunications() {
     /**
      * Función para obtener las tareas Transversales.
      * @description Realiza una consulta para obtener las tareas asociadas al proceso Transversal y maneja los datos obtenidos.
+     * @param {number} processId - ID del proceso Transversal.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido las tareas.
+     * @returns {void}
      */
     const handleTransversalTasks = async () => {
         try {

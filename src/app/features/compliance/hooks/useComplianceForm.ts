@@ -388,7 +388,10 @@ export const useComplianceForm = (
         statuses: complianceStatusNames || [],
     }), [complianceStatuses]);
 
-    // Handler para cambiar el tipo de Memo/Solped
+    /**
+     * Handler para el tipo de archivo
+     * @param type 
+     */
     const handleMemoSolpedTypeChange = (type: "MEMO" | "SOLPED") => {
         setFormState((prev) => ({
             ...prev,
@@ -396,7 +399,10 @@ export const useComplianceForm = (
         }));
     };
 
-    // Handler para archivo de comprobante de transferencia (MEMO)
+    /**
+     * Handler para el archivo de transferencia
+     * @param file 
+     */
     const handleTransferFileChange = (file: File) => {
         setFormState((prev) => ({
             ...prev,
@@ -404,7 +410,10 @@ export const useComplianceForm = (
         }));
     };
 
-    // Handler para archivo de HEM/HES (SOLPED)
+    /**
+     * Handler para archivo de HEM O HES
+     * @param file 
+     */
     const handleHesHemFileChange = (file: File) => {
         setFormState((prev) => ({
             ...prev,
@@ -470,7 +479,7 @@ export const useComplianceForm = (
     };
 
     /**
-     * 
+     * Función para obtener el Comprobante
      */
     const handleGetComprobante = async () => {
         try {

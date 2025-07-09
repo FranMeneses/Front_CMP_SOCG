@@ -35,6 +35,7 @@ export function useResume(selectedMonth?: string) {
      * Función para manejar el clic en una leyenda del gráfico.
      * @description Cambia la leyenda seleccionada o la deselecciona si ya estaba seleccionada.
      * @param legend Leyenda que se ha hecho clic.
+     * @returns {void}
      */
     const handleLegendClick = (legend: string) => {
         setSelectedLegend((prev) => (prev === legend ? null : legend));
@@ -44,7 +45,8 @@ export function useResume(selectedMonth?: string) {
      * Función para formatear un valor numérico como moneda.
      * @description Utiliza Intl.NumberFormat para formatear el valor numérico a una cadena de texto con formato de moneda.
      * @param value Valor numérico a formatear.
-     * @returns 
+     * @returns {string} Retorna el valor formateado como cadena de texto.
+     * @returns {void}
      */
     const formatCurrency = (value: number): string => {
         return new Intl.NumberFormat('es-ES', {
@@ -55,7 +57,9 @@ export function useResume(selectedMonth?: string) {
     /**
      * Función para calcular el presupuesto anual.
      * @description Recorre los meses del año y realiza una consulta para obtener el presupuesto total de cada mes, sumando los resultados.
-     * @returns 
+     * @param processId ID del proceso para el cual se calculará el presupuesto.
+     * @returns {Promise<number>} Retorna una promesa que resuelve con el total del presupuesto anual.
+     * @returns {void}
      */
     const YearlyBudget = async (processId: number) => {
         try {
@@ -75,7 +79,10 @@ export function useResume(selectedMonth?: string) {
     /**
      * Función para calcular los gastos anuales.
      * @description Recorre los meses del año y realiza una consulta para obtener el total de gastos de cada mes, sumando los resultados.
-     * @returns 
+     * @param processId ID del proceso para el cual se calcularán los gastos anuales.
+     * @returns {Promise<number>} Retorna una promesa que resuelve con el total de gastos anuales del proceso.
+     * @returns {number} Retorna 0 si hay un error o si no se pueden obtener los datos.
+     * @returns {void}
      */
     const YearlyExpenses = async (processId: number) => {
         try {
@@ -204,6 +211,13 @@ export function useResume(selectedMonth?: string) {
         fetchAveragePercentages();
     }, [copiapoTasks, huascoTasks, elquiTasks]);
 
+    /**
+     * Función para obtener el porcentaje de finalización de las tareas.
+     * @description Realiza una consulta para obtener el porcentaje de finalización de cada tarea y devuelve un array con los resultados.
+     * @param tasks Array de tareas para las cuales se calculará el porcentaje de finalización.
+     * @returns {Promise<number[]>} Retorna una promesa que resuelve con un array de porcentajes de finalización.
+     * @returns {void}
+     */
     const handleGetAveragePercentage = async (tasks: ITask[]) => {
         if (tasks.length === 0) return 0;
         const promises = tasks.map(async (task: ITask) => {

@@ -36,6 +36,8 @@ export function useTaskResume() {
     /**
      * Función para obtener el porcentaje de tareas completadas por proceso.
      * @description Utiliza la consulta GET_TASK_PROGRESS para obtener el progreso de cada tarea.
+     * @returns {Promise<void>} Retorna una promesa que se resuelve cuando se han obtenido los porcentajes de todas las tareas.
+     * @returns {void}
      */
     const handleGetTasksPercentage = useCallback(async () => {
         if (!taskData?.tasksByProcess || !Array.isArray(taskData.tasksByProcess)) {
@@ -81,7 +83,8 @@ export function useTaskResume() {
      * @param month - Nombre del mes (ej. "Enero").
      * @param processId - ID del proceso.
      * @param year - Año.
-     * @returns Número de subtareas completadas.
+     * @returns {Promise<number>} Retorna una promesa que resuelve con el número de subtareas completadas.
+     * @returns {number} Retorna 0 si hay un error o si los parámetros son inválidos.
      */
     const handleGetSubtasksByMonthYearAndProcess = useCallback(async (month: string, processId: number, year: number) => { 
         if (!month || !year || !processId) {
@@ -119,7 +122,8 @@ export function useTaskResume() {
      * @param month - Nombre del mes (ej. "Enero").
      * @param year - Año.
      * @param processes - Lista de procesos.
-     * @returns Número total de subtareas completadas.
+     * @returns {Promise<number>} Retorna una promesa que resuelve con el número total de subtareas completadas.
+     * @returns {number} Retorna 0 si hay un error o si los parámetros
      */
     const handleGetTotalSubtasksByMonthYear = useCallback(async (month: string, year: number, processes: IProcess[]) => {
         if (!month || !year || !Array.isArray(processes) || processes.length === 0) {
@@ -147,10 +151,7 @@ export function useTaskResume() {
         }
     }, [handleGetSubtasksByMonthYearAndProcess]);
 
-    /**
-     * Hook para manejar el estado de las tareas y subtareas.
-     * @description Inicializa el estado de las tareas y subtareas, y configura los efectos secundarios para cargar los datos.
-     */
+
     useEffect(() => {
         if (taskData && !taskLoading && !taskError) {
             handleGetTasksPercentage();
@@ -161,7 +162,7 @@ export function useTaskResume() {
      * Hook para calcular el porcentaje total de tareas completadas.
      * @description Utiliza tasksPercentage para calcular el porcentaje total de tareas completadas.
      * @param tasksPercentage - Array de porcentajes de tareas completadas.
-     * @returns Porcentaje total de tareas completadas.
+     * @returns {void}
      */
     const handleGetTotalPercentage = useCallback(() => {
         if (tasksPercentage.length === 0) return;
@@ -172,10 +173,7 @@ export function useTaskResume() {
         setProcessPercentage(roundedPercentage);
     }, [tasksPercentage]);
 
-    /** 
-    * Hook para calcular el porcentaje total de tareas completadas.
-    * @description Utiliza handleGetTotalPercentage para calcular el porcentaje total de tareas completadas.
-    */
+
     useEffect(() => {
         handleGetTotalPercentage();
     }, [handleGetTotalPercentage]);
@@ -183,7 +181,10 @@ export function useTaskResume() {
     /**
      * Función para obtener el total de subtareas por proceso (sin filtrar por mes/año)
      * @param processId - ID del proceso
-     * @returns Número de subtareas
+     * @description Utiliza la consulta SUBTASKS_BY_PROCESS para obtener el número de subtareas asociadas a un proceso específico.
+     * @returns {Promise<number>} Retorna una promesa que resuelve con el número de subtareas asociadas al proceso.
+     * @returns {number} Retorna 0 si hay un error o si el ID del proceso es inválido.
+     * @returns {void}
      */
     const handleGetSubtasksByProcess = useCallback(async (processId: number) => {
         if (!processId) return 0;
