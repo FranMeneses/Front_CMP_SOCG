@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useDocumentsGraph } from './useDocumentsGraph';
 import { FormData as DocumentFormData } from '../hooks/useDocumentForms';
-import { UploadResponse } from '@/app/models/IAxios';
+import { UploadResponse, DeleteResponse } from '@/app/models/IAxios';
 
 export const useDocumentsRest = () => {
 
@@ -109,7 +109,7 @@ export const useDocumentsRest = () => {
      */
     const handleDelete = async (documentId: string) => {
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/documents/${documentId}`);
+            const response = await axios.delete<DeleteResponse>(`${process.env.NEXT_PUBLIC_API_URL}/documents/${documentId}`);
             
             if (response.data.success) {
                 console.log('Documento eliminado exitosamente');
