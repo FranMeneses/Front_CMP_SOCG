@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ALL_HISTORIES } from '@/app/api/history';
 import { IHistory } from '@/app/models/IHistory';
-import { DeleteResponse } from '@/app/models/IAxios';
+import { DeleteResponse, DeleteHistoryResponse } from '@/app/models/IAxios';
 import axios from 'axios';
 
 export const useHistory = () => {
@@ -117,7 +117,7 @@ export const useHistory = () => {
             console.log('Iniciando eliminación de historial:', historyId);
             console.log('URL de eliminación:', `${process.env.NEXT_PUBLIC_API_URL}/history/${historyId}`);
             
-            const response = await axios.delete<any>(`${process.env.NEXT_PUBLIC_API_URL}/history/${historyId}`);
+            const response = await axios.delete<DeleteHistoryResponse>(`${process.env.NEXT_PUBLIC_API_URL}/history/${historyId}`);
             
             console.log('Respuesta del servidor:', response.data);
             
