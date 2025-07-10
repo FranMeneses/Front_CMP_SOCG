@@ -188,6 +188,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
                         scopeId: task.scope,
                         interactionId: task.interaction,
                         riskId: task.risk,
+                        quantity: task.quantity
                     },
                 },
             });
@@ -219,6 +220,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         beneficiary: string | number;
         compliance?: boolean;
         valley: string;
+        quantity: string;
     }>({
         name: initialValues?.name || "",
         description: initialValues?.description || "",
@@ -234,6 +236,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         beneficiary: initialValues?.beneficiary || "",
         compliance: initialValues?.compliance ?? undefined,
         valley: valley,
+        quantity: initialValues?.quantity || ""
     });
 
     /**
@@ -260,6 +263,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
               expenses: expenses || "",
               beneficiary: typeof infoTask.task.beneficiaryId === "string" ? infoTask.task.beneficiaryId : undefined,
               compliance: infoTask.task.applies ?? undefined, 
+              quantity: infoTask.quantity || ""
             });
           }
           catch (error) {
@@ -291,6 +295,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
         beneficiary: initialValues.beneficiary || "",
         compliance: initialValues.compliance ?? false,
         valley: valley,
+        quantity: initialValues.quantity || ""
         });
     }
     }, [initialValues]); 
@@ -393,6 +398,7 @@ export const useValleyTaskForm = (onSave: (task: TaskDetails) => void, valley:st
             beneficiary: "",
             compliance: undefined,
             valley: valley,
+            quantity: "",
         });
     }, [formState, onSave]);
 

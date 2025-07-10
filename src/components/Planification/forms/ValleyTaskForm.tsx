@@ -191,6 +191,17 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 data-test-id="task-beneficiary-dropdown"
               />
             </div>
+            <div className="space-y-1">
+              <label className="text-xs text-gray-500">Cantidad de beneficiarios afectados</label> 
+              <input
+                type="text"
+                value={formState.quantity}
+                onChange={(e) => handleInputChange("quantity", e.target.value)}
+                className="form-input"
+                data-test-id="task-beneficiaryQuantity-input"
+                disabled={isManager}
+              />
+            </div>
             {/* Compliance */}
             <div className="space-y-1">
               <label className="text-xs text-gray-500 required">¿Compliance?</label>

@@ -323,6 +323,7 @@ export const usePlanification = () => {
                         scopeId: task.scope,
                         interactionId: task.interaction,
                         riskId: task.risk,
+                        quantity: task.quantity,
                     },
                 },
             });

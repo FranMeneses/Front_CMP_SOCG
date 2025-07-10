@@ -38,6 +38,7 @@ export interface IInfoTask {
     interactionId:number;
     riskId:number;
     task:ITask;
+    quantity: string;
 }
 
 export interface ITaskStatus {

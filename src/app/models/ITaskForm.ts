@@ -17,6 +17,7 @@ export interface TaskInitialValues {
     faena?: number;
     beneficiary?: string;
     compliance?: boolean; 
+    quantity?: string;
 }
 
 export interface TaskDetails {
@@ -38,6 +39,7 @@ export interface TaskDetails {
     finishDate?: string;
     faenaId?: string | null;
     beneficiary?: number;
+    quantity?: string;
 }
 
 export interface Task {
@@ -62,4 +64,5 @@ export interface Task {
     valley?: string | null;
     process?: string | null;
     beneficiary?: number;
+    quantity?: string;
 }
