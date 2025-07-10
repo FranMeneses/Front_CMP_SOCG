@@ -45,6 +45,7 @@ export const GET_INFO_TASKS = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name
@@ -78,6 +79,7 @@ export const GET_INFO_TASK = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name
@@ -147,6 +149,7 @@ export const GET_TASK_INFO = gql`
       scopeId
       taskId
       typeId
+      quantity
       task {
         id
         name
@@ -238,6 +241,7 @@ export const GET_TASKS_BY_ORIGIN = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name
@@ -308,6 +312,7 @@ export const GET_TASKS_BY_INVESTMENT = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name
@@ -378,6 +383,7 @@ export const GET_TASKS_BY_TYPE = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name
@@ -448,6 +454,7 @@ export const GET_TASKS_BY_SCOPE = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name
@@ -518,6 +525,7 @@ export const GET_TASKS_BY_INTERACTION = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name
@@ -588,6 +596,7 @@ export const GET_TASKS_BY_RISK = gql`
       scopeId
       interactionId
       riskId
+      quantity
       task {
         id
         name

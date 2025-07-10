@@ -52,7 +52,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 type="text"
                 value={formState.name}
                 onChange={(e) => handleInputChange("name", e.target.value)}
-                className="form-input"
+                className={`form-input ${isManager ? "text-gray-500 bg-white" : ""}`}
                 data-test-id="task-title-input"
                 disabled={isManager}
                 required
@@ -64,7 +64,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 type="text"
                 value={formState.description}
                 onChange={(e) => handleInputChange("description", e.target.value)}
-                className="form-input"
+                className={`form-input ${isManager ? "text-gray-500 bg-white" : ""}`}
                 data-test-id="task-description-input"
                 disabled={isManager}
               />
@@ -88,6 +88,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 onSelect={(value) => handleInputChange("valley", value)}
                 isInModal={true}
                 selectedValue={infoTask?.task.valleyId? dropdownItems.valleyNames[infoTask.task.valleyId - 1] : undefined}
+                disabled={isManager}
               />
             </div>
             </div>
@@ -197,7 +198,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                 type="text"
                 value={formState.quantity}
                 onChange={(e) => handleInputChange("quantity", e.target.value)}
-                className="form-input"
+                className={`form-input ${isManager ? "text-gray-500 bg-white" : ""}`}
                 data-test-id="task-beneficiaryQuantity-input"
                 disabled={isManager}
               />
@@ -252,7 +253,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                     min={0}
                     value={formState.budget}
                     onChange={(e) => handleInputChange("budget", e.target.value)}
-                    className="form-input"
+                    className={`form-input text-gray-500 bg-white`}
                     disabled={true}
                     data-test-id="task-budget-input"
                   />
@@ -264,7 +265,7 @@ export default function ValleyTaskForm({ onSave, onCancel, isEditing, valley, de
                     min={0}
                     value={formState.expenses}
                     onChange={(e) => handleInputChange("expenses", e.target.value)}
-                    className="form-input"
+                    className={`form-input text-gray-500 bg-white`}
                     disabled={true}
                     data-test-id="task-expenses-input"
                   />
