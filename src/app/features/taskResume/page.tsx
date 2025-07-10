@@ -41,8 +41,8 @@ export default function TaskResume() {
     const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
     // Filtros
-    const [selectedProcess, setSelectedProcess] = React.useState<string>("Todos");
-    const monthsWithAll = ["Todos", ...Months];
+    const [selectedProcess, setSelectedProcess] = React.useState<string>("TODOS");
+    const monthsWithAll = ["TODOS", ...Months.map((month) => month.toUpperCase())];
     const [selectedMonth, setSelectedMonth] = React.useState<string>(monthsWithAll[new Date().getMonth() + 1]);
     const [year] = React.useState<number>(new Date().getFullYear());
     
@@ -67,22 +67,31 @@ export default function TaskResume() {
 
 
     React.useEffect(() => {
-        if (selectedMonth === "Todos") {
+        
+        if (selectedMonth === "TODOS") {
             setFilteredTasks(detailedTasks || []);
             return;
         }
-        if (selectedProcess === "Todos") {
-            fetchByMonth({ variables: { monthName: selectedMonth, year } });
+        
+        // Convertir el mes de mayúsculas al formato original para el backend
+        const originalMonth = selectedMonth === "TODOS" ? "TODOS" : 
+            Months.find(month => month.toUpperCase() === selectedMonth) || selectedMonth;
+        
+        
+        if (selectedProcess === "TODOS") {
+            fetchByMonth({ variables: { monthName: originalMonth, year } });
         } else {
-            const process = allProcesses.find((p: IProcess) => p.name === selectedProcess);
+            const process = allProcesses.find((p: IProcess) => p.name.toUpperCase() === selectedProcess);
             if (process) {
-                fetchByMonthAndProcess({ variables: { monthName: selectedMonth, year, processId: Number(process.id) } });
+                fetchByMonthAndProcess({ variables: { monthName: originalMonth, year, processId: Number(process.id) } });
+            } else {
+                console.error("No se encontró el proceso:", selectedProcess);
             }
         }
-    }, [selectedProcess, selectedMonth, year, allProcesses, detailedTasks]);
+    }, [selectedProcess, selectedMonth, year, allProcesses, detailedTasks, fetchByMonth, fetchByMonthAndProcess]);
 
     React.useEffect(() => {
-        if (selectedProcess === "Todos" && dataByMonth?.tasksByMonth) {
+        if (selectedProcess === "TODOS" && dataByMonth?.tasksByMonth) {
             setFilteredTasks(dataByMonth.tasksByMonth);
         } else if (dataByMonthAndProcess?.tasksByMonthAndProcess) {
             setFilteredTasks(dataByMonthAndProcess.tasksByMonthAndProcess);
@@ -146,8 +155,8 @@ export default function TaskResume() {
                                     {allProcesses && allProcesses.length > 0 && (
                                         <div className="w-64 overflow-visible">
                                             <DropdownMenu
-                                                buttonText="Filtrar por proceso"
-                                                items={["Todos", ...allProcesses.map((p: IProcess) => p.name)]}
+                                                buttonText="FILTRAR POR PROCESO"
+                                                items={["TODOS", ...allProcesses.map((p: IProcess) => p.name.toUpperCase())]}
                                                 onSelect={handleProcessFilter}
                                                 selectedValue={selectedProcess}
                                             />
@@ -155,7 +164,7 @@ export default function TaskResume() {
                                     )}
                                     <div className="w-64 overflow-visible">
                                         <DropdownMenu
-                                            buttonText="Filtrar por mes"
+                                            buttonText="FILTRAR POR MES"
                                             items={monthsWithAll}
                                             onSelect={handleMonthFilter}
                                             selectedValue={selectedMonth}
