@@ -30,84 +30,84 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
     clearFilters
 }) => {
     // Preparar las opciones para cada dropdown
-    const originOptions = ["Origen", ...origins.map(origin => origin.name)];
-    const investmentOptions = ["Inversión", ...investments.map(investment => investment.line)];
-    const typeOptions = ["Tipo", ...types.map(type => type.name)];
-    const scopeOptions = ["Alcance", ...scopes.map(scope => scope.name)];
-    const interactionOptions = ["Interacción", ...interactions.map(interaction => interaction.operation)];
-    const riskOptions = ["Riesgo", ...risks.map(risk => risk.type)];
+    const originOptions = ["ORIGEN", ...origins.map(origin => origin.name.toUpperCase())];
+    const investmentOptions = ["INVERSIÓN", ...investments.map(investment => investment.line.toUpperCase())];
+    const typeOptions = ["TIPO", ...types.map(type => type.name.toUpperCase())];
+    const scopeOptions = ["ALCANCE", ...scopes.map(scope => scope.name.toUpperCase())];
+    const interactionOptions = ["INTERACCIÓN", ...interactions.map(interaction => interaction.operation.toUpperCase())];
+    const riskOptions = ["RIESGO", ...risks.map(risk => risk.type.toUpperCase())];
 
     // Obtener el valor seleccionado para cada dropdown
     const getSelectedValue = (category: string) => {
         if (activeFilter.category === category && activeFilter.value) {
-            return activeFilter.value;
+            return activeFilter.value.toUpperCase();
         }
-        return category.charAt(0).toUpperCase() + category.slice(1);
+        return category.toUpperCase();
     };
 
     // Funciones específicas para cada categoría
     const handleOrigenSelect = (value: string) => {
-        if (value === "Todos" || value === "Origen") {
+        if (value === "Todos" || value === "ORIGEN") {
             clearFilters();
         } else {
-            const selectedItem = origins.find(item => item.name === value);
+            const selectedItem = origins.find(item => item.name.toUpperCase() === value);
             if (selectedItem) {
-                handleFilterClick("origen", value, selectedItem.id);
+                handleFilterClick("origen", selectedItem.name, selectedItem.id);
             }
         }
     };
 
     const handleInvestmentSelect = (value: string) => {
-        if (value === "Todos" || value === "Inversión") {
+        if (value === "Todos" || value === "INVERSIÓN") {
             clearFilters();
         } else {
-            const selectedItem = investments.find(item => item.line === value);
+            const selectedItem = investments.find(item => item.line.toUpperCase() === value);
             if (selectedItem) {
-                handleFilterClick("inversión", value, selectedItem.id);
+                handleFilterClick("inversión", selectedItem.line, selectedItem.id);
             }
         }
     };
 
     const handleTypeSelect = (value: string) => {
-        if (value === "Todos" || value === "Tipo") {
+        if (value === "Todos" || value === "TIPO") {
             clearFilters();
         } else {
-            const selectedItem = types.find(item => item.name === value);
+            const selectedItem = types.find(item => item.name.toUpperCase() === value);
             if (selectedItem) {
-                handleFilterClick("tipo", value, selectedItem.id);
+                handleFilterClick("tipo", selectedItem.name, selectedItem.id);
             }
         }
     };
 
     const handleScopeSelect = (value: string) => {
-        if (value === "Todos" || value === "Alcance") {
+        if (value === "Todos" || value === "ALCANCE") {
             clearFilters();
         } else {
-            const selectedItem = scopes.find(item => item.name === value);
+            const selectedItem = scopes.find(item => item.name.toUpperCase() === value);
             if (selectedItem) {
-                handleFilterClick("alcance", value, selectedItem.id);
+                handleFilterClick("alcance", selectedItem.name, selectedItem.id);
             }
         }
     };
 
     const handleInteractionSelect = (value: string) => {
-        if (value === "Todos" || value === "Interacción") {
+        if (value === "Todos" || value === "INTERACCIÓN") {
             clearFilters();
         } else {
-            const selectedItem = interactions.find(item => item.operation === value);
+            const selectedItem = interactions.find(item => item.operation.toUpperCase() === value);
             if (selectedItem) {
-                handleFilterClick("interacción", value, selectedItem.id);
+                handleFilterClick("interacción", selectedItem.operation, selectedItem.id);
             }
         }
     };
 
     const handleRiskSelect = (value: string) => {
-        if (value === "Todos" || value === "Riesgo") {
+        if (value === "Todos" || value === "RIESGO") {
             clearFilters();
         } else {
-            const selectedItem = risks.find(item => item.type === value);
+            const selectedItem = risks.find(item => item.type.toUpperCase() === value);
             if (selectedItem) {
-                handleFilterClick("riesgo", value, selectedItem.id);
+                handleFilterClick("riesgo", selectedItem.type, selectedItem.id);
             }
         }
     };
@@ -118,10 +118,10 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
             <div className="flex flex-wrap gap-2">
                 {/* Dropdown Origen - Azul */}
                 {origins.length > 0 && (
-                    <div className="w-48 overflow-visible">
-                        <div className="[&>div>button]:border-blue-300 [&>div>button]:bg-blue-50 [&>div>button]:text-blue-700 [&>div>button:hover]:border-blue-400 [&>div>button:hover]:bg-blue-100">
+                    <div className="w-64 overflow-visible">
+                        <div className="[&>div>button]:border-blue-300 [&>div>button]:bg-blue-50 [&>div>button]:text-blue-700 [&>div>button:hover]:border-blue-400 [&>div>button:hover]:bg-blue-100 [&>div>button]:text-left [&>div>button]:truncate">
                             <DropdownMenu
-                                buttonText="Origen"
+                                buttonText="ORIGEN"
                                 items={originOptions}
                                 onSelect={handleOrigenSelect}
                                 selectedValue={getSelectedValue("origen")}
@@ -132,10 +132,10 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
 
                 {/* Dropdown Inversión - Verde */}
                 {investments.length > 0 && (
-                    <div className="w-48 overflow-visible">
-                        <div className="[&>div>button]:border-green-300 [&>div>button]:bg-green-50 [&>div>button]:text-green-700 [&>div>button:hover]:border-green-400 [&>div>button:hover]:bg-green-100">
+                    <div className="w-64 overflow-visible">
+                        <div className="[&>div>button]:border-green-300 [&>div>button]:bg-green-50 [&>div>button]:text-green-700 [&>div>button:hover]:border-green-400 [&>div>button:hover]:bg-green-100 [&>div>button]:text-left [&>div>button]:truncate">
                             <DropdownMenu
-                                buttonText="Inversión"
+                                buttonText="INVERSIÓN"
                                 items={investmentOptions}
                                 onSelect={handleInvestmentSelect}
                                 selectedValue={getSelectedValue("inversión")}
@@ -146,10 +146,10 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
 
                 {/* Dropdown Tipo - Púrpura */}
                 {types.length > 0 && (
-                    <div className="w-48 overflow-visible">
-                        <div className="[&>div>button]:border-purple-300 [&>div>button]:bg-purple-50 [&>div>button]:text-purple-700 [&>div>button:hover]:border-purple-400 [&>div>button:hover]:bg-purple-100">
+                    <div className="w-64 overflow-visible">
+                        <div className="[&>div>button]:border-purple-300 [&>div>button]:bg-purple-50 [&>div>button]:text-purple-700 [&>div>button:hover]:border-purple-400 [&>div>button:hover]:bg-purple-100 [&>div>button]:text-left [&>div>button]:truncate">
                             <DropdownMenu
-                                buttonText="Tipo"
+                                buttonText="TIPO"
                                 items={typeOptions}
                                 onSelect={handleTypeSelect}
                                 selectedValue={getSelectedValue("tipo")}
@@ -160,10 +160,10 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
 
                 {/* Dropdown Alcance - Amarillo */}
                 {scopes.length > 0 && (
-                    <div className="w-48 overflow-visible">
-                        <div className="[&>div>button]:border-yellow-300 [&>div>button]:bg-yellow-50 [&>div>button]:text-yellow-700 [&>div>button:hover]:border-yellow-400 [&>div>button:hover]:bg-yellow-100">
+                    <div className="w-64 overflow-visible">
+                        <div className="[&>div>button]:border-yellow-300 [&>div>button]:bg-yellow-50 [&>div>button]:text-yellow-700 [&>div>button:hover]:border-yellow-400 [&>div>button:hover]:bg-yellow-100 [&>div>button]:text-left [&>div>button]:truncate">
                             <DropdownMenu
-                                buttonText="Alcance"
+                                buttonText="ALCANCE"
                                 items={scopeOptions}
                                 onSelect={handleScopeSelect}
                                 selectedValue={getSelectedValue("alcance")}
@@ -174,10 +174,10 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
 
                 {/* Dropdown Interacción - Azul claro */}
                 {interactions.length > 0 && (
-                    <div className="w-48 overflow-visible">
-                        <div className="[&>div>button]:border-cyan-300 [&>div>button]:bg-cyan-50 [&>div>button]:text-cyan-700 [&>div>button:hover]:border-cyan-400 [&>div>button:hover]:bg-cyan-100">
+                    <div className="w-64 overflow-visible">
+                        <div className="[&>div>button]:border-cyan-300 [&>div>button]:bg-cyan-50 [&>div>button]:text-cyan-700 [&>div>button:hover]:border-cyan-400 [&>div>button:hover]:bg-cyan-100 [&>div>button]:text-left [&>div>button]:truncate">
                             <DropdownMenu
-                                buttonText="Interacción"
+                                buttonText="INTERACCIÓN"
                                 items={interactionOptions}
                                 onSelect={handleInteractionSelect}
                                 selectedValue={getSelectedValue("interacción")}
@@ -188,10 +188,10 @@ const CategoryDropdowns: React.FC<CategoryDropdownsProps> = ({
 
                 {/* Dropdown Riesgo - Rojo */}
                 {risks.length > 0 && (
-                    <div className="w-48 overflow-visible">
-                        <div className="[&>div>button]:border-red-300 [&>div>button]:bg-red-50 [&>div>button]:text-red-700 [&>div>button:hover]:border-red-400 [&>div>button:hover]:bg-red-100">
+                    <div className="w-64 overflow-visible">
+                        <div className="[&>div>button]:border-red-300 [&>div>button]:bg-red-50 [&>div>button]:text-red-700 [&>div>button:hover]:border-red-400 [&>div>button:hover]:bg-red-100 [&>div>button]:text-left [&>div>button]:truncate">
                             <DropdownMenu
-                                buttonText="Riesgo"
+                                buttonText="RIESGO"
                                 items={riskOptions}
                                 onSelect={handleRiskSelect}
                                 selectedValue={getSelectedValue("riesgo")}
