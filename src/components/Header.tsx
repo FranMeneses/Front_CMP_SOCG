@@ -111,7 +111,7 @@ export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProp
         
         {/* Sección 4: Cuadro azul derecha con logo y UI */}
         <div 
-          className="flex-1 flex items-center gap-3 px-4 py-3"
+          className="flex-1 flex items-center justify-end gap-3 px-4 py-3"
           style={{
             backgroundColor: '#0068d0',
             borderTopLeftRadius: '1rem'
