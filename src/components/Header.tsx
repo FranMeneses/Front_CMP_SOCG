@@ -111,7 +111,7 @@ export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProp
         
         {/* Sección 4: Cuadro azul derecha con logo y UI */}
         <div 
-          className="flex items-center gap-3 px-4 py-3 min-w-[300px]"
+          className="flex-1 flex items-center gap-3 px-4 py-3"
           style={{
             backgroundColor: '#0068d0',
             borderTopLeftRadius: '1rem'
@@ -149,16 +149,14 @@ export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProp
           )}
           
           {/* Logo */}
-          <div className="bg-white rounded px-2 py-1">
-            <Image
-              src="/CmpLogo.png"
-              alt="Logo CMP"
-              width={100}
-              height={30}
-              className="object-contain"
-              priority
-            />
-          </div>
+          <Image
+            src="/CmpLogo.png"
+            alt="Logo CMP"
+            width={120}
+            height={40}
+            className="object-contain"
+            priority
+          />
         </div>
       </div>
       
