@@ -67,9 +67,9 @@ export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProp
             quality={85}
           />
           {/* Menú hamburguesa superpuesto con fondo azul */}
-          <div className="absolute top-4 left-4 z-10">
+          <div className="absolute top-1/2 left-4 transform -translate-y-1/2 z-10">
             <div 
-              className="p-[10px] rounded-lg"
+              className="p-[5px] rounded-lg"
               style={{ backgroundColor: '#0068D1' }}
             >
               <Menu
@@ -85,8 +85,8 @@ export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProp
         
         {/* Sección 2: Cuadro azul con texto motivacional */}
         <div 
-          className="flex-1 flex items-center justify-center px-8 py-4"
-          style={{ backgroundColor: '#0068D1' }}
+          className="flex-1 flex items-center justify-center px-8 py-4 rounded-tl-lg rounded-br-lg"
+          style={{ backgroundColor: '#0068d0' }}
         >
           <div className="text-center">
             <h2 className="text-white text-lg md:text-xl font-bold leading-tight">
