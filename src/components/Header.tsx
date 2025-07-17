@@ -108,12 +108,13 @@ export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProp
             style={{ backgroundColor: '#0068d0' }}
           >
             {/* Notificaciones */}
-            <div className="relative" ref={notificationRef}>
+            <div className="relative z-50" ref={notificationRef}>
               <div className="relative">
                 <Bell 
                   className="text-white cursor-pointer hover:animate-bounce transition-transform duration-200"
                   size={24}
                   onClick={() => setShowNotifications(!showNotifications)}
+                  data-testid="bell-button"
                 />
                 {unreadCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">

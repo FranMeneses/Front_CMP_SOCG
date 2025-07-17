@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { useNotifications } from "@/app/features/notifications/hooks/useNotifications";
 import { INotification } from "@/app/models/INotifications";
 import { Bell, Check, X, RefreshCw, Clock } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function NotificationsMenu() {
     const { 
@@ -17,6 +17,62 @@ export function NotificationsMenu() {
     } = useNotifications();
     
     const [processingIds, setProcessingIds] = useState<Set<string>>(new Set());
+    const [menuPosition, setMenuPosition] = useState<{ 
+        top: number; 
+        left: string | number; 
+        right: string | number 
+    }>({ top: 0, left: 0, right: 'auto' });
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    // Calcular posición del menú basado en la posición del botón de notificaciones
+    useEffect(() => {
+        const calculatePosition = () => {
+            // Buscar el botón de campana en el DOM
+            const bellButton = document.querySelector('[data-testid="bell-button"]') as HTMLElement;
+            if (bellButton) {
+                const rect = bellButton.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                
+                // Posicionar el menú debajo del ícono
+                const top = rect.bottom + 8;
+                
+                // Si hay espacio a la derecha, alinear a la derecha del ícono
+                // Si no, alinear a la derecha del viewport para que no se salga
+                if (rect.right + 320 > viewportWidth) {
+                    // Alinear a la derecha del viewport con un margen
+                    setMenuPosition({ 
+                        top, 
+                        left: 'auto', 
+                        right: 20 
+                    });
+                } else {
+                    // Alinear con el ícono
+                    setMenuPosition({ 
+                        top, 
+                        left: rect.left, 
+                        right: 'auto' 
+                    });
+                }
+            } else {
+                // Fallback: posición por defecto
+                setMenuPosition({ 
+                    top: 140, 
+                    left: 'auto', 
+                    right: 20 
+                });
+            }
+        };
+
+        calculatePosition();
+
+        // Recalcular posición si la ventana cambia de tamaño
+        const handleResize = () => {
+            calculatePosition();
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleMarkAsRead = async (notificationId: string) => {
         if (processingIds.has(notificationId)) return;
@@ -100,7 +156,17 @@ export function NotificationsMenu() {
     };
 
     return (
-        <div className="absolute top-full right-0 mt-2 w-80 bg-white shadow-lg rounded-md overflow-hidden z-50 border">
+        <div 
+            ref={menuRef}
+            className="fixed w-80 bg-white shadow-lg rounded-md overflow-hidden border animate-in slide-in-from-top-2 duration-200"
+            style={{ 
+                zIndex: 9999,
+                maxWidth: '90vw',
+                top: menuPosition.top,
+                left: menuPosition.left,
+                right: menuPosition.right,
+            }}
+        >
             {/* Header */}
             <div className="p-4 border-b border-gray-200 bg-gray-50">
                 <div className="flex items-center justify-between">
