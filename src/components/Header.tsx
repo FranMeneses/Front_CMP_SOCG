@@ -20,14 +20,14 @@ export function Header({ toggleSidebar, isOpen, userName, userRole }: HeaderProp
 
   // Imágenes del book disponibles
   const bookImages = [
-    '/Book (1).jpg',
-    '/Book (2).jpg', 
-    '/Book (3).jpg',
-    '/Book (4).jpg',
-    '/Book (5).jpg',
-    '/Book (6).jpg',
-    '/Book (7).jpg',
-    '/Book (1).JPEG'
+    '/Book01.png',
+    '/Book02.png', 
+    '/Book03.png',
+    '/Book04.png',
+    '/Book05.png',
+    '/Book06.png',
+    '/Book07.png',
+    '/Book09.png'
   ];
 
   // Rotación automática de imágenes
